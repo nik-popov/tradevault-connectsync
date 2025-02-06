@@ -1,58 +1,30 @@
-version: '3.8'
+version: "3.8"
 
 services:
   traefik:
     image: traefik:3.0
-    container_name: traefik-proxy
     restart: always
     ports:
-      # HTTP and HTTPS entrypoints
+      # Optionally, if you plan to support HTTPS in the future, you can uncomment the following:
       - "80:80"
       - "443:443"
-      # Optional: Expose Traefik Dashboard (Change 8080 to another port if needed)
-      - "8080:8080"
+      - "8090:8080"
     volumes:
-      # Docker socket to allow Traefik to read container labels
       - /var/run/docker.sock:/var/run/docker.sock:ro
-      # Mount volume for Let's Encrypt certificates
       - traefik-public-certificates:/certificates
     command:
-      # Enable Docker Provider to read service labels
-      - "--providers.docker=true"
-      - "--providers.docker.exposedbydefault=false"
-
-      # HTTP entrypoint
-      - "--entrypoints.http.address=:80"
-
-      # HTTPS entrypoint
-      - "--entrypoints.https.address=:443"
-
-      # Redirect HTTP to HTTPS
-      - "--entrypoints.http.http.redirections.entryPoint.to=https"
-      - "--entrypoints.http.http.redirections.entryPoint.scheme=https"
-
-      # Enable Let's Encrypt with a production-ready resolver
-      - "--certificatesresolvers.le.acme.email=admin@cobaltdata.net"
-      - "--certificatesresolvers.le.acme.storage=/certificates/acme.json"
-      - "--certificatesresolvers.le.acme.tlschallenge=true"
-      # Enable Traefik logs (debugging)
-      - "--log.level=DEBUG"
-      - "--accesslog"
-
-      # Enable Traefik Dashboard
-      - "--api=true"
-      - "--api.dashboard=true"
-
-      # Enable Health Check (Fixes "please enable `ping` to use health check" error)
-      - "--ping"
-      - "--ping.entrypoint=http"
-
+      - --providers.docker
+      - --providers.docker.exposedbydefault=false
+      - --entrypoints.http.address=:80
+      - --accesslog
+      - --log
+      - --api
     networks:
-      # Use the previously created public network "traefik-public"
       - traefik-public
+
+volumes:
+  traefik-public-certificates:
 
 networks:
   traefik-public:
     external: true
-volumes:
-  traefik-public-certificates:
