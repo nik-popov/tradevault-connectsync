@@ -366,7 +366,7 @@ Test cov > 90% ✅
 * 🔥 Clean up old files no longer relevant. PR [#608](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata)
 * ♻ Re-structure Docker Compose files, discard Docker Swarm specific logic. PR [#607](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata)        
 * ♻️ Refactor update endpoints and regenerate client for new-frontend. PR [#602](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata) 
-* ✨ Add Layout to App. PR [#588](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata)         588) by [@cobaltdata](https://github.com/cobaltdata)         
+* ✨ Add Layout to App. PR [#588](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata)   
 * ♻️ Re-enable user update path operations for frontend client generation. PR [#574](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata) 
 * ♻️ Remove type ignores and add `response_model`. PR [#572](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata)
 * ♻️ Refactor Users API and dependencies. PR [#561](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata)
@@ -388,15 +388,15 @@ Test cov > 90% ✅
 
 ### Upgrades
 
-* 📌 Upgrade Poetry lock dependencies. PR [#702](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata)         702) by [@cobaltdata](https://github.com/cobaltdata)         
-* ⬆️ Upgrade Python version and dependencies. PR [#558](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata)         558) by [@cobaltdata](https://github.com/cobaltdata)         
-* ⬆ Bump tiangolo/issue-manager from 0.2.0 to 0.5.0. PR [#591](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata)         591) by [@dependabot[bot]](https://github.com/apps/dependabot)         
-* Bump follow-redirects from 1.15.3 to 1.15.5 in /frontend. PR [#654](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata)         654) by [@dependabot[bot]](https://github.com/apps/dependabot)         
-* Bump vite from 5.0.4 to 5.0.12 in /frontend. PR [#653](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata)         653) by [@dependabot[bot]](https://github.com/apps/dependabot)         
-* Bump fastapi from 0.104.1 to 0.109.1 in /backend. PR [#687](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata)         687) by [@dependabot[bot]](https://github.com/apps/dependabot)         
-* Bump python-multipart from 0.0.6 to 0.0.7 in /backend. PR [#686](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata)         686) by [@dependabot[bot]](https://github.com/apps/dependabot)         
-* ⬆ Add `uvicorn[standard]` to include `watchgod` and `uvloop`. PR [#438](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata)         438) by [@alonme](https://github.com/alonme)         
-* ⬆ Upgrade code to support pydantic V2. PR [#615](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata)         615) by [@estebanx64](https://github.com/estebanx64)         
+* 📌 Upgrade Poetry lock dependencies. PR [#702](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata)          
+* ⬆️ Upgrade Python version and dependencies. PR [#558](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata)      
+* ⬆ Bump tiangolo/issue-manager from 0.2.0 to 0.5.0. PR [#591](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata)               
+* Bump follow-redirects from 1.15.3 to 1.15.5 in /frontend. PR [#654](https://github.com/cobaltdata/full-stack-template)by [@dependabot[bot]](https://github.com/apps/dependabot)         
+* Bump vite from 5.0.4 to 5.0.12 in /frontend. PR [#653](https://github.com/cobaltdata/full-stack-template) by [@dependabot[bot]](https://github.com/apps/dependabot)         
+* Bump fastapi from 0.104.1 to 0.109.1 in /backend. PR [#687](https://github.com/cobaltdata/full-stack-template) by [@dependabot[bot]](https://github.com/apps/dependabot)         
+* Bump python-multipart from 0.0.6 to 0.0.7 in /backend. PR [#686](https://github.com/cobaltdata/full-stack-template) by [@dependabot[bot]](https://github.com/apps/dependabot)         
+* ⬆ Add `uvicorn[standard]` to include `watchgod` and `uvloop`. PR [#438](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata)       
+* ⬆ Upgrade code to support pydantic V2. PR [#615](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata)  
 
 ### Docs
 
