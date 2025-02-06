@@ -505,7 +505,7 @@ Test cov > 90% ✅
 
 ## 0.2.2
 
-* Fix frontend hijacking /docs in development. Using latest https://github.com/tiangolo/node-frontend with custom Nginx configs in frontend. <a href="https://github.com/tiangolo/full-stack-fastapi-template/pull/6" target="_blank">PR #6</a>.
+* Fix frontend hijacking /docs in development. Using latest https://github.com/cobaltdata/full-stack-template with custom Nginx configs in frontend. <a href="[https://github.com/cobaltdata/full-stack-template]" target="_blank">PR #6</a>.
 
 ## 0.2.1 f
 
