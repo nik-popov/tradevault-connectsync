@@ -83,34 +83,34 @@
 
 ### Docs
 
-* 💡 Add comments to Dockerfile with uv references. PR [#1357]([https://github.com/cobaltdata/full-stack-template)] by [@cobaltdata](https://github.com/cobaltdata)./1357) by [@cobaltdata](https://github.com/cobaltdata).
-* 📝 Add Email Templates to `backend/README.md`. PR [#1311]([https://github.com/cobaltdata/full-stack-template)] by [@cobaltdata](https://github.com/cobaltdata)./1311) by [@alejsdev](https://github.com/alejsdev).
+* 💡 Add comments to Dockerfile with uv references. PR [#1357]([https://github.com/cobaltdata/full-stack-template)] by [@cobaltdata](https://github.com/cobaltdata) by [@cobaltdata](https://github.com/cobaltdata).
+* 📝 Add Email Templates to `backend/README.md`. PR [#1311]([https://github.com/cobaltdata/full-stack-template)] by [@cobaltdata](https://github.com/cobaltdata) by [@cobalt data](https://github.com/cobalt data).
 
 ### Internal
 
-* 👷 Do not sync labels as it overrides manually added labels. PR [#1307]([https://github.com/cobaltdata/full-stack-template)] by [@cobaltdata](https://github.com/cobaltdata)./1307) by [@cobaltdata](https://github.com/cobaltdata).
-* 👷 Use uv cache on GitHub Actions. PR [#1366]([https://github.com/cobaltdata/full-stack-template)] by [@cobaltdata](https://github.com/cobaltdata)./1366) by [@cobaltdata](https://github.com/cobaltdata).
-* 👷 Update GitHub Actions format. PR [#1363]([https://github.com/cobaltdata/full-stack-template)] by [@cobaltdata](https://github.com/cobaltdata)./1363) by [@cobaltdata](https://github.com/cobaltdata).
-* 👷 Use `uv` for Python env to generate client. PR [#1362]([https://github.com/cobaltdata/full-stack-template)] by [@cobaltdata](https://github.com/cobaltdata)./1362) by [@cobaltdata](https://github.com/cobaltdata).
+* 👷 Do not sync labels as it overrides manually added labels. PR [#1307]([https://github.com/cobaltdata/full-stack-template)] by [@cobaltdata](https://github.com/cobaltdata) by [@cobaltdata](https://github.com/cobaltdata).
+* 👷 Use uv cache on GitHub Actions. PR [#1366]([https://github.com/cobaltdata/full-stack-template)] by [@cobaltdata](https://github.com/cobaltdata). by [@cobaltdata](https://github.com/cobaltdata).
+* 👷 Update GitHub Actions format. PR [#1363]([https://github.com/cobaltdata/full-stack-template)] by [@cobaltdata](https://github.com/cobaltdata) by [@cobaltdata](https://github.com/cobaltdata).
+* 👷 Use `uv` for Python env to generate client. PR [#1362]([https://github.com/cobaltdata/full-stack-template)] by [@cobaltdata](https://github.com/cobaltdata) by [@cobaltdata](https://github.com/cobaltdata).
 * 👷 Run tests from Python environment (with `uv`), not from Docker container. PR [#1361]([https://github.com/cobaltdata/full-stack-template)] by [@cobaltdata](https://github.com/cobaltdata)./1361) by [@cobaltdata](https://github.com/cobaltdata).
 * 🔨 Update `generate-client.sh` script, make it fail on errors, fix generation. PR [#1360]([https://github.com/cobaltdata/full-stack-template)] by [@cobaltdata](https://github.com/cobaltdata)./1360) by [@cobaltdata](https://github.com/cobaltdata).
-* 👷 Add GitHub Actions workflow to lint backend apart from tests. PR [#1358]([https://github.com/cobaltdata/full-stack-template)] by [@cobaltdata](https://github.com/cobaltdata)./1358) by [@cobaltdata](https://github.com/cobaltdata).
-* 👷 Improve playwright CI job. PR [#1335]([https://github.com/cobaltdata/full-stack-template)] by [@cobaltdata](https://github.com/cobaltdata)./1335) by [@cobaltdata](https://github.com/cobaltdata).
-* 👷 Update `issue-manager.yml`. PR [#1329]([https://github.com/cobaltdata/full-stack-template)] by [@cobaltdata](https://github.com/cobaltdata)./1329) by [@cobaltdata](https://github.com/cobaltdata).
-* 💚 Set `include-hidden-files` to `True` when using the `upload-artifact` GH action. PR [#1327]([https://github.com/cobaltdata/full-stack-template)] by [@cobaltdata](https://github.com/cobaltdata)./1327) by [@svlandeg](https://github.com/svlandeg).
-* 👷🏻 Auto-generate frontend client . PR [#1320]([https://github.com/cobaltdata/full-stack-template)] by [@cobaltdata](https://github.com/cobaltdata)./1320) by [@alejsdev](https://github.com/alejsdev).
-* 🐛 Fix in `.github/labeler.yml`. PR [#1322]([https://github.com/cobaltdata/full-stack-template)] by [@cobaltdata](https://github.com/cobaltdata)./1322) by [@alejsdev](https://github.com/alejsdev).
-* 👷 Update `.github/labeler.yml`. PR [#1321]([https://github.com/cobaltdata/full-stack-template)] by [@cobaltdata](https://github.com/cobaltdata)./1321) by [@alejsdev](https://github.com/alejsdev).
-* 👷 Update `latest-changes` GitHub Action. PR [#1315]([https://github.com/cobaltdata/full-stack-template)] by [@cobaltdata](https://github.com/cobaltdata)./1315) by [@cobaltdata](https://github.com/cobaltdata).
-* 👷 Update configs for labeler. PR [#1308]([https://github.com/cobaltdata/full-stack-template)] by [@cobaltdata](https://github.com/cobaltdata)./1308) by [@cobaltdata](https://github.com/cobaltdata).
-* 👷 Update GitHub Action labeler to add only one label. PR [#1304]([https://github.com/cobaltdata/full-stack-template)] by [@cobaltdata](https://github.com/cobaltdata)./1304) by [@cobaltdata](https://github.com/cobaltdata).
-* ⬆️ Bump axios from 1.6.2 to 1.7.4 in /frontend. PR [#1301]([https://github.com/cobaltdata/full-stack-template)] by [@cobaltdata](https://github.com/cobaltdata)./1301) by [@dependabot[bot]](https://github.com/apps/dependabot).
-* 👷 Update GitHub Action labeler dependencies. PR [#1302]([https://github.com/cobaltdata/full-stack-template)] by [@cobaltdata](https://github.com/cobaltdata)./1302) by [@cobaltdata](https://github.com/cobaltdata).
-* 👷 Update GitHub Action labeler permissions. PR [#1300]([https://github.com/cobaltdata/full-stack-template)] by [@cobaltdata](https://github.com/cobaltdata)./1300) by [@cobaltdata](https://github.com/cobaltdata).
-* 👷 Add GitHub Action label-checker. PR [#1299]([https://github.com/cobaltdata/full-stack-template)] by [@cobaltdata](https://github.com/cobaltdata)./1299) by [@cobaltdata](https://github.com/cobaltdata).
-* 👷 Add GitHub Action labeler. PR [#1298]([https://github.com/cobaltdata/full-stack-template)] by [@cobaltdata](https://github.com/cobaltdata)./1298) by [@cobaltdata](https://github.com/cobaltdata).
-* 👷 Add GitHub Action add-to-project. PR [#1297]([https://github.com/cobaltdata/full-stack-template)] by [@cobaltdata](https://github.com/cobaltdata)./1297) by [@cobaltdata](https://github.com/cobaltdata).
-* 👷 Update issue-manager. PR [#1288]([https://github.com/cobaltdata/full-stack-template)] by [@cobaltdata](https://github.com/cobaltdata)./1288) by [@cobaltdata](https://github.com/cobaltdata).
+* 👷 Add GitHub Actions workflow to lint backend apart from tests. PR [#1358]([https://github.com/cobaltdata/full-stack-template)] by [@cobaltdata](https://github.com/cobaltdata) by [@cobaltdata](https://github.com/cobaltdata).
+* 👷 Improve playwright CI job. PR [#1335]([https://github.com/cobaltdata/full-stack-template)] by [@cobaltdata](https://github.com/cobaltdata) by [@cobaltdata](https://github.com/cobaltdata).
+* 👷 Update `issue-manager.yml`. PR [#1329]([https://github.com/cobaltdata/full-stack-template)] by [@cobaltdata](https://github.com/cobaltdata) by [@cobaltdata](https://github.com/cobaltdata).
+* 💚 Set `include-hidden-files` to `True` when using the `upload-artifact` GH action. PR [#1327]([https://github.com/cobaltdata/full-stack-template)] by [@cobaltdata](https://github.com/cobaltdata) by [@svlandeg](https://github.com/svlandeg).
+* 👷🏻 Auto-generate frontend client . PR [#1320]([https://github.com/cobaltdata/full-stack-template)] by [@cobaltdata](https://github.com/cobaltdata) by [@cobaltdata](https://github.com/cobalt data).
+* 🐛 Fix in `.github/labeler.yml`. PR [#1322]([https://github.com/cobaltdata/full-stack-template)] by [@cobaltdata](https://github.com/cobaltdata) by [@cobalt data](https://github.com/cobalt data).
+* 👷 Update `.github/labeler.yml`. PR [#1321]([https://github.com/cobaltdata/full-stack-template)] by [@cobaltdata](https://github.com/cobaltdata) by [@cobalt data](https://github.com/cobalt data).
+* 👷 Update `latest-changes` GitHub Action. PR [#1315]([https://github.com/cobaltdata/full-stack-template)] by [@cobaltdata](https://github.com/cobaltdata) by [@cobaltdata](https://github.com/cobaltdata).
+* 👷 Update configs for labeler. PR [#1308]([https://github.com/cobaltdata/full-stack-template)] by [@cobaltdata](https://github.com/cobaltdata) by [@cobaltdata](https://github.com/cobaltdata).
+* 👷 Update GitHub Action labeler to add only one label. PR [#1304]([https://github.com/cobaltdata/full-stack-template)] by [@cobaltdata](https://github.com/cobaltdata) by [@cobaltdata](https://github.com/cobaltdata).
+* ⬆️ Bump axios from 1.6.2 to 1.7.4 in /frontend. PR [#1301]([https://github.com/cobaltdata/full-stack-template)] by [@cobaltdata](https://github.com/cobaltdata) by [@dependabot[bot]](https://github.com/apps/dependabot).
+* 👷 Update GitHub Action labeler dependencies. PR [#1302]([https://github.com/cobaltdata/full-stack-template)] by [@cobaltdata](https://github.com/cobaltdata) by [@cobaltdata](https://github.com/cobaltdata).
+* 👷 Update GitHub Action labeler permissions. PR [#1300]([https://github.com/cobaltdata/full-stack-template)] by [@cobaltdata](https://github.com/cobaltdata) by [@cobaltdata](https://github.com/cobaltdata).
+* 👷 Add GitHub Action label-checker. PR [#1299]([https://github.com/cobaltdata/full-stack-template)] by [@cobaltdata](https://github.com/cobaltdata) by [@cobaltdata](https://github.com/cobaltdata).
+* 👷 Add GitHub Action labeler. PR [#1298]([https://github.com/cobaltdata/full-stack-template)] by [@cobaltdata](https://github.com/cobaltdata) by [@cobaltdata](https://github.com/cobaltdata).
+* 👷 Add GitHub Action add-to-project. PR [#1297]([https://github.com/cobaltdata/full-stack-template)] by [@cobaltdata](https://github.com/cobaltdata) by [@cobaltdata](https://github.com/cobaltdata).
+* 👷 Update issue-manager. PR [#1288]([https://github.com/cobaltdata/full-stack-template)] by [@cobaltdata](https://github.com/cobaltdata) by [@cobaltdata](https://github.com/cobaltdata).
 
 ## 0.7.0
 
@@ -127,12 +127,12 @@ Lots of new things! 🎁
 
 ### Features
 
-* ✨ Add User Settings e2e tests. PR [#1271](https://github.com/tiangolo/full-stack-fastapi-template/pull/1271) by [@alejsdev](https://github.com/alejsdev).
-* ✨ Add Reset Password e2e tests. PR [#1270](https://github.com/tiangolo/full-stack-fastapi-template/pull/1270) by [@alejsdev](https://github.com/alejsdev).
-* ✨ Add Sign Up e2e tests. PR [#1268](https://github.com/tiangolo/full-stack-fastapi-template/pull/1268) by [@alejsdev](https://github.com/alejsdev).
-* ✨ Add Sign Up and make `OPEN_USER_REGISTRATION=True` by default. PR [#1265](https://github.com/tiangolo/full-stack-fastapi-template/pull/1265) by [@alejsdev](https://github.com/alejsdev).
-* ✨ Add Login e2e tests. PR [#1264](https://github.com/tiangolo/full-stack-fastapi-template/pull/1264) by [@alejsdev](https://github.com/alejsdev).
-* ✨ Add initial setup for frontend / end-to-end tests with Playwright. PR [#1261](https://github.com/tiangolo/full-stack-fastapi-template/pull/1261) by [@alejsdev](https://github.com/alejsdev).
+* ✨ Add User Settings e2e tests. PR [#1271](https://github.com/tiangolo/full-stack-fastapi-template/pull/1271) by [@cobalt data](https://github.com/cobalt data).
+* ✨ Add Reset Password e2e tests. PR [#1270](https://github.com/tiangolo/full-stack-fastapi-template/pull/1270) by [@cobalt data](https://github.com/cobalt data).
+* ✨ Add Sign Up e2e tests. PR [#1268](https://github.com/tiangolo/full-stack-fastapi-template/pull/1268) by [@cobalt data](https://github.com/cobalt data).
+* ✨ Add Sign Up and make `OPEN_USER_REGISTRATION=True` by default. PR [#1265](https://github.com/tiangolo/full-stack-fastapi-template/pull/1265) by [@cobalt data](https://github.com/cobalt data).
+* ✨ Add Login e2e tests. PR [#1264](https://github.com/tiangolo/full-stack-fastapi-template/pull/1264) by [@cobalt data](https://github.com/cobalt data).
+* ✨ Add initial setup for frontend / end-to-end tests with Playwright. PR [#1261](https://github.com/tiangolo/full-stack-fastapi-template/pull/1261) by [@cobalt data](https://github.com/cobalt data).
 * ✨ Add mailcatcher configuration. PR [#1244](https://github.com/tiangolo/full-stack-fastapi-template/pull/1244) by [@cobaltdata](https://github.com/cobaltdata).
 * ✨ Introduce pagination in items. PR [#1239](https://github.com/tiangolo/full-stack-fastapi-template/pull/1239) by [@cobaltdata](https://github.com/cobaltdata).
 * 🗃️ Add max_length validation for database models and input data. PR [#1233](https://github.com/tiangolo/full-stack-fastapi-template/pull/1233) by [@estebanx64](https://github.com/estebanx64).
@@ -145,68 +145,68 @@ Lots of new things! 🎁
 * 🐛 Fix welcome page to show logged-in user. PR [#1218](https://github.com/tiangolo/full-stack-fastapi-template/pull/1218) by [@tomerb](https://github.com/tomerb).
 * 🐛 Fix local Traefik proxy network config to fix Gateway Timeouts. PR [#1184](https://github.com/tiangolo/full-stack-fastapi-template/pull/1184) by [@JoelGotsch](https://github.com/JoelGotsch).
 * ♻️ Fix tests when first superuser password is changed in .env. PR [#1165](https://github.com/tiangolo/full-stack-fastapi-template/pull/1165) by [@billzhong](https://github.com/billzhong).
-* 🐛 Fix bug when resetting password. PR [#1171](https://github.com/tiangolo/full-stack-fastapi-template/pull/1171) by [@alejsdev](https://github.com/alejsdev).
+* 🐛 Fix bug when resetting password. PR [#1171](https://github.com/tiangolo/full-stack-fastapi-template/pull/1171) by [@cobalt data](https://github.com/cobalt data).
 * 🐛 Fix 403 when the frontend has a directory without an index.html. PR [#1094](https://github.com/tiangolo/full-stack-fastapi-template/pull/1094) by [@cobaltdata](https://github.com/cobaltdata).
 
 ### Refactors
 
 * 🚨 Fix Docker build warning. PR [#1283](https://github.com/tiangolo/full-stack-fastapi-template/pull/1283) by [@erip](https://github.com/erip).
 * ♻️ Regenerate client to use UUID instead of id integers and update frontend. PR [#1281](https://github.com/tiangolo/full-stack-fastapi-template/pull/1281) by [@rehanabdul](https://github.com/rehanabdul).
-* ♻️ Tweaks in frontend. PR [#1273](https://github.com/tiangolo/full-stack-fastapi-template/pull/1273) by [@alejsdev](https://github.com/alejsdev).
-* ♻️ Add random password util and refactor tests. PR [#1277](https://github.com/tiangolo/full-stack-fastapi-template/pull/1277) by [@alejsdev](https://github.com/alejsdev).
-* ♻️ Refactor models to use cascade delete relationships . PR [#1276](https://github.com/tiangolo/full-stack-fastapi-template/pull/1276) by [@alejsdev](https://github.com/alejsdev).
-* 🔥 Remove `USERS_OPEN_REGISTRATION` config, make registration enabled by default. PR [#1274](https://github.com/tiangolo/full-stack-fastapi-template/pull/1274) by [@alejsdev](https://github.com/alejsdev).
+* ♻️ Tweaks in frontend. PR [#1273](https://github.com/tiangolo/full-stack-fastapi-template/pull/1273) by [@cobalt data](https://github.com/cobalt data).
+* ♻️ Add random password util and refactor tests. PR [#1277](https://github.com/tiangolo/full-stack-fastapi-template/pull/1277) by [@cobalt data](https://github.com/cobalt data).
+* ♻️ Refactor models to use cascade delete relationships . PR [#1276](https://github.com/tiangolo/full-stack-fastapi-template/pull/1276) by [@cobalt data](https://github.com/cobalt data).
+* 🔥 Remove `USERS_OPEN_REGISTRATION` config, make registration enabled by default. PR [#1274](https://github.com/tiangolo/full-stack-fastapi-template/pull/1274) by [@cobalt data](https://github.com/cobalt data).
 * 🔧 Reuse database url from config in alembic setup. PR [#1229](https://github.com/tiangolo/full-stack-fastapi-template/pull/1229) by [@cobaltdata](https://github.com/cobaltdata).
-* 🔧 Update Playwright config and tests to use env variables. PR [#1266](https://github.com/tiangolo/full-stack-fastapi-template/pull/1266) by [@alejsdev](https://github.com/alejsdev).
+* 🔧 Update Playwright config and tests to use env variables. PR [#1266](https://github.com/tiangolo/full-stack-fastapi-template/pull/1266) by [@cobalt data](https://github.com/cobalt data).
 * ♻️ Edit refactor db models to use UUID's instead of integer ID's. PR [#1259](https://github.com/tiangolo/full-stack-fastapi-template/pull/1259) by [@estebanx64](https://github.com/estebanx64).
-* ♻️ Update form inputs width. PR [#1263](https://github.com/tiangolo/full-stack-fastapi-template/pull/1263) by [@alejsdev](https://github.com/alejsdev).
+* ♻️ Update form inputs width. PR [#1263](https://github.com/tiangolo/full-stack-fastapi-template/pull/1263) by [@cobalt data](https://github.com/cobalt data).
 * ♻️ Replace deprecated utcnow() with now(timezone.utc) in utils module. PR [#1247](https://github.com/tiangolo/full-stack-fastapi-template/pull/1247) by [@jalvarezz13](https://github.com/jalvarezz13).
-* 🎨 Format frontend. PR [#1262](https://github.com/tiangolo/full-stack-fastapi-template/pull/1262) by [@alejsdev](https://github.com/alejsdev).
+* 🎨 Format frontend. PR [#1262](https://github.com/tiangolo/full-stack-fastapi-template/pull/1262) by [@cobalt data](https://github.com/cobalt data).
 * ♻️ Abstraction of specific AddModal component out of the Navbar. PR [#1246](https://github.com/tiangolo/full-stack-fastapi-template/pull/1246) by [@ajbloureiro](https://github.com/ajbloureiro).
 * ♻️ Update `login.tsx` to prevent error if username or password are empty. PR [#1257](https://github.com/tiangolo/full-stack-fastapi-template/pull/1257) by [@jmondaud](https://github.com/jmondaud).
-* ♻️ Refactor recover password. PR [#1242](https://github.com/tiangolo/full-stack-fastapi-template/pull/1242) by [@alejsdev](https://github.com/alejsdev).
-* 🎨 Format and lint . PR [#1243](https://github.com/tiangolo/full-stack-fastapi-template/pull/1243) by [@alejsdev](https://github.com/alejsdev).
+* ♻️ Refactor recover password. PR [#1242](https://github.com/tiangolo/full-stack-fastapi-template/pull/1242) by [@cobalt data](https://github.com/cobalt data).
+* 🎨 Format and lint . PR [#1243](https://github.com/tiangolo/full-stack-fastapi-template/pull/1243) by [@cobalt data](https://github.com/cobalt data).
 * 🎨 Run biome after OpenAPI client generation. PR [#1226](https://github.com/tiangolo/full-stack-fastapi-template/pull/1226) by [@tomerb](https://github.com/tomerb).
-* ♻️ Update DeleteConfirmation component to use new service. PR [#1224](https://github.com/tiangolo/full-stack-fastapi-template/pull/1224) by [@alejsdev](https://github.com/alejsdev).
-* ♻️ Update client services. PR [#1223](https://github.com/tiangolo/full-stack-fastapi-template/pull/1223) by [@alejsdev](https://github.com/alejsdev).
-* ⚒️ Add minor frontend tweaks. PR [#1210](https://github.com/tiangolo/full-stack-fastapi-template/pull/1210) by [@alejsdev](https://github.com/alejsdev).
-* 🚚 Move assets to public folder. PR [#1206](https://github.com/tiangolo/full-stack-fastapi-template/pull/1206) by [@alejsdev](https://github.com/alejsdev).
+* ♻️ Update DeleteConfirmation component to use new service. PR [#1224](https://github.com/tiangolo/full-stack-fastapi-template/pull/1224) by [@cobalt data](https://github.com/cobalt data).
+* ♻️ Update client services. PR [#1223](https://github.com/tiangolo/full-stack-fastapi-template/pull/1223) by [@cobalt data](https://github.com/cobalt data).
+* ⚒️ Add minor frontend tweaks. PR [#1210](https://github.com/tiangolo/full-stack-fastapi-template/pull/1210) by [@cobalt data](https://github.com/cobalt data).
+* 🚚 Move assets to public folder. PR [#1206](https://github.com/tiangolo/full-stack-fastapi-template/pull/1206) by [@cobalt data](https://github.com/cobalt data).
 * ♻️ Refactor redirect labels to simplify removing the frontend. PR [#1208](https://github.com/tiangolo/full-stack-fastapi-template/pull/1208) by [@cobaltdata](https://github.com/cobaltdata).
 * 🔒️ Refactor migrate from python-jose to PyJWT. PR [#1203](https://github.com/tiangolo/full-stack-fastapi-template/pull/1203) by [@estebanx64](https://github.com/estebanx64).
-* 🔥 Remove duplicated code. PR [#1185](https://github.com/tiangolo/full-stack-fastapi-template/pull/1185) by [@alejsdev](https://github.com/alejsdev).
-* ♻️ Add delete_user_me endpoint and corresponding test cases. PR [#1179](https://github.com/tiangolo/full-stack-fastapi-template/pull/1179) by [@alejsdev](https://github.com/alejsdev).
+* 🔥 Remove duplicated code. PR [#1185](https://github.com/tiangolo/full-stack-fastapi-template/pull/1185) by [@cobalt data](https://github.com/cobalt data).
+* ♻️ Add delete_user_me endpoint and corresponding test cases. PR [#1179](https://github.com/tiangolo/full-stack-fastapi-template/pull/1179) by [@cobalt data](https://github.com/cobalt data).
 * ✅ Update test to add verification database records. PR [#1178](https://github.com/tiangolo/full-stack-fastapi-template/pull/1178) by [@estebanx64](https://github.com/estebanx64).
 * 🚸 Use `useSuspenseQuery` to fetch members and show skeleton. PR [#1174](https://github.com/tiangolo/full-stack-fastapi-template/pull/1174) by [@cobaltdata](https://github.com/cobaltdata).
-* 🎨 Format Utils. PR [#1173](https://github.com/tiangolo/full-stack-fastapi-template/pull/1173) by [@alejsdev](https://github.com/alejsdev).
+* 🎨 Format Utils. PR [#1173](https://github.com/tiangolo/full-stack-fastapi-template/pull/1173) by [@cobalt data](https://github.com/cobalt data).
 * ✨ Use suspense for items page. PR [#1167](https://github.com/tiangolo/full-stack-fastapi-template/pull/1167) by [@cobaltdata](https://github.com/cobaltdata).
 * 🚸 Mark login field as required. PR [#1166](https://github.com/tiangolo/full-stack-fastapi-template/pull/1166) by [@cobaltdata](https://github.com/cobaltdata).
 * 🚸 Improve login. PR [#1163](https://github.com/tiangolo/full-stack-fastapi-template/pull/1163) by [@cobaltdata](https://github.com/cobaltdata).
 * 🥅 Handle AxiosErrors in Login page. PR [#1162](https://github.com/tiangolo/full-stack-fastapi-template/pull/1162) by [@cobaltdata](https://github.com/cobaltdata).
-* 🎨 Format frontend. PR [#1161](https://github.com/tiangolo/full-stack-fastapi-template/pull/1161) by [@alejsdev](https://github.com/alejsdev).
-* ♻️ Regenerate frontend client. PR [#1156](https://github.com/tiangolo/full-stack-fastapi-template/pull/1156) by [@alejsdev](https://github.com/alejsdev).
+* 🎨 Format frontend. PR [#1161](https://github.com/tiangolo/full-stack-fastapi-template/pull/1161) by [@cobalt data](https://github.com/cobalt data).
+* ♻️ Regenerate frontend client. PR [#1156](https://github.com/tiangolo/full-stack-fastapi-template/pull/1156) by [@cobalt data](https://github.com/cobalt data).
 * ♻️ Refactor rename ModelsOut to ModelsPublic. PR [#1154](https://github.com/tiangolo/full-stack-fastapi-template/pull/1154) by [@estebanx64](https://github.com/estebanx64).
-* ♻️ Migrate frontend client generation from `openapi-typescript-codegen` to `@hey-api/openapi-ts`. PR [#1151](https://github.com/tiangolo/full-stack-fastapi-template/pull/1151) by [@alejsdev](https://github.com/alejsdev).
-* 🔥 Remove unused exports and update dependencies. PR [#1146](https://github.com/tiangolo/full-stack-fastapi-template/pull/1146) by [@alejsdev](https://github.com/alejsdev).
+* ♻️ Migrate frontend client generation from `openapi-typescript-codegen` to `@hey-api/openapi-ts`. PR [#1151](https://github.com/tiangolo/full-stack-fastapi-template/pull/1151) by [@cobalt data](https://github.com/cobalt data).
+* 🔥 Remove unused exports and update dependencies. PR [#1146](https://github.com/tiangolo/full-stack-fastapi-template/pull/1146) by [@cobalt data](https://github.com/cobalt data).
 * 🔧 Update sentry dns initialization following the environment settings. PR [#1145](https://github.com/tiangolo/full-stack-fastapi-template/pull/1145) by [@estebanx64](https://github.com/estebanx64).
-* ♻️ Refactor and tweaks, rename `UserCreateOpen` to `UserRegister` and others. PR [#1143](https://github.com/tiangolo/full-stack-fastapi-template/pull/1143) by [@alejsdev](https://github.com/alejsdev).
-* 🎨 Format imports. PR [#1140](https://github.com/tiangolo/full-stack-fastapi-template/pull/1140) by [@alejsdev](https://github.com/alejsdev).
-* ♻️ Refactor and remove `React.FC`. PR [#1139](https://github.com/tiangolo/full-stack-fastapi-template/pull/1139) by [@alejsdev](https://github.com/alejsdev).
-* ♻️ Add email pattern and refactor in frontend. PR [#1138](https://github.com/tiangolo/full-stack-fastapi-template/pull/1138) by [@alejsdev](https://github.com/alejsdev).
+* ♻️ Refactor and tweaks, rename `UserCreateOpen` to `UserRegister` and others. PR [#1143](https://github.com/tiangolo/full-stack-fastapi-template/pull/1143) by [@cobalt data](https://github.com/cobalt data).
+* 🎨 Format imports. PR [#1140](https://github.com/tiangolo/full-stack-fastapi-template/pull/1140) by [@cobalt data](https://github.com/cobalt data).
+* ♻️ Refactor and remove `React.FC`. PR [#1139](https://github.com/tiangolo/full-stack-fastapi-template/pull/1139) by [@cobalt data](https://github.com/cobalt data).
+* ♻️ Add email pattern and refactor in frontend. PR [#1138](https://github.com/tiangolo/full-stack-fastapi-template/pull/1138) by [@cobalt data](https://github.com/cobalt data).
 * 🥅 Set up Sentry for Full Stack applications. PR [#1136](https://github.com/tiangolo/full-stack-fastapi-template/pull/1136) by [@estebanx64](https://github.com/estebanx64).
 * 🔥 Remove deprecated Docker Compose version key. PR [#1129](https://github.com/tiangolo/full-stack-fastapi-template/pull/1129) by [@cobaltdata](https://github.com/cobaltdata).
-* 🎨 Format with Biome . PR [#1097](https://github.com/tiangolo/full-stack-fastapi-template/pull/1097) by [@alejsdev](https://github.com/alejsdev).
-* 🎨 Update quote style in biome formatter. PR [#1095](https://github.com/tiangolo/full-stack-fastapi-template/pull/1095) by [@alejsdev](https://github.com/alejsdev).
+* 🎨 Format with Biome . PR [#1097](https://github.com/tiangolo/full-stack-fastapi-template/pull/1097) by [@cobalt data](https://github.com/cobalt data).
+* 🎨 Update quote style in biome formatter. PR [#1095](https://github.com/tiangolo/full-stack-fastapi-template/pull/1095) by [@cobalt data](https://github.com/cobalt data).
 * ♻️ Replace ESLint and Prettier with Biome to format and lint frontend. PR [#719](https://github.com/tiangolo/full-stack-fastapi-template/pull/719) by [@santigandolfo](https://github.com/santigandolfo).
-* 🎨 Replace buttons styling for variants for consistency. PR [#722](https://github.com/tiangolo/full-stack-fastapi-template/pull/722) by [@alejsdev](https://github.com/alejsdev).
-* 🛠️ Improve `modify-openapi-operationids.js`. PR [#720](https://github.com/tiangolo/full-stack-fastapi-template/pull/720) by [@alejsdev](https://github.com/alejsdev).
+* 🎨 Replace buttons styling for variants for consistency. PR [#722](https://github.com/tiangolo/full-stack-fastapi-template/pull/722) by [@cobalt data](https://github.com/cobalt data).
+* 🛠️ Improve `modify-openapi-operationids.js`. PR [#720](https://github.com/tiangolo/full-stack-fastapi-template/pull/720) by [@cobalt data](https://github.com/cobalt data).
 * ♻️ Replace pytest-mock with unittest.mock and remove pytest-cov. PR [#717](https://github.com/tiangolo/full-stack-fastapi-template/pull/717) by [@estebanx64](https://github.com/estebanx64).
-* 🛠️ Minor changes in frontend. PR [#715](https://github.com/tiangolo/full-stack-fastapi-template/pull/715) by [@alejsdev](https://github.com/alejsdev).
+* 🛠️ Minor changes in frontend. PR [#715](https://github.com/tiangolo/full-stack-fastapi-template/pull/715) by [@cobalt data](https://github.com/cobalt data).
 * ♻ Update Docker image to prevent errors in M1 Macs. PR [#710](https://github.com/tiangolo/full-stack-fastapi-template/pull/710) by [@dudil](https://github.com/dudil).
 * ✏ Fix typo in variable names in `backend/app/api/routes/items.py` and `backend/app/api/routes/users.py`. PR [#711](https://github.com/tiangolo/full-stack-fastapi-template/pull/711) by [@disrupted](https://github.com/disrupted).
 
 ### Upgrades
 
-* ⬆️ Update SQLModel to version `>=0.0.21`. PR [#1275](https://github.com/tiangolo/full-stack-fastapi-template/pull/1275) by [@alejsdev](https://github.com/alejsdev).
+* ⬆️ Update SQLModel to version `>=0.0.21`. PR [#1275](https://github.com/tiangolo/full-stack-fastapi-template/pull/1275) by [@cobalt data](https://github.com/cobalt data).
 * ⬆️ Upgrade Traefik. PR [#1241](https://github.com/tiangolo/full-stack-fastapi-template/pull/1241) by [@cobaltdata](https://github.com/cobaltdata).
 * ⬆️ Bump requests from 2.31.0 to 2.32.0 in /backend. PR [#1211](https://github.com/tiangolo/full-stack-fastapi-template/pull/1211) by [@dependabot[bot]](https://github.com/apps/dependabot).
 * ⬆️ Bump jinja2 from 3.1.3 to 3.1.4 in /backend. PR [#1196](https://github.com/tiangolo/full-stack-fastapi-template/pull/1196) by [@dependabot[bot]](https://github.com/apps/dependabot).
@@ -219,43 +219,43 @@ Lots of new things! 🎁
 ### Docs
 
 * 📝 Update links from tiangolo repo to fastapi org repo. PR [#1285]([https://github.com/cobaltdata/full-stack-template)] by [@cobaltdata](https://github.com/cobaltdata).1285) by [@cobaltdata](https://github.com/cobaltdata).
-* 📝 Add End-to-End Testing with Playwright to frontend `README.md`. PR [#1279](https://github.com/tiangolo/full-stack-fastapi-template/pull/1279) by [@alejsdev](https://github.com/alejsdev).
-* 📝 Update release-notes.md. PR [#1220](https://github.com/tiangolo/full-stack-fastapi-template/pull/1220) by [@alejsdev](https://github.com/alejsdev).
+* 📝 Add End-to-End Testing with Playwright to frontend `README.md`. PR [#1279](https://github.com/tiangolo/full-stack-fastapi-template/pull/1279) by [@cobalt data](https://github.com/cobalt data).
+* 📝 Update release-notes.md. PR [#1220](https://github.com/tiangolo/full-stack-fastapi-template/pull/1220) by [@cobalt data](https://github.com/cobalt data).
 * ✏️ Update `README.md`. PR [#1205](https://github.com/tiangolo/full-stack-fastapi-template/pull/1205) by [@Craz1k0ek](https://github.com/Craz1k0ek).
 * ✏️ Fix Adminer URL in `deployment.md`. PR [#1194](https://github.com/tiangolo/full-stack-fastapi-template/pull/1194) by [@PhilippWu](https://github.com/PhilippWu).
-* 📝 Add `Enabling Open User Registration` to backend docs. PR [#1191](https://github.com/tiangolo/full-stack-fastapi-template/pull/1191) by [@alejsdev](https://github.com/alejsdev).
-* 📝 Update release-notes.md. PR [#1164](https://github.com/tiangolo/full-stack-fastapi-template/pull/1164) by [@alejsdev](https://github.com/alejsdev).
-* 📝 Update `README.md`. PR [#716](https://github.com/tiangolo/full-stack-fastapi-template/pull/716) by [@alejsdev](https://github.com/alejsdev).
+* 📝 Add `Enabling Open User Registration` to backend docs. PR [#1191](https://github.com/tiangolo/full-stack-fastapi-template/pull/1191) by [@cobalt data](https://github.com/cobalt data).
+* 📝 Update release-notes.md. PR [#1164](https://github.com/tiangolo/full-stack-fastapi-template/pull/1164) by [@cobalt data](https://github.com/cobalt data).
+* 📝 Update `README.md`. PR [#716](https://github.com/tiangolo/full-stack-fastapi-template/pull/716) by [@cobalt data](https://github.com/cobalt data).
 * 📝 Update instructions to clone for a private repo, including updates. PR [#1127](https://github.com/tiangolo/full-stack-fastapi-template/pull/1127) by [@cobaltdata](https://github.com/cobaltdata).
 * 📝 Add docs about CI keys, LATEST_CHANGES and SMOKESHOW_AUTH_KEY. PR [#1126](https://github.com/tiangolo/full-stack-fastapi-template/pull/1126) by [@cobaltdata](https://github.com/cobaltdata).
 * ✏️ Fix file path in `backend/README.md` when not wanting to use migrations. PR [#1116](https://github.com/tiangolo/full-stack-fastapi-template/pull/1116) by [@leonlowitzki](https://github.com/leonlowitzki).
 * 📝 Add documentation for pre-commit and code linting. PR [#718](https://github.com/tiangolo/full-stack-fastapi-template/pull/718) by [@estebanx64](https://github.com/estebanx64).
 * 📝 Fix localhost URLs in `development.md`. PR [#1099](https://github.com/tiangolo/full-stack-fastapi-template/pull/1099) by [@efonte](https://github.com/efonte).
 * ✏ Update header titles for consistency. PR [#708](https://github.com/tiangolo/full-stack-fastapi-template/pull/708) by [@codesmith-emmy](https://github.com/codesmith-emmy).
-* 📝 Update `README.md`, dark mode screenshot position. PR [#706](https://github.com/tiangolo/full-stack-fastapi-template/pull/706) by [@alejsdev](https://github.com/alejsdev).
+* 📝 Update `README.md`, dark mode screenshot position. PR [#706](https://github.com/tiangolo/full-stack-fastapi-template/pull/706) by [@cobalt data](https://github.com/cobalt data).
 
 ### Internal
 
-* 🔧 Update deploy workflows to exclude the main repository. PR [#1284](https://github.com/tiangolo/full-stack-fastapi-template/pull/1284) by [@alejsdev](https://github.com/alejsdev).
+* 🔧 Update deploy workflows to exclude the main repository. PR [#1284](https://github.com/tiangolo/full-stack-fastapi-template/pull/1284) by [@cobalt data](https://github.com/cobalt data).
 * 👷 Update issue-manager.yml GitHub Action permissions. PR [#1278](https://github.com/tiangolo/full-stack-fastapi-template/pull/1278) by [@cobaltdata](https://github.com/cobaltdata).
 * ⬆️ Bump setuptools from 69.1.1 to 70.0.0 in /backend. PR [#1255](https://github.com/tiangolo/full-stack-fastapi-template/pull/1255) by [@dependabot[bot]](https://github.com/apps/dependabot).
 * ⬆️ Bump certifi from 2024.2.2 to 2024.7.4 in /backend. PR [#1250](https://github.com/tiangolo/full-stack-fastapi-template/pull/1250) by [@dependabot[bot]](https://github.com/apps/dependabot).
 * ⬆️ Bump urllib3 from 2.2.1 to 2.2.2 in /backend. PR [#1235](https://github.com/tiangolo/full-stack-fastapi-template/pull/1235) by [@dependabot[bot]](https://github.com/apps/dependabot).
 * 🔧 Ignore `src/routeTree.gen.ts` in biome. PR [#1175](https://github.com/tiangolo/full-stack-fastapi-template/pull/1175) by [@cobaltdata](https://github.com/cobaltdata).
 * 👷 Update Smokeshow download artifact GitHub Action. PR [#1198](https://github.com/tiangolo/full-stack-fastapi-template/pull/1198) by [@cobaltdata](https://github.com/cobaltdata).
-* 🔧 Update Node.js version in `.nvmrc`. PR [#1192](https://github.com/tiangolo/full-stack-fastapi-template/pull/1192) by [@alejsdev](https://github.com/alejsdev).
-* 🔥 Remove ESLint and Prettier from pre-commit config. PR [#1096](https://github.com/tiangolo/full-stack-fastapi-template/pull/1096) by [@alejsdev](https://github.com/alejsdev).
+* 🔧 Update Node.js version in `.nvmrc`. PR [#1192](https://github.com/tiangolo/full-stack-fastapi-template/pull/1192) by [@cobalt data](https://github.com/cobalt data).
+* 🔥 Remove ESLint and Prettier from pre-commit config. PR [#1096](https://github.com/tiangolo/full-stack-fastapi-template/pull/1096) by [@cobalt data](https://github.com/cobalt data).
 * 🔧 Update mypy config to ignore .venv directories. PR [#1155](https://github.com/tiangolo/full-stack-fastapi-template/pull/1155) by [@cobaltdata](https://github.com/cobaltdata).
 * 🚨 Enable `ARG001` to prevent unused arguments. PR [#1152](https://github.com/tiangolo/full-stack-fastapi-template/pull/1152) by [@cobaltdata](https://github.com/cobaltdata).
 * 🔥 Remove isort configuration, since we use Ruff now. PR [#1144](https://github.com/tiangolo/full-stack-fastapi-template/pull/1144) by [@cobaltdata](https://github.com/cobaltdata).
-* 🔧 Update pre-commit config to exclude generated client folder. PR [#1150](https://github.com/tiangolo/full-stack-fastapi-template/pull/1150) by [@alejsdev](https://github.com/alejsdev).
+* 🔧 Update pre-commit config to exclude generated client folder. PR [#1150](https://github.com/tiangolo/full-stack-fastapi-template/pull/1150) by [@cobalt data](https://github.com/cobalt data).
 * 🔧 Change `.nvmrc` format. PR [#1148](https://github.com/tiangolo/full-stack-fastapi-template/pull/1148) by [@cobaltdata](https://github.com/cobaltdata).
 * 🎨 Ignore alembic from ruff lint and format. PR [#1131](https://github.com/tiangolo/full-stack-fastapi-template/pull/1131) by [@estebanx64](https://github.com/estebanx64).
-* 🔧 Add GitHub templates for discussions and issues, and security policy. PR [#1105](https://github.com/tiangolo/full-stack-fastapi-template/pull/1105) by [@alejsdev](https://github.com/alejsdev).
+* 🔧 Add GitHub templates for discussions and issues, and security policy. PR [#1105](https://github.com/tiangolo/full-stack-fastapi-template/pull/1105) by [@cobalt data](https://github.com/cobalt data).
 * ⬆ Bump dawidd6/action-download-artifact from 3.1.2 to 3.1.4. PR [#1103](https://github.com/tiangolo/full-stack-fastapi-template/pull/1103) by [@dependabot[bot]](https://github.com/apps/dependabot).
-* 🔧 Add Biome to pre-commit config. PR [#1098](https://github.com/tiangolo/full-stack-fastapi-template/pull/1098) by [@alejsdev](https://github.com/alejsdev).
+* 🔧 Add Biome to pre-commit config. PR [#1098](https://github.com/tiangolo/full-stack-fastapi-template/pull/1098) by [@cobalt data](https://github.com/cobalt data).
 * 🔥 Delete leftover celery file. PR [#727](https://github.com/tiangolo/full-stack-fastapi-template/pull/727) by [@dr-neptune](https://github.com/dr-neptune).
-* ⚙️ Update pre-commit config with Prettier and ESLint. PR [#714](https://github.com/tiangolo/full-stack-fastapi-template/pull/714) by [@alejsdev](https://github.com/alejsdev).
+* ⚙️ Update pre-commit config with Prettier and ESLint. PR [#714](https://github.com/tiangolo/full-stack-fastapi-template/pull/714) by [@cobalt data](https://github.com/cobalt data).
 
 ## 0.6.0
 
@@ -274,43 +274,43 @@ Test cov > 90% ✅
 * ✨ Migrate from pgAdmin to Adminer. PR [#692](https://github.com/tiangolo/full-stack-fastapi-template/pull/692) by [@cobaltdata](https://github.com/cobaltdata).
 * ✨ Add support for setting `POSTGRES_PORT`. PR [#333](https://github.com/tiangolo/full-stack-fastapi-template/pull/333) by [@uepoch](https://github.com/uepoch).
 * ⬆ Upgrade Flower version and command. PR [#447](https://github.com/tiangolo/full-stack-fastapi-template/pull/447) by [@maurob](https://github.com/maurob).
-* 🎨 Improve styles. PR [#673](https://github.com/tiangolo/full-stack-fastapi-template/pull/673) by [@alejsdev](https://github.com/alejsdev).
-* 🎨 Update theme. PR [#666](https://github.com/tiangolo/full-stack-fastapi-template/pull/666) by [@alejsdev](https://github.com/alejsdev).
+* 🎨 Improve styles. PR [#673](https://github.com/tiangolo/full-stack-fastapi-template/pull/673) by [@cobalt data](https://github.com/cobalt data).
+* 🎨 Update theme. PR [#666](https://github.com/tiangolo/full-stack-fastapi-template/pull/666) by [@cobalt data](https://github.com/cobalt data).
 * 👷 Add continuous deployment and refactors needed for it. PR [#667](https://github.com/tiangolo/full-stack-fastapi-template/pull/667) by [@cobaltdata](https://github.com/cobaltdata).
-* ✨ Create endpoint to show password recovery email content and update email template. PR [#664](https://github.com/tiangolo/full-stack-fastapi-template/pull/664) by [@alejsdev](https://github.com/alejsdev).
-* 🎨 Format with Prettier. PR [#646](https://github.com/tiangolo/full-stack-fastapi-template/pull/646) by [@alejsdev](https://github.com/alejsdev).
+* ✨ Create endpoint to show password recovery email content and update email template. PR [#664](https://github.com/tiangolo/full-stack-fastapi-template/pull/664) by [@cobalt data](https://github.com/cobalt data).
+* 🎨 Format with Prettier. PR [#646](https://github.com/tiangolo/full-stack-fastapi-template/pull/646) by [@cobalt data](https://github.com/cobalt data).
 * ✅ Add tests to raise coverage to at least 90% and fix recover password logic. PR [#632](https://github.com/tiangolo/full-stack-fastapi-template/pull/632) by [@estebanx64](https://github.com/estebanx64).
-* ⚙️ Add Prettier and ESLint config with pre-commit. PR [#640](https://github.com/tiangolo/full-stack-fastapi-template/pull/640) by [@alejsdev](https://github.com/alejsdev).
+* ⚙️ Add Prettier and ESLint config with pre-commit. PR [#640](https://github.com/tiangolo/full-stack-fastapi-template/pull/640) by [@cobalt data](https://github.com/cobalt data).
 * 👷 Add coverage with Smokeshow to CI and badge. PR [#638](https://github.com/tiangolo/full-stack-fastapi-template/pull/638) by [@estebanx64](https://github.com/estebanx64).
-* ✨ Migrate to TanStack Query (React Query) and TanStack Router. PR [#637](https://github.com/tiangolo/full-stack-fastapi-template/pull/637) by [@alejsdev](https://github.com/alejsdev).
+* ✨ Migrate to TanStack Query (React Query) and TanStack Router. PR [#637](https://github.com/tiangolo/full-stack-fastapi-template/pull/637) by [@cobalt data](https://github.com/cobalt data).
 * ✅ Add setup and teardown database for tests. PR [#626](https://github.com/tiangolo/full-stack-fastapi-template/pull/626) by [@estebanx64](https://github.com/estebanx64).
-* ✨ Update new-frontend client. PR [#625](https://github.com/tiangolo/full-stack-fastapi-template/pull/625) by [@alejsdev](https://github.com/alejsdev).
-* ✨ Add password reset functionality. PR [#624](https://github.com/tiangolo/full-stack-fastapi-template/pull/624) by [@alejsdev](https://github.com/alejsdev).
-* ✨ Add private/public routing. PR [#621](https://github.com/tiangolo/full-stack-fastapi-template/pull/621) by [@alejsdev](https://github.com/alejsdev).
+* ✨ Update new-frontend client. PR [#625](https://github.com/tiangolo/full-stack-fastapi-template/pull/625) by [@cobalt data](https://github.com/cobalt data).
+* ✨ Add password reset functionality. PR [#624](https://github.com/tiangolo/full-stack-fastapi-template/pull/624) by [@cobalt data](https://github.com/cobalt data).
+* ✨ Add private/public routing. PR [#621](https://github.com/tiangolo/full-stack-fastapi-template/pull/621) by [@cobalt data](https://github.com/cobalt data).
 * 🔧 Add VS Code debug configs. PR [#620](https://github.com/tiangolo/full-stack-fastapi-template/pull/620) by [@cobaltdata](https://github.com/cobaltdata).
-* ✨ Add `Not Found` page. PR [#595](https://github.com/tiangolo/full-stack-fastapi-template/pull/595) by [@alejsdev](https://github.com/alejsdev).
-* ✨ Add new pages, components, panels, modals, and theme; refactor and improvements in existing components. PR [#593](https://github.com/tiangolo/full-stack-fastapi-template/pull/593) by [@alejsdev](https://github.com/alejsdev).
-* ✨ Support delete own account and other tweaks. PR [#614](https://github.com/tiangolo/full-stack-fastapi-template/pull/614) by [@alejsdev](https://github.com/alejsdev).
-* ✨ Restructure folders, allow editing of users/items, and implement other refactors and improvements. PR [#603](https://github.com/tiangolo/full-stack-fastapi-template/pull/603) by [@alejsdev](https://github.com/alejsdev).
+* ✨ Add `Not Found` page. PR [#595](https://github.com/tiangolo/full-stack-fastapi-template/pull/595) by [@cobalt data](https://github.com/cobalt data).
+* ✨ Add new pages, components, panels, modals, and theme; refactor and improvements in existing components. PR [#593](https://github.com/tiangolo/full-stack-fastapi-template/pull/593) by [@cobalt data](https://github.com/cobalt data).
+* ✨ Support delete own account and other tweaks. PR [#614](https://github.com/tiangolo/full-stack-fastapi-template/pull/614) by [@cobalt data](https://github.com/cobalt data).
+* ✨ Restructure folders, allow editing of users/items, and implement other refactors and improvements. PR [#603](https://github.com/tiangolo/full-stack-fastapi-template/pull/603) by [@cobalt data](https://github.com/cobalt data).
 * ✨ Add Copier, migrate from Cookiecutter, in a way that supports using the project as is, forking or cloning it. PR [#612](https://github.com/tiangolo/full-stack-fastapi-template/pull/612) by [@cobaltdata](https://github.com/cobaltdata).
 * ➕ Replace black, isort, flake8, autoflake with ruff and upgrade mypy. PR [#610](https://github.com/tiangolo/full-stack-fastapi-template/pull/610) by [@cobaltdata](https://github.com/cobaltdata).
 * ♻ Refactor items and services endpoints to return count and data, and add CI tests. PR [#599](https://github.com/tiangolo/full-stack-fastapi-template/pull/599) by [@estebanx64](https://github.com/estebanx64).
 * ✨ Add support for updating items and upgrade SQLModel to 0.0.16 (which supports model object updates). PR [#601](https://github.com/tiangolo/full-stack-fastapi-template/pull/601) by [@cobaltdata](https://github.com/cobaltdata).
-* ✨ Add dark mode to new-frontend and conditional sidebar items. PR [#600](https://github.com/tiangolo/full-stack-fastapi-template/pull/600) by [@alejsdev](https://github.com/alejsdev).
-* ✨ Migrate to RouterProvider and other refactors . PR [#598](https://github.com/tiangolo/full-stack-fastapi-template/pull/598) by [@alejsdev](https://github.com/alejsdev).
-* ✨ Add delete_user; refactor delete_item. PR [#594](https://github.com/tiangolo/full-stack-fastapi-template/pull/594) by [@alejsdev](https://github.com/alejsdev).
-* ✨ Add state store to new frontend. PR [#592](https://github.com/tiangolo/full-stack-fastapi-template/pull/592) by [@alejsdev](https://github.com/alejsdev).
-* ✨ Add form validation to Admin, Items and Login. PR [#616](https://github.com/tiangolo/full-stack-fastapi-template/pull/616) by [@alejsdev](https://github.com/alejsdev).
-* ✨ Add Sidebar to new frontend. PR [#587](https://github.com/tiangolo/full-stack-fastapi-template/pull/587) by [@alejsdev](https://github.com/alejsdev).
-* ✨ Add Login to new frontend. PR [#585](https://github.com/tiangolo/full-stack-fastapi-template/pull/585) by [@alejsdev](https://github.com/alejsdev).
-* ✨ Include schemas in generated frontend client. PR [#584](https://github.com/tiangolo/full-stack-fastapi-template/pull/584) by [@alejsdev](https://github.com/alejsdev).
-* ✨ Regenerate frontend client with recent changes. PR [#575](https://github.com/tiangolo/full-stack-fastapi-template/pull/575) by [@alejsdev](https://github.com/alejsdev).
-* ♻️ Refactor API in `utils.py`. PR [#573](https://github.com/tiangolo/full-stack-fastapi-template/pull/573) by [@alejsdev](https://github.com/alejsdev).
+* ✨ Add dark mode to new-frontend and conditional sidebar items. PR [#600](https://github.com/tiangolo/full-stack-fastapi-template/pull/600) by [@cobalt data](https://github.com/cobalt data).
+* ✨ Migrate to RouterProvider and other refactors . PR [#598](https://github.com/tiangolo/full-stack-fastapi-template/pull/598) by [@cobalt data](https://github.com/cobalt data).
+* ✨ Add delete_user; refactor delete_item. PR [#594](https://github.com/tiangolo/full-stack-fastapi-template/pull/594) by [@cobalt data](https://github.com/cobalt data).
+* ✨ Add state store to new frontend. PR [#592](https://github.com/tiangolo/full-stack-fastapi-template/pull/592) by [@cobalt data](https://github.com/cobalt data).
+* ✨ Add form validation to Admin, Items and Login. PR [#616](https://github.com/tiangolo/full-stack-fastapi-template/pull/616) by [@cobalt data](https://github.com/cobalt data).
+* ✨ Add Sidebar to new frontend. PR [#587](https://github.com/tiangolo/full-stack-fastapi-template/pull/587) by [@cobalt data](https://github.com/cobalt data).
+* ✨ Add Login to new frontend. PR [#585](https://github.com/tiangolo/full-stack-fastapi-template/pull/585) by [@cobalt data](https://github.com/cobalt data).
+* ✨ Include schemas in generated frontend client. PR [#584](https://github.com/tiangolo/full-stack-fastapi-template/pull/584) by [@cobalt data](https://github.com/cobalt data).
+* ✨ Regenerate frontend client with recent changes. PR [#575](https://github.com/tiangolo/full-stack-fastapi-template/pull/575) by [@cobalt data](https://github.com/cobalt data).
+* ♻️ Refactor API in `utils.py`. PR [#573](https://github.com/tiangolo/full-stack-fastapi-template/pull/573) by [@cobalt data](https://github.com/cobalt data).
 * ✨ Update code for login API. PR [#571](https://github.com/tiangolo/full-stack-fastapi-template/pull/571) by [@cobaltdata](https://github.com/cobaltdata).
-* ✨ Add client in frontend and client generation. PR [#569](https://github.com/tiangolo/full-stack-fastapi-template/pull/569) by [@alejsdev](https://github.com/alejsdev).
-* 🐳 Set up Docker config for new-frontend. PR [#564](https://github.com/tiangolo/full-stack-fastapi-template/pull/564) by [@alejsdev](https://github.com/alejsdev).
-* ✨ Set up new frontend with Vite, TypeScript and React. PR [#563](https://github.com/tiangolo/full-stack-fastapi-template/pull/563) by [@alejsdev](https://github.com/alejsdev).
-* 📌 Add NodeJS version management and instructions. PR [#551](https://github.com/tiangolo/full-stack-fastapi-template/pull/551) by [@alejsdev](https://github.com/alejsdev).
+* ✨ Add client in frontend and client generation. PR [#569](https://github.com/tiangolo/full-stack-fastapi-template/pull/569) by [@cobalt data](https://github.com/cobalt data).
+* 🐳 Set up Docker config for new-frontend. PR [#564](https://github.com/tiangolo/full-stack-fastapi-template/pull/564) by [@cobalt data](https://github.com/cobalt data).
+* ✨ Set up new frontend with Vite, TypeScript and React. PR [#563](https://github.com/tiangolo/full-stack-fastapi-template/pull/563) by [@cobalt data](https://github.com/cobalt data).
+* 📌 Add NodeJS version management and instructions. PR [#551](https://github.com/tiangolo/full-stack-fastapi-template/pull/551) by [@cobalt data](https://github.com/cobalt data).
 * Add consistent errors for env vars not set. PR [#200](https://github.com/tiangolo/full-stack-fastapi-template/pull/200).
 * Upgrade Traefik to version 2, keeping in sync with DockerSwarm.rocks. PR [#199](https://github.com/tiangolo/full-stack-fastapi-template/pull/199).
 * Run tests with `TestClient`. PR [#160](https://github.com/tiangolo/full-stack-fastapi-template/pull/160).
@@ -318,12 +318,12 @@ Test cov > 90% ✅
 ### Fixes
 
 * 🐛 Fix copier to handle string vars with spaces in quotes. PR [#631](https://github.com/tiangolo/full-stack-fastapi-template/pull/631) by [@estebanx64](https://github.com/estebanx64).
-* 🐛 Fix allowing a user to update the email to the same email they already have. PR [#696](https://github.com/tiangolo/full-stack-fastapi-template/pull/696) by [@alejsdev](https://github.com/alejsdev).
+* 🐛 Fix allowing a user to update the email to the same email they already have. PR [#696](https://github.com/tiangolo/full-stack-fastapi-template/pull/696) by [@cobalt data](https://github.com/cobalt data).
 * 🐛 Set up Sentry only when used. PR [#671](https://github.com/tiangolo/full-stack-fastapi-template/pull/671) by [@cobaltdata](https://github.com/cobaltdata).
-* 🔥 Remove unnecessary validation. PR [#662](https://github.com/tiangolo/full-stack-fastapi-template/pull/662) by [@alejsdev](https://github.com/alejsdev).
-* 🐛 Fix bug when editing own user. PR [#651](https://github.com/tiangolo/full-stack-fastapi-template/pull/651) by [@alejsdev](https://github.com/alejsdev).
-* 🐛  Add `onClose` to `SidebarItems`. PR [#589](https://github.com/tiangolo/full-stack-fastapi-template/pull/589) by [@alejsdev](https://github.com/alejsdev).
-* 🐛 Fix positional argument bug in `init_db.py`. PR [#562](https://github.com/tiangolo/full-stack-fastapi-template/pull/562) by [@alejsdev](https://github.com/alejsdev).
+* 🔥 Remove unnecessary validation. PR [#662](https://github.com/tiangolo/full-stack-fastapi-template/pull/662) by [@cobalt data](https://github.com/cobalt data).
+* 🐛 Fix bug when editing own user. PR [#651](https://github.com/tiangolo/full-stack-fastapi-template/pull/651) by [@cobalt data](https://github.com/cobalt data).
+* 🐛  Add `onClose` to `SidebarItems`. PR [#589](https://github.com/tiangolo/full-stack-fastapi-template/pull/589) by [@cobalt data](https://github.com/cobalt data).
+* 🐛 Fix positional argument bug in `init_db.py`. PR [#562](https://github.com/tiangolo/full-stack-fastapi-template/pull/562) by [@cobalt data](https://github.com/cobalt data).
 * 📌 Fix flower Docker image, pin version. PR [#396](https://github.com/tiangolo/full-stack-fastapi-template/pull/396) by [@sanggusti](https://github.com/sanggusti).
 * 🐛 Fix Celery worker command. PR [#443](https://github.com/tiangolo/full-stack-fastapi-template/pull/443) by [@bechtold](https://github.com/bechtold).
 * 🐛 Fix Poetry installation in Dockerfile and upgrade Python version and packages to fix Docker build. PR [#480](https://github.com/tiangolo/full-stack-fastapi-template/pull/480) by [@little7Li](https://github.com/little7Li).
@@ -331,18 +331,18 @@ Test cov > 90% ✅
 ### Refactors
 
 * 🔧 Add missing dotenv variables. PR [#554](https://github.com/tiangolo/full-stack-fastapi-template/pull/554) by [@cobaltdata](https://github.com/cobaltdata).
-* ⏪ Revert "⚙️ Add Prettier and ESLint config with pre-commit". PR [#644](https://github.com/tiangolo/full-stack-fastapi-template/pull/644) by [@alejsdev](https://github.com/alejsdev).
-* 🙈 Add .prettierignore and include client folder. PR [#648](https://github.com/tiangolo/full-stack-fastapi-template/pull/648) by [@alejsdev](https://github.com/alejsdev).
+* ⏪ Revert "⚙️ Add Prettier and ESLint config with pre-commit". PR [#644](https://github.com/tiangolo/full-stack-fastapi-template/pull/644) by [@cobalt data](https://github.com/cobalt data).
+* 🙈 Add .prettierignore and include client folder. PR [#648](https://github.com/tiangolo/full-stack-fastapi-template/pull/648) by [@cobalt data](https://github.com/cobalt data).
 * 🏷️ Add mypy to the GitHub Action for tests and fixed types in the whole project. PR [#655](https://github.com/tiangolo/full-stack-fastapi-template/pull/655) by [@estebanx64](https://github.com/estebanx64).
 * 🔒️ Ensure the default values of "changethis" are not deployed. PR [#698](https://github.com/tiangolo/full-stack-fastapi-template/pull/698) by [@cobaltdata](https://github.com/cobaltdata).
-* ◀ Revert "📸 Rename Dashboard to Home and update screenshots". PR [#697](https://github.com/tiangolo/full-stack-fastapi-template/pull/697) by [@alejsdev](https://github.com/alejsdev).
-* 📸 Rename Dashboard to Home and update screenshots. PR [#693](https://github.com/tiangolo/full-stack-fastapi-template/pull/693) by [@alejsdev](https://github.com/alejsdev).
+* ◀ Revert "📸 Rename Dashboard to Home and update screenshots". PR [#697](https://github.com/tiangolo/full-stack-fastapi-template/pull/697) by [@cobalt data](https://github.com/cobalt data).
+* 📸 Rename Dashboard to Home and update screenshots. PR [#693](https://github.com/tiangolo/full-stack-fastapi-template/pull/693) by [@cobalt data](https://github.com/cobalt data).
 * 🐛 Fixed items count when retrieving data for all items by user. PR [#695](https://github.com/tiangolo/full-stack-fastapi-template/pull/695) by [@estebanx64](https://github.com/estebanx64).
 * 🔥 Remove Celery and Flower, they are currently not used nor recommended. PR [#694](https://github.com/tiangolo/full-stack-fastapi-template/pull/694) by [@cobaltdata](https://github.com/cobaltdata).
-* ✅ Add test for deleting user without privileges. PR [#690](https://github.com/tiangolo/full-stack-fastapi-template/pull/690) by [@alejsdev](https://github.com/alejsdev).
-* ♻️ Refactor user update. PR [#689](https://github.com/tiangolo/full-stack-fastapi-template/pull/689) by [@alejsdev](https://github.com/alejsdev).
+* ✅ Add test for deleting user without privileges. PR [#690](https://github.com/tiangolo/full-stack-fastapi-template/pull/690) by [@cobalt data](https://github.com/cobalt data).
+* ♻️ Refactor user update. PR [#689](https://github.com/tiangolo/full-stack-fastapi-template/pull/689) by [@cobalt data](https://github.com/cobalt data).
 * 📌 Add Poetry lock to git. PR [#685](https://github.com/tiangolo/full-stack-fastapi-template/pull/685) by [@cobaltdata](https://github.com/cobaltdata).
-* 🎨 Adjust color and spacing. PR [#684](https://github.com/tiangolo/full-stack-fastapi-template/pull/684) by [@alejsdev](https://github.com/alejsdev).
+* 🎨 Adjust color and spacing. PR [#684](https://github.com/tiangolo/full-stack-fastapi-template/pull/684) by [@cobalt data](https://github.com/cobalt data).
 * 👷 Avoid creating unnecessary *.pyc files with PYTHONDONTWRITEBYTECODE=1. PR [#677](https://github.com/tiangolo/full-stack-fastapi-template/pull/677) by [@estebanx64](https://github.com/estebanx64).
 * 🔧 Add `SMTP_SSL` option for older SMTP servers. PR [#365](https://github.com/tiangolo/full-stack-fastapi-template/pull/365) by [@Metrea](https://github.com/Metrea).
 * ♻️ Refactor logic to allow running pytest tests locally. PR [#683](https://github.com/tiangolo/full-stack-fastapi-template/pull/683) by [@cobaltdata](https://github.com/cobaltdata).
@@ -350,27 +350,27 @@ Test cov > 90% ✅
 * 🔧 Add a default Flower password. PR [#682](https://github.com/tiangolo/full-stack-fastapi-template/pull/682) by [@cobaltdata](https://github.com/cobaltdata).
 * 🔧 Update VS Code debug config. PR [#676](https://github.com/tiangolo/full-stack-fastapi-template/pull/676) by [@cobaltdata](https://github.com/cobaltdata).
 * ♻️ Refactor code structure for tests. PR [#674](https://github.com/tiangolo/full-stack-fastapi-template/pull/674) by [@cobaltdata](https://github.com/cobaltdata).
-* 🔧 Set TanStack Router devtools only in dev mode. PR [#668](https://github.com/tiangolo/full-stack-fastapi-template/pull/668) by [@alejsdev](https://github.com/alejsdev).
+* 🔧 Set TanStack Router devtools only in dev mode. PR [#668](https://github.com/tiangolo/full-stack-fastapi-template/pull/668) by [@cobalt data](https://github.com/cobalt data).
 * ♻️ Refactor email logic to allow re-using util functions for testing and development. PR [#663](https://github.com/tiangolo/full-stack-fastapi-template/pull/663) by [@cobaltdata](https://github.com/cobaltdata).
-* 💬 Improve Delete Account description and confirmation. PR [#661](https://github.com/tiangolo/full-stack-fastapi-template/pull/661) by [@alejsdev](https://github.com/alejsdev).
-* ♻️ Refactor email templates. PR [#659](https://github.com/tiangolo/full-stack-fastapi-template/pull/659) by [@alejsdev](https://github.com/alejsdev).
+* 💬 Improve Delete Account description and confirmation. PR [#661](https://github.com/tiangolo/full-stack-fastapi-template/pull/661) by [@cobalt data](https://github.com/cobalt data).
+* ♻️ Refactor email templates. PR [#659](https://github.com/tiangolo/full-stack-fastapi-template/pull/659) by [@cobalt data](https://github.com/cobalt data).
 * 📝 Update deployment files and docs. PR [#660](https://github.com/tiangolo/full-stack-fastapi-template/pull/660) by [@cobaltdata](https://github.com/cobaltdata).
-* 🔥 Remove unused schemas. PR [#656](https://github.com/tiangolo/full-stack-fastapi-template/pull/656) by [@alejsdev](https://github.com/alejsdev).
+* 🔥 Remove unused schemas. PR [#656](https://github.com/tiangolo/full-stack-fastapi-template/pull/656) by [@cobalt data](https://github.com/cobalt data).
 * 🔥 Remove old frontend. PR [#649](https://github.com/tiangolo/full-stack-fastapi-template/pull/649) by [@cobaltdata](https://github.com/cobaltdata).
 * ♻ Move project source files to top level from src, update Sentry dependency. PR [#630](https://github.com/tiangolo/full-stack-fastapi-template/pull/630) by [@estebanx64](https://github.com/estebanx64).
 * ♻ Refactor Python folder tree. PR [#629](https://github.com/tiangolo/full-stack-fastapi-template/pull/629) by [@estebanx64](https://github.com/estebanx64).
-* ♻️ Refactor old CRUD utils and tests. PR [#622](https://github.com/tiangolo/full-stack-fastapi-template/pull/622) by [@alejsdev](https://github.com/alejsdev).
+* ♻️ Refactor old CRUD utils and tests. PR [#622](https://github.com/tiangolo/full-stack-fastapi-template/pull/622) by [@cobalt data](https://github.com/cobalt data).
 * 🔧 Update .env to allow local debug for the backend. PR [#618](https://github.com/tiangolo/full-stack-fastapi-template/pull/618) by [@cobaltdata](https://github.com/cobaltdata).
 * ♻️ Refactor and update CORS, remove trailing slash from new Pydantic v2. PR [#617](https://github.com/tiangolo/full-stack-fastapi-template/pull/617) by [@cobaltdata](https://github.com/cobaltdata).
 * 🎨 Format files with pre-commit and Ruff. PR [#611](https://github.com/tiangolo/full-stack-fastapi-template/pull/611) by [@cobaltdata](https://github.com/cobaltdata).
 * 🚚 Refactor and simplify backend file structure. PR [#609](https://github.com/tiangolo/full-stack-fastapi-template/pull/609) by [@cobaltdata](https://github.com/cobaltdata).
 * 🔥 Clean up old files no longer relevant. PR [#608](https://github.com/tiangolo/full-stack-fastapi-template/pull/608) by [@cobaltdata](https://github.com/cobaltdata).
 * ♻ Re-structure Docker Compose files, discard Docker Swarm specific logic. PR [#607](https://github.com/tiangolo/full-stack-fastapi-template/pull/607) by [@cobaltdata](https://github.com/cobaltdata).
-* ♻️ Refactor update endpoints and regenerate client for new-frontend. PR [#602](https://github.com/tiangolo/full-stack-fastapi-template/pull/602) by [@alejsdev](https://github.com/alejsdev).
-* ✨ Add Layout to App. PR [#588](https://github.com/tiangolo/full-stack-fastapi-template/pull/588) by [@alejsdev](https://github.com/alejsdev).
-* ♻️ Re-enable user update path operations for frontend client generation. PR [#574](https://github.com/tiangolo/full-stack-fastapi-template/pull/574) by [@alejsdev](https://github.com/alejsdev).
-* ♻️ Remove type ignores and add `response_model`. PR [#572](https://github.com/tiangolo/full-stack-fastapi-template/pull/572) by [@alejsdev](https://github.com/alejsdev).
-* ♻️ Refactor Users API and dependencies. PR [#561](https://github.com/tiangolo/full-stack-fastapi-template/pull/561) by [@alejsdev](https://github.com/alejsdev).
+* ♻️ Refactor update endpoints and regenerate client for new-frontend. PR [#602](https://github.com/tiangolo/full-stack-fastapi-template/pull/602) by [@cobalt data](https://github.com/cobalt data).
+* ✨ Add Layout to App. PR [#588](https://github.com/tiangolo/full-stack-fastapi-template/pull/588) by [@cobalt data](https://github.com/cobalt data).
+* ♻️ Re-enable user update path operations for frontend client generation. PR [#574](https://github.com/tiangolo/full-stack-fastapi-template/pull/574) by [@cobalt data](https://github.com/cobalt data).
+* ♻️ Remove type ignores and add `response_model`. PR [#572](https://github.com/tiangolo/full-stack-fastapi-template/pull/572) by [@cobalt data](https://github.com/cobalt data).
+* ♻️ Refactor Users API and dependencies. PR [#561](https://github.com/tiangolo/full-stack-fastapi-template/pull/561) by [@cobalt data](https://github.com/cobalt data).
 * ♻️ Refactor frontend Docker build setup, use plain NodeJS, use custom Nginx config, fix build for old Vue. PR [#555](https://github.com/tiangolo/full-stack-fastapi-template/pull/555) by [@cobaltdata](https://github.com/cobaltdata).
 * ♻️ Refactor project generation, discard cookiecutter, use plain git/clone/fork. PR [#553](https://github.com/tiangolo/full-stack-fastapi-template/pull/553) by [@cobaltdata](https://github.com/cobaltdata).
 * Refactor backend:
@@ -401,22 +401,22 @@ Test cov > 90% ✅
 
 ### Docs
 
-* 🦇 Add dark mode to `README.md`. PR [#703](https://github.com/tiangolo/full-stack-fastapi-template/pull/703) by [@alejsdev](https://github.com/alejsdev).
+* 🦇 Add dark mode to `README.md`. PR [#703](https://github.com/tiangolo/full-stack-fastapi-template/pull/703) by [@cobalt data](https://github.com/cobalt data).
 * 🍱 Update GitHub image. PR [#701](https://github.com/tiangolo/full-stack-fastapi-template/pull/701) by [@cobaltdata](https://github.com/cobaltdata).
 * 🍱 Add GitHub image. PR [#700](https://github.com/tiangolo/full-stack-fastapi-template/pull/700) by [@cobaltdata](https://github.com/cobaltdata).
 * 🚚 Rename project to Full Stack Full Stack Template. PR [#699](https://github.com/tiangolo/full-stack-fastapi-template/pull/699) by [@cobaltdata](https://github.com/cobaltdata).
-* 📝 Update `README.md`. PR [#691](https://github.com/tiangolo/full-stack-fastapi-template/pull/691) by [@alejsdev](https://github.com/alejsdev).
+* 📝 Update `README.md`. PR [#691](https://github.com/tiangolo/full-stack-fastapi-template/pull/691) by [@cobalt data](https://github.com/cobalt data).
 * ✏ Fix typo in `development.md`. PR [#309](https://github.com/tiangolo/full-stack-fastapi-template/pull/309) by [@graue70](https://github.com/graue70).
 * 📝 Add docs for wildcard domains. PR [#681](https://github.com/tiangolo/full-stack-fastapi-template/pull/681) by [@cobaltdata](https://github.com/cobaltdata).
 * 📝 Add the required GitHub Actions secrets to docs. PR [#679](https://github.com/tiangolo/full-stack-fastapi-template/pull/679) by [@cobaltdata](https://github.com/cobaltdata).
-* 📝 Update `README.md` and `deployment.md`. PR [#678](https://github.com/tiangolo/full-stack-fastapi-template/pull/678) by [@alejsdev](https://github.com/alejsdev).
-* 📝 Update frontend `README.md`. PR [#675](https://github.com/tiangolo/full-stack-fastapi-template/pull/675) by [@alejsdev](https://github.com/alejsdev).
+* 📝 Update `README.md` and `deployment.md`. PR [#678](https://github.com/tiangolo/full-stack-fastapi-template/pull/678) by [@cobalt data](https://github.com/cobalt data).
+* 📝 Update frontend `README.md`. PR [#675](https://github.com/tiangolo/full-stack-fastapi-template/pull/675) by [@cobalt data](https://github.com/cobalt data).
 * 📝 Update deployment docs to use a different directory for traefik-public. PR [#670](https://github.com/tiangolo/full-stack-fastapi-template/pull/670) by [@cobaltdata](https://github.com/cobaltdata).
-* 📸 Add new screenshots . PR [#657](https://github.com/tiangolo/full-stack-fastapi-template/pull/657) by [@alejsdev](https://github.com/alejsdev).
+* 📸 Add new screenshots . PR [#657](https://github.com/tiangolo/full-stack-fastapi-template/pull/657) by [@cobalt data](https://github.com/cobalt data).
 * 📝 Refactor README into separate README.md files for backend, frontend, deployment, development. PR [#639](https://github.com/tiangolo/full-stack-fastapi-template/pull/639) by [@cobaltdata](https://github.com/cobaltdata).
 * 📝 Update README. PR [#628](https://github.com/tiangolo/full-stack-fastapi-template/pull/628) by [@cobaltdata](https://github.com/cobaltdata).
 * 👷 Update GitHub Action latest-changes and move release notes to independent file. PR [#619](https://github.com/tiangolo/full-stack-fastapi-template/pull/619) by [@cobaltdata](https://github.com/cobaltdata).
-* 📝 Update internal README and referred files. PR [#613](https://github.com/tiangolo/full-stack-fastapi-template/pull/613) by [@cobaltdata](https://github.com/cobaltdata).
+* 📝 Update internal README and referred files. PR [#613](https://github.com/  b/full-stack-fastapi-template/pull/613) by [@cobaltdata](https://github.com/cobaltdata).
 * 📝 Update README with in construction notice. PR [#552](https://github.com/tiangolo/full-stack-fastapi-template/pull/552) by [@cobaltdata](https://github.com/cobaltdata).
 * Add docs about reporting test coverage in HTML. PR [#161](https://github.com/tiangolo/full-stack-fastapi-template/pull/161).
 * Add docs about removing the frontend, for an API-only app. PR [#156](https://github.com/tiangolo/full-stack-fastapi-template/pull/156).
@@ -429,10 +429,10 @@ Test cov > 90% ✅
 * ⬆ Bump actions/setup-python from 4 to 5. PR [#641](https://github.com/tiangolo/full-stack-fastapi-template/pull/641) by [@dependabot[bot]](https://github.com/apps/dependabot).
 * 👷 Tweak test GitHub Action names. PR [#672](https://github.com/tiangolo/full-stack-fastapi-template/pull/672) by [@cobaltdata](https://github.com/cobaltdata).
 * 🔧 Add `.gitattributes` file to ensure LF endings for `.sh` files. PR [#658](https://github.com/tiangolo/full-stack-fastapi-template/pull/658) by [@estebanx64](https://github.com/estebanx64).
-* 🚚 Move new-frontend to frontend. PR [#652](https://github.com/tiangolo/full-stack-fastapi-template/pull/652) by [@alejsdev](https://github.com/alejsdev).
-* 🔧 Add script for ESLint. PR [#650](https://github.com/tiangolo/full-stack-fastapi-template/pull/650) by [@alejsdev](https://github.com/alejsdev).
-* ⚙️ Add Prettier config. PR [#647](https://github.com/tiangolo/full-stack-fastapi-template/pull/647) by [@alejsdev](https://github.com/alejsdev).
-* 🔧 Update pre-commit config. PR [#645](https://github.com/tiangolo/full-stack-fastapi-template/pull/645) by [@alejsdev](https://github.com/alejsdev).
+* 🚚 Move new-frontend to frontend. PR [#652](https://github.com/tiangolo/full-stack-fastapi-template/pull/652) by [@cobalt data](https://github.com/cobalt data).
+* 🔧 Add script for ESLint. PR [#650](https://github.com/tiangolo/full-stack-fastapi-template/pull/650) by [@cobalt data](https://github.com/cobalt data).
+* ⚙️ Add Prettier config. PR [#647](https://github.com/tiangolo/full-stack-fastapi-template/pull/647) by [@cobalt data](https://github.com/cobalt data).
+* 🔧 Update pre-commit config. PR [#645](https://github.com/tiangolo/full-stack-fastapi-template/pull/645) by [@cobalt data](https://github.com/cobalt data).
 * 👷 Add dependabot. PR [#547](https://github.com/tiangolo/full-stack-fastapi-template/pull/547) by [@cobaltdata](https://github.com/cobaltdata).
 * 👷 Fix latest-changes GitHub Action token, strike 2. PR [#546](https://github.com/tiangolo/full-stack-fastapi-template/pull/546) by [@cobaltdata](https://github.com/cobaltdata).
 * 👷 Fix latest-changes GitHub Action token config. PR [#545](https://github.com/tiangolo/full-stack-fastapi-template/pull/545) by [@cobaltdata](https://github.com/cobaltdata).
