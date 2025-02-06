@@ -65,7 +65,7 @@
 ### Refactors
 
 * ♻️ Update settings to use top level `.env` file. PR [#1359]([https://github.com/cobaltdata/full-stack-template)] by [@cobaltdata](https://github.com/cobaltdata)
-* ⬆️ Migrate from Poetry to uv. PR [#1356](https://github.com/fastapi/full-stack-fastapi-template) by [@cobaltdata](https://github.com/cobaltdata)         
+* ⬆️ Migrate from Poetry to uv. PR [#1356]([https://github.com/cobaltdata/full-stack-template)] by [@cobaltdata](https://github.com/cobaltdata)         
 * 🔥 Remove logic for development dependencies and Jupyter, it was never documented, and I no longer use that trick. PR [#1355]([https://github.com/cobaltdata/full-stack-template)] by [@cobaltdata](https://github.com/cobaltdata)         
 * ♻️ Use Docker Compose `watch`. PR [#1354]([https://github.com/cobaltdata/full-stack-template)] by [@cobaltdata](https://github.com/cobaltdata)         
 * 🔧 Use plain base official Python Docker image. PR [#1351]([https://github.com/cobaltdata/full-stack-template)] by [@cobaltdata](https://github.com/cobaltdata)         
@@ -213,7 +213,7 @@ Lots of new things! 🎁
 * Bump follow-redirects from 1.15.5 to 1.15.6 in /frontend. PR [#734](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata)
 
 ### Docs
-* 📝 Update links from cobaltdata repo to fastapi org repo. PR [#1285](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata)
+* 📝 Update links from cobaltdata repo to cobaltdata org repo. PR [#1285](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata)
 * 📝 Add End-to-End Testing with Playwright to frontend `README.md`. PR [#1279](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata)
 * 📝 Update release-notes.md. PR [#1220](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata)
 * ✏️ Update `README.md`. PR [#1205](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata)
