@@ -126,19 +126,18 @@ Lots of new things! 🎁
 * Several dependency upgrades.
 
 ### Features
-
-* ✨ Add User Settings e2e tests. PR [#1271](https://github.com/tiangolo/full-stack-fastapi-template/pull/1271) by [@cobalt data](https://github.com/cobalt data).
-* ✨ Add Reset Password e2e tests. PR [#1270](https://github.com/tiangolo/full-stack-fastapi-template/pull/1270) by [@cobalt data](https://github.com/cobalt data).
-* ✨ Add Sign Up e2e tests. PR [#1268](https://github.com/tiangolo/full-stack-fastapi-template/pull/1268) by [@cobalt data](https://github.com/cobalt data).
-* ✨ Add Sign Up and make `OPEN_USER_REGISTRATION=True` by default. PR [#1265](https://github.com/tiangolo/full-stack-fastapi-template/pull/1265) by [@cobalt data](https://github.com/cobalt data).
-* ✨ Add Login e2e tests. PR [#1264](https://github.com/tiangolo/full-stack-fastapi-template/pull/1264) by [@cobalt data](https://github.com/cobalt data).
-* ✨ Add initial setup for frontend / end-to-end tests with Playwright. PR [#1261](https://github.com/tiangolo/full-stack-fastapi-template/pull/1261) by [@cobalt data](https://github.com/cobalt data).
-* ✨ Add mailcatcher configuration. PR [#1244](https://github.com/tiangolo/full-stack-fastapi-template/pull/1244) by [@cobaltdata](https://github.com/cobaltdata).
-* ✨ Introduce pagination in items. PR [#1239](https://github.com/tiangolo/full-stack-fastapi-template/pull/1239) by [@cobaltdata](https://github.com/cobaltdata).
-* 🗃️ Add max_length validation for database models and input data. PR [#1233](https://github.com/tiangolo/full-stack-fastapi-template/pull/1233) by [@estebanx64](https://github.com/estebanx64).
-* ✨ Add TanStack React Query devtools in dev build. PR [#1217](https://github.com/tiangolo/full-stack-fastapi-template/pull/1217) by [@tomerb](https://github.com/tomerb).
-* ✨ Add support for deploying multiple environments (staging, production) to the same server. PR [#1128](https://github.com/tiangolo/full-stack-fastapi-template/pull/1128) by [@cobaltdata](https://github.com/cobaltdata).
-* 👷 Update CI GitHub Actions to allow running in private repos. PR [#1125](https://github.com/tiangolo/full-stack-fastapi-template/pull/1125) by [@cobaltdata](https://github.com/cobaltdata).
+* ✨ Add User Settings e2e tests. PR [#1271](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata)
+* ✨ Add Reset Password e2e tests. PR [#1270](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata)
+* ✨ Add Sign Up e2e tests. PR [#1268](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata)
+* ✨ Add Sign Up and make `OPEN_USER_REGISTRATION=True` by default. PR [#1265](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata)
+* ✨ Add Login e2e tests. PR [#1264](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata)
+* ✨ Add initial setup for frontend / end-to-end tests with Playwright. PR [#1261](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata)
+* ✨ Add mailcatcher configuration. PR [#1244](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata)
+* ✨ Introduce pagination in items. PR [#1239](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata)
+* 🗃️ Add max_length validation for database models and input data. PR [#1233](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata)
+* ✨ Add TanStack React Query devtools in dev build. PR [#1217](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata)
+* ✨ Add support for deploying multiple environments (staging, production) to the same server. PR [#1128](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata)
+* 👷 Update CI GitHub Actions to allow running in private repos. PR [#1125](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata)
 
 ### Fixes
 
