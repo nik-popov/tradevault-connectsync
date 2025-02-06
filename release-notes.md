@@ -13,7 +13,7 @@
 
 ### Refactors
 
-* 🎨 Move `prefix` and `tags` to routers. PR [#1439](https://github.com/cobaltdata/full-stack-template)full-stack-fastapi-template/pull/1439) by [@cobaltdata](https://github.com/cobaltdata)         
+* 🎨 Move `prefix` and `tags` to routers. PR [#1439](https://github.com/cobaltdata/full-stack-template)by [@cobaltdata](https://github.com/cobaltdata)         
 * ♻️ Remove modify id script in favor of openapi-ts config. PR [#1434]([https://github.com/cobaltdata/full-stack-template)] by [@cobaltdata](https://github.com/cobaltdata)         
 * 👷 Improve Playwright CI speed: sharding (paralel runs), run in Docker to use cache, use env vars. PR [#1405]([https://github.com/cobaltdata/full-stack-template)] by [@cobaltdata](https://github.com/cobaltdata)             
 * ♻️ Add PaginationFooter component. PR [#1381](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata)         
@@ -415,7 +415,7 @@ Test cov > 90% ✅
 * 📝 Refactor README into separate README.md files for backend, frontend, deployment, development. PR [#639](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata) 
 * 📝 Update README. PR [#628](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata)     
 * 👷 Update GitHub Action latest-changes and move release notes to independent file. PR [#619](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata) 
-* 📝 Update internal README and referred files. PR [#613](https://github.com/  b/full-stack-fastapi-template/pull/613) by [@cobaltdata](https://github.com/cobaltdata)         
+* 📝 Update internal README and referred files. PR [#613](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata)         
 * 📝 Update README with in construction notice. PR [#552](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata)       
 * Add docs about reporting test coverage in HTML. PR [#161](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata)   
 * Add docs about removing the frontend, for an API-only app. PR [#156](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata)     
