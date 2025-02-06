@@ -24,11 +24,11 @@ const PaymentForm: React.FC = () => {
       setLoading(false);
       return;
     }
-    
-    const { error, paymentMethod } = await stripe.createPaymentMethod({
-      type: "card",
-      card: cardElement,
-    });
+    const { error, paymentMethod: _paymentMethod } = await stripe.createPaymentMethod({
+        type: "card",
+        card: cardElement,
+      });
+      
 
     if (error) {
       toast({
