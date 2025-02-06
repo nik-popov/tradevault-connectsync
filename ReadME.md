@@ -111,26 +111,4 @@ You can fork the repository directly from the command line using either the GitH
 2. **Authenticate with GitHub:**
    ```bash
    gh auth login
-
-
-  
-## Forking the Repository
-
-You can fork the repository directly from the command line using either the GitHub CLI or the GitHub API.
-
-### Using GitHub CLI
-
-1. **Install GitHub CLI**  
-   If you haven't installed the GitHub CLI yet, follow the instructions based on your operating system:
-
-   - **macOS (Homebrew):**
-     ```bash
-     brew install gh
-     ```
-   - **Windows and Linux:**  
-     Check out the [GitHub CLI installation guide](https://github.com/cli/cli#installation).
-
-2. **Authenticate with GitHub:**
-   ```bash
-   gh auth login
 For more information, visit [Cobalt Data Dashboard](https://dashboard.cobaltdata.net).
