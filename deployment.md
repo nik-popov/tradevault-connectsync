@@ -6,7 +6,7 @@ This guide provides instructions for deploying a Full-Stack project using Docker
 
 For a step-by-step guide on deploying a Full-Stack project with Docker and Traefik, refer to the following article:
 
-[**From Zero to Deployed: A Comprehensive Guide to Deploying a FastAPI Project with Docker and Traefik**](https://medium.com/@nik_75329/from-zero-to-deployed-a-comprehensive-guide-to-deploying-a-fastapi-project-with-docker-and-traefik-79283ae9e4b7)
+[**From Zero to Deployed: A Comprehensive Guide to Deploying a Full-Stack Project with Docker and Traefik**](https://medium.com/@nik_75329/from-zero-to-deployed-a-comprehensive-guide-to-deploying-a-fastapi-project-with-docker-and-traefik-79283ae9e4b7)
 
 This guide covers:
 - Setting up a remote server
@@ -56,7 +56,7 @@ Replace `yourdomain.com` with your actual domain:
 
 ## 📌 Reference
 For a complete setup guide, check out the full article:  
-[**Deploying a FastAPI Project with Docker and Traefik**](https://medium.com/@nik_75329/from-zero-to-deployed-a-comprehensive-guide-to-deploying-a-fastapi-project-with-docker-and-traefik-79283ae9e4b7)
+[**Deploying a Full Stack Project with Docker and Traefik**](https://medium.com/@nik_75329/from-zero-to-deployed-a-comprehensive-guide-to-deploying-a-fastapi-project-with-docker-and-traefik-79283ae9e4b7)
 
 ---
 This repository contains configurations for deploying your FastAPI project efficiently. 🚀
