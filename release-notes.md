@@ -442,42 +442,38 @@ Test cov > 90% ✅
 
 ## 0.5.0
 
-* Make the Traefik public network a fixed default of `traefik-public` as done in DockerSwarm.rocks, to simplify development and iteration of the project generator. PR [#150](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata)         150)         
-* Update to PostgreSQL 12. PR [#148](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata)         148)          by [@RCheese](https://github.com/RCheese)         
-* Use Poetry for package management. Initial PR [#144](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata)         144) by [@RCheese](https://github.com/RCheese)         
-* Fix Windows line endings for shell scripts after project generation with Cookiecutter hooks. PR [#149](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata)         149)         
-* Upgrade Vue CLI to version 4. PR [#120](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata)         120) by [@br3ndonland](https://github.com/br3ndonland)         
-* Remove duplicate `login` tag. PR [#135](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata)         135) by [@Nonameentered](https://github.com/Nonameentered)         
-* Fix showing email in dashboard when there's no user's full name. PR [#129](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata)         129) by [@rlonka](https://github.com/rlonka)         
-* Format code with Black and Flake8. PR [#121](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata)         121) by [@br3ndonland](https://github.com/br3ndonland)         
-* Simplify SQLAlchemy Base class. PR [#117](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata)         117) by [@airibarne](https://github.com/airibarne)         
-* Update CRUD utils for users, handling password hashing. PR [#106](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata)         106) by [@mocsar](https://github.com/mocsar)         
-* Use `.` instead of `source` for interoperability. PR [#98](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata)         98) by [@gucharbon](https://github.com/gucharbon)         
-* Use Pydantic's `BaseSettings` for settings/configs and env vars. PR [#87](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata)         87) by [@StephenBrown2](https://github.com/StephenBrown2)         
+* Make the Traefik public network a fixed default of `traefik-public` as done in DockerSwarm.rocks, to simplify development and iteration of the project generator. PR [#150](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata) 
+* Update to PostgreSQL 12. PR [#148](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata)    
+* Use Poetry for package management. Initial PR [#144](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata)  
+* Fix Windows line endings for shell scripts after project generation with Cookiecutter hooks. PR [#149](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata)     
+* Upgrade Vue CLI to version 4. PR [#120](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata)        
+* Remove duplicate `login` tag. PR [#135](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata)       
+* Fix showing email in dashboard when there's no user's full name. PR [#129](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata)        
+* Format code with Black and Flake8. PR [#121](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata)       
+* Simplify SQLAlchemy Base class. PR [#117](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata)         
+* Update CRUD utils for users, handling password hashing. PR [#106](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata)   
+* Use `.` instead of `source` for interoperability. PR [#98](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata)       
+* Use Pydantic's `BaseSettings` for settings/configs and env vars. PR [#87](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata)      
 * Remove `package-lock.json` to let everyone lock their own versions (depending on OS, etc)         
-* Simplify Traefik service labels PR [#139](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata)         139)         
-* Add email validation. PR [#40](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata)         40) by [@kedod](https://github.com/kedod)         
-* Fix typo in README. PR [#83](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata)         83) by [@ashears](https://github.com/ashears)         
-* Fix typo in README. PR [#80](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata)         80) by [@abjoker](https://github.com/abjoker)         
-* Fix function name `read_item` and response code. PR [#74](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata)         74) by [@jcaguirre89](https://github.com/jcaguirre89)         
-* Fix typo in comment. PR [#70](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata)         70) by [@daniel-butler](https://github.com/daniel-butler)         
-* Fix Flower Docker configuration. PR [#37](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata)         37) by [@dmontagu](https://github.com/dmontagu)         
-* Add new CRUD utils based on DB and Pydantic models. Initial PR [#23](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata)         23) by [@ebreton](https://github.com/ebreton)         
-* Add normal user testing Pytest fixture. PR [#20](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata)         20) by [@ebreton](https://github.com/ebreton)         
-
+* Simplify Traefik service labels PR [#139](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata)   
+* Add email validation. PR [#40](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata)        
+* Fix typo in README. PR [#83](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata)        
+* Fix typo in README. PR [#80](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata)        
+* Fix function name `read_item` and response code. PR [#74](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata)     
+* Fix typo in comment. PR [#70](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata)      
+* Fix Flower Docker configuration. PR [#37](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata)        
+* Add new CRUD utils based on DB and Pydantic models. Initial PR [#23](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata) 
+* Add normal user testing Pytest fixture. PR [#20](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata)     
 ## 0.4.0
 
-* Fix security on resetting a password. Receive token as body, not query. PR [#34](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata)         34)         
+* Fix security on resetting a password. Receive token as body, not query. PR [#34](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata)    
+* Fix security on resetting a password. Receive it as body, not query. PR [#33](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata)     
+* Fix SQLAlchemy class lookup on initialization. PR [#29](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata)      
+* Fix SQLAlchemy operation errors on database restart. PR [#32](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata)        
 
-* Fix security on resetting a password. Receive it as body, not query. PR [#33](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata)         33) by [@dmontagu](https://github.com/dmontagu)         
+* Fix locations of scripts in generated README. PR [#19](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata)        
 
-* Fix SQLAlchemy class lookup on initialization. PR [#29](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata)         29) by [@ebreton](https://github.com/ebreton)         
-
-* Fix SQLAlchemy operation errors on database restart. PR [#32](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata)         32) by [@ebreton](https://github.com/ebreton)         
-
-* Fix locations of scripts in generated README. PR [#19](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata)         19) by [@ebreton](https://github.com/ebreton)         
-
-* Forward arguments from script to `pytest` inside container. PR [#17](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata)         17) by [@ebreton](https://github.com/ebreton)         
+* Forward arguments from script to `pytest` inside container. PR [#17](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata)       
 
 * Update development scripts.
 
