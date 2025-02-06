@@ -202,57 +202,54 @@ Lots of new things! 🎁
 * ✏ Fix typo in variable names in `backend/app/api/routes/items.py` and `backend/app/api/routes/users.py`. PR [#711](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata)
 
 ### Upgrades
-
-* ⬆️ Update SQLModel to version `>=0.0.21`. PR [#1275](https://github.com/tiangolo/full-stack-fastapi-template/pull/1275) by [@cobalt data](https://github.com/cobalt data).
-* ⬆️ Upgrade Traefik. PR [#1241](https://github.com/tiangolo/full-stack-fastapi-template/pull/1241) by [@cobaltdata](https://github.com/cobaltdata).
-* ⬆️ Bump requests from 2.31.0 to 2.32.0 in /backend. PR [#1211](https://github.com/tiangolo/full-stack-fastapi-template/pull/1211) by [@dependabot[bot]](https://github.com/apps/dependabot).
-* ⬆️ Bump jinja2 from 3.1.3 to 3.1.4 in /backend. PR [#1196](https://github.com/tiangolo/full-stack-fastapi-template/pull/1196) by [@dependabot[bot]](https://github.com/apps/dependabot).
-* Bump gunicorn from 21.2.0 to 22.0.0 in /backend. PR [#1176](https://github.com/tiangolo/full-stack-fastapi-template/pull/1176) by [@dependabot[bot]](https://github.com/apps/dependabot).
-* Bump idna from 3.6 to 3.7 in /backend. PR [#1168](https://github.com/tiangolo/full-stack-fastapi-template/pull/1168) by [@dependabot[bot]](https://github.com/apps/dependabot).
-* 🆙 Update React Query to TanStack Query. PR [#1153](https://github.com/tiangolo/full-stack-fastapi-template/pull/1153) by [@cobaltdata](https://github.com/cobaltdata).
-* Bump vite from 5.0.12 to 5.0.13 in /frontend. PR [#1149](https://github.com/tiangolo/full-stack-fastapi-template/pull/1149) by [@dependabot[bot]](https://github.com/apps/dependabot).
-* Bump follow-redirects from 1.15.5 to 1.15.6 in /frontend. PR [#734](https://github.com/tiangolo/full-stack-fastapi-template/pull/734) by [@dependabot[bot]](https://github.com/apps/dependabot).
+* ⬆️ Update SQLModel to version `>=0.0.21`. PR [#1275](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata)
+* ⬆️ Upgrade Traefik. PR [#1241](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata)
+* ⬆️ Bump requests from 2.31.0 to 2.32.0 in /backend. PR [#1211](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata)
+* ⬆️ Bump jinja2 from 3.1.3 to 3.1.4 in /backend. PR [#1196](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata)
+* Bump gunicorn from 21.2.0 to 22.0.0 in /backend. PR [#1176](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata)
+* Bump idna from 3.6 to 3.7 in /backend. PR [#1168](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata)
+* 🆙 Update React Query to TanStack Query. PR [#1153](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata)
+* Bump vite from 5.0.12 to 5.0.13 in /frontend. PR [#1149](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata)
+* Bump follow-redirects from 1.15.5 to 1.15.6 in /frontend. PR [#734](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata)
 
 ### Docs
-
-* 📝 Update links from tiangolo repo to fastapi org repo. PR [#1285]([https://github.com/cobaltdata/full-stack-template)] by [@cobaltdata](https://github.com/cobaltdata).1285) by [@cobaltdata](https://github.com/cobaltdata).
-* 📝 Add End-to-End Testing with Playwright to frontend `README.md`. PR [#1279](https://github.com/tiangolo/full-stack-fastapi-template/pull/1279) by [@cobalt data](https://github.com/cobalt data).
-* 📝 Update release-notes.md. PR [#1220](https://github.com/tiangolo/full-stack-fastapi-template/pull/1220) by [@cobalt data](https://github.com/cobalt data).
-* ✏️ Update `README.md`. PR [#1205](https://github.com/tiangolo/full-stack-fastapi-template/pull/1205) by [@Craz1k0ek](https://github.com/Craz1k0ek).
-* ✏️ Fix Adminer URL in `deployment.md`. PR [#1194](https://github.com/tiangolo/full-stack-fastapi-template/pull/1194) by [@PhilippWu](https://github.com/PhilippWu).
-* 📝 Add `Enabling Open User Registration` to backend docs. PR [#1191](https://github.com/tiangolo/full-stack-fastapi-template/pull/1191) by [@cobalt data](https://github.com/cobalt data).
-* 📝 Update release-notes.md. PR [#1164](https://github.com/tiangolo/full-stack-fastapi-template/pull/1164) by [@cobalt data](https://github.com/cobalt data).
-* 📝 Update `README.md`. PR [#716](https://github.com/tiangolo/full-stack-fastapi-template/pull/716) by [@cobalt data](https://github.com/cobalt data).
-* 📝 Update instructions to clone for a private repo, including updates. PR [#1127](https://github.com/tiangolo/full-stack-fastapi-template/pull/1127) by [@cobaltdata](https://github.com/cobaltdata).
-* 📝 Add docs about CI keys, LATEST_CHANGES and SMOKESHOW_AUTH_KEY. PR [#1126](https://github.com/tiangolo/full-stack-fastapi-template/pull/1126) by [@cobaltdata](https://github.com/cobaltdata).
-* ✏️ Fix file path in `backend/README.md` when not wanting to use migrations. PR [#1116](https://github.com/tiangolo/full-stack-fastapi-template/pull/1116) by [@leonlowitzki](https://github.com/leonlowitzki).
-* 📝 Add documentation for pre-commit and code linting. PR [#718](https://github.com/tiangolo/full-stack-fastapi-template/pull/718) by [@estebanx64](https://github.com/estebanx64).
-* 📝 Fix localhost URLs in `development.md`. PR [#1099](https://github.com/tiangolo/full-stack-fastapi-template/pull/1099) by [@efonte](https://github.com/efonte).
-* ✏ Update header titles for consistency. PR [#708](https://github.com/tiangolo/full-stack-fastapi-template/pull/708) by [@codesmith-emmy](https://github.com/codesmith-emmy).
-* 📝 Update `README.md`, dark mode screenshot position. PR [#706](https://github.com/tiangolo/full-stack-fastapi-template/pull/706) by [@cobalt data](https://github.com/cobalt data).
+* 📝 Update links from tiangolo repo to fastapi org repo. PR [#1285](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata)
+* 📝 Add End-to-End Testing with Playwright to frontend `README.md`. PR [#1279](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata)
+* 📝 Update release-notes.md. PR [#1220](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata)
+* ✏️ Update `README.md`. PR [#1205](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata)
+* ✏️ Fix Adminer URL in `deployment.md`. PR [#1194](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata)
+* 📝 Add `Enabling Open User Registration` to backend docs. PR [#1191](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata)
+* 📝 Update release-notes.md. PR [#1164](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata)
+* 📝 Update `README.md`. PR [#716](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata)
+* 📝 Update instructions to clone for a private repo, including updates. PR [#1127](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata)
+* 📝 Add docs about CI keys, LATEST_CHANGES and SMOKESHOW_AUTH_KEY. PR [#1126](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata)
+* ✏️ Fix file path in `backend/README.md` when not wanting to use migrations. PR [#1116](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata)
+* 📝 Add documentation for pre-commit and code linting. PR [#718](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata)
+* 📝 Fix localhost URLs in `development.md`. PR [#1099](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata)
+* ✏ Update header titles for consistency. PR [#708](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata)
+* 📝 Update `README.md`, dark mode screenshot position. PR [#706](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata)
 
 ### Internal
-
-* 🔧 Update deploy workflows to exclude the main repository. PR [#1284](https://github.com/tiangolo/full-stack-fastapi-template/pull/1284) by [@cobalt data](https://github.com/cobalt data).
-* 👷 Update issue-manager.yml GitHub Action permissions. PR [#1278](https://github.com/tiangolo/full-stack-fastapi-template/pull/1278) by [@cobaltdata](https://github.com/cobaltdata).
-* ⬆️ Bump setuptools from 69.1.1 to 70.0.0 in /backend. PR [#1255](https://github.com/tiangolo/full-stack-fastapi-template/pull/1255) by [@dependabot[bot]](https://github.com/apps/dependabot).
-* ⬆️ Bump certifi from 2024.2.2 to 2024.7.4 in /backend. PR [#1250](https://github.com/tiangolo/full-stack-fastapi-template/pull/1250) by [@dependabot[bot]](https://github.com/apps/dependabot).
-* ⬆️ Bump urllib3 from 2.2.1 to 2.2.2 in /backend. PR [#1235](https://github.com/tiangolo/full-stack-fastapi-template/pull/1235) by [@dependabot[bot]](https://github.com/apps/dependabot).
-* 🔧 Ignore `src/routeTree.gen.ts` in biome. PR [#1175](https://github.com/tiangolo/full-stack-fastapi-template/pull/1175) by [@cobaltdata](https://github.com/cobaltdata).
-* 👷 Update Smokeshow download artifact GitHub Action. PR [#1198](https://github.com/tiangolo/full-stack-fastapi-template/pull/1198) by [@cobaltdata](https://github.com/cobaltdata).
-* 🔧 Update Node.js version in `.nvmrc`. PR [#1192](https://github.com/tiangolo/full-stack-fastapi-template/pull/1192) by [@cobalt data](https://github.com/cobalt data).
-* 🔥 Remove ESLint and Prettier from pre-commit config. PR [#1096](https://github.com/tiangolo/full-stack-fastapi-template/pull/1096) by [@cobalt data](https://github.com/cobalt data).
-* 🔧 Update mypy config to ignore .venv directories. PR [#1155](https://github.com/tiangolo/full-stack-fastapi-template/pull/1155) by [@cobaltdata](https://github.com/cobaltdata).
-* 🚨 Enable `ARG001` to prevent unused arguments. PR [#1152](https://github.com/tiangolo/full-stack-fastapi-template/pull/1152) by [@cobaltdata](https://github.com/cobaltdata).
-* 🔥 Remove isort configuration, since we use Ruff now. PR [#1144](https://github.com/tiangolo/full-stack-fastapi-template/pull/1144) by [@cobaltdata](https://github.com/cobaltdata).
-* 🔧 Update pre-commit config to exclude generated client folder. PR [#1150](https://github.com/tiangolo/full-stack-fastapi-template/pull/1150) by [@cobalt data](https://github.com/cobalt data).
-* 🔧 Change `.nvmrc` format. PR [#1148](https://github.com/tiangolo/full-stack-fastapi-template/pull/1148) by [@cobaltdata](https://github.com/cobaltdata).
-* 🎨 Ignore alembic from ruff lint and format. PR [#1131](https://github.com/tiangolo/full-stack-fastapi-template/pull/1131) by [@estebanx64](https://github.com/estebanx64).
-* 🔧 Add GitHub templates for discussions and issues, and security policy. PR [#1105](https://github.com/tiangolo/full-stack-fastapi-template/pull/1105) by [@cobalt data](https://github.com/cobalt data).
-* ⬆ Bump dawidd6/action-download-artifact from 3.1.2 to 3.1.4. PR [#1103](https://github.com/tiangolo/full-stack-fastapi-template/pull/1103) by [@dependabot[bot]](https://github.com/apps/dependabot).
-* 🔧 Add Biome to pre-commit config. PR [#1098](https://github.com/tiangolo/full-stack-fastapi-template/pull/1098) by [@cobalt data](https://github.com/cobalt data).
-* 🔥 Delete leftover celery file. PR [#727](https://github.com/tiangolo/full-stack-fastapi-template/pull/727) by [@dr-neptune](https://github.com/dr-neptune).
-* ⚙️ Update pre-commit config with Prettier and ESLint. PR [#714](https://github.com/tiangolo/full-stack-fastapi-template/pull/714) by [@cobalt data](https://github.com/cobalt data).
+* 🔧 Update deploy workflows to exclude the main repository. PR [#1284](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata)
+* 👷 Update issue-manager.yml GitHub Action permissions. PR [#1278](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata)
+* ⬆️ Bump setuptools from 69.1.1 to 70.0.0 in /backend. PR [#1255](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata)
+* ⬆️ Bump certifi from 2024.2.2 to 2024.7.4 in /backend. PR [#1250](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata)
+* ⬆️ Bump urllib3 from 2.2.1 to 2.2.2 in /backend. PR [#1235](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata)
+* 🔧 Ignore `src/routeTree.gen.ts` in biome. PR [#1175](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata)
+* 👷 Update Smokeshow download artifact GitHub Action. PR [#1198](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata)
+* 🔧 Update Node.js version in `.nvmrc`. PR [#1192](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata)
+* 🔥 Remove ESLint and Prettier from pre-commit config. PR [#1096](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata)
+* 🔧 Update mypy config to ignore .venv directories. PR [#1155](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata)
+* 🚨 Enable `ARG001` to prevent unused arguments. PR [#1152](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata)
+* 🔥 Remove isort configuration, since we use Ruff now. PR [#1144](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata)
+* 🔧 Update pre-commit config to exclude generated client folder. PR [#1150](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata)
+* 🔧 Change `.nvmrc` format. PR [#1148](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata)
+* 🎨 Ignore alembic from ruff lint and format. PR [#1131](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata)
+* 🔧 Add GitHub templates for discussions and issues, and security policy. PR [#1105](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata)
+* ⬆ Bump dawidd6/action-download-artifact from 3.1.2 to 3.1.4. PR [#1103](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata)
+* 🔧 Add Biome to pre-commit config. PR [#1098](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata)
+* 🔥 Delete leftover celery file. PR [#727](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata)
+* ⚙️ Update pre-commit config with Prettier and ESLint. PR [#714](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata)
 
 ## 0.6.0
 
