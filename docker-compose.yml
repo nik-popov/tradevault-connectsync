@@ -144,7 +144,7 @@ services:
         - NODE_ENV=production
       context: ./frontend
     environment:
-      VITE_API_URL: https://api.cobaltdata.net
+      VITE_API_URL=https://api.cobaltdata.net
     labels:
       - traefik.enable=true
       - traefik.docker.network=traefik-public
