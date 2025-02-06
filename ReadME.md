@@ -174,7 +174,7 @@ For more detailed instructions and troubleshooting, please refer to:
 - **[Docker Environment Debugging](https://medium.com/@nik_75329/docker-environment-debugging-how-to-completely-reset-your-docker-setup-dfec0eb6e6c4)**
 - **[Removing Docker Containers, Images, and Volumes](https://medium.com/@nik_75329/below-is-a-step-by-step-guide-on-how-to-remove-all-docker-containers-images-and-volumes-and-d119d02a76b9)**
 - **[Reinstalling Docker on Linux](https://medium.com/@nik_75329/how-to-completely-remove-and-reinstall-docker-on-linux-bc4fb677887c)**
-
+- **[Firefox & CORS Debug macOs & LinuxOs](https://medium.com/@nik_75329/firefox-cors-debug-on-macos-linux-fixing-mixed-content-insecure-xmlhttprequest-74a62694f4a1)**
 ---
 
 ## Code of Conduct 📜
