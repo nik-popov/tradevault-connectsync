@@ -1,129 +1,49 @@
-# Cobalt Data
+# Cobalt Data 🚀
 
-## Overview
+## Overview 🌐
 Cobalt Data is an integrated platform that combines a **Vite.JS** frontend with a **Python** backend. The backend is hosted at `api.scrapecompass.com`, and the frontend is available at [Cobalt Data Dashboard](https://dashboard.cobaltdata.net). The project is deployed using **Docker Compose** and **Traefik**, with a PostgreSQL database, email settings, and Sentry for error monitoring.
 
-## Documentation Sections
+---
 
-### 1. [Release Notes](release-notes.md)
-   - Track recent updates, fixes, and new features in Cobalt Data.
+## Documentation Sections 📚
 
-### 2. [Deployment Guide](deployment.md)
-   - Step-by-step instructions for deploying Cobalt Data using Docker Compose and Traefik.
+1. **[Release Notes](release-notes.md)** 📝  
+   Track recent updates, fixes, and new features in Cobalt Data.
 
-### 3. [Development Guide](development.md)
-   - Guidelines for setting up a development environment, including VS Code configurations and backend/frontend setup.
+2. **[Deployment Guide](deployment.md)** 🚀  
+   Step-by-step instructions for deploying Cobalt Data using Docker Compose and Traefik.
 
-### 4. [Security Policies](SECURITY.md)
-   - Security best practices and vulnerability reporting process.
+3. **[Development Guide](development.md)** 🛠️  
+   Guidelines for setting up a development environment, including VS Code configurations and backend/frontend setup.
 
-### 5. [License](LICENSE)
-   - Details about the licensing of Cobalt Data.
+4. **[Security Policies](SECURITY.md)** 🔒  
+   Security best practices and the vulnerability reporting process.
 
-### 6. Configuration Files
+5. **[License](LICENSE)** 📄  
+   Details about the licensing of Cobalt Data.
+
+6. **Configuration Files** 🗂️  
    - `.env`: Environment variables.
    - `docker-compose.yml`: Main Docker Compose configuration.
    - `docker-compose.override.yml`: Overrides for local development.
    - `docker-compose.traefik.yml`: Configuration for Traefik reverse proxy.
    - `copier.yml`: Template automation configurations.
 
-## Contributing
+---
+
+## Development & Contribution Guidelines 💻
+
 For contribution guidelines, please refer to the [Development Guide](development.md).
-# Contribution Guidelines
 
-Thank you for your interest in contributing to this project! Before you get started, please take a moment to review our guidelines and resources.
-
-## Getting Started
-
-Before you start coding, please refer to our detailed [Production Guide](https://medium.com/@nik_75329/from-zero-to-deployed-a-comprehensive-guide-to-deploying-a-fastapi-project-with-docker-and-traefik-79283ae9e4b7) which covers:
-- Deployment best practices
-- Project setup using FastAPI, Docker, and Traefik
-- Configuration and environment management
-
-## Docker Environment
-
-If you encounter any issues with your Docker setup or need to perform debugging and cleanup, please review the following guides:
-
-- **Docker Environment Debugging:**  
-  [How to Completely Reset Your Docker Setup](https://medium.com/@nik_75329/docker-environment-debugging-how-to-completely-reset-your-docker-setup-dfec0eb6e6c4)  
-  *This guide helps you diagnose and resolve Docker environment issues.*
-
-- **Removing Docker Containers, Images, and Volumes:**  
-  [Step-by-Step Guide on How to Remove All Docker Containers, Images, and Volumes](https://medium.com/@nik_75329/below-is-a-step-by-step-guide-on-how-to-remove-all-docker-containers-images-and-volumes-and-d119d02a76b9)  
-  *Follow this guide to clean up your Docker setup completely.*
-
-- **Reinstalling Docker on Linux:**  
-  [How to Completely Remove and Reinstall Docker on Linux](https://medium.com/@nik_75329/how-to-completely-remove-and-reinstall-docker-on-linux-bc4fb677887c)  
-  *Use this resource if you need to completely remove and reinstall Docker on your Linux system.*   git checkout -b feature/your-feature-name
-- **Docker like a pro with Linux:**  
-  [Production Guuide](https://medium.com/@nik_75329/how-to-completely-remove-and-reinstall-docker-on-linux-bc4fb677887c)  
-  *Use this resource if you need to completely remove and reinstall Docker on your Linux system.*
-
-# Contributing to Cobalt Data
-
-Thank you for your interest in contributing to our project! Please follow the guidelines below to get started.
-
----
-
-## Table of Contents
-
-- [Getting Started](#getting-started)
-- [Forking the Repository](#forking-the-repository)
-  - [Using GitHub CLI](#using-github-cli)
-  - [Using the GitHub API with `curl`](#using-the-github-api-with-curl)
-- [Creating a Feature Branch](#creating-a-feature-branch)
-- [Making Your Changes](#making-your-changes)
-- [Committing and Pushing Changes](#committing-and-pushing-changes)
-- [Opening a Pull Request](#opening-a-pull-request)
-- [Additional Resources](#additional-resources)
-- [Code of Conduct](#code-of-conduct)
-- [Issues & Support](#issues--support)
-
----
-
-## Getting Started
-
-Before you start coding, please review our production and Docker guides for deployment and debugging:
-
-- **[Production Guide](https://medium.com/@nik_75329/from-zero-to-deployed-a-comprehensive-guide-to-deploying-a-fastapi-project-with-docker-and-traefik-79283ae9e4b7)**
-- **[Docker Environment Debugging](https://medium.com/@nik_75329/docker-environment-debugging-how-to-completely-reset-your-docker-setup-dfec0eb6e6c4)**
-- **[Removing Docker Containers, Images, and Volumes](https://medium.com/@nik_75329/below-is-a-step-by-step-guide-on-how-to-remove-all-docker-containers-images-and-volumes-and-d119d02a76b9)**
-- **[Reinstalling Docker on Linux](https://medium.com/@nik_75329/how-to-completely-remove-and-reinstall-docker-on-linux-bc4fb677887c)**
-
----
-
-## Forking the Repository
-
-You can fork the repository directly from the command line using either the GitHub CLI or the GitHub API.
-
-### Using GitHub CLI
-
-1. **Install GitHub CLI**  
-   If you haven't installed the GitHub CLI yet, follow the instructions based on your operating system:
-
-   - **macOS (Homebrew):**
-     ```bash
-     brew install gh
-     ```
-   - **Windows and Linux:**  
-     Check out the [GitHub CLI installation guide](https://github.com/cli/cli#installation).
-
-2. **Authenticate with GitHub:**
-   ```bash
-   gh auth login
-
-Below is a complete Markdown example for a `CONTRIBUTING.md` file containing the sections you listed:
-Below is a cleaned-up, enhanced version of your contribution guidelines with added emojis to help highlight key sections—all in pure Markdown:
+Below is a cleaned-up, enhanced version of our contribution guidelines with added emojis to help highlight key sections—all in pure Markdown:
 
 ---
 
 # Contributing to Cobalt Data 🚀
 
-Thank you for your interest in contributing to our project! Your efforts help make Cobalt Data even better. Please follow the guidelines below to ensure a smooth collaboration process.
+Thank you for your interest in contributing to our project! Your efforts help make Cobalt Data even better. Please follow the guidelines below to ensure smooth collaboration.
 
----
-
-## Table of Contents
+## Table of Contents 📑
 - [Getting Started](#getting-started-️)
 - [Forking the Repository](#forking-the-repository-)
   - [Using GitHub CLI](#using-github-cli-)
@@ -168,7 +88,7 @@ You can fork the repository using either the GitHub CLI or the GitHub API.
      ```bash
      brew install gh
      ```
-   - **Windows and Linux:**  
+   - **Windows & Linux:**  
      Follow the [GitHub CLI installation guide](https://github.com/cli/cli#installation).
 
 2. **Authenticate with GitHub:**
@@ -250,7 +170,7 @@ After pushing your changes:
 ## Additional Resources 📚
 
 For more detailed instructions and troubleshooting, please refer to:
-- **[Production Guide](https://medium.com/@nik_75329/from-zero-to-deployed-a-comprehensive-guide-to-deploying-a-fastapi-project-with-docker-and-traefik-79283ae9e4b7)**
+- **[Production Guide](https://medium.com/@nik_75329/from-zero-to-deployed-a-fastapi-project-with-docker-and-traefik-79283ae9e4b7)**
 - **[Docker Environment Debugging](https://medium.com/@nik_75329/docker-environment-debugging-how-to-completely-reset-your-docker-setup-dfec0eb6e6c4)**
 - **[Removing Docker Containers, Images, and Volumes](https://medium.com/@nik_75329/below-is-a-step-by-step-guide-on-how-to-remove-all-docker-containers-images-and-volumes-and-d119d02a76b9)**
 - **[Reinstalling Docker on Linux](https://medium.com/@nik_75329/how-to-completely-remove-and-reinstall-docker-on-linux-bc4fb677887c)**
