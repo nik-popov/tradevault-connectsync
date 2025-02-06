@@ -29,6 +29,46 @@ Cobalt Data is an integrated platform that combines a **Vite.JS** frontend with 
 
 ## Contributing
 For contribution guidelines, please refer to the [Development Guide](development.md).
+# Contribution Guidelines
 
+Thank you for your interest in contributing to this project! Before you get started, please take a moment to review our guidelines and resources.
+
+## Getting Started
+
+Before you start coding, please refer to our detailed [Production Guide](https://medium.com/@nik_75329/from-zero-to-deployed-a-comprehensive-guide-to-deploying-a-fastapi-project-with-docker-and-traefik-79283ae9e4b7) which covers:
+- Deployment best practices
+- Project setup using FastAPI, Docker, and Traefik
+- Configuration and environment management
+
+## Docker Environment
+
+If you encounter any issues with your Docker setup or need to perform debugging and cleanup, please review the following guides:
+
+- **Docker Environment Debugging:**  
+  [How to Completely Reset Your Docker Setup](https://medium.com/@nik_75329/docker-environment-debugging-how-to-completely-reset-your-docker-setup-dfec0eb6e6c4)  
+  *This guide helps you diagnose and resolve Docker environment issues.*
+
+- **Removing Docker Containers, Images, and Volumes:**  
+  [Step-by-Step Guide on How to Remove All Docker Containers, Images, and Volumes](https://medium.com/@nik_75329/below-is-a-step-by-step-guide-on-how-to-remove-all-docker-containers-images-and-volumes-and-d119d02a76b9)  
+  *Follow this guide to clean up your Docker setup completely.*
+
+- **Reinstalling Docker on Linux:**  
+  [How to Completely Remove and Reinstall Docker on Linux](https://medium.com/@nik_75329/how-to-completely-remove-and-reinstall-docker-on-linux-bc4fb677887c)  
+  *Use this resource if you need to completely remove and reinstall Docker on your Linux system.*   git checkout -b feature/your-feature-name
+- **Docker like a pro with Linux:**  
+  [Production Guuide](https://medium.com/@nik_75329/how-to-completely-remove-and-reinstall-docker-on-linux-bc4fb677887c)  
+  *Use this resource if you need to completely remove and reinstall Docker on your Linux system.*
+## Linux Guides
+For contribution guidelines, please refer to the [Production Guide](https://medium.com/@nik_75329/from-zero-to-deployed-a-comprehensive-guide-to-deploying-a-fastapi-project-with-docker-and-traefik-79283ae9e4b7).
+
+
+## How to Contribute
+
+1. **Fork the Repository:**  
+   Click the "Fork" button at the top of this page to create your own copy of the project.
+
+2. **Create a Feature Branch:**  
+   Create a new branch for your feature or bug fix:
+   ```bash
 ---
 For more information, visit [Cobalt Data Dashboard](https://dashboard.cobaltdata.net).
