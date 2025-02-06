@@ -79,7 +79,7 @@
 
 ### Upgrades
 
-* ⬆️ Upgrade FastAPI. PR [#1349](https://github.com/fastapi/full-stack-fastapi-template/pull/1349) by [@cobaltdata](https://github.com/cobaltdata).
+* ⬆️ Upgrade Full Stack. PR [#1349](https://github.com/fastapi/full-stack-fastapi-template/pull/1349) by [@cobaltdata](https://github.com/cobaltdata).
 
 ### Docs
 
@@ -192,7 +192,7 @@ Lots of new things! 🎁
 * 🎨 Format imports. PR [#1140](https://github.com/tiangolo/full-stack-fastapi-template/pull/1140) by [@alejsdev](https://github.com/alejsdev).
 * ♻️ Refactor and remove `React.FC`. PR [#1139](https://github.com/tiangolo/full-stack-fastapi-template/pull/1139) by [@alejsdev](https://github.com/alejsdev).
 * ♻️ Add email pattern and refactor in frontend. PR [#1138](https://github.com/tiangolo/full-stack-fastapi-template/pull/1138) by [@alejsdev](https://github.com/alejsdev).
-* 🥅 Set up Sentry for FastAPI applications. PR [#1136](https://github.com/tiangolo/full-stack-fastapi-template/pull/1136) by [@estebanx64](https://github.com/estebanx64).
+* 🥅 Set up Sentry for Full Stack applications. PR [#1136](https://github.com/tiangolo/full-stack-fastapi-template/pull/1136) by [@estebanx64](https://github.com/estebanx64).
 * 🔥 Remove deprecated Docker Compose version key. PR [#1129](https://github.com/tiangolo/full-stack-fastapi-template/pull/1129) by [@cobaltdata](https://github.com/cobaltdata).
 * 🎨 Format with Biome . PR [#1097](https://github.com/tiangolo/full-stack-fastapi-template/pull/1097) by [@alejsdev](https://github.com/alejsdev).
 * 🎨 Update quote style in biome formatter. PR [#1095](https://github.com/tiangolo/full-stack-fastapi-template/pull/1095) by [@alejsdev](https://github.com/alejsdev).
@@ -259,7 +259,7 @@ Lots of new things! 🎁
 
 ## 0.6.0
 
-Latest FastAPI, Pydantic, SQLModel 🚀
+Latest Full Stack, Pydantic, SQLModel 🚀
 
 Brand new frontend with React, TS, Vite, Chakra UI, TanStack Query/Router, generated client/SDK 🎨
 
@@ -270,7 +270,7 @@ Test cov > 90% ✅
 ### Features
 
 * ✨ Adopt SQLModel, create models, start using it. PR [#559](https://github.com/tiangolo/full-stack-fastapi-template/pull/559) by [@cobaltdata](https://github.com/cobaltdata).
-* ✨ Upgrade items router with new SQLModel models, simplified logic, and new FastAPI Annotated dependencies. PR [#560](https://github.com/tiangolo/full-stack-fastapi-template/pull/560) by [@cobaltdata](https://github.com/cobaltdata).
+* ✨ Upgrade items router with new SQLModel models, simplified logic, and new Full Stack Annotated dependencies. PR [#560](https://github.com/tiangolo/full-stack-fastapi-template/pull/560) by [@cobaltdata](https://github.com/cobaltdata).
 * ✨ Migrate from pgAdmin to Adminer. PR [#692](https://github.com/tiangolo/full-stack-fastapi-template/pull/692) by [@cobaltdata](https://github.com/cobaltdata).
 * ✨ Add support for setting `POSTGRES_PORT`. PR [#333](https://github.com/tiangolo/full-stack-fastapi-template/pull/333) by [@uepoch](https://github.com/uepoch).
 * ⬆ Upgrade Flower version and command. PR [#447](https://github.com/tiangolo/full-stack-fastapi-template/pull/447) by [@maurob](https://github.com/maurob).
@@ -404,7 +404,7 @@ Test cov > 90% ✅
 * 🦇 Add dark mode to `README.md`. PR [#703](https://github.com/tiangolo/full-stack-fastapi-template/pull/703) by [@alejsdev](https://github.com/alejsdev).
 * 🍱 Update GitHub image. PR [#701](https://github.com/tiangolo/full-stack-fastapi-template/pull/701) by [@cobaltdata](https://github.com/cobaltdata).
 * 🍱 Add GitHub image. PR [#700](https://github.com/tiangolo/full-stack-fastapi-template/pull/700) by [@cobaltdata](https://github.com/cobaltdata).
-* 🚚 Rename project to Full Stack FastAPI Template. PR [#699](https://github.com/tiangolo/full-stack-fastapi-template/pull/699) by [@cobaltdata](https://github.com/cobaltdata).
+* 🚚 Rename project to Full Stack Full Stack Template. PR [#699](https://github.com/tiangolo/full-stack-fastapi-template/pull/699) by [@cobaltdata](https://github.com/cobaltdata).
 * 📝 Update `README.md`. PR [#691](https://github.com/tiangolo/full-stack-fastapi-template/pull/691) by [@alejsdev](https://github.com/alejsdev).
 * ✏ Fix typo in `development.md`. PR [#309](https://github.com/tiangolo/full-stack-fastapi-template/pull/309) by [@graue70](https://github.com/graue70).
 * 📝 Add docs for wildcard domains. PR [#681](https://github.com/tiangolo/full-stack-fastapi-template/pull/681) by [@cobaltdata](https://github.com/cobaltdata).
@@ -507,9 +507,9 @@ Test cov > 90% ✅
 
 * Fix frontend hijacking /docs in development. Using latest https://github.com/tiangolo/node-frontend with custom Nginx configs in frontend. <a href="https://github.com/tiangolo/full-stack-fastapi-template/pull/6" target="_blank">PR #6</a>.
 
-## 0.2.1
+## 0.2.1 f
 
-* Fix documentation for *path operation* to get user by ID. <a href="https://github.com/tiangolo/full-stack-fastapi-template/pull/4" target="_blank">PR #4</a> by <a href="https://github.com/mpclarkson" target="_blank">@mpclarkson</a> in FastAPI.
+* Fix documentation for *path operation* to get user by ID. <a href="https://github.com/tiangolo/full-stack-fastapi-template/pull/4" target="_blank">PR #4</a> by <a href="https://github.com/mpclarkson" target="_blank">@mpclarkson</a> in Full Stack.
 
 * Set `/start-reload.sh` as a command override for development by default.
 
@@ -525,7 +525,7 @@ Test cov > 90% ✅
 * Standardize frontend components layout, buttons order, etc.
 * Add local development scripts (to develop this project generator itself).
 * Add logs to startup modules to detect errors early.
-* Improve FastAPI dependency utilities, to simplify and reduce code (to require a superuser).
+* Improve Full Stack dependency utilities, to simplify and reduce code (to require a superuser).
 
 ## 0.1.2
 
