@@ -73,7 +73,8 @@ Before you start coding, please review these key resources:
 
 - **[Reinstalling Docker on Linux](https://medium.com/@nik_75329/how-to-completely-remove-and-reinstall-docker-on-linux-bc4fb677887c)**  
   *Step-by-step guide for Linux users.*
-
+- **[Firefox & CORS Debug macOs & LinuxOs](https://medium.com/@nik_75329/firefox-cors-debug-on-macos-linux-fixing-mixed-content-insecure-xmlhttprequest-74a62694f4a1)**
+  *Step-by-step guide for macOs users.*
 ---
 
 ## Forking the Repository 🍴
