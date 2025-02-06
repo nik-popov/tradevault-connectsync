@@ -17,6 +17,10 @@ const theme = extendTheme({
       dark: "#1A202C",
       darkSlate: "#252D3D",
       dim: "#A0AEC0",
+        teal: {
+          500: "#2C6295", // Override the default teal shade with your custom cobalt color
+          // You can adjust other shades as needed
+        },
     },
   },
   components: {
@@ -51,6 +55,17 @@ const theme = extendTheme({
             _selected: {
               color: "ui.main",
             },
+          },
+        },
+      },
+    },  Radio: {
+      // You can add custom styles or variants here to use your ui colors.
+      // For example, override the checked style:
+      baseStyle: {
+        control: {
+          _checked: {
+            bg: "ui.main",
+            borderColor: "ui.main",
           },
         },
       },
