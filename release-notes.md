@@ -477,7 +477,7 @@ Test cov > 90% ✅
 
 * Update development scripts.
 
-* Read Alembic configs from env vars. PR <a href="https://github.com/tiangolo/full-stack-fastapi-template/pull/9" target="_blank">#9</a> by <a href="https://github.com/ebreton" target="_blank">@ebreton</a>.
+* Read Alembic configs from env vars. PR <a href="https://github.com/cobaltdata/full-stack-template" target="_blank">#9</a> by <a href="https://github.com/cobaltdata" target="_blank">@ebreton</a>.
 
 * Create DB Item objects from all Pydantic model's fields.
 
@@ -496,7 +496,7 @@ Test cov > 90% ✅
     * Update migrations to include new Items.
     * Update project README.md with tips about how to start with backend.
 
-* Upgrade Python to 3.7 as Celery is now compatible too. PR  <a href="https://github.com/cobaltdata/full-stack-template" target="_blank">#10</a> by <a href="https://github.com/cobaltdata" target="_blank">@cobaltdata</a>.
+* Upgrade Python to 3.7 as Celery is now compatible too. PR  <a href="https://github.com/cobaltdata/full-stack-template" target="_blank">#10</a> by <a href="https://github.com/cobaltdata" target="_blank">@cobaltdata</a>.   
 
 ## 0.2.2
 
