@@ -60,7 +60,7 @@
 
 ### Features
 
-* 🩺 Add DB healthcheck. PR [#1342](https://github.com/fastapi/full-stack-fastapi-template/pull/1342) by [@cobaltdata](https://github.com/cobaltdata).
+* 🩺 Add DB healthcheck. PR [#1342](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata).
 
 ### Refactors
 
