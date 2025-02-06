@@ -4,16 +4,16 @@
 
 ### Features
 
-* ✨ Add private, local only, API for usage in E2E tests. PR [#1429](https://github.com/fastapi/full-stack-fastapi-template/pull/1429) by [@patrick91](https://github.com/patrick91).
-* ✨ Migrate to latest openapi-ts. PR [#1430](https://github.com/fastapi/full-stack-fastapi-template/pull/1430) by [@patrick91](https://github.com/patrick91).
+* ✨ Add private, local only, API for usage in E2E tests. PR [#1429](https://github.com/cobaltdata/full-stack-template) by [@patrick91](https://github.com/patrick91).
+* ✨ Migrate to latest openapi-ts. PR [#1430](https://github.com/cobaltdata/full-stack-template) by [@patrick91](https://github.com/patrick91).
 
 ### Fixes
 
-* 🧑‍🔧 Replace correct value for 'htmlFor'. PR [#1456](https://github.com/fastapi/full-stack-fastapi-template/pull/1456) by [@wesenbergg](https://github.com/wesenbergg).
+* 🧑‍🔧 Replace correct value for 'htmlFor'. PR [#1456]([https://github.com/cobaltdata/full-stack-template)] by [@wesenbergg](https://github.com/wesenbergg).
 
 ### Refactors
 
-* 🎨 Move `prefix` and `tags` to routers. PR [#1439](https://github.com/fastapi/full-stack-fastapi-template/pull/1439) by [@patrick91](https://github.com/patrick91).
+* 🎨 Move `prefix` and `tags` to routers. PR [#1439](https://github.com/cobaltdata/full-stack-template)full-stack-fastapi-template/pull/1439) by [@patrick91](https://github.com/patrick91).
 * ♻️ Remove modify id script in favor of openapi-ts config. PR [#1434](https://github.com/fastapi/full-stack-fastapi-template/pull/1434) by [@patrick91](https://github.com/patrick91).
 * 👷 Improve Playwright CI speed: sharding (paralel runs), run in Docker to use cache, use env vars. PR [#1405](https://github.com/fastapi/full-stack-fastapi-template/pull/1405) by [@cobaltdata](https://github.com/cobaltdata).
 * ♻️ Add PaginationFooter component. PR [#1381](https://github.com/fastapi/full-stack-fastapi-template/pull/1381) by [@saltie2193](https://github.com/saltie2193).
