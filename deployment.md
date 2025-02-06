@@ -1,17 +1,17 @@
-# FastAPI Project - Deployment
+# Full-Stack Project - Deployment
 
-This guide provides instructions for deploying a FastAPI project using Docker Compose on a remote server with Traefik as a reverse proxy.
+This guide provides instructions for deploying a Full-Stack project using Docker Compose on a remote server with Traefik as a reverse proxy.
 
 ## 📖 Comprehensive Deployment Guide
 
-For a step-by-step guide on deploying a FastAPI project with Docker and Traefik, refer to the following article:
+For a step-by-step guide on deploying a Full-Stack project with Docker and Traefik, refer to the following article:
 
 [**From Zero to Deployed: A Comprehensive Guide to Deploying a FastAPI Project with Docker and Traefik**](https://medium.com/@nik_75329/from-zero-to-deployed-a-comprehensive-guide-to-deploying-a-fastapi-project-with-docker-and-traefik-79283ae9e4b7)
 
 This guide covers:
 - Setting up a remote server
 - Configuring DNS and Traefik
-- Deploying FastAPI with Docker Compose
+- Deploying Full-Stack with Docker Compose
 - Setting up Continuous Deployment with GitHub Actions
 
 ## 🚀 Quick Deployment Steps
@@ -27,9 +27,9 @@ This guide covers:
 - Configure Traefik as a reverse proxy.
 - Set up Let's Encrypt for automatic SSL certificates.
 
-### 3️⃣ FastAPI Deployment
+### 3️⃣ Full-Stack Deployment
 - Configure environment variables.
-- Deploy FastAPI using Docker Compose.
+- Deploy Full-Stack using Docker Compose.
 
 ### 4️⃣ Continuous Deployment (CI/CD)
 - Set up GitHub Actions for automated deployments.
@@ -177,24 +177,24 @@ Replace `fastapi-project.example.com` with your domain.
 
 ### Main Traefik Dashboard
 
-Traefik UI: `https://traefik.fastapi-project.example.com`
+Traefik UI: `https://traefik.project.example.com`
 
 ### Production
 
-Frontend: `https://dashboard.fastapi-project.example.com`
+Frontend: `https://dashboard.project.example.com`
 
-Backend API docs: `https://api.fastapi-project.example.com/docs`
+Backend API docs: `https://api.project.example.com/docs`
 
-Backend API base URL: `https://api.fastapi-project.example.com`
+Backend API base URL: `https://api.project.example.com`
 
-Adminer: `https://adminer.fastapi-project.example.com`
+Adminer: `https://adminer.project.example.com`
 
 ### Staging
 
-Frontend: `https://dashboard.staging.fastapi-project.example.com`
+Frontend: `https://dashboard.staging.project.example.com`
 
-Backend API docs: `https://api.staging.fastapi-project.example.com/docs`
+Backend API docs: `https://api.staging.project.example.com/docs`
 
-Backend API base URL: `https://api.staging.fastapi-project.example.com`
+Backend API base URL: `https://api.staging.project.example.com`
 
-Adminer: `https://adminer.staging.fastapi-project.example.com`
+Adminer: `https://adminer.staging.project.example.com`
