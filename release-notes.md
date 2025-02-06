@@ -9,28 +9,28 @@
 
 ### Fixes
 
-* 🧑‍🔧 Replace correct value for 'htmlFor'. PR [#1456]([https://github.com/cobaltdata/full-stack-template)] by [@wesenbergg](https://github.com/wesenbergg).
+* 🧑‍🔧 Replace correct value for 'htmlFor'. PR [#1456]([https://github.com/cobaltdata/full-stack-template)] by [@cobaltdata](https://github.com/cobaltdata).
 
 ### Refactors
 
 * 🎨 Move `prefix` and `tags` to routers. PR [#1439](https://github.com/cobaltdata/full-stack-template)full-stack-fastapi-template/pull/1439) by [@cobaltdata](https://github.com/cobaltdata).
 * ♻️ Remove modify id script in favor of openapi-ts config. PR [#1434](https://github.com/fastapi/full-stack-fastapi-template/pull/1434) by [@cobaltdata](https://github.com/cobaltdata).
 * 👷 Improve Playwright CI speed: sharding (paralel runs), run in Docker to use cache, use env vars. PR [#1405](https://github.com/fastapi/full-stack-fastapi-template/pull/1405) by [@cobaltdata](https://github.com/cobaltdata).
-* ♻️ Add PaginationFooter component. PR [#1381](https://github.com/fastapi/full-stack-fastapi-template/pull/1381) by [@saltie2193](https://github.com/saltie2193).
-* ♻️ Refactored code to use encryption algorithm name from settings for consistency. PR [#1160](https://github.com/fastapi/full-stack-fastapi-template/pull/1160) by [@sameeramin](https://github.com/sameeramin).
-* 🔊 Enable logging for email utils by default. PR [#1374](https://github.com/fastapi/full-stack-fastapi-template/pull/1374) by [@ihmily](https://github.com/ihmily).
-* 🔧 Add `ENV PYTHONUNBUFFERED=1` to log output directly to Docker. PR [#1378](https://github.com/fastapi/full-stack-fastapi-template/pull/1378) by [@cobaltdata](https://github.com/cobaltdata).
-* 💡 Remove unnecessary comment. PR [#1260](https://github.com/fastapi/full-stack-fastapi-template/pull/1260) by [@sebhani](https://github.com/sebhani).
+* ♻️ Add PaginationFooter component. PR [#1381](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata).
+* ♻️ Refactored code to use encryption algorithm name from settings for consistency. PR [#1160](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata).(https://github.com/sameeramin).
+* 🔊 Enable logging for email utils by default. PR [#1374](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata).
+* 🔧 Add `ENV PYTHONUNBUFFERED=1` to log output directly to Docker. PR [#1378](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata).
+* 💡 Remove unnecessary comment. PR [#1260](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata).
 
 ### Upgrades
 
-* ⬆️ Update Dockerfile to use uv version 0.5.11. PR [#1454](https://github.com/fastapi/full-stack-fastapi-template/pull/1454) by [@alejsdev](https://github.com/alejsdev).
+* ⬆️ Update Dockerfile to use uv version 0.5.11. PR [#1454](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata).
 
 ### Docs
 
-* 📝 Update `frontend/README.md` to also remove Playwright when removing Frontend. PR [#1452](https://github.com/fastapi/full-stack-fastapi-template/pull/1452) by [@youben11](https://github.com/youben11).
-* 📝 Update `deployment.md`, instructions to install GitHub Runner in non-root VMs. PR [#1412](https://github.com/fastapi/full-stack-fastapi-template/pull/1412) by [@cobaltdata](https://github.com/cobaltdata).
-* 📝 Add MailCatcher to `development.md`. PR [#1387](https://github.com/fastapi/full-stack-fastapi-template/pull/1387) by [@tobiase](https://github.com/tobiase).
+* 📝 Update `frontend/README.md` to also remove Playwright when removing Frontend. PR [#1452](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata).
+* 📝 Update `deployment.md`, instructions to install GitHub Runner in non-root VMs. PR [#1412]((https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata).
+* 📝 Add MailCatcher to `development.md`. PR [#1387](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata).
 
 ### Internal
 
