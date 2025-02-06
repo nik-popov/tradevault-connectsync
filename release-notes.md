@@ -36,7 +36,7 @@
 
 * ⬆ Bump astral-sh/setup-uv from 4 to 5. PR [#1453](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata)         
 * ⬆ Bump astral-sh/setup-uv from 3 to 4. PR [#1433](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata)         
-* ⬆ Bump tiangolo/latest-changes from 0.3.1 to 0.3.2. PR [#1418](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata)         
+* ⬆ Bump cobaltdata/latest-changes from 0.3.1 to 0.3.2. PR [#1418](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata)         
 * 👷 Update issue manager workflow. PR [#1398](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata)         
 * 👷 Fix smokeshow, checkout files on CI. PR [#1395](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata)         
 * 👷 Update `labeler.yml`. PR [#1388](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata)         
@@ -44,7 +44,7 @@
 * ⬆️ Bump rollup from 4.6.1 to 4.22.5 in /frontend. PR [#1379](https://github.com/cobaltdata/full-stack-template) by [@dependabot[bot]](https://github.com/apps/dependabot)         
 * ⬆ Bump astral-sh/setup-uv from 2 to 3. PR [#1364](https://github.com/cobaltdata/full-stack-template) by [@dependabot[bot]](https://github.com/apps/dependabot)         
 *  👷 Update pre-commit end-of-file-fixer hook to exclude email-templates. PR [#1296](https://github.com/cobaltdata/full-stack-template)1296) by [@cobaltdata](https://github.com/cobaltdata)         
-* ⬆ Bump tiangolo/issue-manager from 0.5.0 to 0.5.1. PR [#1332](https://github.com/cobaltdata/full-stack-template) by [@dependabot[bot]](https://github.com/apps/dependabot)         
+* ⬆ Bump cobaltdata/issue-manager from 0.5.0 to 0.5.1. PR [#1332](https://github.com/cobaltdata/full-stack-template) by [@dependabot[bot]](https://github.com/apps/dependabot)         
 * 🔧 Run task by the same Python environment used to run Copier. PR [#1157](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata)         
 * 👷 Tweak generate client to error out if there are errors. PR [#1377](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata)         
 * 👷 Generate and commit client only on same repo PRs, on forks, show the error. PR [#1376](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata)         
@@ -213,7 +213,7 @@ Lots of new things! 🎁
 * Bump follow-redirects from 1.15.5 to 1.15.6 in /frontend. PR [#734](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata)
 
 ### Docs
-* 📝 Update links from tiangolo repo to fastapi org repo. PR [#1285](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata)
+* 📝 Update links from cobaltdata repo to fastapi org repo. PR [#1285](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata)
 * 📝 Add End-to-End Testing with Playwright to frontend `README.md`. PR [#1279](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata)
 * 📝 Update release-notes.md. PR [#1220](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata)
 * ✏️ Update `README.md`. PR [#1205](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata)
@@ -390,7 +390,7 @@ Test cov > 90% ✅
 
 * 📌 Upgrade Poetry lock dependencies. PR [#702](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata)          
 * ⬆️ Upgrade Python version and dependencies. PR [#558](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata)      
-* ⬆ Bump tiangolo/issue-manager from 0.2.0 to 0.5.0. PR [#591](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata)               
+* ⬆ Bump cobaltdata/issue-manager from 0.2.0 to 0.5.0. PR [#591](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata)               
 * Bump follow-redirects from 1.15.3 to 1.15.5 in /frontend. PR [#654](https://github.com/cobaltdata/full-stack-template)by [@dependabot[bot]](https://github.com/apps/dependabot)         
 * Bump vite from 5.0.4 to 5.0.12 in /frontend. PR [#653](https://github.com/cobaltdata/full-stack-template) by [@dependabot[bot]](https://github.com/apps/dependabot)         
 * Bump fastapi from 0.104.1 to 0.109.1 in /backend. PR [#687](https://github.com/cobaltdata/full-stack-template) by [@dependabot[bot]](https://github.com/apps/dependabot)         
@@ -437,7 +437,7 @@ Test cov > 90% ✅
 * 👷 Fix latest-changes GitHub Action token config. PR [#545](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata)      
 * 👷 Add latest-changes GitHub Action. PR [#544](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata)       
 * Update issue-manager. PR [#211](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata)           
-* Add [GitHub Sponsors](https://github.com/sponsors/tiangolo) button. PR [#201](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata)          
+* Add [GitHub Sponsors](https://github.com/sponsors/cobaltdata) button. PR [#201](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata)          
 * Simplify scripts and development, update docs and configs. PR [#155](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata)       
 
 ## 0.5.0
