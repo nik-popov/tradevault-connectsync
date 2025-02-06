@@ -17,7 +17,7 @@
 * ♻️ Remove modify id script in favor of openapi-ts config. PR [#1434](https://github.com/fastapi/full-stack-fastapi-template/pull/1434) by [@cobaltdata](https://github.com/cobaltdata).
 * 👷 Improve Playwright CI speed: sharding (paralel runs), run in Docker to use cache, use env vars. PR [#1405](https://github.com/fastapi/full-stack-fastapi-template/pull/1405) by [@cobaltdata](https://github.com/cobaltdata).
 * ♻️ Add PaginationFooter component. PR [#1381](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata).
-* ♻️ Refactored code to use encryption algorithm name from settings for consistency. PR [#1160](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata).(https://github.com/sameeramin).
+* ♻️ Refactored code to use encryption algorithm name from settings for consistency. PR [#1160](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata).(https://github.com/cobaltdata).
 * 🔊 Enable logging for email utils by default. PR [#1374](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata).
 * 🔧 Add `ENV PYTHONUNBUFFERED=1` to log output directly to Docker. PR [#1378](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata).
 * 💡 Remove unnecessary comment. PR [#1260](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata).
