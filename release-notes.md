@@ -15,7 +15,7 @@
 
 * 🎨 Move `prefix` and `tags` to routers. PR [#1439](https://github.com/cobaltdata/full-stack-template)full-stack-fastapi-template/pull/1439) by [@cobaltdata](https://github.com/cobaltdata).
 * ♻️ Remove modify id script in favor of openapi-ts config. PR [#1434]([https://github.com/cobaltdata/full-stack-template)] by [@cobaltdata](https://github.com/cobaltdata).
-* 👷 Improve Playwright CI speed: sharding (paralel runs), run in Docker to use cache, use env vars. PR [#1405](https://github.com/fastapi/full-stack-fastapi-template/pull/1405) by [@cobaltdata](https://github.com/cobaltdata).
+* 👷 Improve Playwright CI speed: sharding (paralel runs), run in Docker to use cache, use env vars. PR [#1405]([https://github.com/cobaltdata/full-stack-template)] by [@cobaltdata](https://github.com/cobaltdata)./1405) by [@cobaltdata](https://github.com/cobaltdata).
 * ♻️ Add PaginationFooter component. PR [#1381](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata).
 * ♻️ Refactored code to use encryption algorithm name from settings for consistency. PR [#1160](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata).(https://github.com/cobaltdata).
 * 🔊 Enable logging for email utils by default. PR [#1374](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata).
@@ -64,53 +64,53 @@
 
 ### Refactors
 
-* ♻️ Update settings to use top level `.env` file. PR [#1359](https://github.com/fastapi/full-stack-fastapi-template/pull/1359) by [@cobaltdata](https://github.com/cobaltdata).
-* ⬆️ Migrate from Poetry to uv. PR [#1356](https://github.com/fastapi/full-stack-fastapi-template/pull/1356) by [@cobaltdata](https://github.com/cobaltdata).
-* 🔥 Remove logic for development dependencies and Jupyter, it was never documented, and I no longer use that trick. PR [#1355](https://github.com/fastapi/full-stack-fastapi-template/pull/1355) by [@cobaltdata](https://github.com/cobaltdata).
-* ♻️ Use Docker Compose `watch`. PR [#1354](https://github.com/fastapi/full-stack-fastapi-template/pull/1354) by [@cobaltdata](https://github.com/cobaltdata).
-* 🔧 Use plain base official Python Docker image. PR [#1351](https://github.com/fastapi/full-stack-fastapi-template/pull/1351) by [@cobaltdata](https://github.com/cobaltdata).
-* 🚚 Move location of scripts to simplify file structure. PR [#1352](https://github.com/fastapi/full-stack-fastapi-template/pull/1352) by [@cobaltdata](https://github.com/cobaltdata).
-* ♻️ Refactor prestart (migrations), move that to its own container. PR [#1350](https://github.com/fastapi/full-stack-fastapi-template/pull/1350) by [@cobaltdata](https://github.com/cobaltdata).
-* ♻️ Include `FRONTEND_HOST` in CORS origins by default. PR [#1348](https://github.com/fastapi/full-stack-fastapi-template/pull/1348) by [@cobaltdata](https://github.com/cobaltdata).
-* ♻️ Simplify domains with `api.example.com` for API and `dashboard.example.com` for frontend, improve local development with `localhost`. PR [#1344](https://github.com/fastapi/full-stack-fastapi-template/pull/1344) by [@cobaltdata](https://github.com/cobaltdata).
-* 🔥 Simplify Traefik, remove www-redirects that add complexity. PR [#1343](https://github.com/fastapi/full-stack-fastapi-template/pull/1343) by [@cobaltdata](https://github.com/cobaltdata).
-* 🔥 Enable support for Arm Docker images in Mac, remove old patch. PR [#1341](https://github.com/fastapi/full-stack-fastapi-template/pull/1341) by [@cobaltdata](https://github.com/cobaltdata).
-* ♻️ Remove duplicate information in the ItemCreate model. PR [#1287](https://github.com/fastapi/full-stack-fastapi-template/pull/1287) by [@jjaakko](https://github.com/jjaakko).
+* ♻️ Update settings to use top level `.env` file. PR [#1359]([https://github.com/cobaltdata/full-stack-template)] by [@cobaltdata](https://github.com/cobaltdata)
+* ⬆️ Migrate from Poetry to uv. PR [#1356](https://github.com/fastapi/full-stack-fastapi-template) by [@cobaltdata](https://github.com/cobaltdata).
+* 🔥 Remove logic for development dependencies and Jupyter, it was never documented, and I no longer use that trick. PR [#1355]([https://github.com/cobaltdata/full-stack-template)] by [@cobaltdata](https://github.com/cobaltdata).
+* ♻️ Use Docker Compose `watch`. PR [#1354]([https://github.com/cobaltdata/full-stack-template)] by [@cobaltdata](https://github.com/cobaltdata).
+* 🔧 Use plain base official Python Docker image. PR [#1351]([https://github.com/cobaltdata/full-stack-template)] by [@cobaltdata](https://github.com/cobaltdata).
+* 🚚 Move location of scripts to simplify file structure. PR [#1352]([https://github.com/cobaltdata/full-stack-template)] by [@cobaltdata](https://github.com/cobaltdata).
+* ♻️ Refactor prestart (migrations), move that to its own container. PR [#1350]([https://github.com/cobaltdata/full-stack-template)] by [@cobaltdata](https://github.com/cobaltdata).
+* ♻️ Include `FRONTEND_HOST` in CORS origins by default. PR [#1348]([https://github.com/cobaltdata/full-stack-template)] by [@cobaltdata](https://github.com/cobaltdata).
+* ♻️ Simplify domains with `api.example.com` for API and `dashboard.example.com` for frontend, improve local development with `localhost`. PR [#1344]([https://github.com/cobaltdata/full-stack-template)] by [@cobaltdata](https://github.com/cobaltdata).
+* 🔥 Simplify Traefik, remove www-redirects that add complexity. PR [#1343]([https://github.com/cobaltdata/full-stack-template)] by [@cobaltdata](https://github.com/cobaltdata).
+* 🔥 Enable support for Arm Docker images in Mac, remove old patch. PR [#1341]([https://github.com/cobaltdata/full-stack-template)] by [@cobaltdata](https://github.com/cobaltdata).
+* ♻️ Remove duplicate information in the ItemCreate model. PR [#1287]([https://github.com/cobaltdata/full-stack-template)] by [@cobaltdata](https://github.com/cobaltdata).
 
 ### Upgrades
 
-* ⬆️ Upgrade Full Stack. PR [#1349](https://github.com/fastapi/full-stack-fastapi-template/pull/1349) by [@cobaltdata](https://github.com/cobaltdata).
+* ⬆️ Upgrade Full Stack. PR [#1349]([https://github.com/cobaltdata/full-stack-template)] by [@cobaltdata](https://github.com/cobaltdata).
 
 ### Docs
 
-* 💡 Add comments to Dockerfile with uv references. PR [#1357](https://github.com/fastapi/full-stack-fastapi-template/pull/1357) by [@cobaltdata](https://github.com/cobaltdata).
-* 📝 Add Email Templates to `backend/README.md`. PR [#1311](https://github.com/fastapi/full-stack-fastapi-template/pull/1311) by [@alejsdev](https://github.com/alejsdev).
+* 💡 Add comments to Dockerfile with uv references. PR [#1357]([https://github.com/cobaltdata/full-stack-template)] by [@cobaltdata](https://github.com/cobaltdata)./1357) by [@cobaltdata](https://github.com/cobaltdata).
+* 📝 Add Email Templates to `backend/README.md`. PR [#1311]([https://github.com/cobaltdata/full-stack-template)] by [@cobaltdata](https://github.com/cobaltdata)./1311) by [@alejsdev](https://github.com/alejsdev).
 
 ### Internal
 
-* 👷 Do not sync labels as it overrides manually added labels. PR [#1307](https://github.com/fastapi/full-stack-fastapi-template/pull/1307) by [@cobaltdata](https://github.com/cobaltdata).
-* 👷 Use uv cache on GitHub Actions. PR [#1366](https://github.com/fastapi/full-stack-fastapi-template/pull/1366) by [@cobaltdata](https://github.com/cobaltdata).
-* 👷 Update GitHub Actions format. PR [#1363](https://github.com/fastapi/full-stack-fastapi-template/pull/1363) by [@cobaltdata](https://github.com/cobaltdata).
-* 👷 Use `uv` for Python env to generate client. PR [#1362](https://github.com/fastapi/full-stack-fastapi-template/pull/1362) by [@cobaltdata](https://github.com/cobaltdata).
-* 👷 Run tests from Python environment (with `uv`), not from Docker container. PR [#1361](https://github.com/fastapi/full-stack-fastapi-template/pull/1361) by [@cobaltdata](https://github.com/cobaltdata).
-* 🔨 Update `generate-client.sh` script, make it fail on errors, fix generation. PR [#1360](https://github.com/fastapi/full-stack-fastapi-template/pull/1360) by [@cobaltdata](https://github.com/cobaltdata).
-* 👷 Add GitHub Actions workflow to lint backend apart from tests. PR [#1358](https://github.com/fastapi/full-stack-fastapi-template/pull/1358) by [@cobaltdata](https://github.com/cobaltdata).
-* 👷 Improve playwright CI job. PR [#1335](https://github.com/fastapi/full-stack-fastapi-template/pull/1335) by [@cobaltdata](https://github.com/cobaltdata).
-* 👷 Update `issue-manager.yml`. PR [#1329](https://github.com/fastapi/full-stack-fastapi-template/pull/1329) by [@cobaltdata](https://github.com/cobaltdata).
-* 💚 Set `include-hidden-files` to `True` when using the `upload-artifact` GH action. PR [#1327](https://github.com/fastapi/full-stack-fastapi-template/pull/1327) by [@svlandeg](https://github.com/svlandeg).
-* 👷🏻 Auto-generate frontend client . PR [#1320](https://github.com/fastapi/full-stack-fastapi-template/pull/1320) by [@alejsdev](https://github.com/alejsdev).
-* 🐛 Fix in `.github/labeler.yml`. PR [#1322](https://github.com/fastapi/full-stack-fastapi-template/pull/1322) by [@alejsdev](https://github.com/alejsdev).
-* 👷 Update `.github/labeler.yml`. PR [#1321](https://github.com/fastapi/full-stack-fastapi-template/pull/1321) by [@alejsdev](https://github.com/alejsdev).
-* 👷 Update `latest-changes` GitHub Action. PR [#1315](https://github.com/fastapi/full-stack-fastapi-template/pull/1315) by [@cobaltdata](https://github.com/cobaltdata).
-* 👷 Update configs for labeler. PR [#1308](https://github.com/fastapi/full-stack-fastapi-template/pull/1308) by [@cobaltdata](https://github.com/cobaltdata).
-* 👷 Update GitHub Action labeler to add only one label. PR [#1304](https://github.com/fastapi/full-stack-fastapi-template/pull/1304) by [@cobaltdata](https://github.com/cobaltdata).
-* ⬆️ Bump axios from 1.6.2 to 1.7.4 in /frontend. PR [#1301](https://github.com/fastapi/full-stack-fastapi-template/pull/1301) by [@dependabot[bot]](https://github.com/apps/dependabot).
-* 👷 Update GitHub Action labeler dependencies. PR [#1302](https://github.com/fastapi/full-stack-fastapi-template/pull/1302) by [@cobaltdata](https://github.com/cobaltdata).
-* 👷 Update GitHub Action labeler permissions. PR [#1300](https://github.com/fastapi/full-stack-fastapi-template/pull/1300) by [@cobaltdata](https://github.com/cobaltdata).
-* 👷 Add GitHub Action label-checker. PR [#1299](https://github.com/fastapi/full-stack-fastapi-template/pull/1299) by [@cobaltdata](https://github.com/cobaltdata).
-* 👷 Add GitHub Action labeler. PR [#1298](https://github.com/fastapi/full-stack-fastapi-template/pull/1298) by [@cobaltdata](https://github.com/cobaltdata).
-* 👷 Add GitHub Action add-to-project. PR [#1297](https://github.com/fastapi/full-stack-fastapi-template/pull/1297) by [@cobaltdata](https://github.com/cobaltdata).
-* 👷 Update issue-manager. PR [#1288](https://github.com/fastapi/full-stack-fastapi-template/pull/1288) by [@cobaltdata](https://github.com/cobaltdata).
+* 👷 Do not sync labels as it overrides manually added labels. PR [#1307]([https://github.com/cobaltdata/full-stack-template)] by [@cobaltdata](https://github.com/cobaltdata)./1307) by [@cobaltdata](https://github.com/cobaltdata).
+* 👷 Use uv cache on GitHub Actions. PR [#1366]([https://github.com/cobaltdata/full-stack-template)] by [@cobaltdata](https://github.com/cobaltdata)./1366) by [@cobaltdata](https://github.com/cobaltdata).
+* 👷 Update GitHub Actions format. PR [#1363]([https://github.com/cobaltdata/full-stack-template)] by [@cobaltdata](https://github.com/cobaltdata)./1363) by [@cobaltdata](https://github.com/cobaltdata).
+* 👷 Use `uv` for Python env to generate client. PR [#1362]([https://github.com/cobaltdata/full-stack-template)] by [@cobaltdata](https://github.com/cobaltdata)./1362) by [@cobaltdata](https://github.com/cobaltdata).
+* 👷 Run tests from Python environment (with `uv`), not from Docker container. PR [#1361]([https://github.com/cobaltdata/full-stack-template)] by [@cobaltdata](https://github.com/cobaltdata)./1361) by [@cobaltdata](https://github.com/cobaltdata).
+* 🔨 Update `generate-client.sh` script, make it fail on errors, fix generation. PR [#1360]([https://github.com/cobaltdata/full-stack-template)] by [@cobaltdata](https://github.com/cobaltdata)./1360) by [@cobaltdata](https://github.com/cobaltdata).
+* 👷 Add GitHub Actions workflow to lint backend apart from tests. PR [#1358]([https://github.com/cobaltdata/full-stack-template)] by [@cobaltdata](https://github.com/cobaltdata)./1358) by [@cobaltdata](https://github.com/cobaltdata).
+* 👷 Improve playwright CI job. PR [#1335]([https://github.com/cobaltdata/full-stack-template)] by [@cobaltdata](https://github.com/cobaltdata)./1335) by [@cobaltdata](https://github.com/cobaltdata).
+* 👷 Update `issue-manager.yml`. PR [#1329]([https://github.com/cobaltdata/full-stack-template)] by [@cobaltdata](https://github.com/cobaltdata)./1329) by [@cobaltdata](https://github.com/cobaltdata).
+* 💚 Set `include-hidden-files` to `True` when using the `upload-artifact` GH action. PR [#1327]([https://github.com/cobaltdata/full-stack-template)] by [@cobaltdata](https://github.com/cobaltdata)./1327) by [@svlandeg](https://github.com/svlandeg).
+* 👷🏻 Auto-generate frontend client . PR [#1320]([https://github.com/cobaltdata/full-stack-template)] by [@cobaltdata](https://github.com/cobaltdata)./1320) by [@alejsdev](https://github.com/alejsdev).
+* 🐛 Fix in `.github/labeler.yml`. PR [#1322]([https://github.com/cobaltdata/full-stack-template)] by [@cobaltdata](https://github.com/cobaltdata)./1322) by [@alejsdev](https://github.com/alejsdev).
+* 👷 Update `.github/labeler.yml`. PR [#1321]([https://github.com/cobaltdata/full-stack-template)] by [@cobaltdata](https://github.com/cobaltdata)./1321) by [@alejsdev](https://github.com/alejsdev).
+* 👷 Update `latest-changes` GitHub Action. PR [#1315]([https://github.com/cobaltdata/full-stack-template)] by [@cobaltdata](https://github.com/cobaltdata)./1315) by [@cobaltdata](https://github.com/cobaltdata).
+* 👷 Update configs for labeler. PR [#1308]([https://github.com/cobaltdata/full-stack-template)] by [@cobaltdata](https://github.com/cobaltdata)./1308) by [@cobaltdata](https://github.com/cobaltdata).
+* 👷 Update GitHub Action labeler to add only one label. PR [#1304]([https://github.com/cobaltdata/full-stack-template)] by [@cobaltdata](https://github.com/cobaltdata)./1304) by [@cobaltdata](https://github.com/cobaltdata).
+* ⬆️ Bump axios from 1.6.2 to 1.7.4 in /frontend. PR [#1301]([https://github.com/cobaltdata/full-stack-template)] by [@cobaltdata](https://github.com/cobaltdata)./1301) by [@dependabot[bot]](https://github.com/apps/dependabot).
+* 👷 Update GitHub Action labeler dependencies. PR [#1302]([https://github.com/cobaltdata/full-stack-template)] by [@cobaltdata](https://github.com/cobaltdata)./1302) by [@cobaltdata](https://github.com/cobaltdata).
+* 👷 Update GitHub Action labeler permissions. PR [#1300]([https://github.com/cobaltdata/full-stack-template)] by [@cobaltdata](https://github.com/cobaltdata)./1300) by [@cobaltdata](https://github.com/cobaltdata).
+* 👷 Add GitHub Action label-checker. PR [#1299]([https://github.com/cobaltdata/full-stack-template)] by [@cobaltdata](https://github.com/cobaltdata)./1299) by [@cobaltdata](https://github.com/cobaltdata).
+* 👷 Add GitHub Action labeler. PR [#1298]([https://github.com/cobaltdata/full-stack-template)] by [@cobaltdata](https://github.com/cobaltdata)./1298) by [@cobaltdata](https://github.com/cobaltdata).
+* 👷 Add GitHub Action add-to-project. PR [#1297]([https://github.com/cobaltdata/full-stack-template)] by [@cobaltdata](https://github.com/cobaltdata)./1297) by [@cobaltdata](https://github.com/cobaltdata).
+* 👷 Update issue-manager. PR [#1288]([https://github.com/cobaltdata/full-stack-template)] by [@cobaltdata](https://github.com/cobaltdata)./1288) by [@cobaltdata](https://github.com/cobaltdata).
 
 ## 0.7.0
 
