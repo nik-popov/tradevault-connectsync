@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CobaltData.net</title>
+    <link rel="icon" type="image/x-icon" href="/assets/images/favicon.png" />
+    <style>
+      /* Body background: blue-to-dark gradient with horizontal faint lines */
+      body {
+        margin: 0;
+        font-family: Arial, sans-serif;
+        background: 
+          repeating-linear-gradient(
+            0deg,
+            rgba(255, 255, 255, 0.05) 0,
+            rgba(255, 255, 255, 0.05) 1px,
+            transparent 1px,
+            transparent 20px
+          ),
+          linear-gradient(to bottom, #4a90e2, #001f3f);
+        background-size: 100% 20px, cover;
+        color: #fff;
+      }
+
+      header {
+        background: rgba(0, 0, 0, 0.2);
+        padding: 20px;
+        text-align: center;
+        color: #fff;
+      }
+
+      .hero {
+        height: 80vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        padding: 0 20px;
+      }
+
+      .hero h1 {
+        font-size: 3em;
+        margin: 0;
+      }
+
+      .hero p {
+        font-size: 1.5em;
+        margin: 10px 0;
+      }
+
+      .cta-button {
+        margin-top: 20px;
+        padding: 10px 20px;
+        font-size: 1em;
+        background: #e94e77;
+        color: #fff;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: background 0.3s;
+      }
+
+      .cta-button:hover {
+        background: #d13b65;
+      }
+
+      footer {
+        background: rgba(0, 0, 0, 0.2);
+        color: #fff;
+        text-align: center;
+        padding: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>CobaltData.net</h1>
+    </header>
+    <section class="hero">
+      <h1>Welcome to CobaltData</h1>
+      <p>Your gateway to innovative data solutions.</p>
+      <!-- The dashboard remains as is on its own subdomain -->
+      <button class="cta-button" onclick="window.location.href='http://dashboard.cobaltdata.net/'">
+        Go to Dashboard
+      </button>
+    </section>
+    <footer>
+      <p>&copy; 2025 CobaltData. All rights reserved.</p>
+    </footer>
+  </body>
+</html>
