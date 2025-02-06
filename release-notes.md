@@ -502,9 +502,9 @@ Test cov > 90% ✅
 
 * Fix frontend hijacking /docs in development. Using latest https://github.com/cobaltdata/full-stack-template with custom Nginx configs in frontend. <a href="[https://github.com/cobaltdata/full-stack-template]" target="_blank">PR #6</a>.
 
-## 0.2.1 f
+## 0.2.1
 
-* Fix documentation for *path operation* to get user by ID.  <a href="https://github.com/cobaltdata/full-stack-template" target="_blank">PR #4</a> by <a href="https://github.com/cobaltdata" target="_blank">@mpclarkson</a> in Full Stack.
+* Fix documentation for *path operation* to get user by ID.  <a href="https://github.com/cobaltdata/full-stack-template" target="_blank">PR #4</a> by <a href="https://github.com/cobaltdata" target="_blank">@cobaltdata</a> in Full Stack.
 
 * Set `/start-reload.sh` as a command override for development by default.
 
