@@ -1,5 +1,4 @@
 services:
-
   db:
     image: postgres:12
     restart: always
@@ -107,9 +106,8 @@ services:
       - POSTGRES_USER=${POSTGRES_USER?Variable not set}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD?Variable not set}
       - SENTRY_DSN=${SENTRY_DSN}
-
     healthcheck:
-      test: ["CMD", "curl", "-f", "https://api.cobaltdata/api/v1/utils/health-check/"]
+      test: ["CMD", "curl", "-f", "https://api.cobaltdata.net/api/v1/utils/health-check/"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -141,10 +139,12 @@ services:
       - traefik-public
       - default
     build:
-      context: ./frontend
       args:
-        - VITE_API_URL=https://api.cobaltdata.net/api/v1/login/access-token?Variable not set}
+        - VITE_API_URL=https://api.cobaltdata.net
         - NODE_ENV=production
+      context: ./frontend
+    environment:
+      VITE_API_URL: https://api.cobaltdata.net
     labels:
       - traefik.enable=true
       - traefik.docker.network=traefik-public
@@ -162,6 +162,7 @@ services:
 
       # Enable redirection for HTTP and HTTPS
       - traefik.http.routers.${STACK_NAME?Variable not set}-frontend-http.middlewares=https-redirect
+
 volumes:
   app-db-data:
 
