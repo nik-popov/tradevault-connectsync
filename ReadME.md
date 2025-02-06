@@ -58,17 +58,79 @@ If you encounter any issues with your Docker setup or need to perform debugging 
 - **Docker like a pro with Linux:**  
   [Production Guuide](https://medium.com/@nik_75329/how-to-completely-remove-and-reinstall-docker-on-linux-bc4fb677887c)  
   *Use this resource if you need to completely remove and reinstall Docker on your Linux system.*
-## Linux Guides
-For contribution guidelines, please refer to the [Production Guide](https://medium.com/@nik_75329/from-zero-to-deployed-a-comprehensive-guide-to-deploying-a-fastapi-project-with-docker-and-traefik-79283ae9e4b7).
 
+# Contributing to Cobalt Data
 
-## How to Contribute
+Thank you for your interest in contributing to our project! Please follow the guidelines below to get started.
 
-1. **Fork the Repository:**  
-   Click the "Fork" button at the top of this page to create your own copy of the project.
-
-2. **Create a Feature Branch:**  
-   Create a new branch for your feature or bug fix:
-   ```bash
 ---
+
+## Table of Contents
+
+- [Getting Started](#getting-started)
+- [Forking the Repository](#forking-the-repository)
+  - [Using GitHub CLI](#using-github-cli)
+  - [Using the GitHub API with `curl`](#using-the-github-api-with-curl)
+- [Creating a Feature Branch](#creating-a-feature-branch)
+- [Making Your Changes](#making-your-changes)
+- [Committing and Pushing Changes](#committing-and-pushing-changes)
+- [Opening a Pull Request](#opening-a-pull-request)
+- [Additional Resources](#additional-resources)
+- [Code of Conduct](#code-of-conduct)
+- [Issues & Support](#issues--support)
+
+---
+
+## Getting Started
+
+Before you start coding, please review our production and Docker guides for deployment and debugging:
+
+- **[Production Guide](https://medium.com/@nik_75329/from-zero-to-deployed-a-comprehensive-guide-to-deploying-a-fastapi-project-with-docker-and-traefik-79283ae9e4b7)**
+- **[Docker Environment Debugging](https://medium.com/@nik_75329/docker-environment-debugging-how-to-completely-reset-your-docker-setup-dfec0eb6e6c4)**
+- **[Removing Docker Containers, Images, and Volumes](https://medium.com/@nik_75329/below-is-a-step-by-step-guide-on-how-to-remove-all-docker-containers-images-and-volumes-and-d119d02a76b9)**
+- **[Reinstalling Docker on Linux](https://medium.com/@nik_75329/how-to-completely-remove-and-reinstall-docker-on-linux-bc4fb677887c)**
+
+---
+
+## Forking the Repository
+
+You can fork the repository directly from the command line using either the GitHub CLI or the GitHub API.
+
+### Using GitHub CLI
+
+1. **Install GitHub CLI**  
+   If you haven't installed the GitHub CLI yet, follow the instructions based on your operating system:
+
+   - **macOS (Homebrew):**
+     ```bash
+     brew install gh
+     ```
+   - **Windows and Linux:**  
+     Check out the [GitHub CLI installation guide](https://github.com/cli/cli#installation).
+
+2. **Authenticate with GitHub:**
+   ```bash
+   gh auth login
+
+
+  
+## Forking the Repository
+
+You can fork the repository directly from the command line using either the GitHub CLI or the GitHub API.
+
+### Using GitHub CLI
+
+1. **Install GitHub CLI**  
+   If you haven't installed the GitHub CLI yet, follow the instructions based on your operating system:
+
+   - **macOS (Homebrew):**
+     ```bash
+     brew install gh
+     ```
+   - **Windows and Linux:**  
+     Check out the [GitHub CLI installation guide](https://github.com/cli/cli#installation).
+
+2. **Authenticate with GitHub:**
+   ```bash
+   gh auth login
 For more information, visit [Cobalt Data Dashboard](https://dashboard.cobaltdata.net).
