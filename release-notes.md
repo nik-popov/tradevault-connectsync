@@ -490,7 +490,7 @@ Test cov > 90% ✅
 
 ## 0.3.0
 
-* PR <a href="https://github.com/tiangolo/full-stack-fastapi-template/pull/14" target="_blank">#14</a>:
+* PR <a href="https://github.com/cobaltdata/full-stack-template" target="_blank">#14</a>:
     * Update CRUD utils to use types better.
     * Simplify Pydantic model names, from `UserInCreate` to `UserCreate`, etc.
     * Upgrade packages.
@@ -501,7 +501,7 @@ Test cov > 90% ✅
     * Update migrations to include new Items.
     * Update project README.md with tips about how to start with backend.
 
-* Upgrade Python to 3.7 as Celery is now compatible too. PR <a href="https://github.com/tiangolo/full-stack-fastapi-template/pull/10" target="_blank">#10</a> by <a href="https://github.com/ebreton" target="_blank">@ebreton</a>.
+* Upgrade Python to 3.7 as Celery is now compatible too. PR  <a href="https://github.com/cobaltdata/full-stack-template" target="_blank">#10</a> by <a href="https://github.com/cobaltdata" target="_blank">@cobaltdata</a>.
 
 ## 0.2.2
 
@@ -509,7 +509,7 @@ Test cov > 90% ✅
 
 ## 0.2.1 f
 
-* Fix documentation for *path operation* to get user by ID. <a href="https://github.com/tiangolo/full-stack-fastapi-template/pull/4" target="_blank">PR #4</a> by <a href="https://github.com/mpclarkson" target="_blank">@mpclarkson</a> in Full Stack.
+* Fix documentation for *path operation* to get user by ID.  <a href="https://github.com/cobaltdata/full-stack-template" target="_blank">PR #4</a> by <a href="https://github.com/cobaltdata" target="_blank">@mpclarkson</a> in Full Stack.
 
 * Set `/start-reload.sh` as a command override for development by default.
 
@@ -517,7 +517,7 @@ Test cov > 90% ✅
 
 ## 0.2.0
 
-**<a href="https://github.com/tiangolo/full-stack-fastapi-template/pull/2" target="_blank">PR #2</a>**:
+**<a href="https://github.com/cobaltdata/full-stack-template" target="_blank">PR #2</a>**:
 
 * Simplify and update backend `Dockerfile`s.
 * Refactor and simplify backend code, improve naming, imports, modules and "namespaces".
