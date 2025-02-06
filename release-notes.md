@@ -263,64 +263,70 @@ Test cov > 90% ✅
 
 ### Features
 
-* ✨ Adopt SQLModel, create models, start using it. PR [#559](https://github.com/tiangolo/full-stack-fastapi-template/pull/559) by [@cobaltdata](https://github.com/cobaltdata).
-* ✨ Upgrade items router with new SQLModel models, simplified logic, and new Full Stack Annotated dependencies. PR [#560](https://github.com/tiangolo/full-stack-fastapi-template/pull/560) by [@cobaltdata](https://github.com/cobaltdata).
-* ✨ Migrate from pgAdmin to Adminer. PR [#692](https://github.com/tiangolo/full-stack-fastapi-template/pull/692) by [@cobaltdata](https://github.com/cobaltdata).
-* ✨ Add support for setting `POSTGRES_PORT`. PR [#333](https://github.com/tiangolo/full-stack-fastapi-template/pull/333) by [@uepoch](https://github.com/uepoch).
-* ⬆ Upgrade Flower version and command. PR [#447](https://github.com/tiangolo/full-stack-fastapi-template/pull/447) by [@maurob](https://github.com/maurob).
-* 🎨 Improve styles. PR [#673](https://github.com/tiangolo/full-stack-fastapi-template/pull/673) by [@cobalt data](https://github.com/cobalt data).
-* 🎨 Update theme. PR [#666](https://github.com/tiangolo/full-stack-fastapi-template/pull/666) by [@cobalt data](https://github.com/cobalt data).
-* 👷 Add continuous deployment and refactors needed for it. PR [#667](https://github.com/tiangolo/full-stack-fastapi-template/pull/667) by [@cobaltdata](https://github.com/cobaltdata).
-* ✨ Create endpoint to show password recovery email content and update email template. PR [#664](https://github.com/tiangolo/full-stack-fastapi-template/pull/664) by [@cobalt data](https://github.com/cobalt data).
-* 🎨 Format with Prettier. PR [#646](https://github.com/tiangolo/full-stack-fastapi-template/pull/646) by [@cobalt data](https://github.com/cobalt data).
-* ✅ Add tests to raise coverage to at least 90% and fix recover password logic. PR [#632](https://github.com/tiangolo/full-stack-fastapi-template/pull/632) by [@estebanx64](https://github.com/estebanx64).
-* ⚙️ Add Prettier and ESLint config with pre-commit. PR [#640](https://github.com/tiangolo/full-stack-fastapi-template/pull/640) by [@cobalt data](https://github.com/cobalt data).
-* 👷 Add coverage with Smokeshow to CI and badge. PR [#638](https://github.com/tiangolo/full-stack-fastapi-template/pull/638) by [@estebanx64](https://github.com/estebanx64).
-* ✨ Migrate to TanStack Query (React Query) and TanStack Router. PR [#637](https://github.com/tiangolo/full-stack-fastapi-template/pull/637) by [@cobalt data](https://github.com/cobalt data).
-* ✅ Add setup and teardown database for tests. PR [#626](https://github.com/tiangolo/full-stack-fastapi-template/pull/626) by [@estebanx64](https://github.com/estebanx64).
-* ✨ Update new-frontend client. PR [#625](https://github.com/tiangolo/full-stack-fastapi-template/pull/625) by [@cobalt data](https://github.com/cobalt data).
-* ✨ Add password reset functionality. PR [#624](https://github.com/tiangolo/full-stack-fastapi-template/pull/624) by [@cobalt data](https://github.com/cobalt data).
-* ✨ Add private/public routing. PR [#621](https://github.com/tiangolo/full-stack-fastapi-template/pull/621) by [@cobalt data](https://github.com/cobalt data).
-* 🔧 Add VS Code debug configs. PR [#620](https://github.com/tiangolo/full-stack-fastapi-template/pull/620) by [@cobaltdata](https://github.com/cobaltdata).
-* ✨ Add `Not Found` page. PR [#595](https://github.com/tiangolo/full-stack-fastapi-template/pull/595) by [@cobalt data](https://github.com/cobalt data).
-* ✨ Add new pages, components, panels, modals, and theme; refactor and improvements in existing components. PR [#593](https://github.com/tiangolo/full-stack-fastapi-template/pull/593) by [@cobalt data](https://github.com/cobalt data).
-* ✨ Support delete own account and other tweaks. PR [#614](https://github.com/tiangolo/full-stack-fastapi-template/pull/614) by [@cobalt data](https://github.com/cobalt data).
-* ✨ Restructure folders, allow editing of users/items, and implement other refactors and improvements. PR [#603](https://github.com/tiangolo/full-stack-fastapi-template/pull/603) by [@cobalt data](https://github.com/cobalt data).
-* ✨ Add Copier, migrate from Cookiecutter, in a way that supports using the project as is, forking or cloning it. PR [#612](https://github.com/tiangolo/full-stack-fastapi-template/pull/612) by [@cobaltdata](https://github.com/cobaltdata).
-* ➕ Replace black, isort, flake8, autoflake with ruff and upgrade mypy. PR [#610](https://github.com/tiangolo/full-stack-fastapi-template/pull/610) by [@cobaltdata](https://github.com/cobaltdata).
-* ♻ Refactor items and services endpoints to return count and data, and add CI tests. PR [#599](https://github.com/tiangolo/full-stack-fastapi-template/pull/599) by [@estebanx64](https://github.com/estebanx64).
-* ✨ Add support for updating items and upgrade SQLModel to 0.0.16 (which supports model object updates). PR [#601](https://github.com/tiangolo/full-stack-fastapi-template/pull/601) by [@cobaltdata](https://github.com/cobaltdata).
-* ✨ Add dark mode to new-frontend and conditional sidebar items. PR [#600](https://github.com/tiangolo/full-stack-fastapi-template/pull/600) by [@cobalt data](https://github.com/cobalt data).
-* ✨ Migrate to RouterProvider and other refactors . PR [#598](https://github.com/tiangolo/full-stack-fastapi-template/pull/598) by [@cobalt data](https://github.com/cobalt data).
-* ✨ Add delete_user; refactor delete_item. PR [#594](https://github.com/tiangolo/full-stack-fastapi-template/pull/594) by [@cobalt data](https://github.com/cobalt data).
-* ✨ Add state store to new frontend. PR [#592](https://github.com/tiangolo/full-stack-fastapi-template/pull/592) by [@cobalt data](https://github.com/cobalt data).
-* ✨ Add form validation to Admin, Items and Login. PR [#616](https://github.com/tiangolo/full-stack-fastapi-template/pull/616) by [@cobalt data](https://github.com/cobalt data).
-* ✨ Add Sidebar to new frontend. PR [#587](https://github.com/tiangolo/full-stack-fastapi-template/pull/587) by [@cobalt data](https://github.com/cobalt data).
-* ✨ Add Login to new frontend. PR [#585](https://github.com/tiangolo/full-stack-fastapi-template/pull/585) by [@cobalt data](https://github.com/cobalt data).
-* ✨ Include schemas in generated frontend client. PR [#584](https://github.com/tiangolo/full-stack-fastapi-template/pull/584) by [@cobalt data](https://github.com/cobalt data).
-* ✨ Regenerate frontend client with recent changes. PR [#575](https://github.com/tiangolo/full-stack-fastapi-template/pull/575) by [@cobalt data](https://github.com/cobalt data).
-* ♻️ Refactor API in `utils.py`. PR [#573](https://github.com/tiangolo/full-stack-fastapi-template/pull/573) by [@cobalt data](https://github.com/cobalt data).
-* ✨ Update code for login API. PR [#571](https://github.com/tiangolo/full-stack-fastapi-template/pull/571) by [@cobaltdata](https://github.com/cobaltdata).
-* ✨ Add client in frontend and client generation. PR [#569](https://github.com/tiangolo/full-stack-fastapi-template/pull/569) by [@cobalt data](https://github.com/cobalt data).
-* 🐳 Set up Docker config for new-frontend. PR [#564](https://github.com/tiangolo/full-stack-fastapi-template/pull/564) by [@cobalt data](https://github.com/cobalt data).
-* ✨ Set up new frontend with Vite, TypeScript and React. PR [#563](https://github.com/tiangolo/full-stack-fastapi-template/pull/563) by [@cobalt data](https://github.com/cobalt data).
-* 📌 Add NodeJS version management and instructions. PR [#551](https://github.com/tiangolo/full-stack-fastapi-template/pull/551) by [@cobalt data](https://github.com/cobalt data).
-* Add consistent errors for env vars not set. PR [#200](https://github.com/tiangolo/full-stack-fastapi-template/pull/200).
-* Upgrade Traefik to version 2, keeping in sync with DockerSwarm.rocks. PR [#199](https://github.com/tiangolo/full-stack-fastapi-template/pull/199).
-* Run tests with `TestClient`. PR [#160](https://github.com/tiangolo/full-stack-fastapi-template/pull/160).
+It looks like you want the PR references formatted in Markdown while replacing the GitHub repository links to your own (`https://github.com/cobaltdata/full-stack-template`). Here's how your example would look with the replacements:
+
+---
+
+## 0.6.0
+
+Latest Full Stack, Pydantic, SQLModel 🚀
+
+Brand new frontend with React, TS, Vite, Chakra UI, TanStack Query/Router, generated client/SDK 🎨
+
+CI/CD - GitHub Actions 🤖
+
+Test cov > 90% ✅
+
+### Features
+
+* ✨ Adopt SQLModel, create models, start using it. PR [#559](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata).
+* ✨ Upgrade items router with new SQLModel models, simplified logic, and new Full Stack Annotated dependencies. PR [#560](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata).
+* ✨ Migrate from pgAdmin to Adminer. PR [#692](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata).
+* ✨ Add support for setting `POSTGRES_PORT`. PR [#333](https://github.com/cobaltdata/full-stack-template) by [@uepoch](https://github.com/uepoch).
+* ⬆ Upgrade Flower version and command. PR [#447](https://github.com/cobaltdata/full-stack-template) by [@maurob](https://github.com/maurob).
+* 🎨 Improve styles. PR [#673](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata).
+* 🎨 Update theme. PR [#666](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata).
+* 👷 Add continuous deployment and refactors needed for it. PR [#667](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata).
+* ✨ Create endpoint to show password recovery email content and update email template. PR [#664](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata).
+* 🎨 Format with Prettier. PR [#646](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata).
+* ✅ Add tests to raise coverage to at least 90% and fix recover password logic. PR [#632](https://github.com/cobaltdata/full-stack-template) by [@estebanx64](https://github.com/estebanx64).
+* ⚙️ Add Prettier and ESLint config with pre-commit. PR [#640](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata).
+* 👷 Add coverage with Smokeshow to CI and badge. PR [#638](https://github.com/cobaltdata/full-stack-template) by [@estebanx64](https://github.com/estebanx64).
+* ✨ Migrate to TanStack Query (React Query) and TanStack Router. PR [#637](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata).
 
 ### Fixes
 
-* 🐛 Fix copier to handle string vars with spaces in quotes. PR [#631](https://github.com/tiangolo/full-stack-fastapi-template/pull/631) by [@estebanx64](https://github.com/estebanx64).
-* 🐛 Fix allowing a user to update the email to the same email they already have. PR [#696](https://github.com/tiangolo/full-stack-fastapi-template/pull/696) by [@cobalt data](https://github.com/cobalt data).
-* 🐛 Set up Sentry only when used. PR [#671](https://github.com/tiangolo/full-stack-fastapi-template/pull/671) by [@cobaltdata](https://github.com/cobaltdata).
-* 🔥 Remove unnecessary validation. PR [#662](https://github.com/tiangolo/full-stack-fastapi-template/pull/662) by [@cobalt data](https://github.com/cobalt data).
-* 🐛 Fix bug when editing own user. PR [#651](https://github.com/tiangolo/full-stack-fastapi-template/pull/651) by [@cobalt data](https://github.com/cobalt data).
-* 🐛  Add `onClose` to `SidebarItems`. PR [#589](https://github.com/tiangolo/full-stack-fastapi-template/pull/589) by [@cobalt data](https://github.com/cobalt data).
-* 🐛 Fix positional argument bug in `init_db.py`. PR [#562](https://github.com/tiangolo/full-stack-fastapi-template/pull/562) by [@cobalt data](https://github.com/cobalt data).
-* 📌 Fix flower Docker image, pin version. PR [#396](https://github.com/tiangolo/full-stack-fastapi-template/pull/396) by [@sanggusti](https://github.com/sanggusti).
-* 🐛 Fix Celery worker command. PR [#443](https://github.com/tiangolo/full-stack-fastapi-template/pull/443) by [@bechtold](https://github.com/bechtold).
-* 🐛 Fix Poetry installation in Dockerfile and upgrade Python version and packages to fix Docker build. PR [#480](https://github.com/tiangolo/full-stack-fastapi-template/pull/480) by [@little7Li](https://github.com/little7Li).
+* 🐛 Fix copier to handle string vars with spaces in quotes. PR [#631](https://github.com/cobaltdata/full-stack-template) by [@estebanx64](https://github.com/estebanx64).
+* 🐛 Fix allowing a user to update the email to the same email they already have. PR [#696](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata).
+* 🐛 Set up Sentry only when used. PR [#671](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata).
+* 🔥 Remove unnecessary validation. PR [#662](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata).
+* 🐛 Fix bug when editing
+* ✨ Add delete_user; refactor delete_item. PR [#594](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata) 
+* ✨ Add state store to new frontend. PR [#592](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata)
+* ✨ Add form validation to Admin, Items and Login. PR [#616](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata)
+* ✨ Add Sidebar to new frontend. PR [#587](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata)
+* ✨ Add Login to new frontend. PR [#585](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata)
+* ✨ Include schemas in generated frontend client. PR [#584](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata)
+* ✨ Regenerate frontend client with recent changes. PR [#575](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata)
+* ♻️ Refactor API in `utils.py`. PR [#573](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata)
+* ✨ Update code for login API. PR [#571](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata)
+* ✨ Add client in frontend and client generation. PR [#569](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata)
+* 🐳 Set up Docker config for new-frontend. PR [#564](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata)
+* ✨ Set up new frontend with Vite, TypeScript and React. PR [#563](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata)
+* 📌 Add NodeJS version management and instructions. PR [#551](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata
+* Add consistent errors for env vars not set. PR [#200](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata)
+* Upgrade Traefik to version 2, keeping in sync with DockerSwarm.rocks. PR [#199](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata)
+* Run tests with `TestClient`. PR [#160](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata
+* 🐛 Fix copier to handle string vars with spaces in quotes. PR [#631](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata)
+* 🐛 Fix allowing a user to update the email to the same email they already have. PR [#696](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata)
+* 🐛 Set up Sentry only when used. PR [#671](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata)
+* 🔥 Remove unnecessary validation. PR [#662](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata)
+* 🐛 Fix bug when editing own user. PR [#651](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata).
+* 🐛  Add `onClose` to `SidebarItems`. PR [#589](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata)
+* 🐛 Fix positional argument bug in `init_db.py`. PR [#562](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata)
+* 📌 Fix flower Docker image, pin version. PR [#396](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata)
+* 🐛 Fix Celery worker command. PR [#443](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata)
+* 🐛 Fix Poetry installation in Dockerfile and upgrade Python version and packages to fix Docker build. PR [#480](https://github.com/cobaltdata/full-stack-template)
 
 ### Refactors
 
