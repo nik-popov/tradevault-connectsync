@@ -40,12 +40,12 @@
 * 👷 Update issue manager workflow. PR [#1398](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata).
 * 👷 Fix smokeshow, checkout files on CI. PR [#1395](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata).
 * 👷 Update `labeler.yml`. PR [#1388](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata).
-* 🔧 Add .auth playwright folder to `.gitignore`. PR [#1383](https://github.com/cobaltdata/full-stack-template) by [@justin-p](https://github.com/justin-p).
+* 🔧 Add .auth playwright folder to `.gitignore`. PR [#1383](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata).
 * ⬆️ Bump rollup from 4.6.1 to 4.22.5 in /frontend. PR [#1379](https://github.com/cobaltdata/full-stack-template) by [@dependabot[bot]](https://github.com/apps/dependabot).
 * ⬆ Bump astral-sh/setup-uv from 2 to 3. PR [#1364](https://github.com/cobaltdata/full-stack-template) by [@dependabot[bot]](https://github.com/apps/dependabot).
-*  👷 Update pre-commit end-of-file-fixer hook to exclude email-templates. PR [#1296](https://github.com/cobaltdata/full-stack-template)1296) by [@goabonga](https://github.com/goabonga).
+*  👷 Update pre-commit end-of-file-fixer hook to exclude email-templates. PR [#1296](https://github.com/cobaltdata/full-stack-template)1296) by [@cobaltdata](https://github.com/cobaltdata).
 * ⬆ Bump tiangolo/issue-manager from 0.5.0 to 0.5.1. PR [#1332](https://github.com/cobaltdata/full-stack-template) by [@dependabot[bot]](https://github.com/apps/dependabot).
-* 🔧 Run task by the same Python environment used to run Copier. PR [#1157](https://github.com/cobaltdata/full-stack-template) by [@waketzheng](https://github.com/waketzheng).
+* 🔧 Run task by the same Python environment used to run Copier. PR [#1157](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata).
 * 👷 Tweak generate client to error out if there are errors. PR [#1377](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata).
 * 👷 Generate and commit client only on same repo PRs, on forks, show the error. PR [#1376](https://github.com/cobaltdata/full-stack-template) by [@cobaltdata](https://github.com/cobaltdata).
 
