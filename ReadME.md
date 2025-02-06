@@ -111,4 +111,148 @@ You can fork the repository directly from the command line using either the GitH
 2. **Authenticate with GitHub:**
    ```bash
    gh auth login
+
+Below is a complete Markdown example for a `CONTRIBUTING.md` file containing the sections you listed:
+
+```markdown
+# Contributing to [Project Name]
+
+Thank you for your interest in contributing to our project! Please follow the guidelines below to help us maintain a high-quality codebase and streamlined collaboration.
+
+---
+
+## Getting Started
+
+Before you begin, please review our key documentation resources:
+- **[Production Guide](https://medium.com/@nik_75329/from-zero-to-deployed-a-comprehensive-guide-to-deploying-a-fastapi-project-with-docker-and-traefik-79283ae9e4b7)**
+- **[Docker Environment Debugging](https://medium.com/@nik_75329/docker-environment-debugging-how-to-completely-reset-your-docker-setup-dfec0eb6e6c4)**
+- **[Removing Docker Containers, Images, and Volumes](https://medium.com/@nik_75329/below-is-a-step-by-step-guide-on-how-to-remove-all-docker-containers-images-and-volumes-and-d119d02a76b9)**
+- **[Reinstalling Docker on Linux](https://medium.com/@nik_75329/how-to-completely-remove-and-reinstall-docker-on-linux-bc4fb677887c)**
+
+These guides will provide you with background on our deployment setup, debugging practices, and overall development environment.
+
+---
+
+## Forking the Repository
+
+Before you start working on your changes, you need to fork the repository.
+
+### Using GitHub CLI
+
+1. **Install GitHub CLI**  
+   If you haven't already installed GitHub CLI, follow these steps:
+   - **macOS (Homebrew):**
+     ```bash
+     brew install gh
+     ```
+   - **Windows & Linux:**  
+     Refer to the [GitHub CLI installation guide](https://github.com/cli/cli#installation).
+
+2. **Authenticate with GitHub:**
+   ```bash
+   gh auth login
+   ```
+   Follow the prompts to log in to your GitHub account.
+
+3. **Fork the Repository:**
+   ```bash
+   gh repo fork OWNER/REPO --clone
+   ```
+   Replace `OWNER/REPO` with the repository's owner and name (e.g., `octocat/Hello-World`). The `--clone` flag automatically clones your fork to your local machine.
+
+### Using the GitHub API with curl
+
+If you prefer using the API with `curl`:
+
+1. **Set Environment Variables:**
+   ```bash
+   export GITHUB_TOKEN=your_personal_access_token
+   export OWNER=repository_owner
+   export REPO=repository_name
+   ```
+
+2. **Fork the Repository:**
+   ```bash
+   curl -X POST \
+     -H "Authorization: token ${GITHUB_TOKEN}" \
+     https://api.github.com/repos/${OWNER}/${REPO}/forks
+   ```
+   This command sends a POST request to fork the repository into your GitHub account.
+
+---
+
+## Creating a Feature Branch
+
+Once you have your fork cloned locally, create a new branch for your feature or bug fix:
+
+```bash
+git checkout -b feature/your-feature-name
+```
+
+This keeps your changes organized and separate from the main branch.
+
+---
+
+## Making Your Changes
+
+Work on your feature or bug fix in your new branch. Be sure to follow the project's coding standards and best practices. Comment your code where necessary and write clear, maintainable code.
+
+---
+
+## Committing and Pushing Changes
+
+1. **Commit Your Changes:**  
+   Use descriptive commit messages to explain the purpose of your changes:
+   ```bash
+   git commit -m "Add feature X to improve Y"
+   ```
+
+2. **Push Your Changes:**  
+   Push your branch to your fork:
+   ```bash
+   git push origin feature/your-feature-name
+   ```
+
+---
+
+## Opening a Pull Request
+
+After pushing your changes:
+
+1. Go to your fork on GitHub.
+2. Click the **"Compare & pull request"** button.
+3. Fill in a clear description of your changes and reference any related issues.
+4. Submit your pull request to the main repository for review.
+
+---
+
+## Additional Resources
+
+For more detailed instructions and troubleshooting, please refer to:
+- **[Production Guide](https://medium.com/@nik_75329/from-zero-to-deployed-a-comprehensive-guide-to-deploying-a-fastapi-project-with-docker-and-traefik-79283ae9e4b7)**
+- **[Docker Environment Debugging](https://medium.com/@nik_75329/docker-environment-debugging-how-to-completely-reset-your-docker-setup-dfec0eb6e6c4)**
+- **[Removing Docker Containers, Images, and Volumes](https://medium.com/@nik_75329/below-is-a-step-by-step-guide-on-how-to-remove-all-docker-containers-images-and-volumes-and-d119d02a76b9)**
+- **[Reinstalling Docker on Linux](https://medium.com/@nik_75329/how-to-completely-remove-and-reinstall-docker-on-linux-bc4fb677887c)**
+
+---
+
+## Code of Conduct
+
+By contributing to this project, you agree to abide by our [Code of Conduct](CODE_OF_CONDUCT.md). Please ensure you read and understand it before contributing.
+
+---
+
+## Issues & Support
+
+If you encounter any issues or have questions:
+- Please [open an issue](https://github.com/OWNER/REPO/issues) on GitHub.
+- You can also reach out via our community channels (if available).
+
+Your feedback and contributions help make this project better for everyone!
+
+---
+
+*Happy coding and thank you for contributing!*
+
+Feel free to modify any sections or links to match your project's specific requirements and guidelines.
 For more information, visit [Cobalt Data Dashboard](https://dashboard.cobaltdata.net).
