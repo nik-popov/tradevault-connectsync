@@ -62,6 +62,9 @@ Thank you for your interest in contributing to our project! Your efforts help ma
 
 Before you start coding, please review these key resources:
 
+- **[Mastering Environment Variables in Docker](https://medium.com/@nik_75329/mastering-environment-variables-in-docker-compose-practices-for-security-and-flexibility-c1b8a6ebe55b)**
+  *working with environment variables in Docker Compose, plus a quick demo on how to search your project for specific environment references.*
+
 - **[Production Guide](https://medium.com/@nik_75329/from-zero-to-deployed-a-comprehensive-guide-to-deploying-a-fastapi-project-with-docker-and-traefik-79283ae9e4b7)**  
   *Learn best practices for deploying a FastAPI project with Docker and Traefik.*
 
