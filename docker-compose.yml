@@ -107,7 +107,6 @@ services:
       - POSTGRES_USER=${POSTGRES_USER?Variable not set}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD?Variable not set}
       - SENTRY_DSN=${SENTRY_DSN}
-      - VITE_API_URL=http://api.cobaltdata.net
       - DOMAIN=cobaltdata.net  
     healthcheck:
       test: ["CMD", "curl", "-f", "http://192.168.1.115:8000/api/v1/utils/health-check/"]
@@ -116,8 +115,6 @@ services:
       retries: 5
     build:
       context: ./backend
-      args:
-        - VITE_API_URL=http://api.cobaltdata.net  # ✅ Ensure correct API URL 
     labels:
       - "traefik.enable=true"
       - "traefik.docker.network=traefik-public"
@@ -136,14 +133,11 @@ services:
       - .env
     build:
       context: ./frontend
-      args:
-        - VITE_API_URL=${VITE_API_URL?Variable not set}
-        - NODE_ENV=production
     environment:
       - NGINX_PROXY_BUFFER_SIZE=128k
       - NGINX_PROXY_BUFFERS=4 256k
       - NGINX_LARGE_CLIENT_HEADER_BUFFERS=4 16k
-      - VITE_API_URL=http://api.cobaltdata.net
+
       - DOMAIN=cobaltdata.net
     labels:
       - traefik.enable=true
