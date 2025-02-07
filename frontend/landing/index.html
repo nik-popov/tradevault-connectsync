@@ -4,90 +4,94 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>CobaltData.net</title>
+    <meta name="description" content="CobaltData.net - Your gateway to innovative data solutions." />
+    <meta name="keywords" content="data, analytics, scraping, automation, Cobalt Data, dashboard" />
     <link rel="icon" type="image/x-icon" href="/assets/images/favicon.png" />
-    <style>
-      /* Body background: blue-to-dark gradient with horizontal faint lines */
-      body {
-        margin: 0;
-        font-family: Arial, sans-serif;
-        background: 
-          repeating-linear-gradient(
-            0deg,
-            rgba(255, 255, 255, 0.05) 0,
-            rgba(255, 255, 255, 0.05) 1px,
-            transparent 1px,
-            transparent 20px
-          ),
-          linear-gradient(to bottom, #4a90e2, #001f3f);
-        background-size: 100% 20px, cover;
-        color: #fff;
-      }
-
-      header {
-        background: rgba(0, 0, 0, 0.2);
-        padding: 20px;
-        text-align: center;
-        color: #fff;
-      }
-
-      .hero {
-        height: 80vh;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        text-align: center;
-        padding: 0 20px;
-      }
-
-      .hero h1 {
-        font-size: 3em;
-        margin: 0;
-      }
-
-      .hero p {
-        font-size: 1.5em;
-        margin: 10px 0;
-      }
-
-      .cta-button {
-        margin-top: 20px;
-        padding: 10px 20px;
-        font-size: 1em;
-        background: #e94e77;
-        color: #fff;
-        border: none;
-        border-radius: 4px;
-        cursor: pointer;
-        transition: background 0.3s;
-      }
-
-      .cta-button:hover {
-        background: #d13b65;
-      }
-
-      footer {
-        background: rgba(0, 0, 0, 0.2);
-        color: #fff;
-        text-align: center;
-        padding: 10px;
-      }
-    </style>
+    <link rel="stylesheet" href="/frontend/src/styles/global.css" >
   </head>
   <body>
     <header>
-      <h1>CobaltData.net</h1>
+      <div class="container">
+        <h1>CobaltData.net</h1>
+        <nav>
+          <ul>
+            <li><a href="#features">Features</a></li>
+            <li><a href="#why-us">Why Choose Us</a></li>
+            <li><a href="#testimonials">Testimonials</a></li>
+            <li><a href="#contact">Contact</a></li>
+          </ul>
+        </nav>
+      </div>
     </header>
+
     <section class="hero">
-      <h1>Welcome to CobaltData</h1>
-      <p>Your gateway to innovative data solutions.</p>
-      <!-- The dashboard remains as is on its own subdomain -->
-      <button class="cta-button" onclick="window.location.href='http://dashboard.cobaltdata.net/'">
-        Go to Dashboard
-      </button>
+      <div class="container">
+        <h1>Welcome to Cobalt Data</h1>
+        <p>Your gateway to innovative data solutions.</p>
+        <button class="cta-button" onclick="window.location.href='https://dashboard.cobaltdata.net/'">Go to Dashboard</button>
+      </div>
     </section>
+
+    <section id="features" class="features">
+      <div class="container">
+        <h2>Key Features</h2>
+        <div class="feature-list">
+          <div class="feature-item">
+            <h3>Advanced Data Scraping</h3>
+            <p>Extract valuable insights from the web effortlessly.</p>
+          </div>
+          <div class="feature-item">
+            <h3>Seamless API Integration</h3>
+            <p>Connect with external platforms and automate workflows.</p>
+          </div>
+          <div class="feature-item">
+            <h3>Secure & Scalable</h3>
+            <p>Built with enterprise-grade security and scalability.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="why-us" class="why-us">
+      <div class="container">
+        <h2>Why Choose Cobalt Data?</h2>
+        <ul>
+          <li>🚀 Fast & Reliable Data Processing</li>
+          <li>🔒 Secure Authentication & Data Privacy</li>
+          <li>📈 Scalable Cloud-Based Infrastructure</li>
+          <li>💡 AI-Powered Insights</li>
+        </ul>
+      </div>
+    </section>
+
+    <section id="testimonials" class="testimonials">
+      <div class="container">
+        <h2>What Our Users Say</h2>
+        <div class="testimonial-list">
+          <div class="testimonial-item">
+            <p>"Cobalt Data transformed our analytics workflow. Highly recommended!"</p>
+            <h4>- Alex Johnson, Data Scientist</h4>
+          </div>
+          <div class="testimonial-item">
+            <p>"Super intuitive and powerful platform!"</p>
+            <h4>- Sarah Mitchell, CTO</h4>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="contact" class="cta">
+      <div class="container">
+        <h2>Ready to Get Started?</h2>
+        <p>Join Cobalt Data today and revolutionize your data strategy.</p>
+        <button class="cta-button" onclick="window.location.href='https://dashboard.cobaltdata.net/'">Access the Dashboard</button>
+      </div>
+    </section>
+
     <footer>
-      <p>&copy; 2025 CobaltData. All rights reserved.</p>
+      <div class="container">
+        <p>&copy; 2025 Cobalt Data. All rights reserved.</p>
+      </div>
     </footer>
   </body>
 </html>
