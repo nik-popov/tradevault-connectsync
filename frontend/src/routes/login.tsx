@@ -26,9 +26,7 @@ export const Route = createFileRoute("/login")({
   component: Login,
   beforeLoad: async () => {
     if (isLoggedIn()) {
-      throw redirect({
-        to: "/",
-      })
+      throw redirect({ to: "/" })
     }
   },
 })
@@ -43,10 +41,7 @@ function Login() {
   } = useForm<AccessToken>({
     mode: "onBlur",
     criteriaMode: "all",
-    defaultValues: {
-      username: "",
-      password: "",
-    },
+    defaultValues: { username: "", password: "" },
   })
 
   const onSubmit: SubmitHandler<AccessToken> = async (data) => {
@@ -62,6 +57,8 @@ function Login() {
   }
 
   // Social media logo components
+
+  // GitHub logo remains unchanged
   const GitHubLogo = () => (
     <Link
       href="https://github.com/CobaltDataNet/cobaltdata.net"
@@ -76,6 +73,7 @@ function Login() {
     </Link>
   )
 
+  // LinkedIn logo component
   const LinkedInLogo = () => (
     <Link
       href="https://www.linkedin.com/company/cobaltdatanet"
@@ -90,6 +88,7 @@ function Login() {
     </Link>
   )
 
+  // Updated Medium logo component with a new URL so it loads correctly
   const MediumLogo = () => (
     <Link
       href="https://medium.com/@cobaltdatanet"
@@ -97,7 +96,7 @@ function Login() {
       rel="noopener noreferrer"
     >
       <Image
-        src="https://cdn.worldvectorlogo.com/logos/medium-icon-1.svg"
+        src="https://upload.wikimedia.org/wikipedia/commons/4/4e/Medium_Logo.svg"
         alt="Medium Logo"
         boxSize="32px"
       />
@@ -142,17 +141,12 @@ function Login() {
       <FormControl id="password" isInvalid={!!error}>
         <InputGroup>
           <Input
-            {...register("password", {
-              required: "Password is required",
-            })}
+            {...register("password", { required: "Password is required" })}
             type={show ? "text" : "password"}
             placeholder="Password"
             required
           />
-          <InputRightElement
-            color="ui.dim"
-            _hover={{ cursor: "pointer" }}
-          >
+          <InputRightElement color="ui.dim" _hover={{ cursor: "pointer" }}>
             <Icon
               as={show ? ViewOffIcon : ViewIcon}
               onClick={setShow.toggle}
@@ -180,7 +174,7 @@ function Login() {
         </Link>
       </Text>
 
-      {/* Social media links row */}
+      {/* Social media icons row remains in its original position */}
       <Flex direction="row" justify="center" align="center" gap={4} mt={4}>
         <GitHubLogo />
         <LinkedInLogo />
