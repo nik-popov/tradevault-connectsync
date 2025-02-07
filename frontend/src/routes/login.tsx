@@ -174,8 +174,8 @@ function Login() {
         </Link>
       </Text>
 
-      {/* Social media icons row remains in its original position */}
-      <Flex direction="row" justify="center" align="center" gap={4} mt={4}>
+      {/* Social media icons row pushed lower by increasing the top margin */}
+      <Flex direction="row" justify="center" align="center" gap={4} mt={12}>
         <GitHubLogo />
         <LinkedInLogo />
         <MediumLogo />
