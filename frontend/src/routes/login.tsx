@@ -108,14 +108,14 @@ const XLogo = () => (
         as="form"
         onSubmit={handleSubmit(onSubmit)}
         maxW="sm"
-        p={8} /* Increased padding for more space inside */
+        p={10} /* Increased padding for more space inside */
         centerContent
         display="flex"
         flexDirection="column"
         alignItems="center"
         justifyContent="center"
         height="100vh" /* Full viewport height */
-        gap={6} /* Adds spacing between form elements */
+        gap={10} /* Adds spacing between form elements */
       >
     
 
