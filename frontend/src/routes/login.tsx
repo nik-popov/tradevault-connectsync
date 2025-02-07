@@ -61,7 +61,7 @@ function Login() {
   // GitHub logo remains unchanged
   const GitHubLogo = () => (
     <Link
-      href="https://github.com/CobaltDataNet/cobaltdata.net"
+      href="https://github.com/CobaltDataNet"
       target="_blank"
       rel="noopener noreferrer"
     >
@@ -90,7 +90,7 @@ function Login() {
 // X (formerly Twitter) logo component
 const XLogo = () => (
   <Link
-    href="https://twitter.com/cobaltdatanet"
+    href="https://twitter.com/cobaltdata"
     target="_blank"
     rel="noopener noreferrer"
   >
