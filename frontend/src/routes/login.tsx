@@ -117,7 +117,11 @@ const XLogo = () => (
         height="100vh" /* Full viewport height */
         gap={10} /* Adds spacing between form elements */
       >
-    
+        <Link
+      href="https://cobaltdata.net"
+      target="_blank"
+      rel="noopener noreferrer"
+    >
 
       <Image
         src={Logo}
@@ -127,7 +131,7 @@ const XLogo = () => (
         alignSelf="center"
         mb={4}
       />
-
+  </Link>
       <FormControl id="username" isInvalid={!!errors.username || !!error}>
         <Input
           id="username"
