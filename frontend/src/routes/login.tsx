@@ -94,15 +94,9 @@ const XLogo = () => (
     target="_blank"
     rel="noopener noreferrer"
   >
-    <Image
-      src="https://iconscount.com/icons/twitter-x"
-      alt="X (formerly Twitter) Logo"
-      boxSize="32px"
-    />
+<a href="https://iconscout.com/icons/twitter-x" className="text-underline font-size-sm" target="_blank">Twitter X</a> 
   </Link>
 )
-
-
   return (
       <Container
         as="form"
