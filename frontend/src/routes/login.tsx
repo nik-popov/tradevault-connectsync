@@ -95,7 +95,7 @@ const XLogo = () => (
     rel="noopener noreferrer"
   >
     <Image
-      src="https://icons"
+      src=""
       alt="X (formerly Twitter) Logo"
       boxSize="32px"
     />
