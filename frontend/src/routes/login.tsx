@@ -35,20 +35,7 @@ export const Route = createFileRoute("/login")({
     }
   },
 })
-  // GitHubLogo displays only the GitHub logo as a clickable link
-const GitHubLogo = () => (
-    <Link
-      href="https://github.com/CobaltDataNet/cobaltdata.net"
-      target="_blank"
-      rel="noopener noreferrer"
-    >
-      <Image
-        src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png"
-        alt="GitHub Logo"
-        boxSize="32px"
-      />
-    </Link>
-  )
+
 function Login() {
   const [show, setShow] = useBoolean()
   const { loginMutation, error, resetError } = useAuth()
@@ -76,7 +63,20 @@ function Login() {
       // error is handled by useAuth hook
     }
   }
-
+  // GitHubLogo displays only the GitHub logo as a clickable link
+  const GitHubLogo = () => (
+    <Link
+      href="https://github.com/CobaltDataNet/cobaltdata.net"
+      target="_blank"
+      rel="noopener noreferrer"
+    >
+      <Image
+        src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png"
+        alt="GitHub Logo"
+        boxSize="32px"
+      />
+    </Link>
+  )
   return (
     <>
       <Container
