@@ -104,18 +104,20 @@ const XLogo = () => (
 
 
   return (
-<Container
-  as="form"
-  onSubmit={handleSubmit(onSubmit)}
-  maxW="sm"
-  p={6}
-  centerContent
-  display="flex"
-  flexDirection="column"
-  alignItems="center"
-  justifyContent="center"
-  height="100vh" // Ensures full viewport height
->
+      <Container
+        as="form"
+        onSubmit={handleSubmit(onSubmit)}
+        maxW="sm"
+        p={8} /* Increased padding for more space inside */
+        centerContent
+        display="flex"
+        flexDirection="column"
+        alignItems="center"
+        justifyContent="center"
+        height="100vh" /* Full viewport height */
+        gap={6} /* Adds spacing between form elements */
+      >
+    
 
       <Image
         src={Logo}
