@@ -87,21 +87,21 @@ function Login() {
       />
     </Link>
   )
+// X (formerly Twitter) logo component
+const XLogo = () => (
+  <Link
+    href="https://twitter.com/cobaltdatanet"
+    target="_blank"
+    rel="noopener noreferrer"
+  >
+    <Image
+      src="https://upload.wikimedia.org/wikipedia/commons/6/60/X_logo_2023_original.svg"
+      alt="X (formerly Twitter) Logo"
+      boxSize="32px"
+    />
+  </Link>
+)
 
-  // Updated Medium logo component with a new URL so it loads correctly
-  const MediumLogo = () => (
-    <Link
-      href="https://medium.com/@cobaltdatanet"
-      target="_blank"
-      rel="noopener noreferrer"
-    >
-      <Image
-        src="https://upload.wikimedia.org/wikipedia/commons/4/4e/Medium_Logo.svg"
-        alt="Medium Logo"
-        boxSize="32px"
-      />
-    </Link>
-  )
 
   return (
     <Container
@@ -178,7 +178,7 @@ function Login() {
       <Flex direction="row" justify="center" align="center" gap={4} mt={12}>
         <GitHubLogo />
         <LinkedInLogo />
-        <MediumLogo />
+        <XLogo />
       </Flex>
     </Container>
   )
