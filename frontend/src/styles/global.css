@@ -1,0 +1,29 @@
+/* Import Google Font */
+@import url('https://fonts.googleapis.com/css2?family=42dot+Sans:wght@300..800&display=swap');
+
+/* Apply globally */
+body {
+  font-family: "42dot Sans", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 400;
+  font-style: normal;
+  font-size: 22px; /* Bigger text */
+  line-height: 1.7; /* More readable spacing */
+  margin: 40px; /* Adds breathing room */
+  padding: 20px; /* Extra spacing */
+}
+
+/* Additional spacing for common elements */
+h1, h2, h3, h4, h5, h6 {
+  margin-bottom: 20px;
+  font-weight: 600;
+}
+
+p {
+  margin-bottom: 16px;
+}
+
+button, input, textarea {
+  font-size: 20px; /* Bigger text for UI elements */
+  padding: 12px; /* More clickable area */
+}
