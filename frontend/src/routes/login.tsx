@@ -11,13 +11,10 @@ import {
   InputRightElement,
   Link,
   Text,
+  Flex,
   useBoolean,
 } from "@chakra-ui/react"
-import {
-  Link as RouterLink,
-  createFileRoute,
-  redirect,
-} from "@tanstack/react-router"
+import { Link as RouterLink, createFileRoute, redirect } from "@tanstack/react-router"
 import { type SubmitHandler, useForm } from "react-hook-form"
 
 import Logo from "/assets/images/cobalt-data-logo.svg"
@@ -63,7 +60,8 @@ function Login() {
       // error is handled by useAuth hook
     }
   }
-  // GitHubLogo displays only the GitHub logo as a clickable link
+
+  // Social media logo components
   const GitHubLogo = () => (
     <Link
       href="https://github.com/CobaltDataNet/cobaltdata.net"
@@ -77,82 +75,119 @@ function Login() {
       />
     </Link>
   )
+
+  const LinkedInLogo = () => (
+    <Link
+      href="https://www.linkedin.com/company/cobaltdatanet"
+      target="_blank"
+      rel="noopener noreferrer"
+    >
+      <Image
+        src="https://upload.wikimedia.org/wikipedia/commons/c/ca/LinkedIn_logo_initials.png"
+        alt="LinkedIn Logo"
+        boxSize="32px"
+      />
+    </Link>
+  )
+
+  const MediumLogo = () => (
+    <Link
+      href="https://medium.com/@cobaltdatanet"
+      target="_blank"
+      rel="noopener noreferrer"
+    >
+      <Image
+        src="https://cdn.worldvectorlogo.com/logos/medium-icon-1.svg"
+        alt="Medium Logo"
+        boxSize="32px"
+      />
+    </Link>
+  )
+
   return (
-    <>
-      <Container
-        as="form"
-        onSubmit={handleSubmit(onSubmit)}
-        h="100vh"
-        maxW="sm"
-        alignItems="stretch"
-        justifyContent="center"
-        gap={4}
-        centerContent
-      >
-        <Image
-          src={Logo}
-          alt="FastAPI logo"
-          height="auto"
-          maxW="2xs"
-          alignSelf="center"
-          mb={4}
+    <Container
+      as="form"
+      onSubmit={handleSubmit(onSubmit)}
+      h="100vh"
+      maxW="sm"
+      centerContent
+      gap={4}
+      p={6}
+    >
+      <Image
+        src={Logo}
+        alt="CobaltData logo"
+        height="auto"
+        maxW="2xs"
+        alignSelf="center"
+        mb={4}
+      />
+
+      <FormControl id="username" isInvalid={!!errors.username || !!error}>
+        <Input
+          id="username"
+          {...register("username", {
+            required: "Username is required",
+            pattern: emailPattern,
+          })}
+          placeholder="Email"
+          type="email"
+          required
         />
-                <GitHubLogo />
-        <FormControl id="username" isInvalid={!!errors.username || !!error}>
+        {errors.username && (
+          <FormErrorMessage>{errors.username.message}</FormErrorMessage>
+        )}
+      </FormControl>
+
+      <FormControl id="password" isInvalid={!!error}>
+        <InputGroup>
           <Input
-            id="username"
-            {...register("username", {
-              required: "Username is required",
-              pattern: emailPattern,
+            {...register("password", {
+              required: "Password is required",
             })}
-            placeholder="Email"
-            type="email"
+            type={show ? "text" : "password"}
+            placeholder="Password"
             required
           />
-          {errors.username && (
-            <FormErrorMessage>{errors.username.message}</FormErrorMessage>
-          )}
-        </FormControl>
-        <FormControl id="password" isInvalid={!!error}>
-          <InputGroup>
-            <Input
-              {...register("password", {
-                required: "Password is required",
-              })}
-              type={show ? "text" : "password"}
-              placeholder="Password"
-              required
-            />
-            <InputRightElement
-              color="ui.dim"
-              _hover={{
-                cursor: "pointer",
-              }}
+          <InputRightElement
+            color="ui.dim"
+            _hover={{ cursor: "pointer" }}
+          >
+            <Icon
+              as={show ? ViewOffIcon : ViewIcon}
+              onClick={setShow.toggle}
+              aria-label={show ? "Hide password" : "Show password"}
             >
-              <Icon
-                as={show ? ViewOffIcon : ViewIcon}
-                onClick={setShow.toggle}
-                aria-label={show ? "Hide password" : "Show password"}
-              >
-                {show ? <ViewOffIcon /> : <ViewIcon />}
-              </Icon>
-            </InputRightElement>
-          </InputGroup>
-          {error && <FormErrorMessage>{error}</FormErrorMessage>}
-        </FormControl>
-        <Link as={RouterLink} to="/recover-password" color="blue.500">
-          Forgot password?
+              {show ? <ViewOffIcon /> : <ViewIcon />}
+            </Icon>
+          </InputRightElement>
+        </InputGroup>
+        {error && <FormErrorMessage>{error}</FormErrorMessage>}
+      </FormControl>
+
+      <Link as={RouterLink} to="/recover-password" color="blue.500">
+        Forgot password?
+      </Link>
+
+      <Button variant="primary" type="submit" isLoading={isSubmitting}>
+        Log In
+      </Button>
+
+      <Text>
+        Don't have an account?{" "}
+        <Link as={RouterLink} to="/signup" color="blue.500">
+          Sign up
         </Link>
-        <Button variant="primary" type="submit" isLoading={isSubmitting}>
-          Log In
-        </Button>
-        <Text>
-          Don't have an account?{" "}
-          <Link as={RouterLink} to="/signup" color="blue.500">
-            Sign up
-          </Link>
-        </Text>
-      </Container>
-    </>
+      </Text>
+
+      {/* Social media links row */}
+      <Flex direction="row" justify="center" align="center" gap={4} mt={4}>
+        <GitHubLogo />
+        <LinkedInLogo />
+        <MediumLogo />
+      </Flex>
+    </Container>
   )
 }
+
+export default Login
