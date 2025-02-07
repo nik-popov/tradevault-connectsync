@@ -76,7 +76,7 @@ function Login() {
   // LinkedIn logo component
   const LinkedInLogo = () => (
     <Link
-      href="https://www.linkedin.com/company/cobaltdatanet"
+      href="https://www.linkedin.com/company/cobaltdata"
       target="_blank"
       rel="noopener noreferrer"
     >
