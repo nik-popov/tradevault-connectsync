@@ -104,15 +104,19 @@ const XLogo = () => (
 
 
   return (
-    <Container
-      as="form"
-      onSubmit={handleSubmit(onSubmit)}
-      h="100vh"
-      maxW="sm"
-      centerContent
-      gap={4}
-      p={6}
-    >
+<Container
+  as="form"
+  onSubmit={handleSubmit(onSubmit)}
+  maxW="sm"
+  p={6}
+  centerContent
+  display="flex"
+  flexDirection="column"
+  alignItems="center"
+  justifyContent="center"
+  height="100vh" // Ensures full viewport height
+>
+
       <Image
         src={Logo}
         alt="CobaltData logo"
