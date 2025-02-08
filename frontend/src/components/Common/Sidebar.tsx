@@ -8,6 +8,7 @@ import {
   Flex,
   IconButton,
   Image,
+  Link,
   Text,
   useColorModeValue,
   useDisclosure,
@@ -15,7 +16,7 @@ import {
 import { useQueryClient } from "@tanstack/react-query"
 import { FiLogOut, FiMenu } from "react-icons/fi"
 
-import Logo from "/assets/images/fastapi-logo.svg"
+import Logo from "/assets/images/cobalt-data-logo.svg"
 import type { UserPublic } from "../../client"
 import useAuth from "../../hooks/useAuth"
 import SidebarItems from "./SidebarItems"
@@ -32,6 +33,21 @@ const Sidebar = () => {
   const handleLogout = async () => {
     logout()
   }
+
+  // GitHubLogo displays only the GitHub logo as a clickable link
+  const GitHubLogo = () => (
+    <Link
+      href="https://github.com/CobaltDataNet"
+      target="_blank"
+      rel="noopener noreferrer"
+    >
+      <Image
+        src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png"
+        alt="GitHub Logo"
+        boxSize="32px"
+      />
+    </Link>
+  )
 
   return (
     <>
@@ -50,9 +66,9 @@ const Sidebar = () => {
         <DrawerContent maxW="250px">
           <DrawerCloseButton />
           <DrawerBody py={8}>
-            <Flex flexDir="column" justify="space-between">
+            <Flex flexDir="column" justify="space-between" h="100%">
               <Box>
-                <Image src={Logo} alt="logo" p={6} />
+                <Image src={Logo} alt="Logo" p={6} />
                 <SidebarItems onClose={onClose} />
                 <Flex
                   as="button"
@@ -66,11 +82,9 @@ const Sidebar = () => {
                   <Text ml={2}>Log out</Text>
                 </Flex>
               </Box>
-              {currentUser?.email && (
-                <Text color={textColor} noOfLines={2} fontSize="sm" p={2}>
-                  Logged in as: {currentUser.email}
-                </Text>
-              )}
+              <Box mt={4}>
+                <GitHubLogo />
+              </Box>
             </Flex>
           </DrawerBody>
         </DrawerContent>
@@ -91,22 +105,20 @@ const Sidebar = () => {
           bg={secBgColor}
           p={4}
           borderRadius={12}
+          w="250px"
         >
           <Box>
             <Image src={Logo} alt="Logo" w="180px" maxW="2xs" p={6} />
             <SidebarItems />
           </Box>
-          {currentUser?.email && (
-            <Text
-              color={textColor}
-              noOfLines={2}
-              fontSize="sm"
-              p={2}
-              maxW="180px"
-            >
-              Logged in as: {currentUser.email}
-            </Text>
-          )}
+          <Box>
+            {currentUser?.email && (
+              <Text color={textColor} noOfLines={2} fontSize="sm" p={2} maxW="180px">
+                Logged in as: {currentUser.email}
+              </Text>
+            )}
+            <GitHubLogo />
+          </Box>
         </Flex>
       </Box>
     </>

@@ -1,6 +1,15 @@
 import { extendTheme } from "@chakra-ui/react";
 
 const theme = extendTheme({
+  global: {
+    body: {
+      fontFamily: '"42dot Sans", sans-serif',
+      fontSize: "22px",
+      lineHeight: "1.7",
+      margin: "40px",
+      padding: "20px",
+    },
+  },
   colors: {
     ui: {
       main: "#2C6295", // Updated cobalt color
