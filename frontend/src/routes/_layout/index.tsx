@@ -23,17 +23,6 @@ function Dashboard() {
 
         {/* Main Content */}
         <Flex mt={6} gap={6} justify="space-between">
-          {/* Sidebar - Settings */}
-          <Box w="250px" p={4} borderRight="1px solid #E2E8F0">
-            <VStack spacing={4} align="stretch">
-              <Button leftIcon={<Icon as={FiDatabase} />} colorScheme="blue" variant="ghost">
-                Manage Datasets
-              </Button>
-              <Button leftIcon={<Icon as={FiSettings} />} colorScheme="teal" variant="ghost">
-                Tools
-              </Button>
-            </VStack>
-          </Box>
 
           {/* Main Dashboard Area */}
           <Box flex="1">
