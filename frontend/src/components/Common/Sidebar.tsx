@@ -73,8 +73,9 @@ interface SidebarItemsProps {
 
 const SidebarItems = ({ onClose }: SidebarItemsProps) => {
   const queryClient = useQueryClient();
-  const textColor = useColorModeValue("ui.main", "ui.light");
-  const bgActive = useColorModeValue("#E2E8F0", "#4A5568");
+  const textColor = useColorModeValue("ui.dark", "ui.light");
+  const bgActive = useColorModeValue("#CBD5E0", "#2D3748");
+  const hoverBg = useColorModeValue("#E2E8F0", "#4A5568");
   const currentUser = queryClient.getQueryData<UserPublic>(["currentUser"]);
 
   const finalSidebarStructure = [...sidebarStructure];
@@ -90,21 +91,23 @@ const SidebarItems = ({ onClose }: SidebarItemsProps) => {
             as={Link}
             to={path}
             w="100%"
-            p={2}
+            p={3}
+            borderRadius="md"
+            _hover={{ background: hoverBg }}
             activeProps={{
               style: { background: bgActive, borderRadius: "12px" },
             }}
             color={textColor}
             onClick={onClose}
           >
-            {icon && <Icon as={icon} alignSelf="center" />}
-            <Text ml={2}>{title}</Text>
+            {icon && <Icon as={icon} alignSelf="center" mr={3} />}
+            <Text>{title}</Text>
           </Flex>
         ) : (
           <Box>
-            <Flex p={2} color={textColor} fontWeight="bold">
-              {icon && <Icon as={icon} alignSelf="center" />}
-              <Text ml={2}>{title}</Text>
+            <Flex p={3} fontWeight="bold" color={textColor}>
+              {icon && <Icon as={icon} alignSelf="center" mr={3} />}
+              <Text>{title}</Text>
             </Flex>
             <Box ml={6}>{subItems && renderItems(subItems)}</Box>
           </Box>
