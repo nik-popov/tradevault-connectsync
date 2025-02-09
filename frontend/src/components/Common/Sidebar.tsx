@@ -10,7 +10,6 @@ import {
   FiDatabase,
   FiTool,
   FiLayers,
-  FiMenu,
   FiLogOut,
 } from "react-icons/fi";
 
