@@ -32,10 +32,7 @@ function Dashboard() {
                 Manage Datasets
               </Button>
               <Button leftIcon={<Icon as={FiSettings} />} colorScheme="teal" variant="ghost">
-                Settings
-              </Button>
-              <Button leftIcon={<Icon as={FiLogOut} />} colorScheme="red" variant="outline" onClick={logout}>
-                Logout
+                Tools
               </Button>
             </VStack>
           </Box>
