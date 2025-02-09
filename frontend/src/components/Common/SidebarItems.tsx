@@ -14,7 +14,14 @@ import {
 
 import type { UserPublic } from "../../client";
 
-const sidebarStructure = [
+interface SidebarItem {
+  title: string;
+  icon?: any;
+  path?: string;
+  subItems?: SidebarItem[];
+}
+
+const sidebarStructure: SidebarItem[] = [
   { title: "Dashboard", icon: FiHome, path: "/" },
   {
     title: "Proxies",
@@ -74,7 +81,7 @@ const SidebarItems = ({ onClose }: SidebarItemsProps) => {
     sidebarStructure.push({ title: "Admin", icon: FiUsers, path: "/admin" });
   }
 
-  const renderItems = (items) =>
+  const renderItems = (items: SidebarItem[]) =>
     items.map(({ icon, title, path, subItems }) => (
       <Box key={title}>
         {path ? (
@@ -89,16 +96,16 @@ const SidebarItems = ({ onClose }: SidebarItemsProps) => {
             color={textColor}
             onClick={onClose}
           >
-            <Icon as={icon} alignSelf="center" />
+            {icon && <Icon as={icon} alignSelf="center" />}
             <Text ml={2}>{title}</Text>
           </Flex>
         ) : (
           <Box>
             <Flex p={2} color={textColor} fontWeight="bold">
-              <Icon as={icon} alignSelf="center" />
+              {icon && <Icon as={icon} alignSelf="center" />}
               <Text ml={2}>{title}</Text>
             </Flex>
-            <Box ml={6}>{renderItems(subItems)}</Box>
+            <Box ml={6}>{subItems && renderItems(subItems)}</Box>
           </Box>
         )}
       </Box>
