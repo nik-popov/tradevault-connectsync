@@ -72,9 +72,15 @@ interface SidebarItemsProps {
 }
 
 const SidebarItems = ({ onClose }: SidebarItemsProps) => {
+  const queryClient = useQueryClient();
   const textColor = useColorModeValue("ui.main", "ui.light");
   const bgActive = useColorModeValue("#E2E8F0", "#4A5568");
+  const currentUser = queryClient.getQueryData<UserPublic>(["currentUser"]);
 
+  const finalSidebarStructure = [...sidebarStructure];
+  if (currentUser?.is_superuser && !finalSidebarStructure.some(item => item.title === "Admin")) {
+    finalSidebarStructure.push({ title: "Admin", icon: FiUsers, path: "/admin" });
+  }
 
   const renderItems = (items: SidebarItem[]) =>
     items.map(({ icon, title, path, subItems }) => (
@@ -106,7 +112,7 @@ const SidebarItems = ({ onClose }: SidebarItemsProps) => {
       </Box>
     ));
 
-  return <Box>{renderItems(sidebarStructure)}</Box>;
+  return <Box>{renderItems(finalSidebarStructure)}</Box>;
 };
 
 export default SidebarItems;
