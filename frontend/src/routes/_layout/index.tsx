@@ -3,12 +3,14 @@ import {
 } from "@chakra-ui/react";
 import { createFileRoute } from "@tanstack/react-router";
 import { FiSettings, FiDatabase, FiSend, FiGithub } from "react-icons/fi";
+import useAuth from "../../hooks/useAuth"; // ✅ Re-import useAuth
 
 export const Route = createFileRoute("/_layout/")({
   component: Dashboard,
 });
 
 function Dashboard() {
+  const { user: currentUser } = useAuth(); // ✅ Fix: Define `currentUser` properly
 
   return (
     <>
@@ -37,7 +39,7 @@ function Dashboard() {
           <Box flex="1">
             <Box p={4}>
               <Text fontSize="2xl" fontWeight="bold">
-                Hi, {currentUser?.full_name || currentUser?.email} 👋🏼
+                Hi, {currentUser?.full_name || currentUser?.email} 👋🏼 {/* ✅ Fix applied here */}
               </Text>
               <Text>Welcome back, nice to see you again!</Text>
             </Box>
