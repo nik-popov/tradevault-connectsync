@@ -10,9 +10,12 @@ import {
   FiDatabase,
   FiTool,
   FiLayers,
+  FiMenu,
+  FiLogOut,
 } from "react-icons/fi";
 
 import type { UserPublic } from "../../client";
+import useAuth from "../../hooks/useAuth";
 
 interface SidebarItem {
   title: string;
@@ -64,7 +67,7 @@ const sidebarStructure: SidebarItem[] = [
   },
   { title: "Settings", icon: FiSettings, path: "/settings" },
   { title: "Items", icon: FiBriefcase, path: "/items" },
-  { title: "Help & Support", icon: FiUsers, path: "/help-support" },
+  { title: "Help & Support", icon: FiUsers, path: "help-support" },
 ];
 
 interface SidebarItemsProps {
@@ -77,11 +80,16 @@ const SidebarItems = ({ onClose }: SidebarItemsProps) => {
   const bgActive = useColorModeValue("#CBD5E0", "#2D3748");
   const hoverBg = useColorModeValue("#E2E8F0", "#4A5568");
   const currentUser = queryClient.getQueryData<UserPublic>(["currentUser"]);
+  const { logout } = useAuth();
 
   const finalSidebarStructure = [...sidebarStructure];
   if (currentUser?.is_superuser && !finalSidebarStructure.some(item => item.title === "Admin")) {
     finalSidebarStructure.push({ title: "Admin", icon: FiUsers, path: "/admin" });
   }
+
+  const handleLogout = async () => {
+    logout();
+  };
 
   const renderItems = (items: SidebarItem[]) =>
     items.map(({ icon, title, path, subItems }) => (
@@ -115,7 +123,24 @@ const SidebarItems = ({ onClose }: SidebarItemsProps) => {
       </Box>
     ));
 
-  return <Box>{renderItems(finalSidebarStructure)}</Box>;
+  return (
+    <Box>
+      {renderItems(finalSidebarStructure)}
+      <Flex
+        as="button"
+        onClick={handleLogout}
+        p={3}
+        borderRadius="md"
+        _hover={{ background: hoverBg }}
+        color="ui.danger"
+        fontWeight="bold"
+        alignItems="center"
+      >
+        <FiLogOut />
+        <Text ml={2}>Log out</Text>
+      </Flex>
+    </Box>
+  );
 };
 
 export default SidebarItems;
