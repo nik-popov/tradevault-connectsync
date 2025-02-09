@@ -1,8 +1,8 @@
 import { 
-  Box, Container, Text, VStack, HStack, Button, Icon, Divider, Select, Stack, Flex 
+  Box, Container, Text, VStack, HStack, Button, Divider, Select, Stack, Flex 
 } from "@chakra-ui/react";
 import { createFileRoute } from "@tanstack/react-router";
-import { FiSettings, FiDatabase, FiSend, FiGithub } from "react-icons/fi";
+import {FiSend, FiGithub } from "react-icons/fi";
 import useAuth from "../../hooks/useAuth"; // ✅ Re-import useAuth
 
 export const Route = createFileRoute("/_layout/")({
