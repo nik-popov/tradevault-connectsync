@@ -109,7 +109,7 @@ services:
       - SENTRY_DSN=${SENTRY_DSN}
       - DOMAIN=cobaltdata.net  
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://192.168.1.115:8000/api/v1/utils/health-check/"]
+      test: ["CMD", "curl", "-f", "http://192.168.1.204:8000/api/v1/utils/health-check/"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -137,8 +137,6 @@ services:
       - NGINX_PROXY_BUFFER_SIZE=128k
       - NGINX_PROXY_BUFFERS=4 256k
       - NGINX_LARGE_CLIENT_HEADER_BUFFERS=4 16k
-
-      - DOMAIN=cobaltdata.net
     labels:
       - traefik.enable=true
       - traefik.docker.network=traefik-public
