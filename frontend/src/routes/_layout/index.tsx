@@ -3,7 +3,7 @@ import {
 } from "@chakra-ui/react";
 import { createFileRoute } from "@tanstack/react-router";
 import { FiSettings, FiDatabase, FiLogOut, FiSend, FiGithub } from "react-icons/fi";
-import { FaDiscord, FaTwitter } from "react-icons/fa";  // Added FaTwitter for Twitter link
+
 
 import useAuth from "../../hooks/useAuth";
 
@@ -97,7 +97,7 @@ function Dashboard() {
               <Box p={4} shadow="sm" borderWidth="1px" borderRadius="lg">
                 <Text fontWeight="bold">Twitter</Text>
                 <Text fontSize="sm">Join our Twitter community.</Text> 
-                <Button mt={2} leftIcon={<FaTwitter />} size="sm" variant="outline">See Twitter</Button>
+                <Button mt={2} leftIcon={<FiGithub />} size="sm" variant="outline">See Twitter</Button>
               </Box>
 
               <Box p={4} shadow="sm" borderWidth="1px" borderRadius="lg">
