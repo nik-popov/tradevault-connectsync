@@ -25,14 +25,14 @@ import {
   const ReactivationOptions = () => <Box><Text>Reactivation Options Component</Text></Box>;
   
   const tabsConfig = [
-    { title: "Get Started", component: GetStarted },
-    { title: "Settings", component: ProxySettings },
-    { title: "Usage", component: ProxyUsage },
-    { title: "Billing", component: ProxyBilling },
-    { title: "Top-Ups", component: TopUps },
-    { title: "Connections", component: Connections },
-    { title: "Logs", component: Logs },
-    { title: "Key Management", component: KeyManagement },
+    { title: "Get Started", component: <GetStarted /> },
+    { title: "Settings", component: <ProxySettings /> },
+    { title: "Usage", component: <ProxyUsage /> },
+    { title: "Billing", component: <ProxyBilling /> },
+    { title: "Top-Ups", component: <TopUps /> },
+    { title: "Connections", component: <Connections /> },
+    { title: "Logs", component: <Logs /> },
+    { title: "Key Management", component: <KeyManagement /> },
   ];
   
   export const Route = createFileRoute("/_layout/residential-proxy")({
@@ -67,9 +67,7 @@ import {
             </TabList>
             <TabPanels>
               {tabsConfig.map((tab, index) => (
-                <TabPanel key={index}>
-                  <tab.component />
-                </TabPanel>
+                <TabPanel key={index}>{tab.component}</TabPanel>
               ))}
             </TabPanels>
           </Tabs>
@@ -77,4 +75,3 @@ import {
       </Container>
     );
   }
-  
