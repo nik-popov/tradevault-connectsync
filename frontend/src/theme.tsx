@@ -7,7 +7,6 @@ const theme = extendTheme({
         fontFamily: '"42dot Sans", sans-serif',
         fontSize: "22px",
         lineHeight: "1.7",
-        margin: "40px",
         padding: "20px",
       },
     },
