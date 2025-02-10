@@ -5,7 +5,6 @@ const theme = extendTheme({
     global: {
       body: {
         fontFamily: '"42dot Sans", sans-serif',
-        fontSize: "22px",
         lineHeight: "1.7",
         padding: "20px",
       },
