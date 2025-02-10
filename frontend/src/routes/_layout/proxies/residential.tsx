@@ -35,7 +35,7 @@ import {
     { title: "Key Management", component: <KeyManagement /> },
   ];
   
-  export const Route = createFileRoute("/_layout/residential-proxy")({
+  export const Route = createFileRoute("/_layout/proxies/residential")({
     component: ResidentialProxy,
   });
   
