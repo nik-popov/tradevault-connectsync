@@ -21,13 +21,13 @@ import {
   import { useQueryClient } from "@tanstack/react-query";
   import { createFileRoute } from "@tanstack/react-router";
   import { FiSend, FiGithub } from "react-icons/fi";
-  import PromoContent from "./components/PromoContent";
+  import{ PromoContent} from './components/PromoContent';
+  import { GetStarted } from './components/GetStarted';
   const ProxySettings = () => <Box><Text>Proxy Settings Component</Text></Box>;
   const ProxyUsage = () => <Box><Text>Proxy Usage Component</Text></Box>;
   const TopUps = () => <Box><Text>Top-Ups Component</Text></Box>;
   const Connections = () => <Box><Text>Connections Component</Text></Box>;
   const Logs = () => <Box><Text>Logs Component</Text></Box>;
-  const GetStarted = () => <Box><Text>Get Started Component</Text></Box>;
   const KeyManagement = () => <Box><Text>Key Management Component</Text></Box>;
   const ReactivationOptions = () => <Box><Text>Reactivation Options Component</Text></Box>;
   
