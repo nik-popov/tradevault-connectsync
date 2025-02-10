@@ -13,16 +13,16 @@ import {
   import { useQueryClient } from "@tanstack/react-query";
   import { createFileRoute } from "@tanstack/react-router";
   
-  import ProxySettings from "../../components/Proxy/ProxySettings";
-  import ProxyUsage from "../../components/Proxy/ProxyUsage";
-  import ProxyBilling from "../../components/Proxy/ProxyBilling";
-  import TopUps from "../../components/Proxy/TopUps";
-  import Connections from "../../components/Proxy/Connections";
-  import Logs from "../../components/Proxy/Logs";
-  import GetStarted from "../../components/Proxy/GetStarted";
-  import KeyManagement from "../../components/Proxy/KeyManagement";
-  import PromoContent from "../../components/Proxy/PromoContent";
-  import ReactivationOptions from "../../components/Proxy/ReactivationOptions";
+  const ProxySettings = () => <Box><Text>Proxy Settings Component</Text></Box>;
+  const ProxyUsage = () => <Box><Text>Proxy Usage Component</Text></Box>;
+  const ProxyBilling = () => <Box><Text>Proxy Billing Component</Text></Box>;
+  const TopUps = () => <Box><Text>Top-Ups Component</Text></Box>;
+  const Connections = () => <Box><Text>Connections Component</Text></Box>;
+  const Logs = () => <Box><Text>Logs Component</Text></Box>;
+  const GetStarted = () => <Box><Text>Get Started Component</Text></Box>;
+  const KeyManagement = () => <Box><Text>Key Management Component</Text></Box>;
+  const PromoContent = () => <Box><Text>Promo Content Component</Text></Box>;
+  const ReactivationOptions = () => <Box><Text>Reactivation Options Component</Text></Box>;
   
   const tabsConfig = [
     { title: "Get Started", component: GetStarted },
@@ -35,7 +35,7 @@ import {
     { title: "Key Management", component: KeyManagement },
   ];
   
-  export const Route = createFileRoute("/_layout/proxies/residential")({
+  export const Route = createFileRoute("/_layout/residential-proxy")({
     component: ResidentialProxy,
   });
   
