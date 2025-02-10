@@ -45,15 +45,6 @@ const sidebarStructure: SidebarItem[] = [
     icon: FiLayers,
   },
   {
-    title: "Tools",
-    subItems: [
-      { title: "Add", path: "/tools/add-1" },
-      { title: "Add", path: "/tools/add-2" },
-      { title: "Add", path: "/tools/add-3" },
-    ],
-    icon: FiTool,
-  },
-  {
     title: "Datasets",
     subItems: [
       { title: "Explore", path: "/datasets/explore" },
@@ -64,7 +55,7 @@ const sidebarStructure: SidebarItem[] = [
   },
   { title: "Settings", icon: FiSettings, path: "/settings" },
   { title: "Items", icon: FiBriefcase, path: "/items" },
-  { title: "Help & Support", icon: FiUsers, path: "/help-support" },
+  { title: "Help & Support", icon: FiTool, path: "/help-support" },
 ];
 
 interface SidebarItemsProps {
