@@ -1,5 +1,5 @@
 import { 
-  Box, Container, Text, VStack, HStack, Button, Divider, Select, Stack, Flex, Switch 
+  Box, Container, Text, VStack, HStack, Button, Divider, Stack, Flex, Switch 
 } from "@chakra-ui/react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { FiSend, FiGithub } from "react-icons/fi";
@@ -13,50 +13,58 @@ export const Route = createFileRoute("/_layout/")({
 function Dashboard() {
   const { user: currentUser } = useAuth();
   const navigate = useNavigate();
-  const [filter, setFilter] = useState("");
   const [ownedOnly, setOwnedOnly] = useState(true);
-  const [typeFilter, setTypeFilter] = useState(""); // New type filter
+  const [activeFilter, setActiveFilter] = useState("all"); // Main filter
 
   const proxyProducts = [
-    { id: "residential", name: "🌐 Residential Proxies", type: "Residential", description: "Use for highly protected targets, broad location coverage.", owned: true },
+    { id: "residential", name: "🌐 Residential Proxies", type: "Residential", description: "Highly protected targets, broad location coverage.", owned: true },
     { id: "residential-mobile", name: "📱 Mobile Proxies", type: "Residential", description: "Best for mobile-specific location targeting.", owned: false },
-    { id: "datacenter", name: "💻 Datacenter Pay/GB Proxies", type: "Datacenter", description: "High-performance residential proxies with rotating IPs.", owned: true },
-    { id: "datacenter-mobile", name: "📡 Datacenter Mobile Proxies", type: "Datacenter", description: "Optimized for mobile data traffic.", owned: false },
+    { id: "datacenter", name: "💻 Datacenter Proxies", type: "Datacenter", description: "High-performance proxies with rotating IPs.", owned: true },
+    { id: "datacenter-mobile", name: "📡 Datacenter Mobile Proxies", type: "Datacenter", description: "Optimized for mobile traffic.", owned: false },
     { id: "browser-proxy", name: "🖥️ Browser Proxy", type: "Other", description: "Seamless proxy setup for browser-based automation.", owned: false },
     { id: "google-serp", name: "🔍 Google SERP Results", type: "Other", description: "Scrape real-time Google search results.", owned: false },
     { id: "google-serp-images", name: "🖼️ Google SERP Images", type: "Other", description: "Extract images from Google search results.", owned: false },
     { id: "custom-dataset", name: "📊 Request Custom Dataset", type: "Other", description: "Tailored data scraping for your needs.", owned: false },
   ];
 
-  const filteredProducts = proxyProducts.filter((product) => 
-    (filter === "" || product.id === filter) &&
-    (typeFilter === "" || product.type === typeFilter) &&
-    (!ownedOnly || product.owned)
+  const filteredProducts = proxyProducts.filter(
+    (product) =>
+      (activeFilter === "all" || product.type === activeFilter) &&
+      (!ownedOnly || product.owned)
   );
 
   return (
     <Container maxW="full">
       {/* Header Section */}
-      <Box bg="blue.50" p={3} textAlign="center" borderRadius="md">
-        <Text fontWeight="bold">🚀 Test our solutions with a 3-day free trial!</Text>
-        <Button colorScheme="blue" size="sm" ml={4} onClick={() => navigate({ to: "/proxies/pricing" })}>
+      <Box bg="blue.100" p={4} textAlign="center" borderRadius="md">
+        <Text fontWeight="bold" fontSize="lg">🚀 Get a 3-day free trial of our proxies!</Text>
+        <Button colorScheme="blue" size="sm" mt={2} onClick={() => navigate({ to: "/proxies/pricing" })}>
           Try now
         </Button>
       </Box>
 
       {/* Filter Buttons */}
-      <Stack direction="row" mt={6} spacing={2} justify="center">
+      <Stack direction="row" mt={6} spacing={3} justify="center">
         {["All", "Residential", "Datacenter", "Other"].map((type) => (
           <Button 
             key={type} 
-            size="sm"
-            colorScheme={typeFilter === type || (type === "All" && typeFilter === "") ? "blue" : "gray"}
-            onClick={() => setTypeFilter(type === "All" ? "" : type)}
+            size="md"
+            fontWeight="bold"
+            borderRadius="full"
+            colorScheme={activeFilter === type || (type === "All" && activeFilter === "all") ? "blue" : "gray"}
+            variant={activeFilter === type || (type === "All" && activeFilter === "all") ? "solid" : "outline"}
+            onClick={() => setActiveFilter(type === "All" ? "all" : type)}
           >
             {type}
           </Button>
         ))}
       </Stack>
+
+      {/* Owned Filter Toggle */}
+      <Flex justify="center" align="center" mt={4}>
+        <Text fontWeight="bold" mr={2}>Owned Only</Text>
+        <Switch isChecked={ownedOnly} onChange={() => setOwnedOnly(!ownedOnly)} colorScheme="blue" />
+      </Flex>
 
       <Flex mt={6} gap={6} justify="space-between">
         {/* Main Content */}
@@ -65,40 +73,40 @@ function Dashboard() {
             <Text fontSize="2xl" fontWeight="bold">
               Hi, {currentUser?.full_name || currentUser?.email} 👋🏼
             </Text>
-            <Text>Welcome back, nice to see you again!</Text>
+            <Text>Welcome back, let’s get started!</Text>
           </Box>
           <Divider my={4} />
 
-          {/* Filter Controls */}
-          <Stack direction={{ base: "column", md: "row" }} spacing={4} align="center">
-            <Text fontWeight="bold">Filter by:</Text>
-            <Select placeholder="Filter by product" onChange={(e) => setFilter(e.target.value)}>
-              <option value="residential">Residential Proxies</option>
-              <option value="residential-mobile">Mobile Proxies</option>
-              <option value="datacenter">Datacenter Proxies</option>
-              <option value="datacenter-mobile">Datacenter Mobile Proxies</option>
-              <option value="browser-proxy">Browser Proxy</option>
-              <option value="google-serp">Google SERP Results</option>
-              <option value="google-serp-images">Google SERP Images</option>
-              <option value="custom-dataset">Request Custom Dataset</option>
-            </Select>
-            <HStack>
-              <Text fontWeight="bold">Owned Only</Text>
-              <Switch isChecked={ownedOnly} onChange={() => setOwnedOnly(!ownedOnly)} />
-            </HStack>
-          </Stack>
-
           {/* Proxy Products List */}
           <VStack spacing={6} mt={6} align="stretch">
-            {filteredProducts.map((product) => (
-              <Box key={product.id} p={5} shadow="md" borderWidth="1px" borderRadius="lg">
-                <Text fontWeight="bold">{product.name}</Text>
-                <Text fontSize="sm">{product.description}</Text>
-                <Button mt={2} size="sm" colorScheme="blue" onClick={() => navigate({ to: `/proxies/${product.id}` })}>
-                  Manage
-                </Button>
-              </Box>
-            ))}
+            {filteredProducts.length === 0 ? (
+              <Text textAlign="center" fontSize="lg" color="gray.500">No products match this filter.</Text>
+            ) : (
+              filteredProducts.map((product) => (
+                <Box 
+                  key={product.id} 
+                  p={5} 
+                  shadow="md" 
+                  borderWidth="1px" 
+                  borderRadius="lg" 
+                  bg="gray.50"
+                  _hover={{ shadow: "lg", transform: "scale(1.02)" }}
+                  transition="0.2s ease-in-out"
+                >
+                  <Text fontWeight="bold" fontSize="lg">{product.name}</Text>
+                  <Text fontSize="sm" color="gray.600">{product.description}</Text>
+                  <Button 
+                    mt={3} 
+                    size="sm" 
+                    colorScheme="blue" 
+                    borderRadius="full"
+                    onClick={() => navigate({ to: `/proxies/${product.id}` })}
+                  >
+                    Manage
+                  </Button>
+                </Box>
+              ))
+            )}
           </VStack>
         </Box>
 
