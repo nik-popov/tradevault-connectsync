@@ -41,17 +41,15 @@ import {
     { title: "Key Management", component: <KeyManagement /> },
   ];
   
-  export const Route = createFileRoute("/_layout/proxies/residential")({
-    component: ResidentialProxy,
-  });
-  
   function ResidentialProxy() {
     const queryClient = useQueryClient();
     const [hasSubscription, setHasSubscription] = useState(false);
     const [isTrial, setIsTrial] = useState(false);
     const [isDeactivated, setIsDeactivated] = useState(false);
     const currentUser = queryClient.getQueryData(["currentUser"]);
-  
+    export const Route = createFileRoute('/_layout/proxies/residential')({
+      component: PromoContent
+    });
     const isLocked = !hasSubscription;
     const restrictedTabs = isTrial ? ["Key Management", "Logs", "Top-Ups","Connections"] : [];
   
@@ -118,8 +116,3 @@ import {
     );
   }
 
-export const Route = createFileRoute('/_layout/proxies/components/PromoContent')({
-    component: PromoContent
-  });
-  
-export default PromoContent;
