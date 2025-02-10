@@ -45,44 +45,43 @@ function Dashboard() {
   
       {/* Filters & Toggle in the Same Row */}
       <Flex mt={6} gap={4} justify="space-between" align="center" flexWrap="wrap">
+  {/* Welcome Message - Aligned Left */}
+  <Box textAlign="left" flex="1">
+    <Text fontSize="xl" fontWeight="bold">
+      Hi, {currentUser?.full_name || currentUser?.email} 👋🏼
+    </Text>
+    <Text fontSize="sm">Welcome back, let’s get started!</Text>
+  </Box>
 
-        {/* Welcome Message */}
-        <Box textAlign="right">
-          <Text fontSize="xl" fontWeight="bold">
-            Hi, {currentUser?.full_name || currentUser?.email} 👋🏼
-          </Text>
-          <Text fontSize="sm">Welcome back, let’s get started!</Text>
-        </Box>
-        {/* Owned Filter Toggle */}
-        <Flex align="center">
-          <Text fontWeight="bold" mr={2}>Owned Only</Text>
-          <Switch 
-            isChecked={ownedOnly} 
-            onChange={() => setOwnedOnly(prev => !prev)} 
-            colorScheme="blue" 
-          />
-        </Flex>
-        {/* Filter Buttons */}
-        <Stack direction="row" spacing={3} flexWrap="wrap">
-          {["All", "Proxy", "SERP", "Data"].map((type) => (
-            <Button 
-              key={type} 
-              size="md"
-              fontWeight="bold"
-              borderRadius="full"
-              colorScheme={activeFilter === type || (type === "All" && activeFilter === "all") ? "blue" : "gray"}
-              variant={activeFilter === type || (type === "All" && activeFilter === "all") ? "solid" : "outline"}
-              onClick={() => setActiveFilter(type === "All" ? "all" : type)}
-            >
-              {type}
-            </Button>
-          ))}
-        </Stack>
-  
+  {/* Owned Filter Toggle - Moved to the Right of Filters */}
+  <Flex align="center">
+    <Text fontWeight="bold" mr={2}>Owned Only</Text>
+    <Switch 
+      isChecked={ownedOnly} 
+      onChange={() => setOwnedOnly(prev => !prev)} 
+      colorScheme="blue" 
+      mr={4} // Added margin for spacing
+    />
+  </Flex>
 
-  
+  {/* Filter Buttons - Stay in Same Row */}
+  <Stack direction="row" spacing={3} flexWrap="wrap">
+    {["All", "Proxy", "SERP", "Data"].map((type) => (
+      <Button 
+        key={type} 
+        size="md"
+        fontWeight="bold"
+        borderRadius="full"
+        colorScheme={activeFilter === type || (type === "All" && activeFilter === "all") ? "blue" : "gray"}
+        variant={activeFilter === type || (type === "All" && activeFilter === "all") ? "solid" : "outline"}
+        onClick={() => setActiveFilter(type === "All" ? "all" : type)}
+      >
+        {type}
+      </Button>
+    ))}
+  </Stack>
+</Flex>
 
-      </Flex>
   
       {/* Divider below for separation */}
       <Divider my={4} />
