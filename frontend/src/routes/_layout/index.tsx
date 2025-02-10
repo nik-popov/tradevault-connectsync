@@ -17,16 +17,19 @@ function Dashboard() {
   const [activeFilter, setActiveFilter] = useState("all"); // Main filter
 
   const proxyProducts = [
-    { id: "residential", name: "🌐 Residential Proxies", type: "Proxy", description: "Highly protected targets, broad location coverage.", owned: true },
-    { id: "residential-mobile", name: "📱 Mobile Proxies", type: "Proxy", description: "Best for mobile-specific location targeting.", owned: false },
-    { id: "datacenter", name: "💻 Datacenter Proxies", type: "Proxy", description: "High-performance proxies with rotating IPs.", owned: true },
-    { id: "datacenter-mobile", name: "📡 Datacenter Mobile Proxies", type: "Proxy", description: "Optimized for mobile traffic.", owned: false },
-    { id: "browser-proxy", name: "🖥️ Browser Proxy", type: "SERP", description: "Seamless proxy setup for browser-based automation.", owned: false },
-    { id: "google-serp", name: "🔍 Google SERP Results", type: "SERP", description: "Scrape real-time Google search results.", owned: false },
-    { id: "google-serp-images", name: "🖼️ Google SERP Images", type: "SERP", description: "Extract images from Google search results.", owned: false },
-    { id: "custom-dataset", name: "📊 Request Custom Dataset", type: "Data", description: "Tailored data scraping for your needs.", owned: false },
+    { id: "residential", name: "🌐 Residential Proxies", type: "Proxy", description: "Highly protected targets, broad location coverage.", owned: true, path: "/proxies/residential" },
+    { id: "residential-mobile", name: "📱 Mobile Proxies", type: "Proxy", description: "Best for mobile-specific location targeting.", owned: false, path: "/proxies/residential-mobile" },
+    { id: "datacenter", name: "💻 Datacenter Proxies", type: "Proxy", description: "High-performance proxies with rotating IPs.", owned: true, path: "/proxies/datacenter" },
+    { id: "datacenter-mobile", name: "📡 Datacenter Mobile Proxies", type: "Proxy", description: "Optimized for mobile traffic.", owned: false, path: "/proxies/datacenter-mobile" },
+    
+    // SERP Products - Updated Paths
+    { id: "browser-proxy", name: "🖥️ Browser Proxy", type: "SERP", description: "Seamless proxy setup for browser-based automation.", owned: false, path: "/scraping-api/explore" },
+    { id: "google-serp", name: "🔍 Google SERP Results", type: "SERP", description: "Scrape real-time Google search results.", owned: false, path: "/scraping-api/google-serp-api" },
+    { id: "google-serp-images", name: "🖼️ Google SERP Images", type: "SERP", description: "Extract images from Google search results.", owned: false, path: "/scraping-api/google-image-serp-api" },
+  
+    { id: "custom-dataset", name: "📊 Request Custom Dataset", type: "Data", description: "Tailored data scraping for your needs.", owned: false, path: "/data-sets/request" },
   ];
-
+  
   const filteredProducts = proxyProducts.filter(
     (product) =>
       (activeFilter === "all" || product.type === activeFilter) &&
@@ -107,14 +110,15 @@ function Dashboard() {
                   <Text fontWeight="bold" fontSize="lg">{product.name}</Text>
                   <Text fontSize="sm" color="gray.600">{product.description}</Text>
                   <Button 
-                    mt={3} 
-                    size="sm" 
-                    colorScheme="blue" 
-                    borderRadius="full"
-                    onClick={() => navigate({ to: `/proxies/${product.id}` })}
-                  >
-                    Manage
-                  </Button>
+  mt={3} 
+  size="sm" 
+  colorScheme="blue" 
+  borderRadius="full"
+  onClick={() => navigate({ to: product.path })} // Use the product's path
+>
+  Manage
+</Button>
+
                 </Box>
               ))
             )}
