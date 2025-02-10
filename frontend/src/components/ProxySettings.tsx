@@ -31,7 +31,7 @@ const ProxySettings = () => {
   return (
     <Box maxW="3xl" mx="auto" px={{ base: 4, md: 8 }} py={8}>
       <VStack spacing={6} align="stretch">
-        <Heading size="lg" textAlign="center">Proxy Configuration</Heading>
+        <Heading size="lg" textAlign="center">Configure Your Endpoint</Heading>
         <Divider />
         
         {/* Region Selection */}
@@ -67,6 +67,15 @@ const ProxySettings = () => {
           <Code p={3} borderRadius="md" bg="gray.50" fontSize="sm">
             {`headers = {'User-Agent': 'YourApp/1.0'}`}
           </Code>
+        </Box>
+        
+        {/* Verification & Support */}
+        <Box>
+          <Heading size="md" textAlign="center">Verify Your Setup</Heading>
+          <Text fontSize="md" textAlign="center" color="gray.600">
+            Test your connection using the examples above. If your IP is masked, you're all set! Need help? Visit our
+            <Button variant="link" colorScheme="blue" size="sm">troubleshooting guide</Button> or contact support.
+          </Text>
         </Box>
         
         <Button leftIcon={<FiCheckCircle />} colorScheme="blue" size="lg">

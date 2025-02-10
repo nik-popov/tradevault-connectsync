@@ -37,7 +37,7 @@ export const Route = createFileRoute("/_layout/proxies/residential")({
 
 const tabsConfig = [
   { title: "Get Started", component: <GetStarted /> },
-  { title: "Settings", component: <ProxySettings /> },
+  { title: "Endpoints", component: <ProxySettings /> },
   { title: "Usage", component: <ProxyUsage /> },
   { title: "Top-Ups", component: <TopUps /> },
   { title: "Connections", component: <Connections /> },
