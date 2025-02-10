@@ -47,7 +47,7 @@ import {
     return (
       <Container maxW="full">
         <Heading size="lg" textAlign={{ base: "center", md: "left" }} py={12}>
-          Proxy Pricing Plans
+          Search Api Pricing Options
         </Heading>
         <Tabs variant="enclosed">
           <TabList>
