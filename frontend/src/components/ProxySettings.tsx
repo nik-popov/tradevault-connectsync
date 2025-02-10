@@ -11,7 +11,9 @@ import {
   HStack,
   Icon,
   Flex,
-  Divider
+  Divider,
+  Alert,
+  AlertIcon
 } from "@chakra-ui/react";
 import { FiGlobe, FiKey, FiSettings, FiCheckCircle } from "react-icons/fi";
 
