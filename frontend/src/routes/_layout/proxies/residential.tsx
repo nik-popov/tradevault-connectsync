@@ -15,7 +15,9 @@ import {
     Select,
     Stack,
     Flex,
+    Switch,
   } from "@chakra-ui/react";
+  import { useState } from "react";
   import { useQueryClient } from "@tanstack/react-query";
   import { createFileRoute } from "@tanstack/react-router";
   import { FiSend, FiGithub } from "react-icons/fi";
@@ -42,15 +44,16 @@ import {
     { title: "Key Management", component: <KeyManagement /> },
   ];
   
-  export const Route = createFileRoute("/_layout/proxies/residential")({
+  export const Route = createFileRoute("/_layout/residential-proxy")({
     component: ResidentialProxy,
   });
   
   function ResidentialProxy() {
     const queryClient = useQueryClient();
+    const [hasSubscription, setHasSubscription] = useState(false);
     const currentUser = queryClient.getQueryData(["currentUser"]);
   
-    const isLocked = !currentUser?.hasSubscription;
+    const isLocked = !hasSubscription;
     const isDeactivated = currentUser?.subscriptionStatus === "expired";
   
     return (
@@ -58,6 +61,10 @@ import {
         <Heading size="lg" textAlign={{ base: "center", md: "left" }} py={12}>
           Residential Proxy Management
         </Heading>
+        <Box p={4}>
+          <Text fontWeight="bold">Toggle Subscription:</Text>
+          <Switch isChecked={hasSubscription} onChange={() => setHasSubscription(!hasSubscription)} />
+        </Box>
         {isLocked ? (
           <PromoContent />
         ) : isDeactivated ? (
