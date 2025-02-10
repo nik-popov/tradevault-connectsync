@@ -39,7 +39,7 @@ const sidebarStructure: SidebarItem[] = [
     title: "Scraping API",
     subItems: [
       { title: "Explore", path: "/scraping-api/explore" },
-      { title: "Google SERP Results", path: "/scraping-api/google-serp-api" },
+      { title: "Google SERP", path: "/scraping-api/google-serp-api" },
       { title: "Google SERP Images", path: "/scraping-api/google-images-serp-api" },     
       { title: "Pricing", path: "/scraping-api/pricing" },
     ],
