@@ -21,8 +21,8 @@ import { createFileRoute } from "@tanstack/react-router";
 import { FiSend, FiGithub } from "react-icons/fi";
 import PromoContent from "../../../components/PromoContent";
 import GetStarted from "../../../components/GetStarted";
+import ProxySettings from "../../../components/ProxySettings";
 
-const ProxySettings = () => <Box><Text>Proxy Settings Component</Text></Box>;
 const ProxyUsage = () => <Box><Text>Proxy Usage Component</Text></Box>;
 const TopUps = () => <Box><Text>Top-Ups Component</Text></Box>;
 const Connections = () => <Box><Text>Connections Component</Text></Box>;
