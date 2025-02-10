@@ -32,7 +32,7 @@ import {
   const ReactivationOptions = () => <Box><Text>Reactivation Options Component</Text></Box>;
   
   export const Route = createFileRoute('/_layout/proxies/residential')({
-    component: PromoContent
+    component: ResidentialProxy
   });
   
   
