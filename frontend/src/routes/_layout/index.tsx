@@ -15,20 +15,23 @@ function Dashboard() {
   const navigate = useNavigate();
   const [filter, setFilter] = useState("");
   const [ownedOnly, setOwnedOnly] = useState(true);
-  const proxyProducts = [
-    { id: "residential", name: "🌐 Residential Proxies", description: "Use for highly protected targets, broad location coverage.", owned: true },
-    { id: "residential-mobile", name: "📱 Mobile Proxies", description: "Best for mobile-specific location targeting.", owned: false },
-    { id: "datacenter", name: "💻 Datacenter Pay/GB Proxies", description: "High-performance residential proxies with rotating IPs.", owned: true },
-    { id: "datacenter-mobile", name: "📡 Datacenter Mobile Proxies", description: "Optimized for mobile data traffic.", owned: false },
-    { id: "browser-proxy", name: "🖥️ Browser Proxy", description: "Seamless proxy setup for browser-based automation.", owned: false },
-    { id: "google-serp", name: "🔍 Google SERP Results", description: "Scrape real-time Google search results.", owned: false },
-    { id: "google-serp-images", name: "🖼️ Google SERP Images", description: "Extract images from Google search results.", owned: false },
-    { id: "custom-dataset", name: "📊 Request Custom Dataset", description: "Tailored data scraping for your needs.", owned: false },
-];
+  const [typeFilter, setTypeFilter] = useState(""); // New type filter
 
+  const proxyProducts = [
+    { id: "residential", name: "🌐 Residential Proxies", type: "Residential", description: "Use for highly protected targets, broad location coverage.", owned: true },
+    { id: "residential-mobile", name: "📱 Mobile Proxies", type: "Residential", description: "Best for mobile-specific location targeting.", owned: false },
+    { id: "datacenter", name: "💻 Datacenter Pay/GB Proxies", type: "Datacenter", description: "High-performance residential proxies with rotating IPs.", owned: true },
+    { id: "datacenter-mobile", name: "📡 Datacenter Mobile Proxies", type: "Datacenter", description: "Optimized for mobile data traffic.", owned: false },
+    { id: "browser-proxy", name: "🖥️ Browser Proxy", type: "Other", description: "Seamless proxy setup for browser-based automation.", owned: false },
+    { id: "google-serp", name: "🔍 Google SERP Results", type: "Other", description: "Scrape real-time Google search results.", owned: false },
+    { id: "google-serp-images", name: "🖼️ Google SERP Images", type: "Other", description: "Extract images from Google search results.", owned: false },
+    { id: "custom-dataset", name: "📊 Request Custom Dataset", type: "Other", description: "Tailored data scraping for your needs.", owned: false },
+  ];
 
   const filteredProducts = proxyProducts.filter((product) => 
-    (filter === "" || product.id === filter) && (!ownedOnly || product.owned)
+    (filter === "" || product.id === filter) &&
+    (typeFilter === "" || product.type === typeFilter) &&
+    (!ownedOnly || product.owned)
   );
 
   return (
@@ -40,6 +43,20 @@ function Dashboard() {
           Try now
         </Button>
       </Box>
+
+      {/* Filter Buttons */}
+      <Stack direction="row" mt={6} spacing={2} justify="center">
+        {["All", "Residential", "Datacenter", "Other"].map((type) => (
+          <Button 
+            key={type} 
+            size="sm"
+            colorScheme={typeFilter === type || (type === "All" && typeFilter === "") ? "blue" : "gray"}
+            onClick={() => setTypeFilter(type === "All" ? "" : type)}
+          >
+            {type}
+          </Button>
+        ))}
+      </Stack>
 
       <Flex mt={6} gap={6} justify="space-between">
         {/* Main Content */}
@@ -57,8 +74,13 @@ function Dashboard() {
             <Text fontWeight="bold">Filter by:</Text>
             <Select placeholder="Filter by product" onChange={(e) => setFilter(e.target.value)}>
               <option value="residential">Residential Proxies</option>
-              <option value="mobile">Mobile Proxies</option>
-              <option value="isp">ISP Pay/GB Proxies</option>
+              <option value="residential-mobile">Mobile Proxies</option>
+              <option value="datacenter">Datacenter Proxies</option>
+              <option value="datacenter-mobile">Datacenter Mobile Proxies</option>
+              <option value="browser-proxy">Browser Proxy</option>
+              <option value="google-serp">Google SERP Results</option>
+              <option value="google-serp-images">Google SERP Images</option>
+              <option value="custom-dataset">Request Custom Dataset</option>
             </Select>
             <HStack>
               <Text fontWeight="bold">Owned Only</Text>
