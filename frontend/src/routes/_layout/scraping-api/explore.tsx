@@ -35,10 +35,11 @@ const Explore = () => {
 
   const queryClient = useQueryClient();
   const currentUser = queryClient.getQueryData(["currentUser"]);
+  const ownedApis = currentUser?.ownedApis || [];
 
   const results = [
-    { id: "google", name: "Google Search API", type: "SERP" },
-    { id: "bing", name: "Bing Search API", type: "SERP" }
+    { id: "google", name: "Google Search API", type: "SERP", owned: ownedApis.includes("google") },
+    { id: "bing", name: "Bing Search API", type: "SERP", owned: ownedApis.includes("bing") }
   ];
 
   const filteredResults = results.filter(
@@ -106,7 +107,7 @@ const Explore = () => {
                     <List spacing={3}>
                       {filteredResults.map((result) => (
                         <ListItem key={result.id} p={3} shadow="sm" borderWidth="1px" borderRadius="md">
-                          <Text fontWeight="bold">{result.name}</Text>
+                          <Text fontWeight="bold">{result.name} {result.owned ? "(Owned)" : ""}</Text>
                         </ListItem>
                       ))}
                     </List>
