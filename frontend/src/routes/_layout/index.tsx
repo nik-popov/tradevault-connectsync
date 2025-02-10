@@ -67,7 +67,7 @@ function Dashboard() {
               <Box key={product.id} p={5} shadow="md" borderWidth="1px" borderRadius="lg">
                 <Text fontWeight="bold">{product.name}</Text>
                 <Text fontSize="sm">{product.description}</Text>
-                <Button mt={2} size="sm" colorScheme="blue" onClick={() => navigate({ to: `/pricing/${product.id}` })}>
+                <Button mt={2} size="sm" colorScheme="blue" onClick={() => navigate({ to: `/proxies/${product.id}` })}>
                   Go to Pricing
                 </Button>
               </Box>
