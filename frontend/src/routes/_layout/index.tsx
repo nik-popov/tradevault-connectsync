@@ -15,12 +15,6 @@ function Dashboard() {
   const [filter, setFilter] = useState("");
   const [ownedOnly, setOwnedOnly] = useState(true);
 
-  const proxyProducts = [
-    { id: "residential", name: "🌐 Residential Proxies", description: "Use for highly protected targets, broad location coverage.", owned: true },
-    { id: "mobile", name: "📱 Mobile Proxies", description: "Best for mobile-specific location targeting.", owned: false },
-    { id: "isp", name: "💻 ISP Pay/GB Proxies", description: "High-performance residential proxies with rotating IPs.", owned: true },
-  ];
-
   const allProducts = [
     { id: "residential", name: "🌐 Residential Proxies", description: "Use for highly protected targets, broad location coverage.", owned: true },
     { id: "mobile", name: "📱 Mobile Proxies", description: "Best for mobile-specific location targeting.", owned: false },
@@ -65,7 +59,7 @@ function Dashboard() {
               <Box key={product.id} p={5} shadow="md" borderWidth="1px" borderRadius="lg">
                 <Text fontWeight="bold">{product.name}</Text>
                 <Text fontSize="sm">{product.description}</Text>
-                <Button mt={2} size="sm" colorScheme="blue" as="a" href={`/pricing#${product.id}`}>Manage</Button>
+                <Button mt={2} size="sm" colorScheme="blue" as="a" href={`/pricing/${product.id}`}>Manage</Button>
               </Box>
             ))}
           </VStack>
