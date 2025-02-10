@@ -1,5 +1,5 @@
 import { 
-  Box, Container, Text, VStack, HStack, Button, Divider, Stack, Flex, Switch 
+  Box, Container, Text, VStack, Button, Divider, Stack, Flex, Switch 
 } from "@chakra-ui/react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { FiSend, FiGithub } from "react-icons/fi";
