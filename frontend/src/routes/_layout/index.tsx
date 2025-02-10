@@ -11,8 +11,8 @@ export const Route = createFileRoute("/_layout/")({
 });
 
 function Dashboard() {
-  const { user: currentUser } = useAuth();
-  const [filter, setFilter] = useState<string | null>(null);
+  const { user: currentUser } = useAuth() || { user: null };
+  const [filter, setFilter] = useState<string>("");
   const [ownedOnly, setOwnedOnly] = useState(true);
 
   const allProducts = [
@@ -35,7 +35,7 @@ function Dashboard() {
         <Box flex="1">
           <Box p={4}>
             <Text fontSize="2xl" fontWeight="bold">
-              Hi, {currentUser?.full_name || currentUser?.email} 👋🏼
+              Hi, {currentUser?.full_name || currentUser?.email || 'Guest'} 👋🏼
             </Text>
             <Text>Welcome back, nice to see you again!</Text>
           </Box>
