@@ -17,7 +17,7 @@ import {
 } from "@chakra-ui/react";
 import { createFileRoute } from '@tanstack/react-router';
 import { FiArrowRight, FiShield, FiGlobe, FiZap, FiCheck } from 'react-icons/fi';
-
+import { useNavigate } from '@tanstack/react-router';
 const PromoContent = () => {
   const features = [
     { icon: FiGlobe, title: "Global Coverage", description: "Access to residential IPs from 195+ locations worldwide" },
@@ -123,7 +123,7 @@ const PromoContent = () => {
                   </ListItem>
                 ))}
               </List>
-              <Button w="full" colorScheme="blue" variant={plan.buttonVariant}>
+              <Button w="full" colorScheme="blue" variant={plan.buttonVariant} onClick={() => navigate('/proxies/pricing')}>
                 {plan.name === "Enterprise" ? "Contact Us" : `Choose ${plan.name}`}
               </Button>
             </Box>
