@@ -24,7 +24,6 @@ import {
 import { createFileRoute } from '@tanstack/react-router';
 import { useQueryClient } from '@tanstack/react-query';
 import { FiSearch } from 'react-icons/fi';
-// ✅ FIX: Corrected Route Export
 
 const Explore = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -39,8 +38,7 @@ const Explore = () => {
 
   const results = [
     { id: "google", name: "Google Search API", type: "SERP" },
-    { id: "bing", name: "Bing Search API", type: "SERP" },
-    { id: "proxy", name: "Residential Proxy", type: "Proxy" },
+    { id: "bing", name: "Bing Search API", type: "SERP" }
   ];
 
   const filteredResults = results.filter(
@@ -98,8 +96,6 @@ const Explore = () => {
           <Tabs variant="enclosed">
             <TabList>
               <Tab onClick={() => setActiveFilter("all")}>All</Tab>
-              <Tab onClick={() => setActiveFilter("SERP")}>SERP APIs</Tab>
-              <Tab onClick={() => setActiveFilter("Proxy")}>Proxies</Tab>
             </TabList>
             <TabPanels>
               <TabPanel>
@@ -130,3 +126,4 @@ export const Route = createFileRoute("/_layout/search-api/explore")({
 });
 
 export default Explore;
+
