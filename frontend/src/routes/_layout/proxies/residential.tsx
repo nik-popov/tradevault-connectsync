@@ -47,33 +47,38 @@ import {
   ];
   
   function ResidentialProxy() {
-    const queryClient = useQueryClient();
     const [hasSubscription, setHasSubscription] = useState(false);
     const [isTrial, setIsTrial] = useState(false);
     const [isDeactivated, setIsDeactivated] = useState(false);
-    const currentUser = queryClient.getQueryData(["currentUser"]);
-
-    
-    const isLocked = !hasSubscription;
-    const restrictedTabs = isTrial ? ["Key Management", "Logs", "Top-Ups","Connections"] : [];
+  
+    const isLocked = !hasSubscription && !isTrial;
   
     return (
       <Container maxW="full">
-        <Heading size="lg" textAlign={{ base: "center", md: "left" }} py={12}>
-          Residential Proxies
-        </Heading>
-        <Box p={4}>
-          <Text fontWeight="bold">Toggle Subscription:</Text>
-          <Switch isChecked={hasSubscription} onChange={() => setHasSubscription(!hasSubscription)} />
-          <Text fontWeight="bold" mt={4}>Toggle Trial Mode:</Text>
-          <Switch isChecked={isTrial} onChange={() => setIsTrial(!isTrial)} />
-          <Text fontWeight="bold" mt={4}>Toggle Deactivated Mode:</Text>
-          <Switch isChecked={isDeactivated} onChange={() => setIsDeactivated(!isDeactivated)} />
-        </Box>
+        {/* Top Bar with Heading and Toggles */}
+        <Flex align="center" justify="space-between" py={6} flexWrap="wrap" gap={4}>
+          <Heading size="lg">Residential Proxies</Heading>
+          <HStack spacing={6}>
+            <HStack>
+              <Text fontWeight="bold">Subscription:</Text>
+              <Switch isChecked={hasSubscription} onChange={() => setHasSubscription(!hasSubscription)} />
+            </HStack>
+            <HStack>
+              <Text fontWeight="bold">Trial Mode:</Text>
+              <Switch isChecked={isTrial} onChange={() => setIsTrial(!isTrial)} />
+            </HStack>
+            <HStack>
+              <Text fontWeight="bold">Deactivated:</Text>
+              <Switch isChecked={isDeactivated} onChange={() => setIsDeactivated(!isDeactivated)} />
+            </HStack>
+          </HStack>
+        </Flex>
+  
+        {/* Conditional Content */}
         {isLocked ? (
           <PromoContent />
         ) : isDeactivated ? (
-          <Box>
+          <Box mt={6}>
             <Text>Your subscription has expired. Please renew to access all features.</Text>
             <ReactivationOptions />
           </Box>
