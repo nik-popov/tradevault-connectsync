@@ -1,20 +1,20 @@
 import React from 'react';
-import { ArrowRight, Shield, Globe, Zap } from 'lucide-react';
+import { FiArrowRight, FiShield, FiGlobe, FiZap } from 'react-icons/fi';
 
 const PromoContent = () => {
   const features = [
     {
-      icon: <Globe className="w-8 h-8 text-blue-500" />,
+      icon: <FiGlobe className="w-8 h-8 text-blue-500" />,
       title: "Global Coverage",
       description: "Access to residential IPs from 195+ locations worldwide"
     },
     {
-      icon: <Zap className="w-8 h-8 text-blue-500" />,
+      icon: <FiZap className="w-8 h-8 text-blue-500" />,
       title: "Lightning Fast",
       description: "Industry-leading connection speeds with 99.9% uptime"
     },
     {
-      icon: <Shield className="w-8 h-8 text-blue-500" />,
+      icon: <FiShield className="w-8 h-8 text-blue-500" />,
       title: "Secure & Private",
       description: "Enterprise-grade security with IP rotation and authentication"
     }
@@ -49,7 +49,7 @@ const PromoContent = () => {
           </p>
           <button className="inline-flex items-center px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-colors">
             Start Free Trial
-            <ArrowRight className="ml-2 w-5 h-5" />
+            <FiArrowRight className="ml-2 w-5 h-5" />
           </button>
         </div>
 
@@ -59,15 +59,15 @@ const PromoContent = () => {
             <p className="text-3xl font-bold mb-4">$49<span className="text-lg text-gray-500">/mo</span></p>
             <ul className="text-left space-y-3 mb-6">
               <li className="flex items-center">
-                <ArrowRight className="w-4 h-4 text-blue-500 mr-2" />
+                <FiArrowRight className="w-4 h-4 text-blue-500 mr-2" />
                 5 concurrent connections
               </li>
               <li className="flex items-center">
-                <ArrowRight className="w-4 h-4 text-blue-500 mr-2" />
+                <FiArrowRight className="w-4 h-4 text-blue-500 mr-2" />
                 50GB monthly traffic
               </li>
               <li className="flex items-center">
-                <ArrowRight className="w-4 h-4 text-blue-500 mr-2" />
+                <FiArrowRight className="w-4 h-4 text-blue-500 mr-2" />
                 Basic support
               </li>
             </ul>
@@ -84,15 +84,15 @@ const PromoContent = () => {
             <p className="text-3xl font-bold mb-4">$99<span className="text-lg text-gray-500">/mo</span></p>
             <ul className="text-left space-y-3 mb-6">
               <li className="flex items-center">
-                <ArrowRight className="w-4 h-4 text-blue-500 mr-2" />
+                <FiArrowRight className="w-4 h-4 text-blue-500 mr-2" />
                 Unlimited concurrent connections
               </li>
               <li className="flex items-center">
-                <ArrowRight className="w-4 h-4 text-blue-500 mr-2" />
+                <FiArrowRight className="w-4 h-4 text-blue-500 mr-2" />
                 Unlimited monthly traffic
               </li>
               <li className="flex items-center">
-                <ArrowRight className="w-4 h-4 text-blue-500 mr-2" />
+                <FiArrowRight className="w-4 h-4 text-blue-500 mr-2" />
                 24/7 priority support
               </li>
             </ul>
