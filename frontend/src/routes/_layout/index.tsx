@@ -63,10 +63,10 @@ function Dashboard() {
       {/* Owned Filter Toggle */}
       <Flex justify="center" align="center" mt={4}>
         <Text fontWeight="bold" mr={2}>Owned Only</Text>
+
         <Switch 
-  isChecked={ownedOnly} 
-  defaultChecked 
-  onChange={() => setOwnedOnly((prev) => !prev)} 
+  isChecked={ownedOnly ?? true} // Fallback to true
+  onChange={() => setOwnedOnly(prev => !prev)} 
   colorScheme="blue" 
 />
 
