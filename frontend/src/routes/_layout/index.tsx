@@ -66,7 +66,7 @@ function Dashboard() {
 
   {/* Filter Buttons - Stay in Same Row */}
   <Stack direction="row" spacing={3} flexWrap="wrap">
-    {["All", "Proxy", "SERP", "Data"].map((type) => (
+    {["All", "SERP", "Proxy", "Data"].map((type) => (
       <Button 
         key={type} 
         size="md"
