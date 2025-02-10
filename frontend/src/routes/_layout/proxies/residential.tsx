@@ -21,7 +21,7 @@ import {
   import { useQueryClient } from "@tanstack/react-query";
   import { createFileRoute } from "@tanstack/react-router";
   import { FiSend, FiGithub } from "react-icons/fi";
-  import PromoContent from "./PromoContent";
+  import PromoContent from "./components/PromoContent";
   const ProxySettings = () => <Box><Text>Proxy Settings Component</Text></Box>;
   const ProxyUsage = () => <Box><Text>Proxy Usage Component</Text></Box>;
   const TopUps = () => <Box><Text>Top-Ups Component</Text></Box>;
