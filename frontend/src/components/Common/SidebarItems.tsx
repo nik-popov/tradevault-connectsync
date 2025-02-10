@@ -42,6 +42,7 @@ const sidebarStructure: SidebarItem[] = [
       { title: "Google SERP", path: "/scraping-api/google-serp-api" },
       { title: "Google SERP Images", path: "/scraping-api/google-images-serp-api" },     
       { title: "Pricing", path: "/scraping-api/pricing" },
+      { title: "Request Scraper", path: "/scraping-api/request" },
     ],
     icon: FiLayers,
   },
