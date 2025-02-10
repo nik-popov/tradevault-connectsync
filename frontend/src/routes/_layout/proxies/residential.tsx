@@ -13,6 +13,8 @@ import {
   import ProxySettings from "../../components/Proxy/ProxySettings";
   import ProxyUsage from "../../components/Proxy/ProxyUsage";
   import ProxyBilling from "../../components/Proxy/ProxyBilling";
+  import PromoContent from "../../components/Proxy/PromoContent";
+  import ReactivationOptions from "../../components/Proxy/ReactivationOptions";
   
   const tabsConfig = [
     { title: "Settings", component: ProxySettings },
@@ -28,25 +30,35 @@ import {
     const queryClient = useQueryClient();
     const currentUser = queryClient.getQueryData(["currentUser"]);
   
+    // Determine user subscription status
+    const isLocked = !currentUser?.hasSubscription;
+    const isDeactivated = currentUser?.subscriptionStatus === "expired";
+  
     return (
       <Container maxW="full">
         <Heading size="lg" textAlign={{ base: "center", md: "left" }} py={12}>
           Residential Proxy Management
         </Heading>
-        <Tabs variant="enclosed">
-          <TabList>
-            {tabsConfig.map((tab, index) => (
-              <Tab key={index}>{tab.title}</Tab>
-            ))}
-          </TabList>
-          <TabPanels>
-            {tabsConfig.map((tab, index) => (
-              <TabPanel key={index}>
-                <tab.component />
-              </TabPanel>
-            ))}
-          </TabPanels>
-        </Tabs>
+        {isLocked ? (
+          <PromoContent />
+        ) : isDeactivated ? (
+          <ReactivationOptions />
+        ) : (
+          <Tabs variant="enclosed">
+            <TabList>
+              {tabsConfig.map((tab, index) => (
+                <Tab key={index}>{tab.title}</Tab>
+              ))}
+            </TabList>
+            <TabPanels>
+              {tabsConfig.map((tab, index) => (
+                <TabPanel key={index}>
+                  <tab.component />
+                </TabPanel>
+              ))}
+            </TabPanels>
+          </Tabs>
+        )}
       </Container>
     );
   }
