@@ -42,11 +42,11 @@ import {
     { title: "Key Management", component: <KeyManagement /> },
   ];
   
-  export const Route = createFileRoute("/_layout/proxies/datacenter")({
-    component: DatacenterProxy,
+  export const Route = createFileRoute("/_layout/proxies/browser")({
+    component: BrowserProxy,
   });
   
-  function DatacenterProxy() {
+  function BrowserProxy() {
     const queryClient = useQueryClient();
     const [hasSubscription, setHasSubscription] = useState(false);
     const [isTrial, setIsTrial] = useState(false);
@@ -59,7 +59,7 @@ import {
     return (
       <Container maxW="full">
         <Heading size="lg" textAlign={{ base: "center", md: "left" }} py={12}>
-          Datacenter Proxy Management
+          Browser Proxy Management
         </Heading>
         <Box p={4}>
           <Text fontWeight="bold">Toggle Subscription:</Text>
