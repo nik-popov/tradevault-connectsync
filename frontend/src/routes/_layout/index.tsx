@@ -42,50 +42,48 @@ function Dashboard() {
           Try now
         </Button>
       </Box>
-{/* Filters & Toggle in the Same Row */}
-<Flex mt={6} gap={4} justify="space-between" align="center" flexWrap="wrap">
-  
-  {/* Filter Buttons */}
-  <Stack direction="row" spacing={3} flexWrap="wrap">
-    {["All", "Proxy", "SERP", "Data"].map((type) => (
-      <Button 
-        key={type} 
-        size="md"
-        fontWeight="bold"
-        borderRadius="full"
-        colorScheme={activeFilter === type || (type === "All" && activeFilter === "all") ? "blue" : "gray"}
-        variant={activeFilter === type || (type === "All" && activeFilter === "all") ? "solid" : "outline"}
-        onClick={() => setActiveFilter(type === "All" ? "all" : type)}
-      >
-        {type}
-      </Button>
-    ))}
-  </Stack>
+      
+    <Flex mt={6} gap={4} justify="space-between" align="center" flexWrap="wrap">
+      
+      {/* Filter Buttons */}
+      <Stack direction="row" spacing={3} flexWrap="wrap">
+        {["All", "Proxy", "SERP", "Data"].map((type) => (
+          <Button 
+            key={type} 
+            size="md"
+            fontWeight="bold"
+            borderRadius="full"
+            colorScheme={activeFilter === type || (type === "All" && activeFilter === "all") ? "blue" : "gray"}
+            variant={activeFilter === type || (type === "All" && activeFilter === "all") ? "solid" : "outline"}
+            onClick={() => setActiveFilter(type === "All" ? "all" : type)}
+          >
+            {type}
+          </Button>
+        ))}
+      </Stack>
 
-  {/* Owned Filter Toggle */}
-  <Flex align="center">
-    <Text fontWeight="bold" mr={2}>Owned Only</Text>
-    <Switch 
-      isChecked={ownedOnly} 
-      onChange={() => setOwnedOnly(prev => !prev)} 
-      colorScheme="blue" 
-    />
-  </Flex>
+      {/* Owned Filter Toggle */}
+      <Flex align="center">
+        <Text fontWeight="bold" mr={2}>Owned Only</Text>
+        <Switch 
+          isChecked={ownedOnly} 
+          onChange={() => setOwnedOnly(prev => !prev)} 
+          colorScheme="blue" 
+        />
+      </Flex>
 
-  {/* Welcome Message */}
-  <Box textAlign="right">
-    <Text fontSize="xl" fontWeight="bold">
-      Hi, {currentUser?.full_name || currentUser?.email} 👋🏼
-    </Text>
-    <Text fontSize="sm">Welcome back, let’s get started!</Text>
-  </Box>
+      {/* Welcome Message */}
+      <Box textAlign="right">
+        <Text fontSize="xl" fontWeight="bold">
+          Hi, {currentUser?.full_name || currentUser?.email} 👋🏼
+        </Text>
+        <Text fontSize="sm">Welcome back, let’s get started!</Text>
+      </Box>
 
-</Flex>
+    </Flex>
 
-{/* Divider below for separation */}
-<Divider my={4} />
-
-
+    {/* Divider below for separation */}
+    <Divider my={4} />
           {/* Proxy Products List */}
           <VStack spacing={6} mt={6} align="stretch">
             {filteredProducts.length === 0 ? (
@@ -117,8 +115,6 @@ function Dashboard() {
               ))
             )}
           </VStack>
-        </Box>
-
         {/* Sidebar */}
         <Box w="250px" p={4} borderLeft="1px solid #E2E8F0">
           <VStack spacing={4} align="stretch">
@@ -150,7 +146,6 @@ function Dashboard() {
             </Box>
           </VStack>
         </Box>
-      </Flex>
     </Container>
   );
 }
