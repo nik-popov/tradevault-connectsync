@@ -45,6 +45,23 @@ function Dashboard() {
   
       {/* Filters & Toggle in the Same Row */}
       <Flex mt={6} gap={4} justify="space-between" align="center" flexWrap="wrap">
+
+        {/* Welcome Message */}
+        <Box textAlign="right">
+          <Text fontSize="xl" fontWeight="bold">
+            Hi, {currentUser?.full_name || currentUser?.email} 👋🏼
+          </Text>
+          <Text fontSize="sm">Welcome back, let’s get started!</Text>
+        </Box>
+        {/* Owned Filter Toggle */}
+        <Flex align="center">
+          <Text fontWeight="bold" mr={2}>Owned Only</Text>
+          <Switch 
+            isChecked={ownedOnly} 
+            onChange={() => setOwnedOnly(prev => !prev)} 
+            colorScheme="blue" 
+          />
+        </Flex>
         {/* Filter Buttons */}
         <Stack direction="row" spacing={3} flexWrap="wrap">
           {["All", "Proxy", "SERP", "Data"].map((type) => (
@@ -62,23 +79,9 @@ function Dashboard() {
           ))}
         </Stack>
   
-        {/* Owned Filter Toggle */}
-        <Flex align="center">
-          <Text fontWeight="bold" mr={2}>Owned Only</Text>
-          <Switch 
-            isChecked={ownedOnly} 
-            onChange={() => setOwnedOnly(prev => !prev)} 
-            colorScheme="blue" 
-          />
-        </Flex>
+
   
-        {/* Welcome Message */}
-        <Box textAlign="right">
-          <Text fontSize="xl" fontWeight="bold">
-            Hi, {currentUser?.full_name || currentUser?.email} 👋🏼
-          </Text>
-          <Text fontSize="sm">Welcome back, let’s get started!</Text>
-        </Box>
+
       </Flex>
   
       {/* Divider below for separation */}
