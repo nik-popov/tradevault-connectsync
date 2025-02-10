@@ -136,4 +136,9 @@ const PromoContent = () => {
   );
 };
 
+// ✅ Ensure this is the ONLY Route export in this file
+export const Route = createFileRoute('/src/components/PromoContent')({
+  component: PromoContent
+});
+
 export default PromoContent;

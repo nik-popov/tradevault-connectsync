@@ -54,7 +54,7 @@ function ResidentialProxy() {
   const currentUser = queryClient.getQueryData(["currentUser"]);
 
   // ✅ FIX: Ensure restrictedTabs is defined
-  const restrictedTabs = isTrial ? ["Settings", "Logs", "Key Management"] : [];
+  const restrictedTabs = isTrial ? ["Key Management", "Logs", "Top-Ups","Connections"] : [];
 
   const isLocked = !hasSubscription && !isTrial;
 
