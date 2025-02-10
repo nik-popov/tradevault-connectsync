@@ -43,10 +43,10 @@ import {
   ];
   
   export const Route = createFileRoute("/_layout/proxies/datacenter-mobile")({
-    component: DatacenterProxy,
+    component: DatacenterMobileProxy,
   });
   
-  function DatacenterProxy() {
+  function DatacenterMobileProxy() {
     const queryClient = useQueryClient();
     const [hasSubscription, setHasSubscription] = useState(false);
     const [isTrial, setIsTrial] = useState(false);
@@ -118,3 +118,4 @@ import {
       </Container>
     );
   }
+  export default DatacenterMobileProxy;
