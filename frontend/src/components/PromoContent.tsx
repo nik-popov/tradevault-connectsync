@@ -138,4 +138,4 @@ export const Route = createFileRoute('/_layout/proxies/components/PromoContent')
   component: PromoContent
 });
 
-export default Promo
+export default PromoContent
