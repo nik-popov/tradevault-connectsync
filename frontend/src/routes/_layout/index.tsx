@@ -42,46 +42,49 @@ function Dashboard() {
           Try now
         </Button>
       </Box>
+{/* Filters & Toggle in the Same Row */}
+<Flex mt={6} gap={4} justify="space-between" align="center" flexWrap="wrap">
+  
+  {/* Filter Buttons */}
+  <Stack direction="row" spacing={3} flexWrap="wrap">
+    {["All", "Proxy", "SERP", "Data"].map((type) => (
+      <Button 
+        key={type} 
+        size="md"
+        fontWeight="bold"
+        borderRadius="full"
+        colorScheme={activeFilter === type || (type === "All" && activeFilter === "all") ? "blue" : "gray"}
+        variant={activeFilter === type || (type === "All" && activeFilter === "all") ? "solid" : "outline"}
+        onClick={() => setActiveFilter(type === "All" ? "all" : type)}
+      >
+        {type}
+      </Button>
+    ))}
+  </Stack>
 
-      {/* Filter Buttons */}
-      <Stack direction="row" mt={6} spacing={3} justify="center">
-        {["All", "Proxy", "SERP", "Data"].map((type) => (
-          <Button 
-            key={type} 
-            size="md"
-            fontWeight="bold"
-            borderRadius="full"
-            colorScheme={activeFilter === type || (type === "All" && activeFilter === "all") ? "blue" : "gray"}
-            variant={activeFilter === type || (type === "All" && activeFilter === "all") ? "solid" : "outline"}
-            onClick={() => setActiveFilter(type === "All" ? "all" : type)}
-          >
-            {type}
-          </Button>
-        ))}
-      </Stack>
+  {/* Owned Filter Toggle */}
+  <Flex align="center">
+    <Text fontWeight="bold" mr={2}>Owned Only</Text>
+    <Switch 
+      isChecked={ownedOnly} 
+      onChange={() => setOwnedOnly(prev => !prev)} 
+      colorScheme="blue" 
+    />
+  </Flex>
 
-      {/* Owned Filter Toggle */}
-      <Flex justify="center" align="center" mt={4}>
-        <Text fontWeight="bold" mr={2}>Owned Only</Text>
+  {/* Welcome Message */}
+  <Box textAlign="right">
+    <Text fontSize="xl" fontWeight="bold">
+      Hi, {currentUser?.full_name || currentUser?.email} 👋🏼
+    </Text>
+    <Text fontSize="sm">Welcome back, let’s get started!</Text>
+  </Box>
 
-        <Switch 
-  isChecked={ownedOnly ?? false} // Fallback to true
-  onChange={() => setOwnedOnly(prev => !prev)} 
-  colorScheme="blue" 
-/>
+</Flex>
 
-      </Flex>
+{/* Divider below for separation */}
+<Divider my={4} />
 
-      <Flex mt={6} gap={6} justify="space-between">
-        {/* Main Content */}
-        <Box flex="1">
-          <Box p={4}>
-            <Text fontSize="2xl" fontWeight="bold">
-              Hi, {currentUser?.full_name || currentUser?.email} 👋🏼
-            </Text>
-            <Text>Welcome back, let’s get started!</Text>
-          </Box>
-          <Divider my={4} />
 
           {/* Proxy Products List */}
           <VStack spacing={6} mt={6} align="stretch">
