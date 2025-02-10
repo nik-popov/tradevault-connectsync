@@ -24,7 +24,6 @@ import {
   
   const ProxySettings = () => <Box><Text>Proxy Settings Component</Text></Box>;
   const ProxyUsage = () => <Box><Text>Proxy Usage Component</Text></Box>;
-  const ProxyBilling = () => <Box><Text>Proxy Billing Component</Text></Box>;
   const TopUps = () => <Box><Text>Top-Ups Component</Text></Box>;
   const Connections = () => <Box><Text>Connections Component</Text></Box>;
   const Logs = () => <Box><Text>Logs Component</Text></Box>;
@@ -37,7 +36,6 @@ import {
     { title: "Get Started", component: <GetStarted /> },
     { title: "Settings", component: <ProxySettings /> },
     { title: "Usage", component: <ProxyUsage /> },
-    { title: "Billing", component: <ProxyBilling /> },
     { title: "Top-Ups", component: <TopUps /> },
     { title: "Connections", component: <Connections /> },
     { title: "Logs", component: <Logs /> },
@@ -56,7 +54,7 @@ import {
     const currentUser = queryClient.getQueryData(["currentUser"]);
   
     const isLocked = !hasSubscription;
-    const restrictedTabs = isTrial ? ["Key Management", "Logs", "Top-Ups"] : [];
+    const restrictedTabs = isTrial ? ["Key Management", "Logs", "Top-Ups","Connections"] : [];
   
     return (
       <Container maxW="full">
