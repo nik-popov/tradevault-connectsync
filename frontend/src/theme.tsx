@@ -1,18 +1,18 @@
-import { extendTheme } from "@chakra-ui/react";
-
 const theme = extendTheme({
-  global: {
-    body: {
-      fontFamily: '"42dot Sans", sans-serif',
-      fontSize: "22px",
-      lineHeight: "1.7",
-      margin: "40px",
-      padding: "20px",
+  styles: {
+    global: {
+      body: {
+        fontFamily: '"42dot Sans", sans-serif',
+        fontSize: "22px",
+        lineHeight: "1.7",
+        margin: "40px",
+        padding: "20px",
+      },
     },
   },
   colors: {
     ui: {
-      main: "#2C6295", // Updated cobalt color
+      main: "#0A2540", // Deep cobalt blue
       secondary: "#EDF2F7",
       success: "#48BB78",
       danger: "#E53E3E",
@@ -29,7 +29,7 @@ const theme = extendTheme({
           backgroundColor: "ui.main",
           color: "ui.light",
           _hover: {
-            backgroundColor: "#1F4A73", // Darker shade for hover
+            backgroundColor: "#082135", // Even darker for hover
           },
           _disabled: {
             backgroundColor: "ui.main",
@@ -56,14 +56,13 @@ const theme = extendTheme({
       },
     },
     Badge: {
-      // Setting the default color scheme to blue
       defaultProps: {
         colorScheme: "blue",
       },
       baseStyle: {
         container: {
-          bg: "blue.500", // Blue background
-          color: "white",  // White text color for contrast
+          bg: "blue.500",
+          color: "white",
         },
       },
     },

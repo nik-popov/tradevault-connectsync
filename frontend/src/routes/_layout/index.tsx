@@ -12,7 +12,7 @@ export const Route = createFileRoute("/_layout/")({
 
 function Dashboard() {
   const { user: currentUser } = useAuth();
-  const [filter, setFilter] = useState("");
+  const [filter, setFilter] = useState(null);
   const [ownedOnly, setOwnedOnly] = useState(true);
 
   const allProducts = [
@@ -23,7 +23,7 @@ function Dashboard() {
     { id: "browser", name: "🖥️ Browser Proxies", description: "Seamless integration for scraping and automation.", owned: false },
   ];
 
-  const displayedProducts = ownedOnly ? allProducts.filter(p => p.owned).slice(0, 3) : allProducts;
+  const displayedProducts = allProducts.filter(p => (!filter || p.id === filter) && (!ownedOnly || p.owned)).slice(0, ownedOnly ? 3 : allProducts.length);
 
   return (
     <Container maxW="full">
