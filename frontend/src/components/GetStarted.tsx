@@ -11,16 +11,18 @@ import {
   Flex,
   Alert,
   AlertIcon,
+  Divider
 } from "@chakra-ui/react";
-import { FiCheckCircle, FiCopy, FiGlobe, FiCode } from "react-icons/fi";
+import { FiCheckCircle, FiCopy, FiGlobe, FiCode, FiSettings, FiServer } from "react-icons/fi";
 
 const GetStarted = () => {
   const steps = [
     {
       title: "Configure Your Endpoint",
       icon: FiGlobe,
+      description: "Use the provided endpoint to connect to our proxy network.",
       content: (
-        <Code p={4} borderRadius="md" fontSize="sm">
+        <Code p={3} borderRadius="md" fontSize="sm" bg="gray.50">
           https://proxy.yourdomain.com:12345
         </Code>
       )
@@ -28,92 +30,87 @@ const GetStarted = () => {
     {
       title: "Set Your Authentication",
       icon: FiCode,
+      description: "Use your credentials to authenticate requests.",
       content: (
-        <Box bg="gray.50" p={4} borderRadius="md">
+        <Box bg="gray.50" p={3} borderRadius="md">
           <Code display="block" mb={2}>
-            Username: {`{your_username}`}<br/>
-            Password: {`{your_password}`}
+            Username: your_username<br/>
+            Password: your_password
           </Code>
           <Button leftIcon={<FiCopy />} variant="link" size="sm" colorScheme="blue">
             Copy credentials
           </Button>
         </Box>
       )
-    }
-  ];
-
-  const examples = [
-    {
-      language: "cURL",
-      code: `curl --proxy-user username:password \\
-     -x proxy.yourdomain.com:12345 \\
-     https://api.mywebsite.com`
     },
     {
-      language: "Python",
-      code: `proxies = {
-    'http': 'http://username:password@proxy.yourdomain.com:12345',
-    'https': 'http://username:password@proxy.yourdomain.com:12345'
-}
-requests.get('https://api.mywebsite.com', proxies=proxies)`
+      title: "Optimize Your Settings",
+      icon: FiSettings,
+      description: "Adjust request headers and connection settings for better performance.",
+      content: (
+        <Code p={3} borderRadius="md" fontSize="sm" bg="gray.50">
+          headers = {'User-Agent': 'YourApp/1.0'}
+        </Code>
+      )
+    },
+    {
+      title: "Send Your First Request",
+      icon: FiServer,
+      description: "Use the correct proxy format in your code to start making requests.",
+      content: (
+        <Code p={3} borderRadius="md" fontSize="sm" bg="gray.50">
+          curl --proxy-user username:password -x proxy.yourdomain.com:12345 https://api.mywebsite.com
+        </Code>
+      )
     }
   ];
 
   return (
-    <Box maxW="4xl">
+    <Box maxW="4xl" mx="auto" px={{ base: 4, md: 8 }} py={8}>
       <VStack spacing={8} align="stretch">
-        {/* Quick Start Guide */}
-        <Box>
-          <Heading size="lg" mb={6}>Quick Start Guide</Heading>
-          <VStack spacing={8} align="stretch">
-            {steps.map((step, index) => (
-              <Flex key={index} gap={4}>
-                <Box bg="blue.100" p={2} borderRadius="full">
-                  <Icon as={step.icon} boxSize={6} />
-                </Box>
-                <Box flex={1}>
-                  <Text fontWeight="bold" mb={2}>{step.title}</Text>
-                  {step.content}
-                </Box>
+        {/* Quick Start Guide Header */}
+        <Box textAlign="center">
+          <Heading size="xl" fontWeight="bold" mb={2}>Quick Start Guide</Heading>
+          <Text fontSize="lg" color="gray.600">
+            Follow these simple steps to integrate our proxy into your applications.
+          </Text>
+        </Box>
+
+        <Divider />
+
+        {/* Step-by-Step Guide */}
+        <VStack spacing={6} align="stretch">
+          {steps.map((step, index) => (
+            <Flex key={index} gap={4} align="flex-start">
+              <Flex
+                align="center"
+                justify="center"
+                w="50px"
+                h="50px"
+                borderRadius="full"
+                bg="blue.100"
+              >
+                <Icon as={step.icon} boxSize={6} color="blue.500" />
               </Flex>
-            ))}
-          </VStack>
-        </Box>
-
-        {/* Code Examples */}
-        <Box>
-          <Heading size="lg" mb={6}>Integration Examples</Heading>
-          <VStack spacing={6} align="stretch">
-            {examples.map((example, index) => (
-              <Box key={index}>
-                <Text fontWeight="bold" mb={2}>{example.language}</Text>
-                <Box bg="gray.50" p={4} borderRadius="md">
-                  <Code display="block" whiteSpace="pre-wrap">
-                    {example.code}
-                  </Code>
-                  <Button 
-                    leftIcon={<FiCopy />} 
-                    variant="link" 
-                    size="sm" 
-                    colorScheme="blue"
-                    mt={2}
-                  >
-                    Copy code
-                  </Button>
-                </Box>
+              <Box flex={1}>
+                <Heading size="md" fontWeight="semibold" mb={1}>{step.title}</Heading>
+                <Text color="gray.600" mb={2}>{step.description}</Text>
+                {step.content}
               </Box>
-            ))}
-          </VStack>
-        </Box>
+            </Flex>
+          ))}
+        </VStack>
 
-        {/* Verification Steps */}
+        <Divider />
+
+        {/* Verification & Support */}
         <Alert status="success" borderRadius="md">
-          <AlertIcon as={FiCheckCircle} />
+          <AlertIcon as={FiCheckCircle} boxSize={5} />
           <Box>
             <Text fontWeight="bold">Verify Your Setup</Text>
             <Text fontSize="sm">
-              Test your connection using the examples above. If you see your real IP being masked,
-              you're all set! For any issues, check our troubleshooting guide or contact support.
+              Test your connection using the examples above. If your IP is masked, you're all set! 
+              Need help? Visit our <Button variant="link" colorScheme="blue" size="sm">troubleshooting guide</Button> or contact support.
             </Text>
           </Box>
         </Alert>
