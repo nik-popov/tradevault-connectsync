@@ -39,7 +39,8 @@ const sidebarStructure: SidebarItem[] = [
     title: "Scraping API",
     subItems: [
       { title: "Explore", path: "/scraping-api/explore" },
-      { title: "Add More", path: "/scraping-api/add-more" },
+      { title: "Google SERP Results", path: "/scraping-api/google-serp-api" },
+      { title: "Google SERP Images", path: "/scraping-api/google-serp-image-api" },     
       { title: "Pricing", path: "/scraping-api/pricing" },
     ],
     icon: FiLayers,
@@ -48,13 +49,13 @@ const sidebarStructure: SidebarItem[] = [
     title: "Datasets",
     subItems: [
       { title: "Explore", path: "/datasets/explore" },
-      { title: "Request Dataset", path: "/datasets/request" },
-      { title: "Realtime", path: "/datasets/realtime" },
+      { title: "Pricing", path: "/datasets/pricing" },
+      { title: "Request Data", path: "/datasets/request" },
     ],
     icon: FiDatabase,
   },
   { title: "Settings", icon: FiSettings, path: "/settings" },
-  { title: "Items", icon: FiBriefcase, path: "/items" },
+  { title: "Billing", icon: FiBriefcase, path: "/items" },
   { title: "Help & Support", icon: FiTool, path: "/help-support" },
 ];
 

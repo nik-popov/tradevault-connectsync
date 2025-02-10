@@ -19,6 +19,12 @@ function Dashboard() {
     { id: "residential", name: "🌐 Residential Proxies", description: "Use for highly protected targets, broad location coverage.", owned: true },
     { id: "mobile", name: "📱 Mobile Proxies", description: "Best for mobile-specific location targeting.", owned: false },
     { id: "isp", name: "💻 ISP Pay/GB Proxies", description: "High-performance residential proxies with rotating IPs.", owned: true },
+    { id: "mobile", name: "📱 Mobile Proxies", description: "Best for mobile-specific location targeting.", owned: false },
+    { id: "isp", name: "💻 ISP Pay/GB Proxies", description: "High-performance residential proxies with rotating IPs.", owned: true },
+    { id: "mobile", name: "📱 Mobile Proxies", description: "Best for mobile-specific location targeting.", owned: false },
+    { id: "isp", name: "💻 ISP Pay/GB Proxies", description: "High-performance residential proxies with rotating IPs.", owned: true },
+    { id: "mobile", name: "📱 Mobile Proxies", description: "Best for mobile-specific location targeting.", owned: false },
+    { id: "isp", name: "💻 ISP Pay/GB Proxies", description: "High-performance residential proxies with rotating IPs.", owned: true },
   ];
 
   const filteredProducts = proxyProducts.filter((product) => 
