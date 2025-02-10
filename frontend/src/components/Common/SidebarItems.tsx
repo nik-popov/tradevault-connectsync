@@ -40,7 +40,7 @@ const sidebarStructure: SidebarItem[] = [
     subItems: [
       { title: "Explore", path: "/scraping-api/explore" },
       { title: "Google SERP Results", path: "/scraping-api/google-serp-api" },
-      { title: "Google SERP Images", path: "/scraping-api/google-serp-image-api" },     
+      { title: "Google SERP Images", path: "/scraping-api/google-images-serp-api" },     
       { title: "Pricing", path: "/scraping-api/pricing" },
     ],
     icon: FiLayers,
