@@ -68,19 +68,22 @@ const ProxySettings = () => {
             {`headers = {'User-Agent': 'YourApp/1.0'}`}
           </Code>
         </Box>
-        
-        {/* Verification & Support */}
-        <Box>
-          <Heading size="md" textAlign="center">Verify Your Setup</Heading>
-          <Text fontSize="md" textAlign="center" color="gray.600">
-            Test your connection using the examples above. If your IP is masked, you're all set! Need help? Visit our
-            <Button variant="link" colorScheme="blue" size="sm">troubleshooting guide</Button> or contact support.
-          </Text>
-        </Box>
-        
         <Button leftIcon={<FiCheckCircle />} colorScheme="blue" size="lg">
           Save Settings
         </Button>
+                {/* Verification & Support */}
+                <Alert status="success" borderRadius="md">
+          <AlertIcon as={FiCheckCircle} boxSize={5} />
+          <Box>
+            <Text fontWeight="bold">Verify Your Setup</Text>
+            <Text fontSize="sm">
+              Test your connection using the examples above. If your IP is masked, you're all set! 
+              Need help? Visit our <Button variant="link" colorScheme="blue" size="sm">troubleshooting guide</Button> or contact support.
+            </Text>
+          </Box>
+        </Alert>
+        
+    
       </VStack>
     </Box>
   );
