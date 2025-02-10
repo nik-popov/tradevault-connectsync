@@ -33,28 +33,19 @@ import {
   const PromoContent = () => <Box><Text>Promo Content Component</Text></Box>;
   const ReactivationOptions = () => <Box><Text>Reactivation Options Component</Text></Box>;
   
-  const tabsConfig = [
-    { title: "Get Started", component: <GetStarted /> },
-    { title: "Settings", component: <ProxySettings /> },
-    { title: "Usage", component: <ProxyUsage /> },
-    { title: "Billing", component: <ProxyBilling /> },
-    { title: "Top-Ups", component: <TopUps /> },
-    { title: "Connections", component: <Connections /> },
-    { title: "Logs", component: <Logs /> },
-    { title: "Key Management", component: <KeyManagement /> },
-  ];
-  
-  export const Route = createFileRoute("/_layout/proxies/residential")({
+  export const Route = createFileRoute("/_layout/residential-proxy")({
     component: ResidentialProxy,
   });
   
   function ResidentialProxy() {
     const queryClient = useQueryClient();
     const [hasSubscription, setHasSubscription] = useState(false);
+    const [isTrial, setIsTrial] = useState(false);
+    const [isDeactivated, setIsDeactivated] = useState(false);
     const currentUser = queryClient.getQueryData(["currentUser"]);
   
     const isLocked = !hasSubscription;
-    const isDeactivated = currentUser?.subscriptionStatus === "expired";
+    const restrictedTabs = isTrial ? ["Key Management", "Logs", "Top-Ups"] : [];
   
     return (
       <Container maxW="full">
@@ -64,6 +55,10 @@ import {
         <Box p={4}>
           <Text fontWeight="bold">Toggle Subscription:</Text>
           <Switch isChecked={hasSubscription} onChange={() => setHasSubscription(!hasSubscription)} />
+          <Text fontWeight="bold" mt={4}>Toggle Trial Mode:</Text>
+          <Switch isChecked={isTrial} onChange={() => setIsTrial(!isTrial)} />
+          <Text fontWeight="bold" mt={4}>Toggle Deactivated Mode:</Text>
+          <Switch isChecked={isDeactivated} onChange={() => setIsDeactivated(!isDeactivated)} />
         </Box>
         {isLocked ? (
           <PromoContent />
@@ -85,12 +80,12 @@ import {
               <Tabs variant="enclosed">
                 <TabList>
                   {tabsConfig.map((tab, index) => (
-                    <Tab key={index}>{tab.title}</Tab>
+                    <Tab key={index} isDisabled={restrictedTabs.includes(tab.title)}>{tab.title}</Tab>
                   ))}
                 </TabList>
                 <TabPanels>
                   {tabsConfig.map((tab, index) => (
-                    <TabPanel key={index}>{tab.component}</TabPanel>
+                    <TabPanel key={index}>{restrictedTabs.includes(tab.title) ? <Text>Feature locked during trial.</Text> : tab.component}</TabPanel>
                   ))}
                 </TabPanels>
               </Tabs>
