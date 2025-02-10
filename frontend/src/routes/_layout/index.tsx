@@ -45,7 +45,7 @@ function Dashboard() {
 
       {/* Filter Buttons */}
       <Stack direction="row" mt={6} spacing={3} justify="center">
-        {["All", "Residential", "Datacenter", "Other"].map((type) => (
+        {["All", "Proxy", "SERP", "Data"].map((type) => (
           <Button 
             key={type} 
             size="md"
