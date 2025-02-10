@@ -21,7 +21,7 @@ import {
   import { useQueryClient } from "@tanstack/react-query";
   import { createFileRoute } from "@tanstack/react-router";
   import { FiSend, FiGithub } from "react-icons/fi";
-  
+  import PromoContent from "./PromoContent";
   const ProxySettings = () => <Box><Text>Proxy Settings Component</Text></Box>;
   const ProxyUsage = () => <Box><Text>Proxy Usage Component</Text></Box>;
   const TopUps = () => <Box><Text>Top-Ups Component</Text></Box>;
@@ -29,7 +29,6 @@ import {
   const Logs = () => <Box><Text>Logs Component</Text></Box>;
   const GetStarted = () => <Box><Text>Get Started Component</Text></Box>;
   const KeyManagement = () => <Box><Text>Key Management Component</Text></Box>;
-  const PromoContent = () => <Box><Text>Promo Content Component</Text></Box>;
   const ReactivationOptions = () => <Box><Text>Reactivation Options Component</Text></Box>;
   
   const tabsConfig = [
@@ -59,7 +58,7 @@ import {
     return (
       <Container maxW="full">
         <Heading size="lg" textAlign={{ base: "center", md: "left" }} py={12}>
-          Residential Proxy Management
+          Residential Proxies
         </Heading>
         <Box p={4}>
           <Text fontWeight="bold">Toggle Subscription:</Text>
