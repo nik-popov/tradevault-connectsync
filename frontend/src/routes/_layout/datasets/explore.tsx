@@ -59,7 +59,7 @@ import {
     return (
       <Container maxW="full">
         <Heading size="lg" textAlign={{ base: "center", md: "left" }} py={12}>
-          Explore Search Api
+          Explore Data Sets
         </Heading>
         <Box p={4}>
           <Text fontWeight="bold">Toggle Subscription:</Text>
