@@ -31,7 +31,9 @@ function Dashboard() {
       {/* Header Section */}
       <Box bg="blue.50" p={3} textAlign="center" borderRadius="md">
         <Text fontWeight="bold">🚀 Test our solutions with a 3-day free trial!</Text>
-        <Button colorScheme="blue" size="sm" ml={4} onClick={() => navigate("/pricing")}>Try now</Button>
+        <Button colorScheme="blue" size="sm" ml={4} onClick={() => navigate({ to: "/pricing" })}>
+          Try now
+        </Button>
       </Box>
 
       <Flex mt={6} gap={6} justify="space-between">
@@ -65,7 +67,7 @@ function Dashboard() {
               <Box key={product.id} p={5} shadow="md" borderWidth="1px" borderRadius="lg">
                 <Text fontWeight="bold">{product.name}</Text>
                 <Text fontSize="sm">{product.description}</Text>
-                <Button mt={2} size="sm" colorScheme="blue" onClick={() => navigate(`/pricing/${product.id}`)}>
+                <Button mt={2} size="sm" colorScheme="blue" onClick={() => navigate({ to: `/pricing/${product.id}` })}>
                   Go to Pricing
                 </Button>
               </Box>
@@ -80,7 +82,7 @@ function Dashboard() {
             <Box p={4} shadow="sm" borderWidth="1px" borderRadius="lg">
               <Text fontWeight="bold">Pick by Your Target</Text>
               <Text fontSize="sm">Not sure which product to choose?</Text>
-              <Button mt={2} leftIcon={<FiSend />} size="sm" variant="outline" onClick={() => navigate("/test-request")}>
+              <Button mt={2} leftIcon={<FiSend />} size="sm" variant="outline" onClick={() => navigate({ to: "/test-request" })}>
                 Send Test Request
               </Button>
             </Box>
