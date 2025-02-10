@@ -31,7 +31,7 @@ function Dashboard() {
       {/* Header Section */}
       <Box bg="blue.50" p={3} textAlign="center" borderRadius="md">
         <Text fontWeight="bold">🚀 Test our solutions with a 3-day free trial!</Text>
-        <Button colorScheme="blue" size="sm" ml={4} onClick={() => navigate({ to: "/pricing" })}>
+        <Button colorScheme="blue" size="sm" ml={4} onClick={() => navigate({ to: "/proxies/pricing" })}>
           Try now
         </Button>
       </Box>
@@ -68,7 +68,7 @@ function Dashboard() {
                 <Text fontWeight="bold">{product.name}</Text>
                 <Text fontSize="sm">{product.description}</Text>
                 <Button mt={2} size="sm" colorScheme="blue" onClick={() => navigate({ to: `/proxies/${product.id}` })}>
-                  Go to Pricing
+                  Manage
                 </Button>
               </Box>
             ))}
