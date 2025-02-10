@@ -17,14 +17,14 @@ function Dashboard() {
   const [activeFilter, setActiveFilter] = useState("all"); // Main filter
 
   const proxyProducts = [
-    { id: "residential", name: "🌐 Residential Proxies", type: "Residential", description: "Highly protected targets, broad location coverage.", owned: true },
-    { id: "residential-mobile", name: "📱 Mobile Proxies", type: "Residential", description: "Best for mobile-specific location targeting.", owned: false },
-    { id: "datacenter", name: "💻 Datacenter Proxies", type: "Datacenter", description: "High-performance proxies with rotating IPs.", owned: true },
-    { id: "datacenter-mobile", name: "📡 Datacenter Mobile Proxies", type: "Datacenter", description: "Optimized for mobile traffic.", owned: false },
-    { id: "browser-proxy", name: "🖥️ Browser Proxy", type: "Other", description: "Seamless proxy setup for browser-based automation.", owned: false },
-    { id: "google-serp", name: "🔍 Google SERP Results", type: "Other", description: "Scrape real-time Google search results.", owned: false },
-    { id: "google-serp-images", name: "🖼️ Google SERP Images", type: "Other", description: "Extract images from Google search results.", owned: false },
-    { id: "custom-dataset", name: "📊 Request Custom Dataset", type: "Other", description: "Tailored data scraping for your needs.", owned: false },
+    { id: "residential", name: "🌐 Residential Proxies", type: "Proxy", description: "Highly protected targets, broad location coverage.", owned: true },
+    { id: "residential-mobile", name: "📱 Mobile Proxies", type: "Proxy", description: "Best for mobile-specific location targeting.", owned: false },
+    { id: "datacenter", name: "💻 Datacenter Proxies", type: "Proxy", description: "High-performance proxies with rotating IPs.", owned: true },
+    { id: "datacenter-mobile", name: "📡 Datacenter Mobile Proxies", type: "Proxy", description: "Optimized for mobile traffic.", owned: false },
+    { id: "browser-proxy", name: "🖥️ Browser Proxy", type: "SERP", description: "Seamless proxy setup for browser-based automation.", owned: false },
+    { id: "google-serp", name: "🔍 Google SERP Results", type: "SERP", description: "Scrape real-time Google search results.", owned: false },
+    { id: "google-serp-images", name: "🖼️ Google SERP Images", type: "SERP", description: "Extract images from Google search results.", owned: false },
+    { id: "custom-dataset", name: "📊 Request Custom Dataset", type: "Data", description: "Tailored data scraping for your needs.", owned: false },
   ];
 
   const filteredProducts = proxyProducts.filter(
