@@ -12,7 +12,7 @@ export const Route = createFileRoute("/_layout/")({
 
 function Dashboard() {
   const { user: currentUser } = useAuth();
-  const [filter, setFilter] = useState(null);
+  const [filter, setFilter] = useState<string | null>(null);
   const [ownedOnly, setOwnedOnly] = useState(true);
 
   const allProducts = [
