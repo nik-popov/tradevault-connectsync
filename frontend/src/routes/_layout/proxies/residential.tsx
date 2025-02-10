@@ -9,9 +9,16 @@ import {
     Box,
     Text,
     Button,
+    VStack,
+    HStack,
+    Divider,
+    Select,
+    Stack,
+    Flex,
   } from "@chakra-ui/react";
   import { useQueryClient } from "@tanstack/react-query";
   import { createFileRoute } from "@tanstack/react-router";
+  import { FiSend, FiGithub } from "react-icons/fi";
   
   const ProxySettings = () => <Box><Text>Proxy Settings Component</Text></Box>;
   const ProxyUsage = () => <Box><Text>Proxy Usage Component</Text></Box>;
@@ -59,18 +66,43 @@ import {
             <ReactivationOptions />
           </Box>
         ) : (
-          <Tabs variant="enclosed">
-            <TabList>
-              {tabsConfig.map((tab, index) => (
-                <Tab key={index}>{tab.title}</Tab>
-              ))}
-            </TabList>
-            <TabPanels>
-              {tabsConfig.map((tab, index) => (
-                <TabPanel key={index}>{tab.component}</TabPanel>
-              ))}
-            </TabPanels>
-          </Tabs>
+          <Flex mt={6} gap={6} justify="space-between">
+            <Box flex="1">
+              <Box p={4}>
+                <Text fontSize="2xl" fontWeight="bold">
+                  Hi, {currentUser?.full_name || currentUser?.email} 👋🏼
+                </Text>
+                <Text>Welcome back, nice to see you again!</Text>
+              </Box>
+              <Divider my={4} />
+              <Tabs variant="enclosed">
+                <TabList>
+                  {tabsConfig.map((tab, index) => (
+                    <Tab key={index}>{tab.title}</Tab>
+                  ))}
+                </TabList>
+                <TabPanels>
+                  {tabsConfig.map((tab, index) => (
+                    <TabPanel key={index}>{tab.component}</TabPanel>
+                  ))}
+                </TabPanels>
+              </Tabs>
+            </Box>
+            <Box w="250px" p={4} borderLeft="1px solid #E2E8F0">
+              <VStack spacing={4} align="stretch">
+                <Box p={4} shadow="sm" borderWidth="1px" borderRadius="lg">
+                  <Text fontWeight="bold">Pick by Your Target</Text>
+                  <Text fontSize="sm">Not sure which product to choose?</Text>
+                  <Button mt={2} leftIcon={<FiSend />} size="sm" variant="outline">Send Test Request</Button>
+                </Box>
+                <Box p={4} shadow="sm" borderWidth="1px" borderRadius="lg">
+                  <Text fontWeight="bold">GitHub</Text>
+                  <Text fontSize="sm">Explore integration guides and open-source projects.</Text>
+                  <Button mt={2} leftIcon={<FiGithub />} size="sm" variant="outline">Join GitHub</Button>
+                </Box>
+              </VStack>
+            </Box>
+          </Flex>
         )}
       </Container>
     );
