@@ -19,23 +19,23 @@ function Dashboard() {
     { id: "residential", name: "🌐 Residential Proxies", description: "Use for highly protected targets, broad location coverage.", owned: true },
     { id: "mobile", name: "📱 Mobile Proxies", description: "Best for mobile-specific location targeting.", owned: false },
     { id: "isp", name: "💻 ISP Pay/GB Proxies", description: "High-performance residential proxies with rotating IPs.", owned: true },
-    { id: "mobile", name: "📱 Mobile Proxies", description: "Best for mobile-specific location targeting.", owned: false },
-    { id: "isp", name: "💻 ISP Pay/GB Proxies", description: "High-performance residential proxies with rotating IPs.", owned: true },
-    { id: "mobile", name: "📱 Mobile Proxies", description: "Best for mobile-specific location targeting.", owned: false },
-    { id: "isp", name: "💻 ISP Pay/GB Proxies", description: "High-performance residential proxies with rotating IPs.", owned: true },
-    { id: "mobile", name: "📱 Mobile Proxies", description: "Best for mobile-specific location targeting.", owned: false },
-    { id: "isp", name: "💻 ISP Pay/GB Proxies", description: "High-performance residential proxies with rotating IPs.", owned: true },
   ];
 
-  const filteredProducts = proxyProducts.filter((product) => 
-    (filter === "" || product.id === filter) && (!ownedOnly || product.owned)
-  );
+  const allProducts = [
+    { id: "residential", name: "🌐 Residential Proxies", description: "Use for highly protected targets, broad location coverage.", owned: true },
+    { id: "mobile", name: "📱 Mobile Proxies", description: "Best for mobile-specific location targeting.", owned: false },
+    { id: "isp", name: "💻 ISP Pay/GB Proxies", description: "High-performance residential proxies with rotating IPs.", owned: true },
+    { id: "datacenter", name: "🏢 Datacenter Proxies", description: "Fast and reliable proxies from data centers.", owned: false },
+    { id: "browser", name: "🖥️ Browser Proxies", description: "Seamless integration for scraping and automation.", owned: false },
+  ];
+
+  const displayedProducts = ownedOnly ? allProducts.filter(p => p.owned).slice(0, 3) : allProducts;
 
   return (
     <Container maxW="full">
-      <Box bg="blue.50" p={3} textAlign="center" borderRadius="md">
-        <Text fontWeight="bold">🚀 Test our solutions with a 3-day free trial!</Text>
-        <Button colorScheme="blue" size="sm" ml={4}>Try now</Button>
+      <Box bg="blue.500" color="white" p={3} textAlign="center" borderRadius="md">
+        <Text fontWeight="bold">🚀 Enjoy a 3-day free trial on all plans. No credit card required!</Text>
+        <Button colorScheme="teal" size="sm" ml={4}>Try now</Button>
       </Box>
       <Flex mt={6} gap={6} justify="space-between">
         <Box flex="1">
@@ -52,6 +52,8 @@ function Dashboard() {
               <option value="residential">Residential Proxies</option>
               <option value="mobile">Mobile Proxies</option>
               <option value="isp">ISP Pay/GB Proxies</option>
+              <option value="datacenter">Datacenter Proxies</option>
+              <option value="browser">Browser Proxies</option>
             </Select>
             <HStack>
               <Text fontWeight="bold">Owned Only</Text>
@@ -59,11 +61,11 @@ function Dashboard() {
             </HStack>
           </Stack>
           <VStack spacing={6} mt={6} align="stretch">
-            {filteredProducts.map((product) => (
+            {displayedProducts.map((product) => (
               <Box key={product.id} p={5} shadow="md" borderWidth="1px" borderRadius="lg">
                 <Text fontWeight="bold">{product.name}</Text>
                 <Text fontSize="sm">{product.description}</Text>
-                <Button mt={2} size="sm" colorScheme="blue">Go to Pricing</Button>
+                <Button mt={2} size="sm" colorScheme="blue" as="a" href={`/pricing#${product.id}`}>Manage</Button>
               </Box>
             ))}
           </VStack>
