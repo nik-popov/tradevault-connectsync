@@ -19,7 +19,7 @@ import { useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import { FiSend, FiGithub } from "react-icons/fi";
-import PromoContent from "../../../components/PromoContent";
+import PromoContent from "../../../components/PromoContentMobile";
 import GetStarted from "../../../components/GetStarted";
 import ProxySettings from "../../../components/ProxySettings";
 import ProxyUsage from "../../../components/ProxyUsage"
