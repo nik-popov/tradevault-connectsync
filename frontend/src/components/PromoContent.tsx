@@ -15,10 +15,12 @@ import {
   ListItem,
   ListIcon,
 } from "@chakra-ui/react";
-import { createFileRoute } from '@tanstack/react-router';
+import { createFileRoute, useNavigate } from '@tanstack/react-router';
 import { FiArrowRight, FiShield, FiGlobe, FiZap, FiCheck } from 'react-icons/fi';
-import { useNavigate } from '@tanstack/react-router';
+
 const PromoContent = () => {
+  const navigate = useNavigate(); // ✅ Move useNavigate() inside the function
+
   const features = [
     { icon: FiGlobe, title: "Global Coverage", description: "Access to residential IPs from 195+ locations worldwide" },
     { icon: FiZap, title: "Lightning Fast", description: "Industry-leading connection speeds with 99.9% uptime" },
@@ -86,7 +88,7 @@ const PromoContent = () => {
           <Text color="gray.600" mb={6}>
             Experience unlimited access to all features for 7 days, no credit card required.
           </Text>
-          <Button colorScheme="blue" size="lg" rightIcon={<FiArrowRight />}>
+          <Button colorScheme="blue" size="lg" rightIcon={<FiArrowRight />} onClick={() => navigate('/proxies/pricing')}>
             Start Free Trial
           </Button>
         </Box>
@@ -134,8 +136,4 @@ const PromoContent = () => {
   );
 };
 
-export const Route = createFileRoute('/_layout/proxies/components/PromoContent')({
-  component: PromoContent
-});
-
-export default PromoContent
+export default PromoContent;
