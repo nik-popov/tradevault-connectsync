@@ -49,7 +49,7 @@ const GetStarted = () => {
       description: "Adjust request headers and connection settings for better performance.",
       content: (
         <Code p={3} borderRadius="md" fontSize="sm" bg="gray.50">
-          headers = {'User-Agent': 'YourApp/1.0'}
+          {`headers = {'User-Agent': 'YourApp/1.0'}`}
         </Code>
       )
     },
@@ -59,7 +59,7 @@ const GetStarted = () => {
       description: "Use the correct proxy format in your code to start making requests.",
       content: (
         <Code p={3} borderRadius="md" fontSize="sm" bg="gray.50">
-          curl --proxy-user username:password -x proxy.yourdomain.com:12345 https://api.mywebsite.com
+          {`curl --proxy-user username:password -x proxy.yourdomain.com:12345 https://api.mywebsite.com`}
         </Code>
       )
     }
@@ -82,14 +82,7 @@ const GetStarted = () => {
         <VStack spacing={6} align="stretch">
           {steps.map((step, index) => (
             <Flex key={index} gap={4} align="flex-start">
-              <Flex
-                align="center"
-                justify="center"
-                w="50px"
-                h="50px"
-                borderRadius="full"
-                bg="blue.100"
-              >
+              <Flex align="center" justify="center" w="50px" h="50px" borderRadius="full" bg="blue.100">
                 <Icon as={step.icon} boxSize={6} color="blue.500" />
               </Flex>
               <Box flex={1}>
