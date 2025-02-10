@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Text, Button, VStack } from '@/components/ui/Card';
+import { Box, Text, Button, VStack } from "@chakra-ui/react";
 import { createFileRoute } from '@tanstack/react-router';
 
 const PromoContent = () => {
