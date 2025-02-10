@@ -31,7 +31,7 @@ const KeyManagement = () => <Box><Text>Key Management Component</Text></Box>;
 const ReactivationOptions = () => <Box><Text>Reactivation Options Component</Text></Box>;
 
 // ✅ FIX: Corrected Route Export
-export const Route = createFileRoute("/_layout/scraping-api/explore")({
+export const Route = createFileRoute("/_layout/scraping-api/request")({
   component: Request,
 });
 

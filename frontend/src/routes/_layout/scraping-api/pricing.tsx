@@ -14,7 +14,7 @@ import {
   } from "@chakra-ui/react";
   import { createFileRoute } from "@tanstack/react-router";
   
-  export const Route = createFileRoute("/_layout/proxies/pricing")({
+  export const Route = createFileRoute("/_layout/scraping-api/pricing")({
     component: PricingPage,
   });
   
