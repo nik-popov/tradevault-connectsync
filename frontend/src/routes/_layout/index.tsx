@@ -13,7 +13,7 @@ export const Route = createFileRoute("/_layout/")({
 function Dashboard() {
   const { user: currentUser } = useAuth();
   const navigate = useNavigate();
-  const [ownedOnly, setOwnedOnly] = useState(true);
+  const [ownedOnly, setOwnedOnly] = useState(false);
   const [activeFilter, setActiveFilter] = useState("all"); // Main filter
 
   const proxyProducts = [
@@ -65,7 +65,7 @@ function Dashboard() {
         <Text fontWeight="bold" mr={2}>Owned Only</Text>
 
         <Switch 
-  isChecked={ownedOnly ?? true} // Fallback to true
+  isChecked={ownedOnly ?? false} // Fallback to true
   onChange={() => setOwnedOnly(prev => !prev)} 
   colorScheme="blue" 
 />
