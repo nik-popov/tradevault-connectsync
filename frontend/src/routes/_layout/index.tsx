@@ -15,12 +15,17 @@ function Dashboard() {
   const navigate = useNavigate();
   const [filter, setFilter] = useState("");
   const [ownedOnly, setOwnedOnly] = useState(true);
-
   const proxyProducts = [
     { id: "residential", name: "🌐 Residential Proxies", description: "Use for highly protected targets, broad location coverage.", owned: true },
-    { id: "mobile", name: "📱 Mobile Proxies", description: "Best for mobile-specific location targeting.", owned: false },
-    { id: "isp", name: "💻 ISP Pay/GB Proxies", description: "High-performance residential proxies with rotating IPs.", owned: true },
-  ];
+    { id: "residential-mobile", name: "📱 Mobile Proxies", description: "Best for mobile-specific location targeting.", owned: false },
+    { id: "datacenter", name: "💻 Datacenter Pay/GB Proxies", description: "High-performance residential proxies with rotating IPs.", owned: true },
+    { id: "datacenter-mobile", name: "📡 Datacenter Mobile Proxies", description: "Optimized for mobile data traffic.", owned: false },
+    { id: "browser-proxy", name: "🖥️ Browser Proxy", description: "Seamless proxy setup for browser-based automation.", owned: false },
+    { id: "google-serp", name: "🔍 Google SERP Results", description: "Scrape real-time Google search results.", owned: false },
+    { id: "google-serp-images", name: "🖼️ Google SERP Images", description: "Extract images from Google search results.", owned: false },
+    { id: "custom-dataset", name: "📊 Request Custom Dataset", description: "Tailored data scraping for your needs.", owned: false },
+];
+
 
   const filteredProducts = proxyProducts.filter((product) => 
     (filter === "" || product.id === filter) && (!ownedOnly || product.owned)
@@ -91,7 +96,7 @@ function Dashboard() {
             <Box p={4} shadow="sm" borderWidth="1px" borderRadius="lg">
               <Text fontWeight="bold">Twitter</Text>
               <Text fontSize="sm">Join our Twitter community.</Text> 
-              <Button mt={2} leftIcon={<FiGithub />} size="sm" variant="outline" onClick={() => window.open("https://twitter.com/yourhandle", "_blank")}>
+              <Button mt={2} leftIcon={<FiGithub />} size="sm" variant="outline" onClick={() => window.open("https://twitter.com/CobaltData", "_blank")}>
                 See Twitter
               </Button>
             </Box>
