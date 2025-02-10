@@ -62,7 +62,7 @@ function GoogleSerpAPI() {
     <Container maxW="full">
       {/* Top Bar with Heading and Toggles */}
       <Flex align="center" justify="space-between" py={6} flexWrap="wrap" gap={4}>
-        <Heading size="lg">Datacenter Proxies</Heading>
+        <Heading size="lg">Google Search API</Heading>
         <HStack spacing={6}>
           <HStack>
             <Text fontWeight="bold">Subscription:</Text>
