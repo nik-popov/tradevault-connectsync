@@ -31,7 +31,7 @@ const KeyManagement = () => <Box><Text>Key Management Component</Text></Box>;
 const ReactivationOptions = () => <Box><Text>Reactivation Options Component</Text></Box>;
 
 // ✅ FIX: Corrected Route Export
-export const Route = createFileRoute("/_layout/proxies/residential-mobile")({
+export const Route = createFileRoute("/_layout/proxies/residential")({
   component: ResidentialMobileProxy,
 });
 
@@ -62,7 +62,7 @@ function ResidentialMobileProxy() {
     <Container maxW="full">
       {/* Top Bar with Heading and Toggles */}
       <Flex align="center" justify="space-between" py={6} flexWrap="wrap" gap={4}>
-        <Heading size="lg">Mobile Residential Proxies</Heading>
+        <Heading size="lg">Residential Proxies</Heading>
         <HStack spacing={6}>
           <HStack>
             <Text fontWeight="bold">Subscription:</Text>
