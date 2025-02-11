@@ -46,12 +46,12 @@ const pricingCategories = [
   { name: "Enterprise", icon: FiTrendingUp },
 ];
 
-// Pricing Plans - Full-Length for Side-by-Side Comparison
+// Pricing Plans for Side-by-Side Comparison
 const pricingPlans = [
-  { name: "On-Demand", description: "Pay-as-you-go flexible pricing.", price: "Per Usage", color: "blue.400" },
-  { name: "Reserved", description: "Commit to 1-3 years for lower pricing.", price: "Up to 40% Off", color: "green.400" },
-  { name: "Spot", description: "Discounted unused cloud capacity.", price: "Up to 70% Off", color: "purple.400" },
-  { name: "Enterprise", description: "Custom solutions & dedicated support.", price: "Custom Pricing", color: "orange.400" },
+  { name: "On-Demand", description: "Pay-as-you-go pricing.", price: "Per Usage", color: "blue.400" },
+  { name: "Reserved", description: "Commit to 1-3 years for savings.", price: "Up to 40% Off", color: "green.400" },
+  { name: "Spot", description: "Get the best deals on unused capacity.", price: "Up to 70% Off", color: "purple.400" },
+  { name: "Enterprise", description: "Custom pricing & dedicated support.", price: "Custom Pricing", color: "orange.400" },
 ];
 
 // Pricing Breakdown for Each Category
@@ -73,11 +73,11 @@ const categoryPricing = {
 function Pricing() {
   return (
     <Container maxW="100vw" minH="100vh" bg="gray.800" color="white" py={8}>
-      {/* Standard Page Layout */}
+      {/* Page Header */}
       <Box textAlign="center" mb={8}>
         <Text fontSize="3xl" fontWeight="bold" color="gray.200">Cloud Pricing</Text>
         <Text fontSize="md" color="gray.400">
-          Compare pricing for Compute, Storage, Traffic, AI, and Security.
+          Transparent pricing for Compute, Storage, Traffic, AI, and Security.
         </Text>
       </Box>
 
@@ -96,15 +96,15 @@ function Pricing() {
         <TabPanels>
           {pricingCategories.map((category, index) => (
             <TabPanel key={index}>
-              {/* Title for Selected Category */}
+              {/* Section Title */}
               <Box mb={6}>
                 <Text fontSize="2xl" fontWeight="bold" color="gray.200">{category.name} Pricing</Text>
                 <Text fontSize="md" color="gray.400">
-                  Transparent and predictable {category.name.toLowerCase()} costs.
+                  Cost breakdown for {category.name.toLowerCase()} services.
                 </Text>
               </Box>
 
-              {/* Side-by-Side Plan Comparisons with Outlines */}
+              {/* Side-by-Side Plan Comparison - Outlined Cards */}
               <Grid templateColumns={{ base: "1fr", md: "repeat(4, 1fr)" }} gap={6}>
                 {pricingPlans.map((plan, idx) => (
                   <GridItem 
@@ -122,7 +122,7 @@ function Pricing() {
                 ))}
               </Grid>
 
-              {/* Full-Length Table Comparison with Outlined Rows */}
+              {/* Full-Length Pricing Table - Outlined Rows */}
               <Box mt={8} overflowX="auto">
                 <Table size="md" variant="unstyled">
                   <Thead bg="gray.700">
