@@ -232,8 +232,6 @@ import {
         </Box>
       </VStack>
     </Box>
-  );
-}
 
 
         </Flex>
