@@ -26,7 +26,7 @@ import SubscriptionManagement from "../../../components/UserSettings/Subscriptio
 
 // Storage and Product Key
 const STORAGE_KEY = "subscriptionSettings";
-const PRODUCT = "Scraping API"; // Define product-specific subscription management
+const PRODUCT = "serp"; // Define product-specific subscription management
 
 export const Route = createFileRoute("/_layout/scraping-api/request")({
   component: Request,

@@ -23,7 +23,7 @@ import SubscriptionManagement from "../../../components/UserSettings/Subscriptio
 
 // Storage and Product Key
 const STORAGE_KEY = "subscriptionSettings";
-const PRODUCT = "Scraper API"; // Define product-specific subscription management
+const PRODUCT = "serp"; // Define product-specific subscription management
 
 export const Route = createFileRoute("/_layout/scraper-api/explore")({
   component: Explore,

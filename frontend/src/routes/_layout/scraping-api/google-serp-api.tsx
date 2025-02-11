@@ -267,7 +267,7 @@ const ReactivationOptions = () => {
 
 
 const STORAGE_KEY = "subscriptionSettings";
-const PRODUCT = "serp-google"; // Define product-specific subscription management
+const PRODUCT = "serp"; // Define product-specific subscription management
 
 function GoogleSerpApi() {
   const queryClient = useQueryClient();

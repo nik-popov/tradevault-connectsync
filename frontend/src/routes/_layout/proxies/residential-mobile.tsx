@@ -264,7 +264,7 @@ const ReactivationOptions = () => {
 };
 
 const STORAGE_KEY = "subscriptionSettings";
-const PRODUCT = "proxy-residential-mobile"; // Define product-specific subscription management
+const PRODUCT = "proxy"; // Define product-specific subscription management
 
 function ResidentialMobileProxy() {
   const queryClient = useQueryClient();

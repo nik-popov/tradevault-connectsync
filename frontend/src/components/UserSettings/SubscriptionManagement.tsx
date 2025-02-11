@@ -20,7 +20,7 @@ type SubscriptionSettings = {
 };
 
 // Define product categories
-const PRODUCTS = ["Proxies", "SERP API", "Datasets"] as const;
+const PRODUCTS = ["proxy", "serp", "data"] as const;
 type ProductType = (typeof PRODUCTS)[number];
 
 const STORAGE_KEY = "subscriptionSettings"; // Key for localStorage

@@ -23,7 +23,7 @@ import SubscriptionManagement from "../../../components/UserSettings/Subscriptio
 
 // Storage and Product Key
 const STORAGE_KEY = "subscriptionSettings";
-const PRODUCT = "Datasets"; // Define product-specific subscription management
+const PRODUCT = "data"; // Define product-specific subscription management
 
 export const Route = createFileRoute("/_layout/datasets/explore")({
   component: Explore,
