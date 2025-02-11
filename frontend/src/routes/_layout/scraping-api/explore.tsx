@@ -206,10 +206,10 @@ const APIListItem = ({ api, navigate, isTrial }) => {
     <Box p="4" borderWidth="1px" borderRadius="lg">
       <Flex justify="space-between" align="center">
         <Box>
-          <Text fontWeight="bold">{api.name}</Text
-          <Text fontSize="sm" color="gray.600">
-            {api.description}
-          </Text>
+            <Text fontWeight="bold">{api.name}</Text> 
+         <Text fontSize="sm" color="gray.600">
+             {api.description}
+   </Text>
         </Box>
         <HStack spacing={2}>
           <Button size="sm" colorScheme="blue" onClick={() => setIsExpanded(!isExpanded)}>
