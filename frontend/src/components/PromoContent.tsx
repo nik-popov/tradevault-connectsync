@@ -45,7 +45,7 @@ const proxyPlans = [
   {
     name: "Business Plus+",
     price: "$2,999/mo",
-    features: ["Unlimited", "Unlimited concurrent connections", "Dedicated support", "Custom IP pools", "24/7 SLA"],
+    features: ["Unlimited", "Unlimited concurrent connections", "Custom IP pools", "24/7 SLA"],
     borderColor: "blue.500",
     buttonVariant: "solid",
   },
