@@ -71,7 +71,7 @@ const PromoSERP: React.FC = () => {
        <Heading as="h1" size="xl" fontWeight="bold" mb={4}>
           Unlock Search API
         </Heading>
-        <Text fontSize="lg" color="gray.600" mb={12}>
+        <Text fontSize="lg" color="gray.600">
         Leverage our AI-driven Search API to query vast amounts of structured and unstructured data in real time. Optimize performance with precision-based search capabilities.
         </Text>
         {/* FREE TRIAL BANNER */}
