@@ -62,7 +62,7 @@ function Request() {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleSubmit = async () => {
-    if (!apiName || !apiDescription || !apiUrl) {
+    if (!apiName.trim() || !apiDescription.trim() || !apiUrl.trim()) {
       toast({
         title: "Error",
         description: "Please fill in all fields before submitting.",
@@ -106,11 +106,10 @@ function Request() {
 
   return (
     <Container maxW="full">
-      {/* 🔄 Title with Debug Toggles */}
+      {/* 🔄 Title with Subscription Toggles */}
       <Flex justify="space-between" align="center" my={4} flexWrap="wrap">
         <Heading size="lg">Request a New API</Heading>
 
-        {/* Debugging Toggles */}
         <HStack spacing={6}>
           <HStack>
             <Text fontWeight="bold">Subscription:</Text>
@@ -133,68 +132,69 @@ function Request() {
       {isLocked ? (
         <PromoSERP />
       ) : isFullyDeactivated ? (
-        <>
-          <Alert status="error" borderRadius="md">
-            <AlertIcon />
-            <Flex justify="space-between" align="center" w="full">
-              <Text>Your subscription has been deactivated. Please renew to submit requests.</Text>
-              <Button colorScheme="red" onClick={() => navigate('/billing')}>
-                Reactivate Now
-              </Button>
-            </Flex>
-          </Alert>
-        </>
-      ) : (
-        <>
-          {/* ✅ Request API Form */}
-          <Box p={6} border="1px solid" borderColor="gray.200" borderRadius="md" boxShadow="sm">
-            <Text fontSize="xl" fontWeight="bold" mb={4}>
-              Request a New API
-            </Text>
-
-            <FormControl mb={4}>
-              <FormLabel>API Name</FormLabel>
-              <Input
-                placeholder="Enter API name"
-                value={apiName}
-                onChange={(e) => setApiName(e.target.value)}
-              />
-            </FormControl>
-
-            <FormControl mb={4}>
-              <FormLabel>API Description</FormLabel>
-              <Textarea
-                placeholder="Describe the API and its purpose"
-                value={apiDescription}
-                onChange={(e) => setApiDescription(e.target.value)}
-              />
-            </FormControl>
-
-            <FormControl mb={4}>
-              <FormLabel>API Website URL</FormLabel>
-              <Input
-                placeholder="https://example.com/api"
-                value={apiUrl}
-                onChange={(e) => setApiUrl(e.target.value)}
-              />
-            </FormControl>
-
-            <Button
-              colorScheme="blue"
-              leftIcon={<FiSend />}
-              size="lg"
-              isLoading={isSubmitting}
-              onClick={handleSubmit}
-            >
-              Submit Request
+        <Alert status="error" borderRadius="md">
+          <AlertIcon />
+          <Flex justify="space-between" align="center" w="full">
+            <Text>Your subscription has been deactivated. Please renew to submit requests.</Text>
+            <Button colorScheme="red" onClick={() => navigate("/billing")}>
+              Reactivate Now
             </Button>
+          </Flex>
+        </Alert>
+      ) : (
+        <Flex gap={6} mt={6}>
+          <Box flex="1">
+            {/* ✅ Request API Form */}
+            <Box p={6} border="1px solid" borderColor="gray.200" borderRadius="md" boxShadow="sm">
+              <Text fontSize="xl" fontWeight="bold" mb={4}>
+                Request a New API
+              </Text>
+
+              <FormControl mb={4}>
+                <FormLabel>API Name</FormLabel>
+                <Input
+                  placeholder="Enter API name"
+                  value={apiName}
+                  onChange={(e) => setApiName(e.target.value)}
+                />
+              </FormControl>
+
+              <FormControl mb={4}>
+                <FormLabel>API Description</FormLabel>
+                <Textarea
+                  placeholder="Describe the API and its purpose"
+                  value={apiDescription}
+                  onChange={(e) => setApiDescription(e.target.value)}
+                />
+              </FormControl>
+
+              <FormControl mb={4}>
+                <FormLabel>API Website URL</FormLabel>
+                <Input
+                  placeholder="https://example.com/api"
+                  value={apiUrl}
+                  onChange={(e) => setApiUrl(e.target.value)}
+                />
+              </FormControl>
+
+              <Button
+                colorScheme="blue"
+                leftIcon={<FiSend />}
+                size="lg"
+                isLoading={isSubmitting}
+                onClick={handleSubmit}
+              >
+                Submit Request
+              </Button>
+            </Box>
           </Box>
-               {/* ✅ Sidebar */}
-               <Box w="250px" p={4} borderLeft="1px solid #E2E8F0">
+
+          {/* ✅ Sidebar */}
+          <Box w="250px" p={4} borderLeft="1px solid #E2E8F0">
             <VStack spacing={4} align="stretch">
               <Box p={4} shadow="sm" borderWidth="1px" borderRadius="lg">
                 <Text fontWeight="bold">How It Works</Text>
-                <Text fontSize="sm">Submit your dataset request, and we’ll review it.</Text>
+                <Text fontSize="sm">Submit your API request, and we’ll review it.</Text>
               </Box>
               <Box p={4} shadow="sm" borderWidth="1px" borderRadius="lg">
                 <Text fontWeight="bold">Need Help?</Text>
@@ -202,7 +202,7 @@ function Request() {
               </Box>
             </VStack>
           </Box>
-        </>
+        </Flex>
       )}
     </Container>
   );
