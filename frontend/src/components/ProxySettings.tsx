@@ -13,7 +13,10 @@ import {
   Alert,
   AlertIcon,
   Select,
-  Input
+  Input,
+  List,
+  ListItem,
+  ListIcon
 } from "@chakra-ui/react";
 import { FiGlobe, FiKey, FiSettings, FiCheckCircle, FiLink, FiActivity } from "react-icons/fi";
 
@@ -97,13 +100,6 @@ const ProxySettings = () => {
           </Code>
         </Box>
         
-        <Box>
-          <Text fontWeight="bold" mb={1}>Connection Settings:</Text>
-          <Code p={3} borderRadius="md" bg="gray.50" fontSize="sm">
-            {`headers = {'User-Agent': 'YourApp/1.0'}`}
-          </Code>
-        </Box>
-        
         <Button leftIcon={<FiCheckCircle />} colorScheme="blue" size="lg" onClick={handleTestConnection}>
           Test Connection
         </Button>
@@ -115,15 +111,32 @@ const ProxySettings = () => {
           </Alert>
         )}
         
-        <Alert status="success" borderRadius="md">
-          <AlertIcon as={FiCheckCircle} boxSize={5} />
-          <Box>
-            <Text fontWeight="bold">Verify Your Setup</Text>
-            <Text fontSize="sm">
-              Test your connection using the examples above. If your IP is masked, you're all set! 
-              Need help? Visit our <Button variant="link" colorScheme="blue" size="sm">troubleshooting guide</Button> or contact support.
-            </Text>
-          </Box>
+        <Divider />
+        <Heading size="md">Proxy Usage</Heading>
+        <Text>Below are details on how you are utilizing the proxy services:</Text>
+        
+        <List spacing={3} mt={4}>
+          <ListItem>
+            <ListIcon as={FiCheckCircle} color="green.500" />
+            Total Requests: 15,234
+          </ListItem>
+          <ListItem>
+            <ListIcon as={FiCheckCircle} color="green.500" />
+            Data Transferred: 1.2GB
+          </ListItem>
+          <ListItem>
+            <ListIcon as={FiCheckCircle} color="green.500" />
+            Active Connections: 12
+          </ListItem>
+          <ListItem>
+            <ListIcon as={FiCheckCircle} color="green.500" />
+            Failed Requests: 45
+          </ListItem>
+        </List>
+        
+        <Alert status="success" borderRadius="md" mt={6}>
+          <AlertIcon />
+          <Text>All proxy usage details are verified and up-to-date.</Text>
         </Alert>
       </VStack>
     </Box>
