@@ -25,7 +25,12 @@ import {
     proxy: { hasSubscription: false, isTrial: false, isDeactivated: false },
     scrapingAPI: { hasSubscription: false, isTrial: false, isDeactivated: false },
     dataset: { hasSubscription: false, isTrial: false, isDeactivated: false },
-  };
+  };  // ✅ Correctly Export Route for TanStack Router
+  import { createFileRoute } from "@tanstack/react-router";
+  
+  export const Route = createFileRoute("/_layout/subscriptions")({
+    component: Subscriptions,
+  });
   
   function SubscriptionTable({ product, state, toggleState }) {
     return (
@@ -107,11 +112,6 @@ import {
     );
   }
   
-  // ✅ Correctly Export Route for TanStack Router
-  import { createFileRoute } from "@tanstack/react-router";
-  
-  export const Route = createFileRoute("/_layout/subscriptions")({
-    component: Subscriptions,
-  });
+
   
 export default Subscriptions;
