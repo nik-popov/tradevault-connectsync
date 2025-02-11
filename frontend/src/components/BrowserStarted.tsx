@@ -1,4 +1,4 @@
-// ../../../components/DatacenterGuide.js
+// ../../../components/browserGuide.js
 import React from 'react';
 import {
   Box,
@@ -28,30 +28,30 @@ const CenterStarted = () => {
     {
       title: "List Available Endpoints",
       icon: FiList,
-      description: "Retrieve all available datacenter proxy endpoints.",
+      description: "Retrieve all available Browser proxy endpoints.",
       content: (
         <Code p={3} borderRadius="md" fontSize="sm" bg="gray.50">
-          {`curl -X GET https://api.thedataproxy.com/api/v1/endpoints?type=datacenter`}
+          {`curl -X GET https://api.thedataproxy.com/api/v1/endpoints?type=Browser`}
         </Code>
       ),
     },
     {
       title: "Get Available Locations",
       icon: FiGlobe,
-      description: "Retrieve a list of supported locations for datacenter proxies.",
+      description: "Retrieve a list of supported locations for Browser proxies.",
       content: (
         <Code p={3} borderRadius="md" fontSize="sm" bg="gray.50">
-          {`curl -X GET https://api.thedataproxy.com/api/v1/locations?type=datacenter`}
+          {`curl -X GET https://api.thedataproxy.com/api/v1/locations?type=Browser`}
         </Code>
       ),
     },
     {
       title: "Configure Your Endpoint",
       icon: FiGlobe,
-      description: "Connect to our datacenter proxy network using this endpoint.",
+      description: "Connect to our Browser proxy network using this endpoint.",
       content: (
         <Code p={3} borderRadius="md" fontSize="sm" bg="gray.50">
-          https://api.thedataproxy.com/api/v1/proxy/datacenter/
+          https://api.thedataproxy.com/api/v1/proxy/browser/
         </Code>
       ),
     },
@@ -77,7 +77,7 @@ const CenterStarted = () => {
       description: "Check your authentication details and status.",
       content: (
         <Code p={3} borderRadius="md" fontSize="sm" bg="gray.50">
-          {`curl -X GET https://api.thedataproxy.com/api/v1/auth/datacenter`}
+          {`curl -X GET https://api.thedataproxy.com/api/v1/auth/browser`}
         </Code>
       ),
     },
@@ -87,7 +87,7 @@ const CenterStarted = () => {
       description: "Adjust request headers and connection settings for better performance and security.",
       content: (
         <Code p={3} borderRadius="md" fontSize="sm" bg="gray.50">
-          {`headers = {'User-Agent': 'YourApp/1.0', 'X-Proxy-Type': 'datacenter'}`}
+          {`headers = {'User-Agent': 'YourApp/1.0', 'X-Proxy-Type': 'Browser'}`}
         </Code>
       ),
     },
@@ -97,7 +97,7 @@ const CenterStarted = () => {
       description: "Use the correct proxy format in your code to start making requests.",
       content: (
         <Code p={3} borderRadius="md" fontSize="sm" bg="gray.50">
-          {`curl --proxy-user username:password -x api.thedataproxy.com/api/v1/proxy/datacenter/ https://api.mywebsite.com`}
+          {`curl --proxy-user username:password -x api.thedataproxy.com/api/v1/proxy/browser/ https://api.mywebsite.com`}
         </Code>
       ),
     },
@@ -107,7 +107,7 @@ const CenterStarted = () => {
       description: "Track usage statistics and scale your requests based on your needs.",
       content: (
         <Code p={3} borderRadius="md" fontSize="sm" bg="gray.50">
-          {`curl -X GET https://api.thedataproxy.com/api/v1/usage/datacenter/`}
+          {`curl -X GET https://api.thedataproxy.com/api/v1/usage/browser/`}
         </Code>
       ),
     },
@@ -119,10 +119,10 @@ const CenterStarted = () => {
         {/* Guide Header */}
         <Box textAlign="center">
           <Heading size="xl" fontWeight="bold" mb={2}>
-            Datacenter Proxy Quick Start Guide
+            Browser Proxy Quick Start Guide
           </Heading>
           <Text fontSize="lg" color="gray.600">
-            Follow these simple steps to integrate our datacenter proxy into your applications.
+            Follow these simple steps to integrate our Browser proxy into your applications.
           </Text>
         </Box>
 
