@@ -47,8 +47,9 @@ const proxyPricing = {
 
 const PricingPage = () => {
   const [selectedProduct, setSelectedProduct] = useState("Residential");
-  const tabBg = useColorModeValue("gray.100", "gray.700");
-  const tabColor = useColorModeValue("black", "white");
+  const tabBg = useColorModeValue("gray.800", "gray.600");
+  const tabColor = "white";
+  const tabHoverBg = useColorModeValue("gray.700", "gray.500");
 
   return (
     <Container maxW="full" py={10}>
@@ -76,7 +77,7 @@ const PricingPage = () => {
       <Tabs variant="soft-rounded" colorScheme="blue" onChange={(index) => setSelectedProduct(Object.keys(proxyPricing)[index])}>
         <TabList>
           {Object.keys(proxyPricing).map((product) => (
-            <Tab key={product} bg={tabBg} color={tabColor} px={4} py={2} borderRadius="md" _selected={{ bg: "blue.500", color: "white" }}>
+            <Tab key={product} bg={tabBg} color={tabColor} px={4} py={2} borderRadius="md" _selected={{ bg: "blue.500", color: "white" }} _hover={{ bg: tabHoverBg }}>
               {product.replace(" ", " \u2022 ")}
             </Tab>
           ))}
