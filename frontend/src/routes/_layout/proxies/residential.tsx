@@ -23,7 +23,6 @@ import PromoContent from "../../../components/PromoContent";
 import GetStarted from "../../../components/ProxyStarted";
 import ProxySettings from "../../../components/ProxySettings";
 import ProxyUsage from "../../../components/ProxyUsage";
-
 const TopUps = () => <Box><Text>Top-Ups Component</Text></Box>;
 const Connections = () => <Box><Text>Connections Component</Text></Box>;
 const Logs = () => <Box><Text>Logs Component</Text></Box>;

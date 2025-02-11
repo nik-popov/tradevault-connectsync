@@ -15,7 +15,7 @@ import {
   Spinner
 } from "@chakra-ui/react";
 import { FiCheckCircle, FiCopy, FiGlobe, FiCode, FiSettings, FiServer } from "react-icons/fi";
-import { useQuery } from 'react-query';
+import { useQuery } from "@tanstack/react-query"; 
 import axios from 'axios';
 
 const fetchAuthDetails = async () => {
@@ -23,8 +23,8 @@ const fetchAuthDetails = async () => {
   return data;
 };
 
-const GetStarted = () => {
-  const { data: authData, isLoading, isError } = useQuery('authDetails', fetchAuthDetails);
+const ProxyStarted = () => {
+  const { data: authData, isLoading, isError } = useQuery(['authDetails'], fetchAuthDetails);
 
   const steps = [
     {
@@ -130,4 +130,4 @@ const GetStarted = () => {
   );
 };
 
-export default GetStarted;
+export default ProxyStarted;
