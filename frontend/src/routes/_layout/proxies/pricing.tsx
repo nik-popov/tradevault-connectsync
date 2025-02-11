@@ -18,8 +18,6 @@ import {
   Table,
   Thead,
   TabPanel,
-  Progress,
-  Badge,
 } from "@chakra-ui/react";
 import { useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
@@ -47,10 +45,9 @@ const proxyPricing = {
 
 const PricingPage = () => {
   const [selectedProduct, setSelectedProduct] = useState("Residential");
-  const [usageProgress, setUsageProgress] = useState(0);
 
   return (
-    <Container maxW="full">
+    <Container maxW="full" py={10}>
       <Flex align="center" justify="space-between" py={6} flexWrap="wrap" gap={4}>
         <Box textAlign="left" flex="1">
           <Text fontSize="xl" fontWeight="bold">Proxy Pricing Plans</Text>
@@ -58,10 +55,20 @@ const PricingPage = () => {
         </Box>
       </Flex>
       <Divider my={4} />
-      <Box mb={6}>
-        <Text fontSize="md" fontWeight="bold">Usage Progress (Higher Usage = Better Rates)</Text>
-        <Progress colorScheme="blue" size="lg" value={usageProgress} />
-      </Box>
+      <VStack spacing={6} align="stretch" mb={6}>
+        <Box p={4} borderWidth="1px" borderRadius="md">
+          <Text fontSize="lg" fontWeight="bold">Better Rates Over Time</Text>
+          <Text fontSize="sm">As you use more bandwidth, you unlock lower pricing tiers, ensuring the best rates for high-volume users.</Text>
+        </Box>
+        <Box p={4} borderWidth="1px" borderRadius="md">
+          <Text fontSize="lg" fontWeight="bold">Scalable Plans</Text>
+          <Text fontSize="sm">Upgrade seamlessly as your needs grow. Flexible pricing ensures cost efficiency for all user levels.</Text>
+        </Box>
+        <Box p={4} borderWidth="1px" borderRadius="md">
+          <Text fontSize="lg" fontWeight="bold">Enterprise Discounts</Text>
+          <Text fontSize="sm">Custom pricing is available for high-volume clients with special requirements. Contact our sales team for exclusive offers.</Text>
+        </Box>
+      </VStack>
       <Tabs variant="enclosed" onChange={(index) => setSelectedProduct(Object.keys(proxyPricing)[index])}>
         <TabList>
           {Object.keys(proxyPricing).map((product) => (
