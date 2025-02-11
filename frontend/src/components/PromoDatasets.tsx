@@ -16,7 +16,7 @@ import {
   AlertIcon,
 } from "@chakra-ui/react";
 import { useNavigate } from '@tanstack/react-router';
-import { FiCheckCircle, FiDatabase, FiTrendingUp, FiArrowRight, FiShoppingCart, FiCloud } from 'react-icons/fi';
+import { FiCheckCircle, FiDatabase, FiTrendingUp, FiShoppingCart, FiCloud } from 'react-icons/fi';
 
 // Dataset Categories
 const datasetCategories = [
@@ -72,12 +72,13 @@ const PromoDatasets: React.FC = () => {
             Start Your Free Trial Today!
           </Heading>
           <Text fontSize="md" mb={3}>
-            Get full access to our SERP API with a 7-day free trial. No credit card required!
+            Get full access to our datasets with a 7-day free trial. No credit card required!
           </Text>
           <Button colorScheme="whiteAlpha" variant="solid" onClick={() => navigate('/signup')}>
             Sign Up for Free
           </Button>
         </Box>
+
         {/* Dataset Categories Section */}
         <Grid templateColumns={{ base: "1fr", md: "repeat(2, 1fr)" }} gap={6} mb={12}>
           {datasetCategories.map((dataset, index) => (
@@ -90,73 +91,74 @@ const PromoDatasets: React.FC = () => {
             </GridItem>
           ))}
         </Grid>
-{/* Pricing Plans Section */}
-<Heading as="h2" size="lg" fontWeight="bold" mb={4}>DataSet Pricing Plans</Heading>
-<Grid templateColumns={{ base: "1fr", md: "repeat(4, 1fr)" }} gap={6}>
-  {pricingPlans.map((plan, index) => (
-    <Box key={index} position="relative">
-      {/* Badge (if applicable) */}
-      {plan.badge && (
-        <Badge
-          colorScheme="blue"
-          variant="solid"
-          px={3} py={1}
-          position="absolute"
-          top="-12px"
-          left="50%"
-          transform="translateX(-50%)"
-          zIndex="1"
-        >
-          {plan.badge}
-        </Badge>
-      )}
-      <Box
-        p={6}
-        border="2px solid"
-        borderColor={plan.borderColor}
-        borderRadius="lg"
-        textAlign="center"
-        display="flex"
-        flexDirection="column"
-        alignItems="center"
-        justifyContent="space-between"
-        minH="400px"
-      >
-        {/* Plan Title */}
-        <Heading as="h3" size="md" fontWeight="semibold" mb={2} minH="48px">
-          {plan.name}
-        </Heading>
 
-        {/* Feature List */}
-        <List spacing={3} textAlign="left" mb={6} px={4}>
-          {plan.features.map((feature, idx) => (
-            <ListItem key={idx} display="flex" alignItems="center">
-              <ListIcon as={FiCheckCircle} color="blue.500" boxSize={5} />
-              {feature}
-            </ListItem>
+        {/* Pricing Plans Section */}
+        <Heading as="h2" size="lg" fontWeight="bold" mb={4}>Dataset Pricing Plans</Heading>
+        <Grid templateColumns={{ base: "1fr", md: "repeat(4, 1fr)" }} gap={6} mb={6}>
+          {pricingPlans.map((plan, index) => (
+            <Box key={index} position="relative">
+              {/* Badge (if applicable) */}
+              {plan.badge && (
+                <Badge
+                  colorScheme="blue"
+                  variant="solid"
+                  px={3} py={1}
+                  position="absolute"
+                  top="-12px"
+                  left="50%"
+                  transform="translateX(-50%)"
+                  zIndex="1"
+                >
+                  {plan.badge}
+                </Badge>
+              )}
+              <Box
+                p={6}
+                border="2px solid"
+                borderColor={plan.borderColor}
+                borderRadius="lg"
+                textAlign="center"
+                display="flex"
+                flexDirection="column"
+                alignItems="center"
+                justifyContent="space-between"
+                minH="400px"
+              >
+                {/* Plan Title */}
+                <Heading as="h3" size="md" fontWeight="semibold" mb={2} minH="48px">
+                  {plan.name}
+                </Heading>
+
+                {/* Feature List */}
+                <List spacing={3} textAlign="left" mb={6} px={4}>
+                  {plan.features.map((feature, idx) => (
+                    <ListItem key={idx} display="flex" alignItems="center">
+                      <ListIcon as={FiCheckCircle} color="blue.500" boxSize={5} />
+                      {feature}
+                    </ListItem>
+                  ))}
+                </List>
+
+                {/* Price Display */}
+                <Text fontSize="2xl" fontWeight="bold" mb={1}>
+                  {plan.price === "Custom" ? "Contact Us" : plan.price}
+                  {plan.price !== "Custom" && <Text as="span" fontSize="lg" color="gray.500">/mo</Text>}
+                </Text>
+
+                {/* CTA Button */}
+                <Button w="full" colorScheme="blue" variant={plan.buttonVariant} onClick={() => navigate('/datasets/pricing')}>
+                  {plan.price === "Custom" ? "Contact Us" : `Choose ${plan.name}`}
+                </Button>
+              </Box>
+            </Box>
           ))}
-        </List>
+        </Grid>
 
-        {/* Price Display */}
-        <Text fontSize="2xl" fontWeight="bold" mb={1}>
-          {plan.price === "Custom" ? "Contact Us" : plan.price}
-          {plan.price !== "Custom" && <Text as="span" fontSize="lg" color="gray.500">/mo</Text>}
-        </Text>
-
-        {/* CTA Button */}
-        <Button w="full" colorScheme="blue" variant={plan.buttonVariant} onClick={() => navigate('/datasets/pricing')}>
-          {plan.price === "Custom" ? "Contact Us" : `Choose ${plan.name}`}
-        </Button>
-      </Box>
-    </Box>
-            {/* Security & Performance Notice */}
-            <Alert status="success" borderRadius="md" mb={6}>
-            <AlertIcon />
-            <Text>All datasets are optimized for high-speed querying and secure data access.</Text>
-          </Alert>
-  
-  ))}
-</Grid>
+        {/* Security & Performance Notice */}
+        <Alert status="success" borderRadius="md">
+          <AlertIcon />
+          <Text>All datasets are optimized for high-speed querying and secure data access.</Text>
+        </Alert>
 
       </Box>
     </Box>
