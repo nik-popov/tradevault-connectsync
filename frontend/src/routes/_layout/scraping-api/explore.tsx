@@ -22,11 +22,12 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { FiSearch, FiSend, FiGithub } from "react-icons/fi";
 import { useQueryClient } from '@tanstack/react-query';
 import { motion } from "framer-motion";
+import useAuth from "../../hooks/useAuth";
 
 const Explore = () => {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
-  const currentUser = queryClient.getQueryData(["currentUser"]);
+  const { user: currentUser } = useAuth();
   const ownedApis = currentUser?.ownedApis || [];
 
   const [searchQuery, setSearchQuery] = useState("");
@@ -61,7 +62,7 @@ const Explore = () => {
         (!ownedOnly || product.owned) &&
         product.name.toLowerCase().includes(searchQuery.toLowerCase())
     );
-  }, [searchQuery, ownedOnly, activeFilter]);
+  }, [searchQuery, ownedOnly, activeFilter, hasSubscription, isTrial]);
 
   return (
     <Container maxW="full">
@@ -73,8 +74,17 @@ const Explore = () => {
         </Button>
       </Box>
 
-      {/* Toggle Section */}
-      <Flex justify="space-between" py={6} flexWrap="wrap" gap={4}>
+      {/* Filters & Toggles */}
+      <Flex mt={6} gap={4} justify="space-between" align="center" flexWrap="wrap">
+        {/* Welcome Message */}
+        <Box textAlign="left" flex="1">
+          <Text fontSize="xl" fontWeight="bold">
+            Hi, {currentUser?.full_name || currentUser?.email} 👋🏼
+          </Text>
+          <Text fontSize="sm">Welcome back, let’s get started!</Text>
+        </Box>
+
+        {/* Subscription Toggles */}
         <HStack>
           <Text fontWeight="bold">Subscription:</Text>
           <Switch isChecked={hasSubscription} onChange={() => setHasSubscription(!hasSubscription)} />
@@ -89,7 +99,9 @@ const Explore = () => {
         </HStack>
       </Flex>
 
-      {/* Filters & Sorting */}
+      <Divider my={4} />
+
+      {/* Search, Filters, and Sorting */}
       <Flex mt={6} gap={4} justify="space-between" align="center" flexWrap="wrap">
         <Input
           placeholder="Search APIs..."
@@ -131,7 +143,7 @@ const Explore = () => {
               <motion.div key={api.id} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.5 }}>
                 <ListItem p={5} shadow="md" borderWidth="1px" borderRadius="lg" bg="gray.50" _hover={{ shadow: "lg", transform: "scale(1.02)" }} transition="0.2s ease-in-out">
                   <Tooltip label={api.description} hasArrow>
-                    <Text fontWeight="bold">{api.name} {api.owned ? "(Owned)" : ""}</Text>
+                    <Text fontWeight="bold">{api.name} {api.owned ? `(Owned by ${currentUser?.full_name || "You"})` : ""}</Text>
                   </Tooltip>
                   <Button mt={3} size="sm" colorScheme="blue" borderRadius="full" onClick={() => navigate({ to: "/explore/" + api.id })}>
                     Explore
