@@ -1,26 +1,41 @@
 import React, { useState, useEffect } from "react";
 import {
   Container,
-  Heading,
+  Box,
   Text,
   Button,
   VStack,
   HStack,
   Divider,
   Flex,
-  Switch,
-  Alert,
-  AlertIcon,
-  Box,
-  Input,
-  Textarea,
+  Tabs,
+  Tab,
+  TabList,
+  TabPanels,
+  TabPanel,
   FormControl,
   FormLabel,
+  Input,
+  Textarea,
+  Alert,
+  AlertIcon,
+  Table,
+  Thead,
+  Tr,
+  Th,
+  Td,
+  Tbody,
   useToast,
 } from "@chakra-ui/react";
 import { createFileRoute } from "@tanstack/react-router";
-import { useQueryClient } from "@tanstack/react-query";
+import { useQueryClient, useQuery } from "@tanstack/react-query";
 import { FiSend, FiMail, FiHelpCircle, FiGithub } from "react-icons/fi";
+
+import PromoContent from "../../../components/PromoContent";
+
+// Subscription Settings Key
+const STORAGE_KEY = "subscriptionSettings";
+const PRODUCT = "support"; 
 
 export const Route = createFileRoute("/_layout/support")({
   component: Support,
@@ -30,33 +45,27 @@ function Support() {
   const queryClient = useQueryClient();
   const toast = useToast();
 
-  // ✅ Load Subscription State
-  const [subscriptionSettings, setSubscriptionSettings] = useState({
+  // Fetch subscription settings
+  const { data: subscriptionSettings } = useQuery({
+    queryKey: ["subscriptionSettings"],
+    queryFn: () => {
+      const storedSettings = localStorage.getItem(STORAGE_KEY);
+      return storedSettings ? JSON.parse(storedSettings) : {};
+    },
+    staleTime: Infinity,
+  });
+
+  const settings = subscriptionSettings?.[PRODUCT] || {
     hasSubscription: false,
     isTrial: false,
     isDeactivated: false,
-  });
+  };
 
-  useEffect(() => {
-    const storedSettings = localStorage.getItem("subscriptionSettings");
-    if (storedSettings) {
-      setSubscriptionSettings(JSON.parse(storedSettings));
-    } else {
-      const querySettings = queryClient.getQueryData("subscriptionSettings");
-      if (querySettings) {
-        setSubscriptionSettings(querySettings);
-      }
-    }
-  }, [queryClient]);
-
-  const { hasSubscription, isTrial, isDeactivated } = subscriptionSettings;
+  const { hasSubscription, isTrial, isDeactivated } = settings;
   const isLocked = !hasSubscription && !isTrial;
-  const isFullyDeactivated = isDeactivated && !hasSubscription;
+  const restrictedTabs = isTrial ? ["Support Tickets", "Submit Request"] : [];
 
-  // ✅ Force disable support form for now
-  const forceDisableSupport = false;
-
-  // ✅ Form State
+  // Form State
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState("");
@@ -77,7 +86,6 @@ function Support() {
     setIsSubmitting(true);
 
     try {
-      // Simulate API request
       await new Promise((resolve) => setTimeout(resolve, 1000));
 
       toast({
@@ -105,149 +113,127 @@ function Support() {
     setIsSubmitting(false);
   };
 
+  // Dummy Support Tickets
+  const dummyTickets = [
+    { id: 1, subject: "Billing Issue", status: "Open", date: "2025-02-10" },
+    { id: 2, subject: "Proxy Connection Issue", status: "Closed", date: "2025-02-11" },
+  ];
+
+  // Tabs Configuration
+  const tabsConfig = [
+    { title: "FAQs", component: <FAQSection /> },
+    { title: "Community", component: <CommunitySection /> },
+    { title: "Support Tickets", component: <SupportTickets tickets={dummyTickets} /> },
+    { title: "Submit Request", component: <SubmitRequest handleSubmit={handleSubmit} name={name} setName={setName} email={email} setEmail={setEmail} message={message} setMessage={setMessage} isSubmitting={isSubmitting} /> },
+  ];
+
   return (
     <Container maxW="full">
-      {/* 🔄 Title & Debugging Toggles */}
-      <Flex justify="space-between" align="center" my={4} flexWrap="wrap">
-        <Heading size="lg">Support & Help Center</Heading>
-
-        {/* Debugging Toggles */}
-        <HStack spacing={6}>
-          <HStack>
-            <Text fontWeight="bold">Subscription:</Text>
-            <Switch isChecked={hasSubscription} isDisabled />
-          </HStack>
-          <HStack>
-            <Text fontWeight="bold">Trial Mode:</Text>
-            <Switch isChecked={isTrial} isDisabled />
-          </HStack>
-          <HStack>
-            <Text fontWeight="bold">Deactivated:</Text>
-            <Switch isChecked={isDeactivated} isDisabled />
-          </HStack>
-        </HStack>
-      </Flex>
-
-      <Divider my={4} />
-
-      <Flex gap={6} mt={6}>
-        {/* 🚀 Support Form or Locked Alert */}
-        <Box flex="1">
-          {forceDisableSupport || isLocked || isFullyDeactivated ? (
-            <Alert status="warning" borderRadius="md">
-              <AlertIcon />
-              <Text>
-                Support is currently disabled. Please upgrade your plan or
-                contact sales for further assistance.
-              </Text>
-            </Alert>
-          ) : (
-            <Box
-              p={6}
-              border="1px solid"
-              borderColor="gray.200"
-              borderRadius="md"
-              boxShadow="sm"
-            >
-              <Text fontSize="xl" fontWeight="bold" mb={4}>
-                Contact Support
-              </Text>
-
-              <FormControl mb={4}>
-                <FormLabel>Your Name</FormLabel>
-                <Input
-                  placeholder="Enter your name"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                />
-              </FormControl>
-
-              <FormControl mb={4}>
-                <FormLabel>Email Address</FormLabel>
-                <Input
-                  placeholder="Enter your email"
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                />
-              </FormControl>
-
-              <FormControl mb={4}>
-                <FormLabel>Message</FormLabel>
-                <Textarea
-                  placeholder="Describe your issue"
-                  value={message}
-                  onChange={(e) => setMessage(e.target.value)}
-                />
-              </FormControl>
-
-              <Button
-                colorScheme="blue"
-                leftIcon={<FiSend />}
-                size="lg"
-                isLoading={isSubmitting}
-                onClick={handleSubmit}
-              >
-                Submit Request
-              </Button>
-            </Box>
-          )}
-        </Box>
-
-        {/* Sidebar */}
-        <Box w="250px" p="4" borderLeft="1px solid #E2E8F0">
-          <VStack spacing="4" align="stretch">
-            <Box p="4" shadow="sm" borderWidth="1px" borderRadius="lg">
-              <Text fontWeight="bold">Quick Actions</Text>
-              <Button
-                as="a"
-                href="mailto:support@thedataproxy.com"
-                leftIcon={<FiMail />}
-                variant="outline"
-                size="sm"
-                mt="2"
-              >
-                Email Support
-              </Button>
-              <Button
-                as="a"
-                href="https://dashboard.thedataproxy.com"
-                leftIcon={<FiHelpCircle />}
-                variant="outline"
-                size="sm"
-                mt="2"
-              >
-                Report an Issue
-              </Button>
-            </Box>
-
-            <Box p="4" shadow="sm" borderWidth="1px" borderRadius="lg">
-              <Text fontWeight="bold">FAQs</Text>
-              <Text fontSize="sm">Common questions and answers.</Text>
-              <Button as="a" href="/faqs" mt="2" size="sm" variant="outline">
-                View FAQs
-              </Button>
-            </Box>
-
-            <Box p="4" shadow="sm" borderWidth="1px" borderRadius="lg">
-              <Text fontWeight="bold">Community Support</Text>
-              <Text fontSize="sm">Join discussions with other users.</Text>
-              <Button
-                as="a"
-                href="https://github.com/CobaltDataNet"
-                mt="2"
-                leftIcon={<FiGithub />}
-                size="sm"
-                variant="outline"
-              >
-                GitHub Discussions
-              </Button>
-            </Box>
-          </VStack>
+      <Flex align="center" justify="space-between" py={6} flexWrap="wrap" gap={4}>
+        <Box textAlign="left" flex="1">
+          <Text fontSize="xl" fontWeight="bold">Support & Help Center</Text>
+          <Text fontSize="sm">Find help, open tickets, or contact support.</Text>
         </Box>
       </Flex>
+
+      {isLocked ? (
+        <PromoContent />
+      ) : isDeactivated ? (
+        <Box mt={6}>
+          <Text>Your subscription has expired. Please renew to access support features.</Text>
+        </Box>
+      ) : (
+        <Flex mt={6} gap={6} justify="space-between">
+          <Box flex="1">
+            <Divider my={4} />
+            <Tabs variant="enclosed">
+              <TabList>
+                {tabsConfig.map((tab, index) => (
+                  <Tab key={index} isDisabled={restrictedTabs.includes(tab.title)}>
+                    {tab.title}
+                  </Tab>
+                ))}
+              </TabList>
+              <TabPanels>
+                {tabsConfig.map((tab, index) => (
+                  <TabPanel key={index}>
+                    {restrictedTabs.includes(tab.title) ? <Text>Feature locked during trial.</Text> : tab.component}
+                  </TabPanel>
+                ))}
+              </TabPanels>
+            </Tabs>
+          </Box>
+        </Flex>
+      )}
     </Container>
   );
 }
+
+// FAQs Section
+const FAQSection = () => (
+  <Box>
+    <Text fontSize="xl" fontWeight="bold">Frequently Asked Questions</Text>
+    <Text mt={2}>Check our common support questions and answers.</Text>
+    <Button as="a" href="/faqs" mt={4} variant="outline">View FAQs</Button>
+  </Box>
+);
+
+// Community Section
+const CommunitySection = () => (
+  <Box>
+    <Text fontSize="xl" fontWeight="bold">Community Support</Text>
+    <Text mt={2}>Join discussions with other users on GitHub.</Text>
+    <Button as="a" href="https://github.com/CobaltDataNet" leftIcon={<FiGithub />} mt={4} variant="outline">
+      GitHub Discussions
+    </Button>
+  </Box>
+);
+
+// Support Tickets Section
+const SupportTickets = ({ tickets }) => (
+  <Box>
+    <Text fontSize="xl" fontWeight="bold">Your Support Tickets</Text>
+    <Table variant="simple" mt={4}>
+      <Thead>
+        <Tr>
+          <Th>ID</Th>
+          <Th>Subject</Th>
+          <Th>Status</Th>
+          <Th>Date</Th>
+        </Tr>
+      </Thead>
+      <Tbody>
+        {tickets.map((ticket) => (
+          <Tr key={ticket.id}>
+            <Td>{ticket.id}</Td>
+            <Td>{ticket.subject}</Td>
+            <Td>{ticket.status}</Td>
+            <Td>{ticket.date}</Td>
+          </Tr>
+        ))}
+      </Tbody>
+    </Table>
+  </Box>
+);
+
+// Submit Request Section
+const SubmitRequest = ({ handleSubmit, name, setName, email, setEmail, message, setMessage, isSubmitting }) => (
+  <Box>
+    <Text fontSize="xl" fontWeight="bold" mb={4}>Submit a Support Request</Text>
+    <FormControl mb={4}>
+      <FormLabel>Your Name</FormLabel>
+      <Input value={name} onChange={(e) => setName(e.target.value)} />
+    </FormControl>
+    <FormControl mb={4}>
+      <FormLabel>Email Address</FormLabel>
+      <Input type="email" value={email} onChange={(e) => setEmail(e.target.value)} />
+    </FormControl>
+    <FormControl mb={4}>
+      <FormLabel>Message</FormLabel>
+      <Textarea value={message} onChange={(e) => setMessage(e.target.value)} />
+    </FormControl>
+    <Button colorScheme="blue" leftIcon={<FiSend />} isLoading={isSubmitting} onClick={handleSubmit}>Submit Request</Button>
+  </Box>
+);
 
 export default Support;
