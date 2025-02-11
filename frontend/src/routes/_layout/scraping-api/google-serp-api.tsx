@@ -306,7 +306,7 @@ function GoogleSerpApi() {
     <Container maxW="full">
       <Flex align="center" justify="space-between" py={6} flexWrap="wrap" gap={4}>
         <Box textAlign="left" flex="1">
-          <Text fontSize="xl" fontWeight="bold">Search Api's</Text>
+          <Text fontSize="xl" fontWeight="bold">Search Apis</Text>
           <Text fontSize="sm">Manage your proxy settings and subscriptions.</Text>
         </Box>
         <SubscriptionManagement product={PRODUCT} />

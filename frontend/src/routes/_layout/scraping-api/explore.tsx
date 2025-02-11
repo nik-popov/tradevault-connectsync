@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useMemo } from "react";
 import {
   Box,
   Container,
@@ -16,38 +16,39 @@ import {
   Collapse,
 } from "@chakra-ui/react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useQueryClient } from "@tanstack/react-query";
-import { FiExternalLink, FiX, FiGithub } from "react-icons/fi";
+import { useQuery } from "@tanstack/react-query";
+import { FiGithub, FiX } from "react-icons/fi";
 import PromoDatasets from "../../../components/PromoDatasets";
+import SubscriptionManagement from "../../../components/UserSettings/SubscriptionManagement";
+
+// Storage and Product Key
+const STORAGE_KEY = "subscriptionSettings";
+const PRODUCT = "Scraper API"; // Define product-specific subscription management
 
 export const Route = createFileRoute("/_layout/scraper-api/explore")({
   component: Explore,
 });
 
 function Explore() {
-  const queryClient = useQueryClient();
   const navigate = useNavigate();
 
-  // ✅ Load Subscription State from LocalStorage & React Query
-  const [subscriptionSettings, setSubscriptionSettings] = useState({
+  // ✅ Load Subscription State using useQuery
+  const { data: subscriptionSettings } = useQuery({
+    queryKey: ["subscriptionSettings"],
+    queryFn: () => {
+      const storedSettings = localStorage.getItem(STORAGE_KEY);
+      return storedSettings ? JSON.parse(storedSettings) : {};
+    },
+    staleTime: Infinity,
+  });
+
+  const settings = subscriptionSettings?.[PRODUCT] || {
     hasSubscription: false,
     isTrial: false,
     isDeactivated: false,
-  });
+  };
 
-  useEffect(() => {
-    const storedSettings = localStorage.getItem("subscriptionSettings");
-    if (storedSettings) {
-      setSubscriptionSettings(JSON.parse(storedSettings));
-    } else {
-      const querySettings = queryClient.getQueryData("subscriptionSettings");
-      if (querySettings) {
-        setSubscriptionSettings(querySettings);
-      }
-    }
-  }, [queryClient]);
-
-  const { hasSubscription, isTrial, isDeactivated } = subscriptionSettings;
+  const { hasSubscription, isTrial, isDeactivated } = settings;
   const isLocked = !hasSubscription && !isTrial;
   const isFullyDeactivated = isDeactivated && !hasSubscription;
 
