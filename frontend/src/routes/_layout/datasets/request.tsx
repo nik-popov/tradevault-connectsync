@@ -75,7 +75,7 @@ function Request() {
 
       toast({
         title: "Request Submitted",
-        description: "Your API request has been submitted successfully.",
+        description: "Your Data Set request has been submitted successfully.",
         status: "success",
         duration: 3000,
         isClosable: true,
@@ -154,16 +154,16 @@ function Request() {
                 <FormControl mb={4}>
                   <FormLabel>Data Set Name</FormLabel>
                   <Input
-                    placeholder="Enter API name"
+                    placeholder="Enter Data Set name"
                     value={apiName}
                     onChange={(e) => setApiName(e.target.value)}
                   />
                 </FormControl>
 
                 <FormControl mb={4}>
-                  <FormLabel>API Description</FormLabel>
+                  <FormLabel>Data Set Description</FormLabel>
                   <Textarea
-                    placeholder="Describe the API and its purpose"
+                    placeholder="Describe the Data Set and its purpose"
                     value={apiDescription}
                     onChange={(e) => setApiDescription(e.target.value)}
                   />
