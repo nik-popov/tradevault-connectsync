@@ -85,6 +85,7 @@ function Explore() {
         </Button>
       </Box>
 
+      {/* Restriction Alert: Show only if user is locked out */}
       {isLocked && (
         <Alert status="warning" borderRadius="md" mt={4}>
           <AlertIcon />
@@ -92,60 +93,65 @@ function Explore() {
         </Alert>
       )}
 
-      <Flex mt={6} gap={4} justify="space-between" align="center" flexWrap="wrap">
-        <Box textAlign="left" flex="1">
-          <Text fontSize="xl" fontWeight="bold">
-            Hi, {currentUser?.full_name || currentUser?.email} 👋🏼
-          </Text>
-          <Text fontSize="sm">Welcome back, let’s get started!</Text>
-        </Box>
+      {/* Hide everything else if user is locked */}
+      {!isLocked && (
+        <>
+          <Flex mt={6} gap={4} justify="space-between" align="center" flexWrap="wrap">
+            <Box textAlign="left" flex="1">
+              <Text fontSize="xl" fontWeight="bold">
+                Hi, {currentUser?.full_name || currentUser?.email} 👋🏼
+              </Text>
+              <Text fontSize="sm">Welcome back, let’s get started!</Text>
+            </Box>
 
-        <HStack>
-          <Text fontWeight="bold">Subscription:</Text>
-          <Switch isChecked={hasSubscription} onChange={() => setHasSubscription(!hasSubscription)} />
-        </HStack>
-        <HStack>
-          <Text fontWeight="bold">Trial Mode:</Text>
-          <Switch isChecked={isTrial} onChange={() => setIsTrial(!isTrial)} />
-        </HStack>
-        <HStack>
-          <Text fontWeight="bold">Deactivated:</Text>
-          <Switch isChecked={isDeactivated} onChange={() => setIsDeactivated(!isDeactivated)} />
-        </HStack>
+            <HStack>
+              <Text fontWeight="bold">Subscription:</Text>
+              <Switch isChecked={hasSubscription} onChange={() => setHasSubscription(!hasSubscription)} />
+            </HStack>
+            <HStack>
+              <Text fontWeight="bold">Trial Mode:</Text>
+              <Switch isChecked={isTrial} onChange={() => setIsTrial(!isTrial)} />
+            </HStack>
+            <HStack>
+              <Text fontWeight="bold">Deactivated:</Text>
+              <Switch isChecked={isDeactivated} onChange={() => setIsDeactivated(!isDeactivated)} />
+            </HStack>
 
-        <Flex align="center">
-          <Text fontWeight="bold" mr={2}>Owned Only</Text>
-          <Switch isChecked={ownedOnly} onChange={() => setOwnedOnly(!ownedOnly)} colorScheme="blue" />
-        </Flex>
-      </Flex>
+            <Flex align="center">
+              <Text fontWeight="bold" mr={2}>Owned Only</Text>
+              <Switch isChecked={ownedOnly} onChange={() => setOwnedOnly(!ownedOnly)} colorScheme="blue" />
+            </Flex>
+          </Flex>
 
-      <Divider my={4} />
+          <Divider my={4} />
 
-      <Flex mt={6} gap={4} justify="space-between" align="center" flexWrap="wrap">
-        <Input placeholder="Search APIs..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} w={{ base: "100%", md: "300px" }} />
-        <Stack direction="row" spacing={3}>
-          {industries.map((type) => (
-            <Button key={type} size="md" fontWeight="bold" borderRadius="full" colorScheme={activeFilter === type.toLowerCase() ? "blue" : "gray"} variant={activeFilter === type.toLowerCase() ? "solid" : "outline"} onClick={() => setActiveFilter(type.toLowerCase())}>
-              {type}
-            </Button>
-          ))}
-        </Stack>
-        <Select value={sortOption} onChange={(e) => setSortOption(e.target.value)} w="200px">
-          <option value="name">Sort by Name</option>
-          <option value="price">Sort by Price</option>
-          <option value="rating">Sort by Rating</option>
-        </Select>
-      </Flex>
+          <Flex mt={6} gap={4} justify="space-between" align="center" flexWrap="wrap">
+            <Input placeholder="Search APIs..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} w={{ base: "100%", md: "300px" }} />
+            <Stack direction="row" spacing={3}>
+              {industries.map((type) => (
+                <Button key={type} size="md" fontWeight="bold" borderRadius="full" colorScheme={activeFilter === type.toLowerCase() ? "blue" : "gray"} variant={activeFilter === type.toLowerCase() ? "solid" : "outline"} onClick={() => setActiveFilter(type.toLowerCase())}>
+                  {type}
+                </Button>
+              ))}
+            </Stack>
+            <Select value={sortOption} onChange={(e) => setSortOption(e.target.value)} w="200px">
+              <option value="name">Sort by Name</option>
+              <option value="price">Sort by Price</option>
+              <option value="rating">Sort by Rating</option>
+            </Select>
+          </Flex>
 
-      <Divider my={4} />
+          <Divider my={4} />
 
-      <VStack spacing={6} mt={6} align="stretch">
-        {filteredProducts.length === 0 ? (
-          <Text textAlign="center" fontSize="lg" color="gray.500">No APIs match this filter.</Text>
-        ) : (
-          <List spacing={4}>{filteredProducts.map((api) => <ListItem key={api.id}><Text>{api.name}</Text></ListItem>)}</List>
-        )}
-      </VStack>
+          <VStack spacing={6} mt={6} align="stretch">
+            {filteredProducts.length === 0 ? (
+              <Text textAlign="center" fontSize="lg" color="gray.500">No APIs match this filter.</Text>
+            ) : (
+              <List spacing={4}>{filteredProducts.map((api) => <ListItem key={api.id}><Text>{api.name}</Text></ListItem>)}</List>
+            )}
+          </VStack>
+        </>
+      )}
     </Container>
   );
 }
