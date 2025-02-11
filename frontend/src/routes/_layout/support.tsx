@@ -91,10 +91,10 @@ function Support() {
 
   // Tabs Configuration
   const tabsConfig = [
-    { title: "FAQs", component: <FAQSection /> },
     { title: "Community", component: <CommunitySection /> },
     { title: "Support Tickets", component: <SupportTickets tickets={dummyTickets} /> },
     { title: "Submit Request", component: <SubmitRequest handleSubmit={handleSubmit} name={name} setName={setName} email={email} setEmail={setEmail} message={message} setMessage={setMessage} isSubmitting={isSubmitting} /> },
+    { title: "FAQs", component: <FAQSection /> },
   ];
 
   return (
