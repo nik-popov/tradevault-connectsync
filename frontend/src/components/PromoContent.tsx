@@ -56,7 +56,7 @@ const PromoContent = () => {
       name: "Ultra Enterprise",
       price: "Custom",
       traffic: "Unlimited + Dedicated Resources",
-      features: ["Dedicated proxies", "Custom traffic limits", "Dedicated account manager", "Private network setup"],
+      features: ["Dedicated proxies", "Custom traffic limits", "Private network setup"],
       borderColor: "gray.600",
       buttonVariant: "outline",
     }
