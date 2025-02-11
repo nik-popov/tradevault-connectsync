@@ -111,13 +111,36 @@ function Explore() {
 
   return (
     <Container maxW="full">
-      {/* 🔄 Title with Debug Toggles */}
+      {/* 🔄 Title & Debugging Toggles */}
       <Flex justify="space-between" align="center" my={4} flexWrap="wrap">
         <Heading size="lg">Explore APIs</Heading>
+
+        {/* DEV Debug Bar */}
+        <HStack spacing={6}>
+          <HStack>
+            <Text fontWeight="bold">Subscription:</Text>
+            <Switch isChecked={hasSubscription} onChange={() => setHasSubscription(!hasSubscription)} />
+          </HStack>
+          <HStack>
+            <Text fontWeight="bold">Trial Mode:</Text>
+            <Switch isChecked={isTrial} onChange={() => setIsTrial(!isTrial)} />
+          </HStack>
+          <HStack>
+            <Text fontWeight="bold">Deactivated:</Text>
+            <Switch isChecked={isDeactivated} onChange={() => setIsDeactivated(!isDeactivated)} />
+          </HStack>
+        </HStack>
       </Flex>
 
-      {/* Filters & Sorting */}
+      {/* Filters & Sorting Row */}
       <Flex gap={4} justify="space-between" align="center" flexWrap="wrap" mt={2}>
+        <Input
+          placeholder="Search APIs..."
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          w={{ base: "100%", md: "250px" }}
+        />
+
         <HStack spacing={2}>
           {industries.map((type) => (
             <Button
@@ -134,13 +157,6 @@ function Explore() {
             </Button>
           ))}
         </HStack>
-
-        <Input
-          placeholder="Search APIs..."
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          w={{ base: "100%", md: "250px" }}
-        />
 
         <Select value={sortOption} onChange={(e) => setSortOption(e.target.value)} w="200px">
           <option value="name">Sort by Name</option>
