@@ -1,5 +1,5 @@
 import { Box, Heading, Text, VStack, HStack, Switch, Button } from "@chakra-ui/react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 
 // Define the shape of the subscription settings
@@ -9,27 +9,35 @@ type SubscriptionSettings = {
   isDeactivated: boolean;
 };
 
+const STORAGE_KEY = "subscriptionSettings"; // Key for localStorage
+
 const SubscriptionManagement = () => {
   const queryClient = useQueryClient();
 
-  // Load initial state from React Query, providing default values
-  const initialSubscriptionState = queryClient.getQueryData<SubscriptionSettings>(["subscriptionSettings"]) || {
-    hasSubscription: false,
-    isTrial: false,
-    isDeactivated: false,
-  };
+  // Load initial state from localStorage (fallback to React Query)
+  const storedSettings = localStorage.getItem(STORAGE_KEY);
+  const initialSubscriptionState: SubscriptionSettings = storedSettings
+    ? JSON.parse(storedSettings)
+    : queryClient.getQueryData<SubscriptionSettings>(["subscriptionSettings"]) || {
+        hasSubscription: false,
+        isTrial: false,
+        isDeactivated: false,
+      };
 
   const [subscriptionSettings, setSubscriptionSettings] = useState<SubscriptionSettings>(initialSubscriptionState);
 
+  // Effect: Sync state with localStorage on changes
+  useEffect(() => {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(subscriptionSettings));
+    queryClient.setQueryData(["subscriptionSettings"], subscriptionSettings);
+  }, [subscriptionSettings, queryClient]);
+
   // Toggle function with properly typed keys
   const toggleSetting = (key: keyof SubscriptionSettings) => {
-    const updatedSettings = {
-      ...subscriptionSettings,
-      [key]: !subscriptionSettings[key],
-    };
-
-    setSubscriptionSettings(updatedSettings);
-    queryClient.setQueryData(["subscriptionSettings"], updatedSettings);
+    setSubscriptionSettings((prev) => ({
+      ...prev,
+      [key]: !prev[key],
+    }));
   };
 
   return (
