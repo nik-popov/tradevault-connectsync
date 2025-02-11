@@ -6,29 +6,27 @@ import {
   VStack,
   Button,
   Divider,
-  Stack,
   Flex,
   Switch,
   List,
   ListItem,
-  Tooltip,
   Select,
   Alert,
   AlertIcon,
   HStack,
-  Input
+  Input,
+  Heading,
+  Tabs,
+  TabList,
+  TabPanels,
+  Tab,
+  TabPanel,
 } from "@chakra-ui/react";
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { FiSearch } from "react-icons/fi";
 import { useQueryClient } from "@tanstack/react-query";
 import { motion } from "framer-motion";
 
-export const Route = createFileRoute("/_layout/search-api/explore")({
-  component: Explore
-});
-
 function Explore() {
-  const navigate = useNavigate();
   const queryClient = useQueryClient();
   const currentUser = queryClient.getQueryData(["currentUser"]);
 
@@ -78,22 +76,17 @@ function Explore() {
 
   return (
     <Container maxW="full">
-      <Box bg="blue.100" p={4} textAlign="center" borderRadius="md">
-        <Text fontWeight="bold" fontSize="lg">🚀 Get a 3-day free trial of our APIs!</Text>
-        <Button colorScheme="blue" size="sm" mt={2} onClick={() => navigate("/pricing")}>
-          Try Now
-        </Button>
-      </Box>
+      <Heading size="lg" my={4}>Explore APIs</Heading>
 
-      {/* Restriction Alert: Show only if user is locked out */}
+      {/* Restriction Alert */}
       {isLocked && (
-        <Alert status="warning" borderRadius="md" mt={4}>
+        <Alert status="warning" borderRadius="md">
           <AlertIcon />
           <Text>You need a subscription or trial to explore APIs.</Text>
         </Alert>
       )}
 
-      {/* Hide everything else if user is locked */}
+      {/* Content - Only Visible if Unlocked */}
       {!isLocked && (
         <>
           <Flex mt={6} gap={4} justify="space-between" align="center" flexWrap="wrap">
@@ -101,7 +94,7 @@ function Explore() {
               <Text fontSize="xl" fontWeight="bold">
                 Hi, {currentUser?.full_name || currentUser?.email} 👋🏼
               </Text>
-              <Text fontSize="sm">Welcome back, let’s get started!</Text>
+              <Text fontSize="sm">Welcome back, let’s explore APIs!</Text>
             </Box>
 
             <HStack>
@@ -147,7 +140,14 @@ function Explore() {
             {filteredProducts.length === 0 ? (
               <Text textAlign="center" fontSize="lg" color="gray.500">No APIs match this filter.</Text>
             ) : (
-              <List spacing={4}>{filteredProducts.map((api) => <ListItem key={api.id}><Text>{api.name}</Text></ListItem>)}</List>
+              <List spacing={4}>
+                {filteredProducts.map((api) => (
+                  <ListItem key={api.id}>
+                    <Text fontWeight="bold">{api.name}</Text>
+                    <Text fontSize="sm" color="gray.600">{api.description}</Text>
+                  </ListItem>
+                ))}
+              </List>
             )}
           </VStack>
         </>
