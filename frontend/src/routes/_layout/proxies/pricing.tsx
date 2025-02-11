@@ -33,10 +33,10 @@ import { FiCheckCircle } from "react-icons/fi";
 
 const proxyPricing = {
   Residential: [
-    { tier: "Explorer", price: "$5/month", trafficLimit: "1,000 API requests", features: ["Basic dataset access", "Standard support"], badge: "Best Value" },
-    { tier: "Archiver", price: "$100/month", trafficLimit: "10,000 API requests", features: ["Extended dataset history", "Priority support"], badge: "Most Popular" },
-    { tier: "Researcher", price: "$500/month", trafficLimit: "100,000 API requests", features: ["High download limits", "Advanced analytics"] },
-    { tier: "Enterprise", price: "Custom", trafficLimit: "Unlimited", features: ["Unlimited API requests", "Dedicated account manager", "Custom integrations"] },
+    { tier: "Explorer", price: "$5/month", trafficLimit: "1,000 API requests", features: ["Basic dataset access", "Standard support"], badge: "Best Value", icon: FaCloud },
+    { tier: "Archiver", price: "$100/month", trafficLimit: "10,000 API requests", features: ["Extended dataset history", "Priority support"], badge: "Most Popular", icon: FaDatabase },
+    { tier: "Researcher", price: "$500/month", trafficLimit: "100,000 API requests", features: ["High download limits", "Advanced analytics"], icon: FaNetworkWired },
+    { tier: "Enterprise", price: "Custom", trafficLimit: "Unlimited", features: ["Unlimited API requests", "Dedicated account manager", "Custom integrations"], icon: FaDollarSign },
   ],
 };
 
@@ -79,6 +79,7 @@ const PricingPage = () => {
                         {tier.badge && (
                           <Badge colorScheme="blue" px={2} py={1} mb={2}>{tier.badge}</Badge>
                         )}
+                        <Icon as={tier.icon} boxSize={10} color="blue.400" mb={2} />
                         <Heading as="h3" size="md" color={textColor} mb={2}>{tier.tier}</Heading>
                         <Text fontSize="lg" fontWeight="bold" color="blue.400">{tier.price}</Text>
                         <Text fontSize="sm" color="gray.300" mt={1}>{tier.trafficLimit}</Text>
