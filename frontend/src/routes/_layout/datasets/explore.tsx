@@ -50,11 +50,6 @@ function Explore() {
 
   // 🔍 Mock Dataset Data
   const datasets = [
-// Define 12 main categories
-// Categories: technology, health, environment, finance, transportation, entertainment, education, real-estate, energy, business, sports, social
-
-const datasets = [
-  // Technology Category (5 entries)
   {
     id: "smartphone-usage",
     name: "Smartphone Usage Statistics",
@@ -295,7 +290,6 @@ const datasets = [
     },
   },
 
-  // Entertainment Category (4 entries)
   {
     id: "streaming-trends",
     name: "Streaming Content Trends",
@@ -387,7 +381,6 @@ const datasets = [
     },
   },
 
-  // Real Estate Category (4 entries)
   {
     id: "real-estate-prices",
     name: "Real Estate Prices",
@@ -478,8 +471,6 @@ const datasets = [
       example: `GET /datasets/energy-prices?type=electricity`,
     },
   },
-
-  // Business Category (4 entries)
   {
     id: "startup-funding",
     name: "Startup Funding Data",
