@@ -18,29 +18,20 @@ import {
   ListItem,
   ListIcon,
   Icon,
+  Badge,
+  Alert,
+  AlertIcon,
   useColorModeValue,
 } from "@chakra-ui/react";
-import { FaNetworkWired, FaCloud, FaMobileAlt } from "react-icons/fa";
+import { FaNetworkWired, FaCloud, FaMobileAlt, FaDatabase, FaDollarSign } from "react-icons/fa";
 import { FiCheckCircle } from "react-icons/fi";
 
 const proxyPricing = {
   Residential: [
-    { tier: "Starter", price: "$2.00/GB", trafficLimit: "Up to 500GB" },
-    { tier: "Business", price: "$1.50/GB", trafficLimit: "Up to 2TB", badge: "Most Popular" },
-    { tier: "Business Plus+", price: "$1.25/GB", trafficLimit: "Up to 10TB" },
-    { tier: "Ultra Enterprise", price: "Custom Pricing", trafficLimit: "Unlimited" },
-  ],
-  "Residential Mobile": [
-    { tier: "Starter", price: "$2.50/GB", trafficLimit: "Up to 500GB" },
-    { tier: "Business", price: "$1.80/GB", trafficLimit: "Up to 2TB" },
-    { tier: "Business Plus+", price: "$1.50/GB", trafficLimit: "Up to 10TB" },
-    { tier: "Ultra Enterprise", price: "Custom Pricing", trafficLimit: "Unlimited" },
-  ],
-  Datacenter: [
-    { tier: "Starter", price: "$1.00/GB", trafficLimit: "Up to 5TB" },
-    { tier: "Business", price: "$0.75/GB", trafficLimit: "Up to 20TB" },
-    { tier: "Business Plus+", price: "$0.50/GB", trafficLimit: "Up to 50TB" },
-    { tier: "Ultra Enterprise", price: "Custom Pricing", trafficLimit: "Unlimited" },
+    { tier: "Explorer", price: "$5/month", features: ["Basic dataset access", "1,000 API requests/month", "Standard support"], badge: "Best Value" },
+    { tier: "Archiver", price: "$100/month", features: ["Extended dataset history", "10,000 API requests/month", "Priority support"], badge: "Most Popular" },
+    { tier: "Researcher", price: "$500/month", features: ["High download limits", "100,000 API requests/month", "Advanced analytics"] },
+    { tier: "Enterprise", price: "Custom", features: ["Unlimited API requests", "Dedicated account manager", "Custom integrations"] },
   ],
 };
 
@@ -50,15 +41,14 @@ const PricingPage = () => {
   const tabHoverBg = useColorModeValue("gray.600", "gray.600");
   const textColor = "white";
 
-  const productIcons = {
-    Residential: <FaCloud size={18} />, 
-    "Residential Mobile": <FaMobileAlt size={18} />, 
-    Datacenter: <FaNetworkWired size={18} />,
-  };
-
   return (
     <Container maxW="full" py={10} bg="gray.800" px={6}>
-      <Text fontSize="lg" fontWeight="bold" color={textColor} mb={4}>Proxy Pricing Plans</Text>
+      <Alert status="info" borderRadius="md" bg="gray.700" color="gray.300" mb={6}>
+        <AlertIcon color="blue.500" />
+        <Text fontSize="sm">All plans include secure, high-speed API access with real-time data retrieval.</Text>
+      </Alert>
+
+      <Text fontSize="lg" fontWeight="bold" color={textColor} mb={4}>Dataset Subscription Plans</Text>
       <Flex>
         <Box w={{ base: "full", md: "250px" }} bg={tabBg} p={4} borderRadius="md">
           <Tabs variant="unstyled" onChange={(index) => setSelectedProduct(Object.keys(proxyPricing)[index])}>
@@ -66,7 +56,7 @@ const PricingPage = () => {
               {Object.keys(proxyPricing).map((product) => (
                 <Tab key={product} bg={tabBg} color={textColor} px={4} py={2} borderRadius="md" fontSize="sm" fontWeight="bold" _hover={{ bg: tabHoverBg }}>
                   <HStack spacing={2}>
-                    {productIcons[product]} <Text>{product}</Text>
+                    <Icon as={FaDatabase} boxSize={4} /> <Text>{product} Datasets</Text>
                   </HStack>
                 </Tab>
               ))}
@@ -80,26 +70,21 @@ const PricingPage = () => {
                 <TabPanel key={product}>
                   <Flex wrap="wrap" gap={6} justifyContent="center" mt={6}>
                     {proxyPricing[product].map((tier) => (
-                      <Box key={tier.tier} p={6} borderWidth="2px" borderRadius="lg" w={{ base: "full", md: "250px" }} textAlign="center" bg="gray.700" borderColor="blue.500">
+                      <Box key={tier.tier} p={6} borderWidth="2px" borderRadius="lg" w={{ base: "full", md: "280px" }} textAlign="center" bg="gray.700" borderColor="blue.500">
                         {tier.badge && (
                           <Badge colorScheme="blue" px={2} py={1} mb={2}>{tier.badge}</Badge>
                         )}
                         <Heading as="h3" size="md" color={textColor} mb={2}>{tier.tier}</Heading>
                         <Text fontSize="lg" fontWeight="bold" color="blue.400">{tier.price}</Text>
-                        <Text fontSize="sm" color="gray.300" mt={1}>{tier.trafficLimit}</Text>
                         <List spacing={2} my={4} textAlign="left">
-                          <ListItem display="flex" alignItems="center">
-                            <ListIcon as={FiCheckCircle} color="blue.400" boxSize={4} /> High-speed proxy access
-                          </ListItem>
-                          <ListItem display="flex" alignItems="center">
-                            <ListIcon as={FiCheckCircle} color="blue.400" boxSize={4} /> Secure encrypted connections
-                          </ListItem>
-                          <ListItem display="flex" alignItems="center">
-                            <ListIcon as={FiCheckCircle} color="blue.400" boxSize={4} /> 24/7 customer support
-                          </ListItem>
+                          {tier.features.map((feature, index) => (
+                            <ListItem key={index} display="flex" alignItems="center">
+                              <ListIcon as={FiCheckCircle} color="blue.400" boxSize={4} /> {feature}
+                            </ListItem>
+                          ))}
                         </List>
                         <Button colorScheme="blue" size="sm" w="full">
-                          {tier.price === "Custom Pricing" ? "Contact Sales" : "Choose Plan"}
+                          {tier.price === "Custom" ? "Contact Sales" : "Choose Plan"}
                         </Button>
                       </Box>
                     ))}
