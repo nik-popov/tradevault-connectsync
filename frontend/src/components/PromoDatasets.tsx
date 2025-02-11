@@ -124,9 +124,5 @@ const PromoDatasets: React.FC = () => {
   );
 };
 
-// ✅ Define the route
-export const Route = createFileRoute('/src/components/PromoDatasets')({
-  component: PromoDatasets
-});
 
 export default PromoDatasets;
