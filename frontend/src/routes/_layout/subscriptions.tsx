@@ -27,19 +27,19 @@ import {
   import Navbar from "../../components/Common/Navbar";
   import { PaginationFooter } from "../../components/Common/PaginationFooter.tsx";
   
-  // ✅ Extend `UserPublic` Type to Include Subscription Fields
+  // ✅ Ensure Type Exists
   type UserWithSubscription = UserPublic & {
-    hasSubscription: boolean;
-    isTrial: boolean;
-    isDeactivated: boolean;
+    hasSubscription?: boolean;
+    isTrial?: boolean;
+    isDeactivated?: boolean;
   };
   
-  // ✅ Subscription Schema for User Query
+  // ✅ Subscription Schema
   const usersSearchSchema = z.object({
     page: z.number().catch(1),
   });
   
-  // ✅ Correct Route Export
+  // ✅ Ensure Route Export is Correct
   export const Route = createFileRoute("/_layout/subscriptions")({
     component: Subscriptions,
     validateSearch: (search) => usersSearchSchema.parse(search),
@@ -47,7 +47,7 @@ import {
   
   const PER_PAGE = 5;
   
-  // ✅ Fetch User Subscriptions API Call
+  // ✅ API Call to Fetch Users
   function getUsersQueryOptions({ page }: { page: number }) {
     return {
       queryFn: async () =>
@@ -59,7 +59,7 @@ import {
     };
   }
   
-  // ✅ Subscription Table for Users
+  // ✅ Subscription Table
   function SubscriptionTable() {
     const queryClient = useQueryClient();
     const currentUser = queryClient.getQueryData<UserWithSubscription>([
@@ -73,12 +73,12 @@ import {
         search: (prev: Record<string, any>) => ({ ...prev, page }),
       });
   
-    const { data: users, isPending, isPlaceholderData } = useQuery({
+    const { data: users, isPending } = useQuery({
       ...getUsersQueryOptions({ page }),
       placeholderData: (prevData) => prevData,
     });
   
-    const hasNextPage = !isPlaceholderData && users?.data.length === PER_PAGE;
+    const hasNextPage = users?.data.length === PER_PAGE;
     const hasPreviousPage = page > 1;
   
     useEffect(() => {
@@ -87,7 +87,7 @@ import {
       }
     }, [page, queryClient, hasNextPage]);
   
-    // ✅ Fix: Correct `useMutation` usage with TypeScript
+    // ✅ Fix: Ensure `useMutation` works correctly
     const mutation = useMutation({
       mutationFn: async ({
         userId,
@@ -142,7 +142,7 @@ import {
               </Tbody>
             ) : (
               <Tbody>
-                {users?.data.map((user) => (
+                {users?.data?.map((user) => (
                   <Tr key={user.id}>
                     <Td isTruncated maxWidth="150px">
                       {user.full_name || "N/A"}
@@ -155,7 +155,7 @@ import {
                     <Td isTruncated maxWidth="200px">{user.email}</Td>
                     <Td>
                       <Switch
-                        isChecked={user.hasSubscription}
+                        isChecked={!!user.hasSubscription}
                         onChange={() =>
                           toggleSubscriptionState(
                             user.id,
@@ -167,7 +167,7 @@ import {
                     </Td>
                     <Td>
                       <Switch
-                        isChecked={user.isTrial}
+                        isChecked={!!user.isTrial}
                         onChange={() =>
                           toggleSubscriptionState(user.id, "isTrial", !user.isTrial)
                         }
@@ -175,7 +175,7 @@ import {
                     </Td>
                     <Td>
                       <Switch
-                        isChecked={user.isDeactivated}
+                        isChecked={!!user.isDeactivated}
                         onChange={() =>
                           toggleSubscriptionState(
                             user.id,
