@@ -38,17 +38,15 @@ const Explore = () => {
   const ownedApis = currentUser?.ownedApis || [];
 
   const results = [
-    { id: "google", name: "Google Search API", type: "SERP", owned: ownedApis.includes("google") },
-    { id: "bing", name: "Bing Search API", type: "SERP", owned: ownedApis.includes("bing") }
+    { id: "google", name: "Google Search API", type: "Search", owned: ownedApis.includes("google") },
+    { id: "bing", name: "Bing Search API", type: "Search", owned: ownedApis.includes("bing") },
+    { id: "real-estate", name: "Real Estate Data API", type: "Real Estate", owned: ownedApis.includes("real-estate") },
+    { id: "ecommerce", name: "E-commerce Scraper API", type: "E-commerce", owned: ownedApis.includes("ecommerce") },
+    { id: "finance", name: "Financial Data API", type: "Finance", owned: ownedApis.includes("finance") }
   ];
 
-  const filteredResults = results.filter(
-    (result) =>
-      (activeFilter === "all" || result.type === activeFilter) &&
-      (!ownedOnly || result.owned) &&
-      result.name.toLowerCase().includes(searchQuery.toLowerCase())
-  );
-
+  const industries = [...new Set(results.map((r) => r.type))];
+  
   const isLocked = !hasSubscription && !isTrial;
 
   return (
@@ -96,24 +94,28 @@ const Explore = () => {
 
           <Tabs variant="enclosed">
             <TabList>
-              <Tab onClick={() => setActiveFilter("all")}>All</Tab>
+              {industries.map((industry, index) => (
+                <Tab key={index} onClick={() => setActiveFilter(industry)}>{industry}</Tab>
+              ))}
             </TabList>
             <TabPanels>
-              <TabPanel>
-                <VStack spacing={4} align="stretch">
-                  {filteredResults.length === 0 ? (
-                    <Text textAlign="center" fontSize="lg" color="gray.500">No results found.</Text>
-                  ) : (
-                    <List spacing={3}>
-                      {filteredResults.map((result) => (
-                        <ListItem key={result.id} p={3} shadow="sm" borderWidth="1px" borderRadius="md">
-                          <Text fontWeight="bold">{result.name} {result.owned ? "(Owned)" : ""}</Text>
-                        </ListItem>
-                      ))}
-                    </List>
-                  )}
-                </VStack>
-              </TabPanel>
+              {industries.map((industry, index) => (
+                <TabPanel key={index}>
+                  <VStack spacing={4} align="stretch">
+                    {results.filter(r => r.type === industry).length === 0 ? (
+                      <Text textAlign="center" fontSize="lg" color="gray.500">No results found.</Text>
+                    ) : (
+                      <List spacing={3}>
+                        {results.filter(r => r.type === industry).map((result) => (
+                          <ListItem key={result.id} p={3} shadow="sm" borderWidth="1px" borderRadius="md">
+                            <Text fontWeight="bold">{result.name} {result.owned ? "(Owned)" : ""}</Text>
+                          </ListItem>
+                        ))}
+                      </List>
+                    )}
+                  </VStack>
+                </TabPanel>
+              ))}
             </TabPanels>
           </Tabs>
         </>
