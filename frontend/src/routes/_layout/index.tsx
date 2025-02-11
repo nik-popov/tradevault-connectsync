@@ -5,7 +5,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState, useMemo } from "react";
 import useAuth from "../../hooks/useAuth";
 import { useQuery } from "@tanstack/react-query";
-import SubscriptionManagement from "../../components/UserSettings/SubscriptionManagement";
+// import SubscriptionManagement from "../../components/UserSettings/SubscriptionManagement";
 
 export const Route = createFileRoute("/_layout/")({
   component: Dashboard,
