@@ -9,17 +9,17 @@ import {
   Flex,
   Switch,
   List,
-  Select,
   Alert,
   AlertIcon,
   HStack,
   Input,
   Heading,
   Collapse,
+  Select,
 } from "@chakra-ui/react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useQueryClient } from "@tanstack/react-query";
-import { FiExternalLink } from "react-icons/fi";
+import { FiExternalLink, FiX } from "react-icons/fi";
 import PromoDatasets from "../../../components/PromoDatasets";
 
 export const Route = createFileRoute("/_layout/datasets/explore")({
@@ -209,7 +209,12 @@ function Explore() {
 
             <VStack spacing={4} mt={6} align="stretch">
               {filteredDatasets.map((dataset) => (
-                <DatasetListItem key={dataset.id} dataset={dataset} navigate={navigate} />
+                <DatasetListItem
+                  key={dataset.id}
+                  dataset={dataset}
+                  navigate={navigate}
+                  isTrial={isTrial}
+                />
               ))}
             </VStack>
           </Box>
@@ -234,7 +239,8 @@ function Explore() {
   );
 }
 
-const DatasetListItem = ({ dataset, navigate }) => {
+// Dataset list item component with an expand/collapse toggle and locked "View" button when in trial mode.
+const DatasetListItem = ({ dataset, navigate, isTrial }) => {
   const [isExpanded, setIsExpanded] = useState(false);
 
   return (
@@ -254,14 +260,34 @@ const DatasetListItem = ({ dataset, navigate }) => {
           >
             {isExpanded ? "Less" : "More"}
           </Button>
-          <Button
-            size="sm"
-            colorScheme="blue"
-            rightIcon={<FiExternalLink />}
-            onClick={() => navigate(`/datasets/${dataset.id}`)}
-          >
-            View
-          </Button>
+          {isTrial ? (
+            <Button
+              size="sm"
+              variant="outline"
+              colorScheme="gray"
+              disabled
+              leftIcon={<FiX />}
+              _hover={{ bg: "gray.200", cursor: "not-allowed" }}
+              _disabled={{
+                bg: "gray.200",
+                borderColor: "gray.200",
+                color: "gray.500",
+                cursor: "not-allowed",
+                _hover: { bg: "gray.200" },
+              }}
+            >
+              Locked
+            </Button>
+          ) : (
+            <Button
+              size="sm"
+              colorScheme="blue"
+              rightIcon={<FiExternalLink />}
+              onClick={() => navigate(`/datasets/${dataset.id}`)}
+            >
+              View
+            </Button>
+          )}
         </HStack>
       </Flex>
       <Collapse in={isExpanded} animateOpacity>
