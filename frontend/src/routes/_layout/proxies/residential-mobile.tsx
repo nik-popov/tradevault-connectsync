@@ -379,36 +379,57 @@ function ResidentialMobileProxy() {
           </Box>
 
           {/* Sidebar Section */}
-          <Box w="250px" p={4} borderLeft="1px solid #E2E8F0">
-            <VStack spacing={4} align="stretch">
-              <Box p={4} shadow="sm" borderWidth="1px" borderRadius="lg">
-                <Text fontWeight="bold">Pick by Your Target</Text>
-                <Text fontSize="sm">Not sure which product to choose?</Text>
-                <Button
-                  mt={2}
-                  leftIcon={<FiSend />}
-                  size="sm"
-                  variant="outline"
-                >
-                  Send Test Request
-                </Button>
-              </Box>
-              <Box p={4} shadow="sm" borderWidth="1px" borderRadius="lg">
-                <Text fontWeight="bold">GitHub</Text>
-                <Text fontSize="sm">
-                  Explore integration guides and open-source projects.
-                </Text>
-                <Button
-                  mt={2}
-                  leftIcon={<FiGithub />}
-                  size="sm"
-                  variant="outline"
-                >
-                  Join GitHub
-                </Button>
-              </Box>
-            </VStack>
-          </Box>
+          {/* Sidebar */}
+          <Box w="250px" p="4" borderLeft="1px solid #E2E8F0">
+          <VStack spacing="4" align="stretch">
+            <Box p="4" shadow="sm" borderWidth="1px" borderRadius="lg">
+              <Text fontWeight="bold">Quick Actions</Text>
+              <Button
+                as="a"
+                href="mailto:support@thedataproxy.com"
+                leftIcon={<FiMail />}
+                variant="outline"
+                size="sm"
+                mt="2"
+              >
+                Email Support
+              </Button>
+              <Button
+                as="a"
+                href="https://dashboard.thedataproxy.com"
+                leftIcon={<FiHelpCircle />}
+                variant="outline"
+                size="sm"
+                mt="2"
+              >
+                Report an Issue
+              </Button>
+            </Box>
+
+            <Box p="4" shadow="sm" borderWidth="1px" borderRadius="lg">
+              <Text fontWeight="bold">FAQs</Text>
+              <Text fontSize="sm">Common questions and answers.</Text>
+              <Button as="a" href="/faqs" mt="2" size="sm" variant="outline">
+                View FAQs
+              </Button>
+            </Box>
+
+            <Box p="4" shadow="sm" borderWidth="1px" borderRadius="lg">
+              <Text fontWeight="bold">Community Support</Text>
+              <Text fontSize="sm">Join discussions with other users.</Text>
+              <Button
+                as="a"
+                href="https://github.com/CobaltDataNet"
+                mt="2"
+                leftIcon={<FiGithub />}
+                size="sm"
+                variant="outline"
+              >
+                GitHub Discussions
+              </Button>
+            </Box>
+          </VStack>
+        </Box>
         </Flex>
       )}
     </Container>
