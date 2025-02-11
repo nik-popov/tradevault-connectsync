@@ -53,6 +53,7 @@ function ResidentialProxy() {
     isDeactivated: false,
   });
 
+
   // Load subscription settings from localStorage and React Query
   useEffect(() => {
     const storedSettings = localStorage.getItem("subscriptionSettings");
