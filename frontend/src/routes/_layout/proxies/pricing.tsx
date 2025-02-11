@@ -60,8 +60,25 @@ function Pricing() {
       <VStack spacing={6} align="stretch">
         <Alert status="info" borderRadius="md" bg="gray.700" color="gray.300">
           <AlertIcon color="blue.500" />
-          <Text fontSize="sm">Explore our flexible pricing options to find the best fit for your needs.</Text>
+          <Text fontSize="sm">Sign up for a free trial and explore our full-featured plans!</Text>
         </Alert>
+        <Box w="100%" py={6} bg="gray.700" borderRadius="md" boxShadow="lg" px={6}>
+          <Grid templateColumns={{ base: "1fr", md: "1fr 1fr" }} gap={6} alignItems="center">
+            <Box>
+              <Heading as="h1" size="lg" fontWeight="bold" color="gray.100">
+                Start Your Free Trial
+              </Heading>
+              <Text fontSize="sm" color="gray.400" mt={1}>
+                Experience our premium features with a 7-day free trial. No credit card required!
+              </Text>
+            </Box>
+            <Box bg="blue.800" color="gray.300" borderRadius="md" p={5} boxShadow="lg" textAlign="left" display="flex" flexDirection="column" justifyContent="center">
+              <Button bg="blue.600" color="gray.100" _hover={{ bg: "blue.500" }} variant="solid" size="sm">
+                Sign Up for Free
+              </Button>
+            </Box>
+          </Grid>
+        </Box>
         
         <Tabs variant="enclosed" colorScheme="gray">
           <TabList bg="gray.700" borderRadius="md">
@@ -93,24 +110,6 @@ function Pricing() {
                     ))}
                   </List>
                 </Box>
-                
-                <Grid templateColumns={{ base: "1fr", md: "repeat(2, 1fr)" }} gap={6} mt={6}>
-                  {additionalServices[plan.name].map((service, idx) => (
-                    <Box key={idx} p={6} borderRadius="lg" bg="gray.600" textAlign="center">
-                      <Icon as={service.icon} boxSize={8} color="blue.400" mb={3} />
-                      <Text fontSize="lg" fontWeight="bold" color="white">{service.name}</Text>
-                      <Text fontSize="md" color="gray.300" mb={3}>{service.price}</Text>
-                      <List spacing={2} mb={4}>
-                        {service.features.map((feature, featureIdx) => (
-                          <ListItem key={featureIdx} display="flex" alignItems="center" justifyContent="center">
-                            <ListIcon as={FiCheckCircle} color="blue.500" boxSize={5} />
-                            <Text fontSize="sm" color="gray.300">{feature}</Text>
-                          </ListItem>
-                        ))}
-                      </List>
-                    </Box>
-                  ))}
-                </Grid>
               </TabPanel>
             ))}
           </TabPanels>
