@@ -2,9 +2,6 @@ import {
   Container,
   Box,
   Text,
-  Button,
-  VStack,
-  HStack,
   Divider,
   Flex,
   Tabs,
@@ -25,6 +22,9 @@ import { createFileRoute } from "@tanstack/react-router";
 import PromoContent from "../../../components/PromoContent";
 import ProxySettings from "../../../components/ProxySettings";
 import ProxyUsage from "../../../components/ProxyUsage";
+
+const STORAGE_KEY = "subscriptionSettings";
+const PRODUCT = "proxy";
 
 const PricingChart = ({ plan }) => {
   const pricingData = {
@@ -70,13 +70,10 @@ const PricingChart = ({ plan }) => {
   );
 };
 
-const STORAGE_KEY = "subscriptionSettings";
-const PRODUCT = "proxy";
-
 function Pricing() {
   const { data: subscriptionSettings } = useQuery({
     queryKey: ["subscriptionSettings"],
-    queryFn: () => {
+    queryFn: async () => {
       const storedSettings = localStorage.getItem(STORAGE_KEY);
       return storedSettings ? JSON.parse(storedSettings) : {};
     },
@@ -108,6 +105,7 @@ function Pricing() {
         </Box>
       </Flex>
       <Divider my={4} />
+      
       {isLocked ? (
         <PromoContent />
       ) : isDeactivated ? (
@@ -117,10 +115,10 @@ function Pricing() {
       ) : (
         <Flex mt={6} gap={6} justify="space-between">
           <Box flex="1">
-            <Tabs variant="enclosed" bg="gray.700">
+            <Tabs variant="enclosed">
               <TabList>
                 {tabsConfig.map((tab, index) => (
-                  <Tab key={index} isDisabled={restrictedTabs.includes(tab.title)} bg="gray.200">
+                  <Tab key={index} isDisabled={restrictedTabs.includes(tab.title)}>
                     {tab.title}
                   </Tab>
                 ))}
@@ -128,7 +126,11 @@ function Pricing() {
               <TabPanels>
                 {tabsConfig.map((tab, index) => (
                   <TabPanel key={index}>
-                    {restrictedTabs.includes(tab.title) ? <Text>Feature locked during trial.</Text> : tab.component}
+                    {restrictedTabs.includes(tab.title) ? (
+                      <Text>Feature locked during trial.</Text>
+                    ) : (
+                      tab.component
+                    )}
                   </TabPanel>
                 ))}
               </TabPanels>
