@@ -320,7 +320,6 @@ function GoogleSerpApi() {
       ) : (
         <Flex mt={6} gap={6} justify="space-between">
           <Box flex="1">
-            <Divider my={4} />
             <Tabs variant="enclosed">
               <TabList>
                 {tabsConfig.map((tab, index) => (
