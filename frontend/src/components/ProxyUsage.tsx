@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import {
   Box,
   VStack,
@@ -12,26 +12,32 @@ import {
   StatNumber,
   StatHelpText,
   StatGroup,
-  ListIcon,
   Table,
   Thead,
   Tbody,
   Tr,
   Th,
   Td,
-  Link
+  Link,
+  Spinner
 } from "@chakra-ui/react";
+import { useQuery } from "@tanstack/react-query";
 import { FiCheckCircle, FiAlertTriangle, FiExternalLink } from "react-icons/fi";
 
+const fetchUsageData = async () => {
+  const response = await fetch(`${process.env.REACT_APP_PROXY_API_URL}/api/v1/usage`);
+  if (!response.ok) {
+    throw new Error("Failed to fetch proxy usage data");
+  }
+  return response.json();
+};
+
 const ProxyUsage = () => {
-  const [usageData, setUsageData] = useState(null);
-  
-  useEffect(() => {
-    fetch("https://api.thedataproxy.com/api/v1/usage")
-      .then(response => response.json())
-      .then(data => setUsageData(data))
-      .catch(error => console.error("Error fetching proxy usage data:", error));
-  }, []);
+  const { data: usageData, error, isLoading } = useQuery({
+    queryKey: ["proxyUsage"],
+    queryFn: fetchUsageData,
+    staleTime: 1000 * 60 * 5, // Cache for 5 minutes
+  });
 
   return (
     <Box maxW="100%" mx="auto" px={{ base: 6, md: 12 }} py={12}>
@@ -41,10 +47,17 @@ const ProxyUsage = () => {
           Monitor your proxy usage, analyze traffic trends, and optimize performance.
         </Text>
         <Divider />
-        
+
         {/* Overview Statistics */}
         <Heading size="lg">Usage Statistics</Heading>
-        {usageData ? (
+        {isLoading ? (
+          <Spinner size="xl" />
+        ) : error ? (
+          <Alert status="error">
+            <AlertIcon />
+            Error loading proxy usage data.
+          </Alert>
+        ) : (
           <StatGroup>
             <Stat>
               <StatLabel>Total Requests</StatLabel>
@@ -62,50 +75,51 @@ const ProxyUsage = () => {
               <StatHelpText>Last 24 hours</StatHelpText>
             </Stat>
           </StatGroup>
-        ) : (
-          <Text>Loading statistics...</Text>
         )}
-        
+
         <Divider />
-        
+
         {/* Top Proxy Requests */}
         <Heading size="lg">Top Proxy Requests</Heading>
-        <Table variant="simple">
-          <Thead>
-            <Tr>
-              <Th>Endpoint</Th>
-              <Th>Requests</Th>
-              <Th>Status</Th>
-              <Th>Link</Th>
-            </Tr>
-          </Thead>
-          <Tbody>
-            {usageData && usageData.top_requests ? (
-              usageData.top_requests.map((request, index) => (
+        {isLoading ? (
+          <Spinner size="lg" />
+        ) : error ? (
+          <Alert status="error">
+            <AlertIcon />
+            Failed to load top requests.
+          </Alert>
+        ) : (
+          <Table variant="simple">
+            <Thead>
+              <Tr>
+                <Th>Endpoint</Th>
+                <Th>Requests</Th>
+                <Th>Status</Th>
+                <Th>Link</Th>
+              </Tr>
+            </Thead>
+            <Tbody>
+              {usageData.top_requests.map((request, index) => (
                 <Tr key={index}>
                   <Td>{request.endpoint}</Td>
                   <Td>{request.requests}</Td>
                   <Td>
-                    <ListIcon as={request.status === "success" ? FiCheckCircle : FiAlertTriangle} color={request.status === "success" ? "green.500" : "yellow.500"} />
+                    <FiCheckCircle color={request.status === "success" ? "green.500" : "yellow.500"} />
                     {request.status}
                   </Td>
                   <Td>
-                    <Link href={`https://api.thedataproxy.com${request.endpoint}`} isExternal>
+                    <Link href={`${process.env.REACT_APP_PROXY_API_URL}${request.endpoint}`} isExternal>
                       <FiExternalLink />
                     </Link>
                   </Td>
                 </Tr>
-              ))
-            ) : (
-              <Tr>
-                <Td colSpan={4}>Loading top requests...</Td>
-              </Tr>
-            )}
-          </Tbody>
-        </Table>
-        
+              ))}
+            </Tbody>
+          </Table>
+        )}
+
         <Divider />
-        
+
         {/* Alerts and Notifications */}
         <Heading size="lg">Alerts & Notifications</Heading>
         <Alert status="success" borderRadius="md">
