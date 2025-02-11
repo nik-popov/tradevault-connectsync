@@ -130,7 +130,7 @@ function Pricing() {
                     key={index}
                     isDisabled={restrictedTabs.includes(tab.title)}
                     color="gray.300"
-                    _selected={{ bg: "gray.600", color: "white", fontWeight: "bold" }}
+                    _selected={{ bg: "gray.700", color: "white", fontWeight: "bold" }}
                     _hover={{ bg: "gray.600", color: "white" }}
                   >
                     {tab.title}
