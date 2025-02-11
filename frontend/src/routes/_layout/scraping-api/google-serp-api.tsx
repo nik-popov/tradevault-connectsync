@@ -304,9 +304,8 @@ function GoogleSerpApi() {
     { title: "Logs", component: <Logs /> },
     { title: "Key Management", component: <KeyManagement /> },
   ];
-
   return (
-    <Container maxW="full">
+    <Container maxW="100vw" overflowX="hidden">
       {/* Top Bar */}
       <Flex align="center" justify="space-between" py={6} flexWrap="wrap" gap={4}>
         <Heading size="lg">Google Search API</Heading>
@@ -337,9 +336,9 @@ function GoogleSerpApi() {
           <ReactivationOptions />
         </Box>
       ) : (
-        <Flex mt={6} gap={6} justify="space-between">
+        <Flex mt={6} gap={6} justify="space-between" align="stretch" wrap="wrap">
           {/* Main Content */}
-          <Box flex="1">
+          <Box flex="1" minW={{ base: "100%", md: "65%" }}>
             <Box p={4}>
               <Text fontSize="2xl" fontWeight="bold">
                 Hi, {currentUser?.full_name || currentUser?.email} 👋🏼
@@ -373,7 +372,7 @@ function GoogleSerpApi() {
           </Box>
 
           {/* Sidebar Section */}
-          <Box w="250px" p="4" borderLeft="1px solid #E2E8F0">
+          <Box w={{ base: "100%", md: "250px" }} p="4" borderLeft={{ md: "1px solid #E2E8F0" }}>
             <VStack spacing="4" align="stretch">
               <Box p="4" shadow="sm" borderWidth="1px" borderRadius="lg">
                 <Text fontWeight="bold">Quick Actions</Text>
