@@ -26,6 +26,7 @@ import {
   Tbody,
   Tr,
   Th,
+  Badge,
   Td,
 } from "@chakra-ui/react";
 import { FaNetworkWired, FaCloud, FaMobileAlt, FaDatabase, FaDollarSign } from "react-icons/fa";
