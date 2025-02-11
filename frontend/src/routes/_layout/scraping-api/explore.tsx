@@ -29,7 +29,6 @@ function Explore() {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
 
-  // ✅ Load Subscription State from LocalStorage & React Query
   const [subscriptionSettings, setSubscriptionSettings] = useState({
     hasSubscription: false,
     isTrial: false,
@@ -52,11 +51,9 @@ function Explore() {
   const isLocked = !hasSubscription && !isTrial;
   const isFullyDeactivated = isDeactivated && !hasSubscription;
 
-  // 🔍 Search & Filter State
   const [searchQuery, setSearchQuery] = useState("");
   const [activeFilter, setActiveFilter] = useState("all");
 
-  // 🔍 Scraper APIs Data
   const scraperAPIs = [
     {
       id: "google-serp-api",
@@ -83,7 +80,6 @@ function Explore() {
 
   const categories = ["all", ...new Set(scraperAPIs.map((api) => api.category))];
 
-  // 🔄 Filtered API List
   const filteredAPIs = useMemo(() => {
     return scraperAPIs.filter((api) => {
       const matchesFilter =
@@ -97,20 +93,6 @@ function Explore() {
     <Container maxW="full" overflowX="hidden">
       <Flex justify="space-between" align="center" my={4} flexWrap="wrap">
         <Heading size="lg">Explore Scraper APIs</Heading>
-        <HStack spacing={6}>
-          <HStack>
-            <Text fontWeight="bold">Subscription:</Text>
-            <Switch isChecked={hasSubscription} isDisabled />
-          </HStack>
-          <HStack>
-            <Text fontWeight="bold">Trial Mode:</Text>
-            <Switch isChecked={isTrial} isDisabled />
-          </HStack>
-          <HStack>
-            <Text fontWeight="bold">Deactivated:</Text>
-            <Switch isChecked={isDeactivated} isDisabled />
-          </HStack>
-        </HStack>
       </Flex>
 
       <Divider my={4} />
@@ -135,27 +117,23 @@ function Explore() {
                 onChange={(e) => setSearchQuery(e.target.value)}
                 w={{ base: "100%", md: "250px" }}
               />
-              <HStack spacing={2}>
-                {categories.map((type) => (
-                  <Button
-                    key={type}
-                    size="sm"
-                    fontWeight="bold"
-                    borderRadius="full"
-                    colorScheme={activeFilter === type ? "blue" : "gray"}
-                    variant={activeFilter === type ? "solid" : "outline"}
-                    onClick={() => setActiveFilter(type)}
-                  >
-                    {type}
-                  </Button>
-                ))}
-              </HStack>
             </Flex>
 
             <VStack spacing={4} mt={6} align="stretch">
               {filteredAPIs.map((api) => (
-                <APIListItem key={api.id} api={api} isTrial={isTrial} />
+                <APIListItem key={api.id} api={api} navigate={navigate} />
               ))}
+            </VStack>
+          </Box>
+
+          <Box w={{ base: "100%", md: "250px" }} p="4" borderLeft={{ md: "1px solid #E2E8F0" }}>
+            <VStack spacing="4" align="stretch">
+              <Box p="4" shadow="sm" borderWidth="1px" borderRadius="lg">
+                <Text fontWeight="bold">Quick Actions</Text>
+                <Button as="a" href="https://github.com/CobaltDataNet" leftIcon={<FiGithub />} variant="outline" size="sm" mt="2">
+                  GitHub Discussions
+                </Button>
+              </Box>
             </VStack>
           </Box>
         </Flex>
@@ -164,7 +142,7 @@ function Explore() {
   );
 }
 
-const APIListItem = ({ api }) => {
+const APIListItem = ({ api, navigate }) => {
   return (
     <Box p={4} borderWidth="1px" borderRadius="lg">
       <Flex justify="space-between" align="center">
@@ -173,8 +151,8 @@ const APIListItem = ({ api }) => {
           <Text fontSize="sm" color="gray.600">{api.description}</Text>
         </Box>
         <HStack spacing={2}>
-          <Button size="sm" colorScheme="blue">View Details</Button>
-          <Button size="sm" variant="outline" colorScheme="gray" isDisabled={api.isLocked}>
+          <Button size="sm" colorScheme="blue" onClick={() => navigate(`/apis/${api.id}`)}>View Details</Button>
+          <Button size="sm" variant="outline" colorScheme={api.isLocked ? "gray" : "blue"} isDisabled={api.isLocked}>
             {api.isLocked ? "Locked" : "Access"}
           </Button>
         </HStack>
