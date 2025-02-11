@@ -281,11 +281,20 @@ const DatasetListItem = ({ dataset, navigate, isTrial }) => {
           ) : (
             <Button
               size="sm"
-              colorScheme="blue"
-              rightIcon={<FiExternalLink />}
-              onClick={() => navigate(`/datasets/${dataset.id}`)}
+              variant="outline"
+              colorScheme="gray"
+              disabled
+              leftIcon={<FiX />}
+              _hover={{ bg: "gray.200", cursor: "not-allowed" }}
+              _disabled={{
+                bg: "gray.200",
+                borderColor: "gray.200",
+                color: "gray.500",
+                cursor: "not-allowed",
+                _hover: { bg: "gray.200" },
+              }}
             >
-              View
+              Locked
             </Button>
           )}
         </HStack>
