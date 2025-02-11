@@ -15,101 +15,66 @@ import {
     TabPanel,
     TabPanels,
     Badge,
-    Button,
     Flex,
   } from "@chakra-ui/react";
-  import { useState, useEffect } from "react";
+  import { useState } from "react";
   import Navbar from "../../components/Common/Navbar";
   
-  // ✅ Mock Data for Subscription Management (Replace with API later)
-  const mockUsers = [
-    { id: "1", name: "Alice", email: "alice@example.com", subscription: "Business", isTrial: false, isDeactivated: false },
-    { id: "2", name: "Bob", email: "bob@example.com", subscription: "Starter", isTrial: true, isDeactivated: false },
-    { id: "3", name: "Charlie", email: "charlie@example.com", subscription: "Enterprise", isTrial: false, isDeactivated: true },
-  ];
+  // ✅ Subscription State for Each Product
+  const initialSubscriptions = {
+    proxy: { hasSubscription: false, isTrial: false, isDeactivated: false },
+    scrapingAPI: { hasSubscription: false, isTrial: false, isDeactivated: false },
+    dataset: { hasSubscription: false, isTrial: false, isDeactivated: false },
+  };
   
-  const subscriptionTiers = ["Starter", "Business", "Business Plus+", "Enterprise"];
-  
-  // ✅ Subscription Management Table
-  function SubscriptionTable() {
-    const [users, setUsers] = useState(mockUsers);
-  
-    // ✅ Assign Subscription to a User (Manual until API integration)
-    const changeSubscription = (id, newSubscription) => {
-      setUsers((prev) =>
-        prev.map((user) =>
-          user.id === id ? { ...user, subscription: newSubscription } : user
-        )
-      );
-    };
-  
-    // ✅ Toggle Trial Mode
-    const toggleTrial = (id) => {
-      setUsers((prev) =>
-        prev.map((user) =>
-          user.id === id ? { ...user, isTrial: !user.isTrial } : user
-        )
-      );
-    };
-  
-    // ✅ Toggle Deactivation
-    const toggleDeactivation = (id) => {
-      setUsers((prev) =>
-        prev.map((user) =>
-          user.id === id ? { ...user, isDeactivated: !user.isDeactivated } : user
-        )
-      );
-    };
-  
+  function SubscriptionTable({ product, state, toggleState }) {
     return (
       <TableContainer>
-        <Table size={{ base: "sm", md: "md" }}>
+        <Table size="md">
           <Thead>
             <Tr>
-              <Th>ID</Th>
-              <Th>Name</Th>
-              <Th>Email</Th>
+              <Th>Product</Th>
               <Th>Subscription</Th>
               <Th>Trial</Th>
               <Th>Deactivated</Th>
             </Tr>
           </Thead>
           <Tbody>
-            {users.map((user) => (
-              <Tr key={user.id}>
-                <Td>{user.id}</Td>
-                <Td>{user.name}</Td>
-                <Td>{user.email}</Td>
-                <Td>
-                  <Flex gap={2}>
-                    {subscriptionTiers.map((tier) => (
-                      <Button
-                        key={tier}
-                        size="xs"
-                        colorScheme={user.subscription === tier ? "blue" : "gray"}
-                        onClick={() => changeSubscription(user.id, tier)}
-                      >
-                        {tier}
-                      </Button>
-                    ))}
-                  </Flex>
-                </Td>
-                <Td>
-                  <Switch isChecked={user.isTrial} onChange={() => toggleTrial(user.id)} />
-                </Td>
-                <Td>
-                  <Switch isChecked={user.isDeactivated} onChange={() => toggleDeactivation(user.id)} />
-                </Td>
-              </Tr>
-            ))}
+            <Tr>
+              <Td>
+                {product}{" "}
+                {state.hasSubscription && (
+                  <Badge ml={2} colorScheme="blue">
+                    Active
+                  </Badge>
+                )}
+              </Td>
+              <Td>
+                <Switch isChecked={state.hasSubscription} onChange={() => toggleState("hasSubscription", product)} />
+              </Td>
+              <Td>
+                <Switch isChecked={state.isTrial} onChange={() => toggleState("isTrial", product)} />
+              </Td>
+              <Td>
+                <Switch isChecked={state.isDeactivated} onChange={() => toggleState("isDeactivated", product)} />
+              </Td>
+            </Tr>
           </Tbody>
         </Table>
       </TableContainer>
     );
   }
   
-  // ✅ Main Subscription Management Page
   function Subscriptions() {
+    const [subscriptions, setSubscriptions] = useState(initialSubscriptions);
+  
+    const toggleState = (key, product) => {
+      setSubscriptions((prev) => ({
+        ...prev,
+        [product]: { ...prev[product], [key]: !prev[product][key] },
+      }));
+    };
+  
     return (
       <Container maxW="full">
         <Heading size="lg" textAlign={{ base: "center", md: "left" }} pt={12}>
@@ -118,8 +83,26 @@ import {
   
         <Navbar type={"Subscription"} />
   
-        {/* ✅ Subscription Management Table */}
-        <SubscriptionTable />
+        {/* ✅ Tabs for Each Product Subscription */}
+        <Tabs variant="enclosed">
+          <TabList>
+            <Tab>Proxy</Tab>
+            <Tab>Scraping API</Tab>
+            <Tab>Dataset</Tab>
+          </TabList>
+  
+          <TabPanels>
+            <TabPanel>
+              <SubscriptionTable product="Proxy" state={subscriptions.proxy} toggleState={toggleState} />
+            </TabPanel>
+            <TabPanel>
+              <SubscriptionTable product="Scraping API" state={subscriptions.scrapingAPI} toggleState={toggleState} />
+            </TabPanel>
+            <TabPanel>
+              <SubscriptionTable product="Dataset" state={subscriptions.dataset} toggleState={toggleState} />
+            </TabPanel>
+          </TabPanels>
+        </Tabs>
       </Container>
     );
   }
