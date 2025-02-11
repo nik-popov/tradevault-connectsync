@@ -93,12 +93,14 @@ function Explore() {
   }, [searchQuery, activeFilter, datasets]);
 
   return (
-    <Container maxW="full" overflowX="hidden">
-      {/* 🔄 Title with Subscription Management */}
-      <Flex justify="space-between" align="center" my={4} flexWrap="wrap">
-        <Heading size="lg">Explore Datasets</Heading>
-   
-      </Flex>
+
+    <Container maxW="full">
+    <Flex align="center" justify="space-between" py={6} flexWrap="wrap" gap={4}>
+      <Box textAlign="left" flex="1">
+        <Text fontSize="xl" fontWeight="bold">Explore Datasets</Text>
+        <Text fontSize="sm">Manage your Dataset settings and subscriptions.</Text>
+      </Box>
+    </Flex>
 
       <Divider my={4} />
 

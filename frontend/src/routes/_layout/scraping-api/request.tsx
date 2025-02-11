@@ -105,11 +105,12 @@ function Request() {
   };
 
   return (
-    <Container maxW="full" overflowX="hidden">
-      {/* 🔄 Title with Subscription Management */}
-      <Flex justify="space-between" align="center" my={4} flexWrap="wrap">
-        <Heading size="lg">Request a New API</Heading>
-
+      <Container maxW="full">
+      <Flex align="center" justify="space-between" py={6} flexWrap="wrap" gap={4}>
+        <Box textAlign="left" flex="1">
+          <Text fontSize="xl" fontWeight="bold">Request APIs</Text>
+          <Text fontSize="sm">Request a website to add to our available apis.</Text>
+        </Box>
       </Flex>
 
       <Divider my={4} />
