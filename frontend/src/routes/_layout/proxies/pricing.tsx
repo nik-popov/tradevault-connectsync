@@ -21,6 +21,7 @@ import {
   Badge,
   Alert,
   AlertIcon,
+  textColor,
   useColorModeValue,
 } from "@chakra-ui/react";
 import { FaNetworkWired, FaCloud, FaMobileAlt, FaDatabase, FaDollarSign } from "react-icons/fa";
