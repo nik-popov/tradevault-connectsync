@@ -22,8 +22,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { FiSearch, FiSend, FiGithub } from "react-icons/fi";
 import { useQueryClient } from '@tanstack/react-query';
 import { motion } from "framer-motion";
-import useAuth from "../../hooks/useAuth";
-
+import useAuth from "../../../hooks/useAuth";
 const Explore = () => {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
