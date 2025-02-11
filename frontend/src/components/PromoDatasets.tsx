@@ -19,7 +19,6 @@ import {
 import { useNavigate } from '@tanstack/react-router';
 import { FiCheckCircle, FiDatabase, FiTrendingUp, FiShoppingCart, FiCloud } from 'react-icons/fi';
 
-// Dataset Categories
 const datasetCategories = [
   { name: "Traffic & Mobility Data", icon: FiTrendingUp, description: "Live and historical traffic insights, ride-sharing trends, and urban mobility analysis." },
   { name: "Weather & Forecasting", icon: FiCloud, description: "Detailed weather reports, climate patterns, and predictive models." },
@@ -27,7 +26,6 @@ const datasetCategories = [
   { name: "Consumer & Product Data", icon: FiShoppingCart, description: "Consumer spending habits, pricing trends, and product metadata." }
 ];
 
-// Pricing Plans
 const pricingPlans = [
   {
     name: "Explorer",
@@ -64,44 +62,53 @@ const PromoDatasets: React.FC = () => {
   const navigate = useNavigate();
 
   return (
-    <Box maxW="100%" mx="auto" px={{ base: 6, md: 12 }} py={12}>
-      <VStack spacing={8} align="stretch">
-        
-        {/* Full-Width Title and Free Trial Section */}
-        <Box w="100%" bg="white" py={6}>
+    <Box maxW="100%" mx="auto" px={{ base: 6, md: 12 }} py={10}>
+      <VStack spacing={6} align="stretch">
+
+        {/* 🚀 Alert Goes to the Top */}
+        <Alert status="success" borderRadius="md">
+          <AlertIcon />
+          <Text fontSize="sm">All datasets are optimized for high-speed querying and secure data access.</Text>
+        </Alert>
+
+        {/* Title & Free Trial Section */}
+        <Box w="100%" bg="white" py={4}>
           <Grid templateColumns={{ base: "1fr", md: "1fr 1fr" }} gap={6} alignItems="center">
-            {/* Left: Title */}
+            {/* Left: Title & Subtitle Together */}
             <Box>
-              <Heading as="h1" size="2xl" fontWeight="bold">
+              <Heading as="h1" size="xl" fontWeight="bold">
                 Unlock Datasets
               </Heading>
+              <Text fontSize="sm" color="gray.600" mt={1}>
+                Need specific datasets? Customize and filter data to fit your exact requirements. Our flexible API delivers structured data, empowering you to make informed decisions.
+              </Text>
             </Box>
 
             {/* Right: Free Trial Section */}
             <Box
               bg="blue.600"
-              color="gray.100"
+              color="gray.300"
               borderRadius="lg"
-              p={6}
+              p={5}
               boxShadow="lg"
               textAlign="left"
               display="flex"
               flexDirection="column"
               justifyContent="center"
             >
-              <Heading as="h2" size="lg" fontWeight="light">
+              <Heading as="h2" size="md" fontWeight="light">
                 Start Your Free Trial Today!
               </Heading>
-              <Text fontSize="sm" my={2} color="gray.200">
+              <Text fontSize="xs" my={2} color="gray.200">
                 Get full access to our datasets with a 7-day free trial. No credit card required!
               </Text>
-              <Button colorScheme="whiteAlpha" variant="solid" onClick={() => navigate('https://dashboard.thedataproxy.com/signup')} mt={2}>
+              <Button colorScheme="whiteAlpha" variant="solid" onClick={() => navigate('/signup')} size="sm">
                 Sign Up for Free
               </Button>
             </Box>
           </Grid>
         </Box>
-
+        
         {/* Full Background Separation for Main Content */}
         <Box bg="gray.100" py={12} px={6} borderRadius="lg">
           <Text fontSize="lg" color="gray.700">
