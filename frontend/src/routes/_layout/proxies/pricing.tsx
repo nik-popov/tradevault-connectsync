@@ -50,7 +50,7 @@ const PricingPage = () => {
   const [usageProgress, setUsageProgress] = useState(0);
 
   return (
-    <Container maxW="full" py={10}>
+    <Container maxW="full">
       <Flex align="center" justify="space-between" py={6} flexWrap="wrap" gap={4}>
         <Box textAlign="left" flex="1">
           <Text fontSize="xl" fontWeight="bold">Proxy Pricing Plans</Text>
