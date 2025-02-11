@@ -43,13 +43,7 @@ const pricingData = {
 };
 
 const PricingChart = ({ plan }) => (
-  <Box p={4} borderWidth="1px" borderRadius="md" bg="gray.700">
-    <Text fontSize="xl" mb={2} color="white" fontWeight="bold">
-      {plan.charAt(0).toUpperCase() + plan.slice(1)} Plan Pricing
-    </Text>
-    <Text fontSize="sm" mb={4} color="gray.300">
-      Compare pricing tiers and features available in this plan.
-    </Text>
+  <Box p={4} borderWidth="1px" borderRadius="md" bg="gray.800">
     <Table variant="simple">
       <Thead bg="gray.700" position="sticky" top={0} zIndex={1}>
         <Tr>
@@ -96,16 +90,6 @@ function Pricing() {
 
   return (
     <Container maxW="full">
-      <Flex align="center" justify="space-between" py={6} flexWrap="wrap">
-        <Box textAlign="left">
-          <Text fontSize="xl" fontWeight="bold" color="white">
-            Pricing Breakdown
-          </Text>
-          <Text fontSize="sm" color="gray.300">
-            Understand your proxy billing and subscriptions.
-          </Text>
-        </Box>
-      </Flex>
       <Divider my={4} />
 
       {isLocked ? (
@@ -124,7 +108,7 @@ function Pricing() {
                     key={index}
                     isDisabled={restrictedTabs.includes(tab.title)}
                     color="gray.300"
-                    _selected={{ bg: "gray.600", color: "white", fontWeight: "bold" }}
+                    _selected={{ bg: "gray.700", color: "white", fontWeight: "bold" }}
                     _hover={{ bg: "gray.600", color: "white" }}
                   >
                     {tab.title}
@@ -133,13 +117,7 @@ function Pricing() {
               </TabList>
               <TabPanels bg="gray.700" borderRadius="md" p={4}>
                 {tabsConfig.map((tab, index) => (
-                  <TabPanel key={index}>
-                    {restrictedTabs.includes(tab.title) ? (
-                      <Text color="gray.400">Feature locked during trial.</Text>
-                    ) : (
-                      tab.component
-                    )}
-                  </TabPanel>
+                  <TabPanel key={index}>{tab.component}</TabPanel>
                 ))}
               </TabPanels>
             </Tabs>
