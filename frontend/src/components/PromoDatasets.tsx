@@ -31,14 +31,14 @@ const pricingPlans = [
     name: "Explorer",
     price: "$5",
     features: ["Basic dataset access", "1,000 API requests/month", "Standard support"],
-    borderColor: "blue.600",
+    borderColor: "blue.700",
     buttonVariant: "outline",
   },
   {
     name: "Archiver",
     price: "$100",
     features: ["Extended dataset history", "1,000 API requests/month", "Priority support"],
-    borderColor: "blue.500",
+    borderColor: "blue.600",
     buttonVariant: "solid",
     badge: "MOST POPULAR",
   },
@@ -46,14 +46,14 @@ const pricingPlans = [
     name: "Researcher",
     price: "$500",
     features: ["High download limits", "10,000 API requests/month", "Advanced analytics"],
-    borderColor: "blue.400",
+    borderColor: "blue.500",
     buttonVariant: "solid",
   },
   {
     name: "Enterprise",
     price: "Custom",
     features: ["Unlimited API requests", "Dedicated account manager", "Custom integrations"],
-    borderColor: "blue.300",
+    borderColor: "blue.400",
     buttonVariant: "outline",
   }
 ];
@@ -62,32 +62,32 @@ const PromoDatasets: React.FC = () => {
   const navigate = useNavigate();
 
   return (
-    <Box maxW="100%" mx="auto" px={{ base: 6, md: 12 }} py={10} bg="blue.900">
+    <Box maxW="100%" mx="auto" px={{ base: 6, md: 12 }} py={10} bg="gray.900">
       <VStack spacing={6} align="stretch">
 
         {/* 🚀 Alert Goes to the Top */}
-        <Alert status="info" borderRadius="md" bg="blue.800" color="gray.200">
-          <AlertIcon color="blue.300" />
+        <Alert status="info" borderRadius="md" bg="gray.800" color="gray.300">
+          <AlertIcon color="blue.500" />
           <Text fontSize="sm">All datasets are optimized for high-speed querying and secure data access.</Text>
         </Alert>
 
         {/* Title & Free Trial Section */}
-        <Box w="100%" py={6} bg="blue.800" borderRadius="md" boxShadow="lg" px={6}>
+        <Box w="100%" py={6} bg="gray.800" borderRadius="md" boxShadow="lg" px={6}>
           <Grid templateColumns={{ base: "1fr", md: "1fr 1fr" }} gap={6} alignItems="center">
             {/* Left: Title & Subtitle Together */}
             <Box>
-              <Heading as="h1" size="lg" fontWeight="bold" color="blue.200">
+              <Heading as="h1" size="lg" fontWeight="bold" color="gray.100">
                 Unlock Datasets
               </Heading>
-              <Text fontSize="sm" color="blue.300" mt={1}>
+              <Text fontSize="sm" color="gray.400" mt={1}>
                 Customize and filter data to fit your exact requirements. Our flexible API delivers structured data, empowering you to make informed decisions.
               </Text>
             </Box>
 
             {/* Right: Free Trial Section */}
             <Box
-              bg="blue.700"
-              color="blue.300"
+              bg="blue.800"
+              color="gray.300"
               borderRadius="md"
               p={5}
               boxShadow="lg"
@@ -96,13 +96,13 @@ const PromoDatasets: React.FC = () => {
               flexDirection="column"
               justifyContent="center"
             >
-              <Heading as="h2" size="md" fontWeight="light" color="blue.100">
+              <Heading as="h2" size="md" fontWeight="light" color="gray.100">
                 Start Your Free Trial Today!
               </Heading>
-              <Text fontSize="xs" my={2} color="blue.200">
+              <Text fontSize="xs" my={2} color="gray.300">
                 Get full access to our datasets with a 7-day free trial. No credit card required!
               </Text>
-              <Button bg="blue.300" color="blue.900" _hover={{ bg: "blue.400" }} variant="solid" onClick={() => navigate('/signup')} size="sm">
+              <Button bg="blue.600" color="gray.100" _hover={{ bg: "blue.500" }} variant="solid" onClick={() => navigate('/signup')} size="sm">
                 Sign Up for Free
               </Button>
             </Box>
@@ -110,17 +110,17 @@ const PromoDatasets: React.FC = () => {
         </Box>
 
         {/* 📌 Layered Background for Main Content */}
-        <Box bg="blue.800" py={10} px={6} borderRadius="md" boxShadow="lg">
+        <Box bg="gray.800" py={10} px={6} borderRadius="md" boxShadow="lg">
           
           {/* Dataset Categories Section */}
           <Grid templateColumns={{ base: "1fr", md: "repeat(2, 1fr)" }} gap={6} mt={6}>
             {datasetCategories.map((dataset, index) => (
-              <GridItem key={index} p={5} borderRadius="lg" boxShadow="md" _hover={{ boxShadow: "lg" }} bg="blue.700">
+              <GridItem key={index} p={5} borderRadius="lg" boxShadow="md" _hover={{ boxShadow: "lg" }} bg="gray.700">
                 <Flex align="center" mb={3}>
-                  <Icon as={dataset.icon} boxSize={6} color="blue.300" mr={3} />
-                  <Text fontSize="md" fontWeight="semibold" color="blue.200">{dataset.name}</Text>
+                  <Icon as={dataset.icon} boxSize={6} color="blue.400" mr={3} />
+                  <Text fontSize="md" fontWeight="semibold" color="gray.200">{dataset.name}</Text>
                 </Flex>
-                <Text fontSize="sm" color="blue.300">{dataset.description}</Text>
+                <Text fontSize="sm" color="gray.400">{dataset.description}</Text>
               </GridItem>
             ))}
           </Grid>
@@ -130,23 +130,23 @@ const PromoDatasets: React.FC = () => {
             {pricingPlans.map((plan, index) => (
               <Box key={index} position="relative">
                 {plan.badge && (
-                  <Badge bg="blue.500" color="white" px={3} py={1} position="absolute" top="-12px" left="10px">
+                  <Badge bg="blue.600" color="white" px={3} py={1} position="absolute" top="-12px" left="10px">
                     {plan.badge}
                   </Badge>
                 )}
-                <Box p={6} border="2px solid" borderColor={plan.borderColor} borderRadius="lg" textAlign="left" bg="blue.700">
-                  <Heading as="h3" size="sm" fontWeight="semibold" mb={2} color="blue.200">
+                <Box p={6} border="2px solid" borderColor={plan.borderColor} borderRadius="lg" textAlign="left" bg="gray.700">
+                  <Heading as="h3" size="sm" fontWeight="semibold" mb={2} color="gray.200">
                     {plan.name}
                   </Heading>
                   <List spacing={2} mb={6}>
                     {plan.features.map((feature, idx) => (
                       <ListItem key={idx} display="flex" alignItems="center">
-                        <ListIcon as={FiCheckCircle} color="blue.300" boxSize={5} />
-                        <Text fontSize="sm" color="blue.200">{feature}</Text>
+                        <ListIcon as={FiCheckCircle} color="blue.500" boxSize={5} />
+                        <Text fontSize="sm" color="gray.300">{feature}</Text>
                       </ListItem>
                     ))}
                   </List>
-                  <Button w="full" bg="blue.500" color="white" _hover={{ bg: "blue.400" }} variant={plan.buttonVariant} onClick={() => navigate('/datasets/pricing')} size="sm">
+                  <Button w="full" bg="blue.600" color="white" _hover={{ bg: "blue.500" }} variant={plan.buttonVariant} onClick={() => navigate('/datasets/pricing')} size="sm">
                     {plan.price === "Custom" ? "Contact Us" : `Choose ${plan.name}`}
                   </Button>
                 </Box>
