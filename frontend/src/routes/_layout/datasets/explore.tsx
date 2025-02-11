@@ -219,8 +219,8 @@ function Explore() {
             </VStack>
           </Box>
 
-          {/* ✅ Sidebar */}
-          <Box w={{ base: "100%", md: "250px" }} p="4" borderLeft={{ md: "1px solid #E2E8F0" }}>
+   {/* ✅ Sidebar */}
+   <Box w={{ base: "100%", md: "250px" }} p="4" borderLeft={{ md: "1px solid #E2E8F0" }}>
             <VStack spacing="4" align="stretch">
               <Box p="4" shadow="sm" borderWidth="1px" borderRadius="lg">
                 <Text fontWeight="bold">Quick Actions</Text>
@@ -242,6 +242,7 @@ function Explore() {
     </Container>
   );
 }
+
 
 
 // Dataset list item component with an expand/collapse toggle and locked "View" button when in trial mode.
