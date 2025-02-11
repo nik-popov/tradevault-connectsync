@@ -63,7 +63,7 @@ const PromoSERP = () => {
           Google Search API
         </Heading>
         <Text fontSize="lg" color="gray.600" mb={12}>
-          Fetch Google Search results using our premium API
+          Fetch Search results using our premium API
         </Text>
 
         {/* Features Section */}
