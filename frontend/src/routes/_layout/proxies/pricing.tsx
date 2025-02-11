@@ -46,7 +46,7 @@ const PricingChart = ({ plan }) => {
   };
 
   return (
-    <Box p={4} borderWidth="1px" borderRadius="md">
+    <Box p={4} borderWidth="1px" borderRadius="md" bg="gray.100">
       <Text fontSize="xl" mb={4}>{plan.charAt(0).toUpperCase() + plan.slice(1)} Plan Pricing</Text>
       <Table variant="simple">
         <Thead>
@@ -117,10 +117,10 @@ function Pricing() {
       ) : (
         <Flex mt={6} gap={6} justify="space-between">
           <Box flex="1">
-            <Tabs variant="enclosed">
+            <Tabs variant="enclosed" bg="gray.100">
               <TabList>
                 {tabsConfig.map((tab, index) => (
-                  <Tab key={index} isDisabled={restrictedTabs.includes(tab.title)}>
+                  <Tab key={index} isDisabled={restrictedTabs.includes(tab.title)} bg="gray.200">
                     {tab.title}
                   </Tab>
                 ))}
