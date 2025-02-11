@@ -37,25 +37,26 @@ const pricingPlans = [
   { name: "Enterprise", price: "Custom", features: ["Unlimited requests", "Dedicated account manager", "Custom integrations"], borderColor: "blue.400", icon: FiDollarSign },
 ];
 
-const additionalServices = [
-  { name: "Storage", price: "$0.10 per GB", features: ["High availability", "Scalable storage", "Secure data encryption"], icon: FiDatabase },
-  { name: "Hosting", price: "$0.05 per CPU/hr", features: ["Dedicated servers", "99.99% uptime", "Global infrastructure"], icon: FiServer },
-  { name: "Cloud Functions", price: "$0.02 per execution", features: ["Auto-scaling", "Pay-per-use", "Integrated monitoring"], icon: FiCloud },
-];
-
-const enterpriseSolutions = [
-  { name: "Custom API", description: "Build a tailored API solution with dedicated infrastructure.", price: "Contact Us" },
-  { name: "Dedicated Servers", description: "Exclusive server access for maximum performance.", price: "Custom Pricing" },
-  { name: "Private Cloud", description: "Fully managed private cloud solutions for enterprises.", price: "Request Quote" },
-];
+const additionalServices = {
+  Dev: [
+    { name: "Storage", price: "$0.10 per GB", features: ["Basic storage", "Limited scalability"], icon: FiDatabase },
+    { name: "Hosting", price: "$0.05 per CPU/hr", features: ["Shared servers", "Best effort uptime"], icon: FiServer },
+  ],
+  SaaS: [
+    { name: "Storage", price: "$0.08 per GB", features: ["Improved storage options", "Scalable infrastructure"], icon: FiDatabase },
+    { name: "Hosting", price: "$0.04 per CPU/hr", features: ["Dedicated servers", "High uptime guarantee"], icon: FiServer },
+  ],
+  Pro: [
+    { name: "Storage", price: "$0.06 per GB", features: ["High availability", "Scalable storage"], icon: FiDatabase },
+    { name: "Hosting", price: "$0.03 per CPU/hr", features: ["Premium dedicated servers", "99.99% uptime"], icon: FiServer },
+  ],
+  Enterprise: [
+    { name: "Storage", price: "$0.04 per GB", features: ["Enterprise-grade security", "Unlimited storage"], icon: FiDatabase },
+    { name: "Hosting", price: "$0.02 per CPU/hr", features: ["Private cloud", "Custom SLA"], icon: FiServer },
+  ],
+};
 
 function Pricing() {
-  const { data: subscriptionSettings } = useQuery({
-    queryKey: ["subscriptionSettings"],
-    queryFn: async () => JSON.parse(localStorage.getItem(STORAGE_KEY)) || {},
-    staleTime: Infinity,
-  });
-
   return (
     <Container maxW="100%" mx="auto" px={6} py={10} bg="gray.800">
       <Flex align="center" justify="space-between" py={6}>
@@ -95,46 +96,30 @@ function Pricing() {
                     </ListItem>
                   ))}
                 </List>
-                <Button w="full" bg="blue.600" color="white" _hover={{ bg: "blue.500" }}>
-                  {plan.price === "Custom" ? "Contact Us" : `Choose ${plan.name}`}
-                </Button>
               </Box>
+              <Divider my={6} />
+              <Heading fontSize="xl" color="white" mb={4}>Additional Services</Heading>
+              <Grid templateColumns={{ base: "1fr", md: "repeat(2, 1fr)" }} gap={6}>
+                {additionalServices[plan.name].map((service, idx) => (
+                  <Box key={idx} p={6} borderRadius="lg" bg="gray.600" textAlign="center">
+                    <Icon as={service.icon} boxSize={8} color="blue.400" mb={3} />
+                    <Text fontSize="lg" fontWeight="bold" color="white">{service.name}</Text>
+                    <Text fontSize="md" color="gray.300" mb={3}>{service.price}</Text>
+                    <List spacing={2} mb={4}>
+                      {service.features.map((feature, featureIdx) => (
+                        <ListItem key={featureIdx} display="flex" alignItems="center" justifyContent="center">
+                          <ListIcon as={FiCheckCircle} color="blue.500" boxSize={5} />
+                          <Text fontSize="sm" color="gray.300">{feature}</Text>
+                        </ListItem>
+                      ))}
+                    </List>
+                  </Box>
+                ))}
+              </Grid>
             </TabPanel>
           ))}
         </TabPanels>
       </Tabs>
-      
-      <Divider my={6} />
-      <Heading fontSize="xl" color="white" mb={4}>Additional Services</Heading>
-      <Grid templateColumns={{ base: "1fr", md: "repeat(3, 1fr)" }} gap={6}>
-        {additionalServices.map((service, index) => (
-          <Box key={index} p={6} borderRadius="lg" bg="gray.600" textAlign="center">
-            <Icon as={service.icon} boxSize={8} color="blue.400" mb={3} />
-            <Text fontSize="lg" fontWeight="bold" color="white">{service.name}</Text>
-            <Text fontSize="md" color="gray.300" mb={3}>{service.price}</Text>
-            <List spacing={2} mb={4}>
-              {service.features.map((feature, idx) => (
-                <ListItem key={idx} display="flex" alignItems="center" justifyContent="center">
-                  <ListIcon as={FiCheckCircle} color="blue.500" boxSize={5} />
-                  <Text fontSize="sm" color="gray.300">{feature}</Text>
-                </ListItem>
-              ))}
-            </List>
-          </Box>
-        ))}
-      </Grid>
-      
-      <Divider my={6} />
-      <Heading fontSize="xl" color="white" mb={4}>Enterprise Solutions</Heading>
-      <Grid templateColumns={{ base: "1fr", md: "repeat(3, 1fr)" }} gap={6}>
-        {enterpriseSolutions.map((solution, index) => (
-          <Box key={index} p={6} borderRadius="lg" bg="gray.600" textAlign="center">
-            <Text fontSize="lg" fontWeight="bold" color="white">{solution.name}</Text>
-            <Text fontSize="md" color="gray.300" mb={3}>{solution.description}</Text>
-            <Button bg="blue.600" color="white" _hover={{ bg: "blue.500" }}> {solution.price} </Button>
-          </Box>
-        ))}
-      </Grid>
     </Container>
   );
 }
