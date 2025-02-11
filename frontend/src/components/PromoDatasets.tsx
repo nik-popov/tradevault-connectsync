@@ -38,7 +38,7 @@ const pricingPlans = [
   {
     name: "Archiver",
     price: "$100",
-    features: ["Extended dataset history", "10,000 API requests/month", "Priority support"],
+    features: ["Extended dataset history", "1,000 API requests/month", "Priority support"],
     borderColor: "blue.400",
     buttonVariant: "solid",
     badge: "MOST POPULAR",
@@ -46,7 +46,7 @@ const pricingPlans = [
   {
     name: "Researcher",
     price: "$500",
-    features: ["High download limits", "100,000 API requests/month", "Advanced analytics"],
+    features: ["High download limits", "10,000 API requests/month", "Advanced analytics"],
     borderColor: "purple.400",
     buttonVariant: "solid",
   },
