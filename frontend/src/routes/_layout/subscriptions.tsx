@@ -19,7 +19,7 @@ import {
   import { useState, useEffect } from "react";
   import Navbar from "../../components/Common/Navbar";
   
-  // Mock Subscription Data
+  // ✅ Mock Subscription Data
   const subscriptionData = {
     Proxy: [
       { id: "1", name: "Starter", price: "$99/mo", hasSubscription: true, isTrial: false, isDeactivated: false },
@@ -41,13 +41,16 @@ import {
     ],
   };
   
+  // ✅ SubscriptionTable Component
   function SubscriptionTable({ category }) {
     const [subscriptions, setSubscriptions] = useState([]);
   
+    // ✅ Initialize state properly
     useEffect(() => {
       setSubscriptions(subscriptionData[category] || []);
     }, [category]);
   
+    // Toggle Subscription Status
     const toggleSubscription = (id) => {
       setSubscriptions((prev) =>
         prev.map((sub) =>
@@ -56,6 +59,7 @@ import {
       );
     };
   
+    // Toggle Trial Status
     const toggleTrial = (id) => {
       setSubscriptions((prev) =>
         prev.map((sub) =>
@@ -64,6 +68,7 @@ import {
       );
     };
   
+    // Toggle Deactivation Status
     const toggleDeactivation = (id) => {
       setSubscriptions((prev) =>
         prev.map((sub) =>
@@ -115,6 +120,7 @@ import {
     );
   }
   
+  // ✅ Subscriptions Component
   function Subscriptions() {
     return (
       <Container maxW="full">
@@ -124,6 +130,7 @@ import {
   
         <Navbar type={"Subscription"} />
   
+        {/* ✅ Tabs for Different Product Memberships */}
         <Tabs variant="enclosed">
           <TabList>
             {Object.keys(subscriptionData).map((category) => (
@@ -144,11 +151,11 @@ import {
   }
   
   // ✅ Fix: Ensure Route is correctly exported
-  import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
   
-  export const Route = createFileRoute("/_layout/subscriptions")({
+export const Route = createFileRoute("/_layout/subscriptions")({
     component: Subscriptions,
   });
   
-  export default Subscriptions;
+export default Subscriptions;
   
