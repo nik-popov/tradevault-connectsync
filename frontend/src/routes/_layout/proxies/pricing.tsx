@@ -2,6 +2,9 @@ import {
   Container,
   Box,
   Text,
+  Button,
+  VStack,
+  HStack,
   Divider,
   Flex,
   Tabs,
@@ -52,6 +55,7 @@ const PricingCard = ({ title, price, features }) => (
       <Heading size="md" color="white">{title}</Heading>
       <Text fontSize="lg" color="gray.300" mt={2}>{price}</Text>
       <Text fontSize="sm" color="gray.400" mt={2}>{features}</Text>
+      <Button mt={4} colorScheme="blue">Select Plan</Button>
     </CardBody>
   </Card>
 );
@@ -73,6 +77,12 @@ function Pricing() {
 
   return (
     <Container maxW="full">
+      <Flex align="center" justify="space-between" py={6}>
+        <Box>
+          <Text fontSize="2xl" fontWeight="bold" color="white">Pricing Plans</Text>
+          <Text fontSize="md" color="gray.300">Choose the best plan that fits your needs.</Text>
+        </Box>
+      </Flex>
       <Divider my={4} />
 
       {isLocked ? (
@@ -82,15 +92,13 @@ function Pricing() {
           <Text color="white">Your subscription has expired. Please renew to access all features.</Text>
         </Box>
       ) : (
-        <>
-          <SimpleGrid columns={{ base: 1, md: 3 }} spacing={6} mb={6}>
-            {Object.entries(pricingData).flatMap(([plan, entries]) =>
-              entries.map((entry, index) => (
-                <PricingCard key={`${plan}-${index}`} title={entry.data} price={entry.price} features={entry.features} />
-              ))
-            )}
-          </SimpleGrid>
-        </>
+        <SimpleGrid columns={{ base: 1, md: 3 }} spacing={6} mb={6}>
+          {Object.entries(pricingData).flatMap(([plan, entries]) =>
+            entries.map((entry, index) => (
+              <PricingCard key={`${plan}-${index}`} title={entry.data} price={entry.price} features={entry.features} />
+            ))
+          )}
+        </SimpleGrid>
       )}
     </Container>
   );
