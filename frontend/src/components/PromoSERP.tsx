@@ -140,11 +140,15 @@ const PromoSERP: React.FC = () => {
                   ))}
                 </List>
 
-                {/* Price Display */}
-                <Text fontSize="2xl" fontWeight="bold" mb={1}>
-                  {plan.price === "Custom" ? "Contact Us" : plan.price}
-                  {plan.price !== "Custom" && <Text as="span" fontSize="lg" color="gray.500">/mo</Text>}
-                </Text>
+                {/* Price Display (Ensuring Same Height) */}
+                <Box minH="60px" display="flex" alignItems="center" justifyContent="center">
+                  <Text fontSize="2xl" fontWeight="bold">
+                    {plan.price === "Custom" ? "Contact Us" : plan.price}
+                  </Text>
+                  {plan.price !== "Custom" && (
+                    <Text as="span" fontSize="lg" color="gray.500">/mo</Text>
+                  )}
+                </Box>
 
                 {/* CTA Button (Same Size for All Plans) */}
                 <Button w="full" colorScheme="blue" size="md" variant={plan.buttonVariant} onClick={() => navigate('/search-api/pricing')}>
