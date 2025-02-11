@@ -1,11 +1,5 @@
 import {
   Container,
-  Heading,
-  Tab,
-  TabList,
-  TabPanel,
-  TabPanels,
-  Tabs,
   Box,
   Text,
   Button,
@@ -13,24 +7,33 @@ import {
   HStack,
   Divider,
   Flex,
-  Switch,
-  Table,
-  Thead,
-  Tbody,
+  Tabs,
   Tr,
+  Tbody,
   Th,
   Td,
-  Input,
+  TabList,
+  TabPanels,
+  Tab,
+  Table,
+  Thead,
+  
+  TabPanel,
 } from "@chakra-ui/react";
 import { useState, useEffect } from "react";
-import { useQueryClient } from "@tanstack/react-query";
-import { createFileRoute } from "@tanstack/react-router";
-import { FiSend, FiGithub, FiMail, FiHelpCircle } from "react-icons/fi";
 
-import PromoSERP from "../../../components/PromoSERP";
-import GoogleSerpStarted from "../../../components/GoogleSerpStarted";
+import { useQueryClient, useQuery } from "@tanstack/react-query";
+import { createFileRoute } from "@tanstack/react-router";
+
+import PromoContent from "../../../components/PromoSERP";
+import ProxyStarted from "../../../components/GoogleSerpStarted";
 import ProxySettings from "../../../components/ProxySettings";
 import ProxyUsage from "../../../components/ProxyUsage";
+import SubscriptionManagement from "../../../components/UserSettings/SubscriptionManagement";
+/* 
+  Expanded Inline Proxy Components 
+  Replace dummy data and logic with your actual API calls or state management as needed.
+*/
 
 // Top-Ups Component
 const TopUps = () => {
@@ -262,41 +265,35 @@ const ReactivationOptions = () => {
   );
 };
 
+
+const STORAGE_KEY = "subscriptionSettings";
+const PRODUCT = "Proxies"; // Define product-specific subscription management
+
 function GoogleSerpApi() {
   const queryClient = useQueryClient();
-  const [subscriptionSettings, setSubscriptionSettings] = useState({
+
+  // Fetch subscription settings
+  const { data: subscriptionSettings } = useQuery({
+    queryKey: ["subscriptionSettings"],
+    queryFn: () => {
+      const storedSettings = localStorage.getItem(STORAGE_KEY);
+      return storedSettings ? JSON.parse(storedSettings) : {};
+    },
+    staleTime: Infinity,
+  });
+
+  const settings = subscriptionSettings?.[PRODUCT] || {
     hasSubscription: false,
     isTrial: false,
     isDeactivated: false,
-  });
+  };
 
-  // Load subscription settings from localStorage or React Query cache
-  useEffect(() => {
-    const storedSettings = localStorage.getItem("subscriptionSettings");
-    if (storedSettings) {
-      setSubscriptionSettings(JSON.parse(storedSettings));
-    } else {
-      const querySettings = queryClient.getQueryData("subscriptionSettings");
-      if (querySettings) {
-        setSubscriptionSettings(querySettings);
-      }
-    }
-  }, [queryClient]);
-
-  // Load current user data from localStorage (or replace with your own user fetch logic)
-  const currentUser = JSON.parse(localStorage.getItem("currentUser") || "null");
-
-  const { hasSubscription, isTrial, isDeactivated } = subscriptionSettings;
-
-  // Define restricted tabs based on subscription state
-  const restrictedTabs = isTrial
-    ? ["Key Management", "Logs", "Top-Ups", "Connections"]
-    : [];
+  const { hasSubscription, isTrial, isDeactivated } = settings;
   const isLocked = !hasSubscription && !isTrial;
+  const restrictedTabs = isTrial ? ["Key Management", "Logs", "Top-Ups", "Connections"] : [];
 
-  // Define tabs configuration with inline components
   const tabsConfig = [
-    { title: "Get Started", component: <GoogleSerpStarted /> },
+    { title: "Get Started", component: <ProxyStarted /> },
     { title: "Endpoints", component: <ProxySettings /> },
     { title: "Usage", component: <ProxyUsage /> },
     { title: "Top-Ups", component: <TopUps /> },
@@ -304,55 +301,31 @@ function GoogleSerpApi() {
     { title: "Logs", component: <Logs /> },
     { title: "Key Management", component: <KeyManagement /> },
   ];
-  return (
-    <Container maxW="100vw" overflowX="hidden">
-      {/* Top Bar */}
-      <Flex align="center" justify="space-between" py={6} flexWrap="wrap" gap={4}>
-      <Box textAlign="left" flex="1">
-          <Text fontSize="xl" fontWeight="bold">
-            Hi, {currentUser?.full_name || currentUser?.email} 👋🏼
-          </Text>
-          <Text fontSize="sm">Welcome back, let’s get started!</Text>
-        </Box>
 
-        <HStack spacing={6}>
-          <HStack>
-            <Text fontWeight="bold">Subscription:</Text>
-            <Switch isChecked={hasSubscription} isDisabled />
-          </HStack>
-          <HStack>
-            <Text fontWeight="bold">Trial Mode:</Text>
-            <Switch isChecked={isTrial} isDisabled />
-          </HStack>
-          <HStack>
-            <Text fontWeight="bold">Deactivated:</Text>
-            <Switch isChecked={isDeactivated} isDisabled />
-          </HStack>
-        </HStack>
+  return (
+    <Container maxW="full">
+      <Flex align="center" justify="space-between" py={6} flexWrap="wrap" gap={4}>
+        <Box textAlign="left" flex="1">
+          <Text fontSize="xl" fontWeight="bold">Search Api's</Text>
+          <Text fontSize="sm">Manage your proxy settings and subscriptions.</Text>
+        </Box>
+        <SubscriptionManagement product={PRODUCT} />
       </Flex>
 
-      {/* Main Content or Alternate Views */}
       {isLocked ? (
-        <PromoSERP />
+        <PromoContent />
       ) : isDeactivated ? (
         <Box mt={6}>
-          <Text>
-            Your subscription has expired. Please renew to access all features.
-          </Text>
-          <ReactivationOptions />
+          <Text>Your subscription has expired. Please renew to access all features.</Text>
         </Box>
       ) : (
-        <Flex mt={6} gap={6} justify="space-between" align="stretch" wrap="wrap">
-          {/* Main Content */}
-          <Box flex="1" minW={{ base: "100%", md: "65%" }}>
+        <Flex mt={6} gap={6} justify="space-between">
+          <Box flex="1">
             <Divider my={4} />
             <Tabs variant="enclosed">
               <TabList>
                 {tabsConfig.map((tab, index) => (
-                  <Tab
-                    key={index}
-                    isDisabled={restrictedTabs.includes(tab.title)}
-                  >
+                  <Tab key={index} isDisabled={restrictedTabs.includes(tab.title)}>
                     {tab.title}
                   </Tab>
                 ))}
@@ -360,73 +333,11 @@ function GoogleSerpApi() {
               <TabPanels>
                 {tabsConfig.map((tab, index) => (
                   <TabPanel key={index}>
-                    {restrictedTabs.includes(tab.title) ? (
-                      <Text>Feature locked during trial.</Text>
-                    ) : (
-                      tab.component
-                    )}
+                    {restrictedTabs.includes(tab.title) ? <Text>Feature locked during trial.</Text> : tab.component}
                   </TabPanel>
                 ))}
               </TabPanels>
             </Tabs>
-          </Box>
-
-          {/* Sidebar Section */}
-          <Box w={{ base: "100%", md: "250px" }} p="4" borderLeft={{ md: "1px solid #E2E8F0" }}>
-            <VStack spacing="4" align="stretch">
-              <Box p="4" shadow="sm" borderWidth="1px" borderRadius="lg">
-                <Text fontWeight="bold">Quick Actions</Text>
-                <Button
-                  as="a"
-                  href="mailto:support@thedataproxy.com"
-                  leftIcon={<FiMail />}
-                  variant="outline"
-                  size="sm"
-                  mt="2"
-                >
-                  Email Support
-                </Button>
-                <Button
-                  as="a"
-                  href="https://thedataproxy.com/report-issue"
-                  leftIcon={<FiHelpCircle />}
-                  variant="outline"
-                  size="sm"
-                  mt="2"
-                >
-                  Report an Issue
-                </Button>
-              </Box>
-
-              <Box p="4" shadow="sm" borderWidth="1px" borderRadius="lg">
-                <Text fontWeight="bold">FAQs</Text>
-                <Text fontSize="sm">Common questions and answers.</Text>
-                <Button
-                  as="a"
-                  href="https://thedataproxy.com/faqs"
-                  mt="2"
-                  size="sm"
-                  variant="outline"
-                >
-                  View FAQs
-                </Button>
-              </Box>
-
-              <Box p="4" shadow="sm" borderWidth="1px" borderRadius="lg">
-                <Text fontWeight="bold">Community Support</Text>
-                <Text fontSize="sm">Join discussions with other users.</Text>
-                <Button
-                  as="a"
-                  href="https://github.com/thedataproxy/thedataproxy/discussions"
-                  mt="2"
-                  leftIcon={<FiGithub />}
-                  size="sm"
-                  variant="outline"
-                >
-                  GitHub Discussions
-                </Button>
-              </Box>
-            </VStack>
           </Box>
         </Flex>
       )}
@@ -434,8 +345,7 @@ function GoogleSerpApi() {
   );
 }
 
-// Export Route AFTER the component definition
-export const Route = createFileRoute("/_layout/search-api/google-serp-api")({
+export const Route = createFileRoute("/_layout/proxies/residential")({
   component: GoogleSerpApi,
 });
 
