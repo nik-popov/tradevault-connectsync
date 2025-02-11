@@ -18,7 +18,7 @@ import {
 } from "@chakra-ui/react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useQueryClient } from "@tanstack/react-query";
-import { FiSend, FiGithub, FiExternalLink, FiX } from "react-icons/fi";
+import { FiExternalLink, FiX, FiGithub } from "react-icons/fi";
 import PromoSERP from "../../../components/PromoSERP";
 
 export const Route = createFileRoute("/_layout/scraper-api/explore")({
@@ -29,7 +29,6 @@ function Explore() {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
 
-  // ✅ Load Subscription Settings
   const [subscriptionSettings, setSubscriptionSettings] = useState({
     hasSubscription: false,
     isTrial: false,
@@ -52,29 +51,40 @@ function Explore() {
   const isLocked = !hasSubscription && !isTrial;
   const isFullyDeactivated = isDeactivated && !hasSubscription;
 
-  // 🔍 Search, Filter, and Sort State
   const [searchQuery, setSearchQuery] = useState("");
   const [activeFilter, setActiveFilter] = useState("all");
-  const [sortOption, setSortOption] = useState("name");
 
-  // 🛠️ API Data
-  const scraperProducts = [
-    { id: "google-serp-api", name: "Google Search API", type: "search", description: "Fetches real-time search results from Google.", isLocked: false },
-    { id: "linkedin-api", name: "LinkedIn Scraping API", type: "social media", description: "Scrapes public LinkedIn profiles, job postings, and company data.", isLocked: true },
-    { id: "amazon-product-api", name: "Amazon Product API", type: "ecommerce", description: "Fetches product details, reviews, and price history from Amazon.", isLocked: true },
+  const scraperAPIs = [
+    {
+      id: "google-serp-api",
+      name: "Google Search API",
+      category: "search",
+      description: "Fetches real-time search results from Google.",
+    },
+    {
+      id: "linkedin-api",
+      name: "LinkedIn Scraping API",
+      category: "social media",
+      description: "Scrapes public LinkedIn profiles, job postings, and company data.",
+    },
+    {
+      id: "amazon-product-api",
+      name: "Amazon Product API",
+      category: "ecommerce",
+      description: "Fetches product details, reviews, and price history from Amazon.",
+    },
   ];
 
-  const categories = ["all", ...new Set(scraperProducts.map((api) => api.type))];
+  const categories = ["all", ...new Set(scraperAPIs.map((api) => api.category))];
 
-  // 🔄 Filtered API List
-  const filteredProducts = useMemo(() => {
-    return scraperProducts.filter((product) => {
+  const filteredAPIs = useMemo(() => {
+    return scraperAPIs.filter((api) => {
       const matchesFilter =
-        activeFilter === "all" || product.type.toLowerCase() === activeFilter.toLowerCase();
-      const matchesSearch = product.name.toLowerCase().includes(searchQuery.toLowerCase());
+        activeFilter === "all" || api.category.toLowerCase() === activeFilter.toLowerCase();
+      const matchesSearch = api.name.toLowerCase().includes(searchQuery.toLowerCase());
       return matchesFilter && matchesSearch;
     });
-  }, [searchQuery, activeFilter, scraperProducts]);
+  }, [searchQuery, activeFilter, scraperAPIs]);
 
   return (
     <Container maxW="full" overflowX="hidden">
@@ -95,9 +105,7 @@ function Explore() {
           </HStack>
         </HStack>
       </Flex>
-
       <Divider my={4} />
-
       {isLocked ? (
         <PromoSERP />
       ) : isFullyDeactivated ? (
@@ -109,11 +117,11 @@ function Explore() {
           </Flex>
         </Alert>
       ) : (
-        <Flex mt={6} gap={6} justify="space-between" align="stretch" wrap="wrap">
+        <Flex gap={6} justify="space-between" align="stretch" wrap="wrap">
           <Box flex="1" minW={{ base: "100%", md: "65%" }}>
             <Flex gap={4} justify="space-between" align="center" flexWrap="wrap">
               <Input
-                placeholder="Search Scraper APIs..."
+                placeholder="Search APIs..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 w={{ base: "100%", md: "250px" }}
@@ -134,6 +142,14 @@ function Explore() {
                 ))}
               </HStack>
             </Flex>
+            <VStack spacing={4} mt={6} align="stretch">
+              {filteredAPIs.map((api) => (
+                <Box key={api.id} p={4} borderWidth="1px" borderRadius="lg">
+                  <Text fontWeight="bold">{api.name}</Text>
+                  <Text fontSize="sm" color="gray.600">{api.description}</Text>
+                </Box>
+              ))}
+            </VStack>
           </Box>
         </Flex>
       )}
