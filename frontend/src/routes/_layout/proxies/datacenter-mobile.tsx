@@ -431,7 +431,6 @@ function DatacenterMobileProxy() {
           </VStack>
         </Box>
         </Flex>
-      )}
     </Container>
   );
 }

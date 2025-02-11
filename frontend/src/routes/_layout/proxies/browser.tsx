@@ -430,7 +430,6 @@ function BrowserProxy() {
           </VStack>
         </Box>    
         </Flex>
-      )}
     </Container>
   );
 }

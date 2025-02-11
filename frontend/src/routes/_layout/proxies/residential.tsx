@@ -431,10 +431,10 @@ function ResidentialProxy() {
           </VStack>
         </Box>
         </Flex>
-      )}
     </Container>
   );
 }
+
 
 // Export Route AFTER the component definition
 export const Route = createFileRoute("/_layout/proxies/residential")({

@@ -430,7 +430,6 @@ function GoogleSerpApi() {
           </VStack>
         </Box>
         </Flex>
-      )}
     </Container>
   );
 }

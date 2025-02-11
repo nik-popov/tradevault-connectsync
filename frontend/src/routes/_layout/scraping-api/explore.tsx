@@ -210,11 +210,11 @@ function Explore() {
             </Box>
           </VStack>
         </Box>
-        </Flex>
-      )}
+      </Flex>
     </Container>
   );
 }
+
 
 // Component for individual API list items
 const ApiListItem = ({ api, navigate, isTrial }) => {
