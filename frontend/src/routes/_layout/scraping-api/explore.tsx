@@ -201,12 +201,12 @@ const ApiListItem = ({ api, navigate, isTrial }) => {
   colorScheme="gray"
   disabled
   leftIcon={<FiX />}
-  _hover={{}}  // No hover effect
+  _hover={{ bg: "gray.200", cursor: "not-allowed" }} // Ensures no hover effect change
   _disabled={{
     bg: "gray.200",
-    borderColor: "gray.200",
     color: "gray.500",
     cursor: "not-allowed",
+    _hover: { bg: "gray.200" }, // Cancel any hover effect while disabled
   }}
 >
   Locked
