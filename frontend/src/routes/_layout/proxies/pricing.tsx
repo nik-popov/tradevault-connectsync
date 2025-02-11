@@ -8,7 +8,6 @@ import {
   Tabs,
   Box,
   Text,
-  Button,
   VStack,
   Divider,
   Badge,
@@ -19,32 +18,32 @@ export const Route = createFileRoute("/_layout/proxies/pricing")({
   component: PricingPage,
 });
 
-// Proxy Pricing Plans (Per GB)
-const pricingPlans = {
+// Proxy Billing Rates (Per GB)
+const pricingRates = {
   Residential: [
-    { plan: "Starter", price: "$2.00/GB", features: ["Up to 500GB", "Standard Speed", "Shared IP Pool"] },
-    { plan: "Business", price: "$1.50/GB", features: ["Up to 2TB", "Faster Speeds", "Priority Support"], badge: "Most Popular" },
-    { plan: "Enterprise", price: "Custom Pricing", features: ["Unlimited Data", "Dedicated IP Pools", "24/7 Support"] },
+    { tier: "Starter", price: "$2.00/GB", details: ["Up to 500GB", "Standard Speed", "Shared IP Pool"] },
+    { tier: "Business", price: "$1.50/GB", details: ["Up to 2TB", "Faster Speeds", "Priority Support"], badge: "Most Popular" },
+    { tier: "Enterprise", price: "Custom Pricing", details: ["Unlimited Data", "Dedicated IP Pools", "24/7 Support"] },
   ],
   "Residential Mobile": [
-    { plan: "Starter", price: "$2.50/GB", features: ["Up to 500GB", "Mobile IPs", "Basic Support"] },
-    { plan: "Business", price: "$1.80/GB", features: ["Up to 2TB", "Fast Mobile IPs", "Priority Support"] },
-    { plan: "Enterprise", price: "Custom Pricing", features: ["Unlimited Mobile Data", "Custom IPs", "Dedicated Support"] },
+    { tier: "Starter", price: "$2.50/GB", details: ["Up to 500GB", "Mobile IPs", "Basic Support"] },
+    { tier: "Business", price: "$1.80/GB", details: ["Up to 2TB", "Fast Mobile IPs", "Priority Support"] },
+    { tier: "Enterprise", price: "Custom Pricing", details: ["Unlimited Mobile Data", "Custom IPs", "Dedicated Support"] },
   ],
   Datacenter: [
-    { plan: "Basic", price: "$1.00/GB", features: ["Up to 5TB", "Shared IPs", "Basic Support"] },
-    { plan: "Business", price: "$0.75/GB", features: ["Up to 20TB", "Dedicated IPs", "Priority Support"] },
-    { plan: "Enterprise", price: "Custom Pricing", features: ["Unlimited Traffic", "Dedicated Resources", "24/7 SLA"] },
+    { tier: "Basic", price: "$1.00/GB", details: ["Up to 5TB", "Shared IPs", "Basic Support"] },
+    { tier: "Business", price: "$0.75/GB", details: ["Up to 20TB", "Dedicated IPs", "Priority Support"] },
+    { tier: "Enterprise", price: "Custom Pricing", details: ["Unlimited Traffic", "Dedicated Resources", "24/7 SLA"] },
   ],
   "Datacenter Mobile": [
-    { plan: "Basic", price: "$1.20/GB", features: ["Up to 5TB", "Mobile-Friendly", "Basic Support"] },
-    { plan: "Business", price: "$0.85/GB", features: ["Up to 20TB", "Dedicated Mobile IPs", "Priority Support"] },
-    { plan: "Enterprise", price: "Custom Pricing", features: ["Custom Traffic Limits", "Private Pools", "Dedicated Manager"] },
+    { tier: "Basic", price: "$1.20/GB", details: ["Up to 5TB", "Mobile-Friendly", "Basic Support"] },
+    { tier: "Business", price: "$0.85/GB", details: ["Up to 20TB", "Dedicated Mobile IPs", "Priority Support"] },
+    { tier: "Enterprise", price: "Custom Pricing", details: ["Custom Traffic Limits", "Private Pools", "Dedicated Manager"] },
   ],
   "Browser Proxy": [
-    { plan: "Standard", price: "$2.00/GB", features: ["Secure Browser Proxy", "Standard Speed", "Basic Support"] },
-    { plan: "Premium", price: "$1.50/GB", features: ["High Speed", "Anonymity Mode", "Priority Support"] },
-    { plan: "Enterprise", price: "Custom Pricing", features: ["Custom Browser Configs", "Dedicated Sessions", "Private Network"] },
+    { tier: "Standard", price: "$2.00/GB", details: ["Secure Browser Proxy", "Standard Speed", "Basic Support"] },
+    { tier: "Premium", price: "$1.50/GB", details: ["High Speed", "Anonymity Mode", "Priority Support"] },
+    { tier: "Enterprise", price: "Custom Pricing", details: ["Custom Browser Configs", "Dedicated Sessions", "Private Network"] },
   ],
 };
 
@@ -53,31 +52,31 @@ function PricingPage() {
     <Container maxW="6xl">
       {/* HEADER */}
       <Heading size="lg" textAlign="center" py={8}>
-        Proxy Pricing (Per GB)
+        Proxy Billing Rates (Per GB)
       </Heading>
 
       {/* PRICING TABS */}
       <Tabs variant="enclosed">
         <TabList>
-          {Object.keys(pricingPlans).map((category) => (
+          {Object.keys(pricingRates).map((category) => (
             <Tab key={category}>{category}</Tab>
           ))}
         </TabList>
 
         <TabPanels>
-          {Object.keys(pricingPlans).map((category) => (
+          {Object.keys(pricingRates).map((category) => (
             <TabPanel key={category}>
               <VStack spacing={6} align="stretch">
-                {pricingPlans[category].map((plan) => (
+                {pricingRates[category].map((tier) => (
                   <Box
-                    key={plan.plan}
+                    key={tier.tier}
                     p={6}
                     shadow="md"
                     borderWidth="1px"
                     borderRadius="lg"
                     position="relative"
                   >
-                    {plan.badge && (
+                    {tier.badge && (
                       <Badge
                         colorScheme="blue"
                         variant="solid"
@@ -86,20 +85,17 @@ function PricingPage() {
                         left="50%"
                         transform="translateX(-50%)"
                       >
-                        {plan.badge}
+                        {tier.badge}
                       </Badge>
                     )}
-                    <Text fontSize="xl" fontWeight="bold">{plan.plan}</Text>
-                    <Text fontSize="lg" color="teal.500">{plan.price}</Text>
+                    <Text fontSize="xl" fontWeight="bold">{tier.tier}</Text>
+                    <Text fontSize="lg" color="teal.500">{tier.price}</Text>
                     <Divider my={4} />
                     <VStack align="start">
-                      {plan.features.map((feature, index) => (
-                        <Text key={index}>- {feature}</Text>
+                      {tier.details.map((detail, index) => (
+                        <Text key={index}>- {detail}</Text>
                       ))}
                     </VStack>
-                    <Button mt={4} colorScheme="blue" w="full">
-                      Choose Plan
-                    </Button>
                   </Box>
                 ))}
               </VStack>
@@ -111,8 +107,7 @@ function PricingPage() {
       {/* SECURITY & PRICING NOTICE */}
       <Box mt={8} textAlign="center">
         <Text fontSize="sm" color="gray.500">
-          Volume discounts are available for high-usage customers. Contact us for
-          **custom enterprise pricing**.
+          Pricing is based on per GB usage. **Enterprise clients** can request **custom volume pricing**.
         </Text>
       </Box>
     </Container>
