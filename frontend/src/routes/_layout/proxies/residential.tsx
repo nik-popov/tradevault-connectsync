@@ -24,6 +24,7 @@ import PromoContent from "../../../components/PromoContent";
 import ProxyStarted from "../../../components/ProxyStarted";
 import ProxySettings from "../../../components/ProxySettings";
 import ProxyUsage from "../../../components/ProxyUsage";
+import KeyManagement from "../../../components/KeyManagement"; // Assuming this is correctly imported
 
 function ResidentialProxy() {
   const queryClient = useQueryClient();
@@ -57,13 +58,7 @@ function ResidentialProxy() {
   const { hasSubscription, isTrial, isDeactivated } = subscriptionSettings;
   const isLocked = !hasSubscription && !isTrial;
 
-  const tabsConfig = [
-    { name: "Get Started", sub: <ProxyStarted /> },
-    { name: "Endpoints", sub: <ProxySettings /> },
-    { name: "Usage", sub: <ProxyUsage /> }
-  ];
-
-  const welcomeMessage = currentUser?.full_name ? `Welcome, ${currentUser.full_name}` : "Welcome to your Proxy Dashboard";
+  const welcomeMessage = currentUser?.full_name ? `Hi, ${currentUser.full_name} 👋 Manage your proxy settings with ease.` : "Hi 👋 Manage your proxy settings with ease.";
 
   return (
     <Container maxW="full" overflowX="hidden">
@@ -90,12 +85,6 @@ function ResidentialProxy() {
       ) : (
         <Flex mt={6} gap={6} justify="space-between" align="stretch" wrap="wrap">
           <Box flex="1" minW={{ base: "100%", md: "65%" }}>
-            <Box p={4}>
-              <Text fontSize="2xl" fontWeight="bold">
-                Hi, {currentUser?.full_name || currentUser?.email} 👋
-              </Text>
-              <Text>Manage your proxy settings with ease.</Text>
-            </Box>
             <Divider my={4} />
             <Tabs variant="enclosed">
               <TabList>
