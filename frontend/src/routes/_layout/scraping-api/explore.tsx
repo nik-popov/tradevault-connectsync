@@ -132,89 +132,93 @@ function Explore() {
         </HStack>
       </Flex>
 
-      {/* Filters & Sorting Row */}
-      <Flex gap={4} justify="space-between" align="center" flexWrap="wrap" mt={2}>
-        <Input
-          placeholder="Search APIs..."
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          w={{ base: "100%", md: "250px" }}
-        />
-
-        <HStack spacing={2}>
-          {industries.map((type) => (
-            <Button
-              key={type}
-              size="sm"
-              fontWeight="bold"
-              borderRadius="full"
-              colorScheme={activeFilter === type ? "blue" : "gray"}
-              variant={activeFilter === type ? "solid" : "outline"}
-              textTransform="lowercase"
-              onClick={() => setActiveFilter(type)}
-            >
-              {type}
-            </Button>
-          ))}
-        </HStack>
-
-        <Select value={sortOption} onChange={(e) => setSortOption(e.target.value)} w="200px">
-          <option value="name">Sort by Name</option>
-        </Select>
-      </Flex>
-
       <Divider my={4} />
 
-      <VStack spacing={4} mt={6} align="stretch">
-        {filteredProducts.length === 0 ? (
-          <Text textAlign="center" fontSize="lg" color="gray.500">
-            No APIs match this filter.
-          </Text>
-        ) : (
-          <List spacing={4}>
-            {filteredProducts.map((api) => (
-              <ListItem
-                key={api.id}
-                p={4}
-                borderWidth="1px"
-                borderRadius="lg"
-                bg={hoveredApi === api.id ? "gray.50" : "white"}
-                transition="background 0.2s ease-in-out"
-                onMouseEnter={() => setHoveredApi(api.id)}
-                onMouseLeave={() => setHoveredApi(null)}
-              >
-                <Flex justify="space-between" align="center">
-                  <Box>
-                    <Text fontWeight="bold">{api.name}</Text>
-                    <Text fontSize="sm" color="gray.600">
-                      {api.description}
-                    </Text>
-                  </Box>
-                  <Button
-                    size="sm"
-                    colorScheme="blue"
-                    rightIcon={<FiExternalLink />}
-                    onClick={() => navigate(`/scraping-api/${api.id}`)}
-                  >
-                    Manage
-                  </Button>
-                </Flex>
+      <Flex gap={6}>
+        {/* 🔍 API Explorer */}
+        <Box flex="1">
+          <Flex gap={4} justify="space-between" align="center" flexWrap="wrap">
+            <Input
+              placeholder="Search APIs..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              w={{ base: "100%", md: "250px" }}
+            />
 
-                <Collapse in={hoveredApi === api.id}>
-                  <Box mt={2} p={2} bg="gray.100" borderRadius="md">
-                    <Text fontSize="xs" color="gray.600">
-                      <strong>Endpoint:</strong> {api.details.endpoint}
-                    </Text>
-                    <Text fontSize="xs" color="gray.600">
-                      <strong>Example:</strong> {api.details.example}
-                    </Text>
-                  </Box>
-                </Collapse>
-              </ListItem>
-            ))}
-          </List>
-        )}
-      </VStack>
+            <HStack spacing={2}>
+              {industries.map((type) => (
+                <Button
+                  key={type}
+                  size="sm"
+                  fontWeight="bold"
+                  borderRadius="full"
+                  colorScheme={activeFilter === type ? "blue" : "gray"}
+                  variant={activeFilter === type ? "solid" : "outline"}
+                  textTransform="lowercase"
+                  onClick={() => setActiveFilter(type)}
+                >
+                  {type}
+                </Button>
+              ))}
+            </HStack>
+
+            <Select value={sortOption} onChange={(e) => setSortOption(e.target.value)} w="200px">
+              <option value="name">Sort by Name</option>
+            </Select>
+          </Flex>
+
+          <VStack spacing={4} mt={6} align="stretch">
+            {filteredProducts.length === 0 ? (
+              <Text textAlign="center" fontSize="lg" color="gray.500">
+                No APIs match this filter.
+              </Text>
+            ) : (
+              <List spacing={4}>
+                {filteredProducts.map((api) => (
+                  <ListItem
+                    key={api.id}
+                    p={4}
+                    borderWidth="1px"
+                    borderRadius="lg"
+                    bg={hoveredApi === api.id ? "gray.50" : "white"}
+                    transition="background 0.2s ease-in-out"
+                    onMouseEnter={() => setHoveredApi(api.id)}
+                    onMouseLeave={() => setHoveredApi(null)}
+                  >
+                    <Flex justify="space-between" align="center">
+                      <Box>
+                        <Text fontWeight="bold">{api.name}</Text>
+                        <Text fontSize="sm" color="gray.600">
+                          {api.description}
+                        </Text>
+                      </Box>
+                      <Button size="sm" colorScheme="blue" rightIcon={<FiExternalLink />} onClick={() => navigate(`/scraping-api/${api.id}`)}>
+                        Manage
+                      </Button>
+                    </Flex>
+                  </ListItem>
+                ))}
+              </List>
+            )}
+          </VStack>
+        </Box>
+
+        {/* 📌 Sidebar */}
+        <Box w="250px" p={4} borderLeft="1px solid #E2E8F0">
+          <VStack spacing={4} align="stretch">
+            <Box p={4} borderWidth="1px" borderRadius="lg">
+              <Text fontWeight="bold">Need Help?</Text>
+              <Text fontSize="sm">Contact support or visit our documentation.</Text>
+            </Box>
+            <Box p={4} borderWidth="1px" borderRadius="lg">
+              <Text fontWeight="bold">GitHub</Text>
+              <Button mt={2} leftIcon={<FiGithub />} size="sm" variant="outline">
+                Join GitHub
+              </Button>
+            </Box>
+          </VStack>
+        </Box>
+      </Flex>
     </Container>
   );
 }
