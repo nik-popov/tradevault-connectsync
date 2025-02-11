@@ -117,12 +117,11 @@ function Pricing() {
       ) : (
         <Flex mt={6} gap={6}>
           <Box flex="1">
-            <Tabs variant="soft-rounded" colorScheme="gray" bg="gray.700" borderRadius="md" p={4}>
+            <Tabs variant="enclosed" colorScheme="gray" bg="gray.700" borderRadius="md" p={4}>
               <TabList bg="gray.700" borderRadius="md">
                 {tabsConfig.map((tab, index) => (
                   <Tab
                     key={index}
-                    bg="gray.600"
                     isDisabled={restrictedTabs.includes(tab.title)}
                     color="gray.300"
                     _selected={{ bg: "gray.600", color: "white", fontWeight: "bold" }}
@@ -132,7 +131,7 @@ function Pricing() {
                   </Tab>
                 ))}
               </TabList>
-              <TabPanels bg="gray.800" borderRadius="md" p={4}>
+              <TabPanels bg="gray.700" borderRadius="md" p={4}>
                 {tabsConfig.map((tab, index) => (
                   <TabPanel key={index}>
                     {restrictedTabs.includes(tab.title) ? (
