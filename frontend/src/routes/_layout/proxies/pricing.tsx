@@ -25,6 +25,7 @@ import ProxyUsage from "../../../components/ProxyUsage";
 
 const STORAGE_KEY = "subscriptionSettings";
 const PRODUCT = "proxy";
+
 const PricingChart = ({ plan }) => {
   const pricingData = {
     basic: [
@@ -50,7 +51,7 @@ const PricingChart = ({ plan }) => {
         {plan.charAt(0).toUpperCase() + plan.slice(1)} Plan Pricing
       </Text>
       <Table variant="simple">
-        <Thead bg="gray.800">
+        <Thead bg="gray.700">
           <Tr>
             <Th color="gray.300" borderColor="gray.600">Data</Th>
             <Th color="gray.300" borderColor="gray.600">Price</Th>
@@ -59,7 +60,7 @@ const PricingChart = ({ plan }) => {
         </Thead>
         <Tbody>
           {pricingData[plan].map((entry, index) => (
-            <Tr key={index} bg={index % 2 === 0 ? "gray.750" : "gray.700"}>
+            <Tr key={index} bg={index % 2 === 0 ? "gray.600" : "gray.700"}>
               <Td color="gray.200" borderColor="gray.600">{entry.data}</Td>
               <Td color="gray.200" borderColor="gray.600">{entry.price}</Td>
               <Td color="gray.200" borderColor="gray.600">{entry.features}</Td>
@@ -110,7 +111,7 @@ function Pricing() {
         </Box>
       </Flex>
       <Divider my={4} />
-      
+
       {isLocked ? (
         <PromoContent />
       ) : isDeactivated ? (
@@ -122,15 +123,21 @@ function Pricing() {
       ) : (
         <Flex mt={6} gap={6} justify="space-between">
           <Box flex="1">
-            <Tabs variant="enclosed" bg="gray.700" borderRadius="md" p={4}>
-              <TabList bg="gray.800" borderRadius="md">
+            <Tabs variant="soft-rounded" colorScheme="gray" bg="gray.700" borderRadius="md" p={4}>
+              <TabList bg="gray.700" borderRadius="md">
                 {tabsConfig.map((tab, index) => (
-                  <Tab key={index} isDisabled={restrictedTabs.includes(tab.title)} color="white">
+                  <Tab
+                    key={index}
+                    isDisabled={restrictedTabs.includes(tab.title)}
+                    color="gray.300"
+                    _selected={{ bg: "gray.600", color: "white", fontWeight: "bold" }}
+                    _hover={{ bg: "gray.600", color: "white" }}
+                  >
                     {tab.title}
                   </Tab>
                 ))}
               </TabList>
-              <TabPanels bg="gray.700" borderRadius="md">
+              <TabPanels bg="gray.600" borderRadius="md" p={4}>
                 {tabsConfig.map((tab, index) => (
                   <TabPanel key={index}>
                     {restrictedTabs.includes(tab.title) ? (
