@@ -6,35 +6,29 @@ import {
   TabPanel,
   TabPanels,
   Tabs,
-  HStack,
-  Flex,
-  Switch,
   Box,
   Text,
   Button,
   VStack,
-  Alert,
-  AlertIcon,
-  Spinner
+  HStack,
+  Divider,
+  Flex,
+  Switch,
 } from "@chakra-ui/react";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useState, useEffect } from "react";
+import { useQueryClient } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import { FiSend, FiGithub } from "react-icons/fi";
 import PromoContent from "../../../components/PromoContent";
 import ProxyStarted from "../../../components/ProxyStarted";
 import ProxySettings from "../../../components/ProxySettings";
 import ProxyUsage from "../../../components/ProxyUsage";
-import { TopUps, Connections, Logs, KeyManagement, ReactivationOptions } from "./ProxyComponents";
 
-// 🚀 API Calls (Replace with real backend API later)
-const fetchSubscriptionSettings = async () => {
-  // Simulate API call
-  return JSON.parse(localStorage.getItem("subscriptionSettings")) || {
-    hasSubscription: false,
-    isTrial: false,
-    isDeactivated: false
-  };
-};
+const TopUps = () => <Box><Text>Top-Ups Component</Text></Box>;
+const Connections = () => <Box><Text>Connections Component</Text></Box>;
+const Logs = () => <Box><Text>Logs Component</Text></Box>;
+const KeyManagement = () => <Box><Text>Key Management Component</Text></Box>;
+const ReactivationOptions = () => <Box><Text>Reactivation Options Component</Text></Box>;
 
 // ✅ Route Export
 export const Route = createFileRoute("/_layout/proxies/residential")({
@@ -53,31 +47,53 @@ const tabsConfig = [
 
 function ResidentialProxy() {
   const queryClient = useQueryClient();
-  const { data: subscriptionSettings, isLoading, error } = useQuery({
-    queryKey: ["subscriptionSettings"],
-    queryFn: fetchSubscriptionSettings
+  const [subscriptionSettings, setSubscriptionSettings] = useState({
+    hasSubscription: false,
+    isTrial: false,
+    isDeactivated: false,
   });
 
-  if (isLoading) return <Spinner size="xl" />;
-  if (error) return <Alert status="error"><AlertIcon />Failed to load subscription settings.</Alert>;
+  // Load subscription settings from localStorage and React Query
+  useEffect(() => {
+    const storedSettings = localStorage.getItem("subscriptionSettings");
+    if (storedSettings) {
+      setSubscriptionSettings(JSON.parse(storedSettings));
+    } else {
+      const querySettings = queryClient.getQueryData("subscriptionSettings");
+      if (querySettings) {
+        setSubscriptionSettings(querySettings);
+      }
+    }
+  }, [queryClient]);
 
   const { hasSubscription, isTrial, isDeactivated } = subscriptionSettings;
+
+  // Define restricted tabs based on subscription state
   const restrictedTabs = isTrial ? ["Key Management", "Logs", "Top-Ups", "Connections"] : [];
   const isLocked = !hasSubscription && !isTrial;
 
   return (
     <Container maxW="full">
-      {/* Top Bar */}
+      {/* Top Bar with Heading and Toggles */}
       <Flex align="center" justify="space-between" py={6} flexWrap="wrap" gap={4}>
         <Heading size="lg">Residential Proxies</Heading>
         <HStack spacing={6}>
-          <HStack><Text fontWeight="bold">Subscription:</Text><Switch isChecked={hasSubscription} isDisabled /></HStack>
-          <HStack><Text fontWeight="bold">Trial Mode:</Text><Switch isChecked={isTrial} isDisabled /></HStack>
-          <HStack><Text fontWeight="bold">Deactivated:</Text><Switch isChecked={isDeactivated} isDisabled /></HStack>
+          <HStack>
+            <Text fontWeight="bold">Subscription:</Text>
+            <Switch isChecked={hasSubscription} isDisabled />
+          </HStack>
+          <HStack>
+            <Text fontWeight="bold">Trial Mode:</Text>
+            <Switch isChecked={isTrial} isDisabled />
+          </HStack>
+          <HStack>
+            <Text fontWeight="bold">Deactivated:</Text>
+            <Switch isChecked={isDeactivated} isDisabled />
+          </HStack>
         </HStack>
       </Flex>
 
-      {/* Content Based on Subscription */}
+      {/* Conditional Content Based on Subscription Status */}
       {isLocked ? (
         <PromoContent />
       ) : isDeactivated ? (
@@ -89,6 +105,13 @@ function ResidentialProxy() {
         <Flex mt={6} gap={6} justify="space-between">
           {/* Main Content */}
           <Box flex="1">
+            <Box p={4}>
+              <Text fontSize="2xl" fontWeight="bold">
+                Hi, Welcome Back 👋🏼
+              </Text>
+              <Text>Manage your proxy settings with ease.</Text>
+            </Box>
+            <Divider my={4} />
             <Tabs variant="enclosed">
               <TabList>
                 {tabsConfig.map((tab, index) => (
@@ -112,12 +135,14 @@ function ResidentialProxy() {
             <VStack spacing={4} align="stretch">
               <Box p={4} shadow="sm" borderWidth="1px" borderRadius="lg">
                 <Text fontWeight="bold">Pick by Your Target</Text>
+                <Text fontSize="sm">Not sure which product to choose?</Text>
                 <Button mt={2} leftIcon={<FiSend />} size="sm" variant="outline">
                   Send Test Request
                 </Button>
               </Box>
               <Box p={4} shadow="sm" borderWidth="1px" borderRadius="lg">
                 <Text fontWeight="bold">GitHub</Text>
+                <Text fontSize="sm">Explore integration guides and open-source projects.</Text>
                 <Button mt={2} leftIcon={<FiGithub />} size="sm" variant="outline">
                   Join GitHub
                 </Button>
