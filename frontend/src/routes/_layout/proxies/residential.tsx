@@ -291,9 +291,10 @@ const ReactivationOptions = () => {
       isDeactivated: false,
     });
   
-    // Destructure after state is initialized
+    // Destructure after the state is declared
     const { hasSubscription, isTrial, isDeactivated } = subscriptionSettings;
-    // Now compute isLocked safely
+  
+    // Now compute isLocked using the destructured values
     const isLocked = !hasSubscription && !isTrial;
   
     // Load subscription settings from localStorage or React Query cache
@@ -309,8 +310,9 @@ const ReactivationOptions = () => {
       }
     }, [queryClient]);
   
-    // Load current user data from localStorage (or replace with your own user logic)
+    // Load current user data
     const currentUser = JSON.parse(localStorage.getItem("currentUser") || "null");
+  
   
   const { hasSubscription, isTrial, isDeactivated } = subscriptionSettings;
   // Define restricted tabs when in trial mode
