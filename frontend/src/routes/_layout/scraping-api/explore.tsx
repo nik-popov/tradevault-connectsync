@@ -52,7 +52,7 @@ function Explore() {
   const isLocked = !hasSubscription && !isTrial;
   const isFullyDeactivated = isDeactivated && !hasSubscription;
 
-  // 🔍 Search & Filter State
+  // 🔍 Search, Filter, and Sort State
   const [searchQuery, setSearchQuery] = useState("");
   const [activeFilter, setActiveFilter] = useState("all");
   const [sortOption, setSortOption] = useState("name");
@@ -64,16 +64,17 @@ function Explore() {
     { id: "amazon-product-api", name: "Amazon Product API", type: "ecommerce", description: "Fetches product details, reviews, and price history from Amazon." },
   ];
 
-  const industries = ["all", ...new Set(proxyProducts.map((api) => api.type))];
+  const categories = ["all", ...new Set(proxyProducts.map((api) => api.type))];
 
   // 🔄 Filtered API List
   const filteredProducts = useMemo(() => {
     return proxyProducts.filter((product) => {
-      const matchesFilter = activeFilter === "all" || product.type.toLowerCase() === activeFilter.toLowerCase();
+      const matchesFilter =
+        activeFilter === "all" || product.type.toLowerCase() === activeFilter.toLowerCase();
       const matchesSearch = product.name.toLowerCase().includes(searchQuery.toLowerCase());
       return matchesFilter && matchesSearch;
     });
-  }, [searchQuery, activeFilter]);
+  }, [searchQuery, activeFilter, proxyProducts]);
 
   return (
     <Container maxW="full" overflowX="hidden">
@@ -120,6 +121,23 @@ function Explore() {
                 onChange={(e) => setSearchQuery(e.target.value)}
                 w={{ base: "100%", md: "250px" }}
               />
+
+              <HStack spacing={2}>
+                {categories.map((type) => (
+                  <Button
+                    key={type}
+                    size="sm"
+                    fontWeight="bold"
+                    borderRadius="full"
+                    colorScheme={activeFilter === type ? "blue" : "gray"}
+                    variant={activeFilter === type ? "solid" : "outline"}
+                    onClick={() => setActiveFilter(type)}
+                  >
+                    {type}
+                  </Button>
+                ))}
+              </HStack>
+
               <Select value={sortOption} onChange={(e) => setSortOption(e.target.value)} w="200px">
                 <option value="name">Sort by Name</option>
               </Select>
