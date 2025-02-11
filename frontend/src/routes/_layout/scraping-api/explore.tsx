@@ -37,20 +37,19 @@ const Explore = () => {
   const currentUser = queryClient.getQueryData(["currentUser"]);
   const ownedApis = currentUser?.ownedApis || [];
 
-  // Expanded list of APIs categorized by industry
   const results = [
-    { id: "google", name: "Google Search API", type: "Search Engines", owned: ownedApis.includes("google") },
-    { id: "bing", name: "Bing Search API", type: "Search Engines", owned: ownedApis.includes("bing") },
-    { id: "amazon", name: "Amazon Product API", type: "E-commerce", owned: ownedApis.includes("amazon") },
-    { id: "ebay", name: "eBay Data API", type: "E-commerce", owned: ownedApis.includes("ebay") },
-    { id: "zillow", name: "Zillow Real Estate API", type: "Real Estate", owned: ownedApis.includes("zillow") },
-    { id: "realtor", name: "Realtor Property API", type: "Real Estate", owned: ownedApis.includes("realtor") },
-    { id: "yahoo_finance", name: "Yahoo Finance API", type: "Finance", owned: ownedApis.includes("yahoo_finance") },
-    { id: "alpha_vantage", name: "Alpha Vantage API", type: "Finance", owned: ownedApis.includes("alpha_vantage") }
+    { id: "google", name: "Google Search API", type: "Search", owned: ownedApis.includes("google") },
+    { id: "bing", name: "Bing Search API", type: "Search", owned: ownedApis.includes("bing") },
+    { id: "real-estate", name: "Real Estate Data API", type: "Real Estate", owned: ownedApis.includes("real-estate") },
+    { id: "ecommerce", name: "E-commerce Scraper API", type: "E-commerce", owned: ownedApis.includes("ecommerce") },
+    { id: "finance", name: "Financial Data API", type: "Finance", owned: ownedApis.includes("finance") },
+    { id: "fashion", name: "Fashion Trends API", type: "Fashion", owned: ownedApis.includes("fashion") },
+    { id: "healthcare", name: "Healthcare Data API", type: "Healthcare", owned: ownedApis.includes("healthcare") },
+    { id: "travel", name: "Travel Deals API", type: "Travel", owned: ownedApis.includes("travel") }
   ];
 
   const industries = [...new Set(results.map((r) => r.type))];
-
+  
   const isLocked = !hasSubscription && !isTrial;
 
   return (
@@ -106,11 +105,11 @@ const Explore = () => {
               {industries.map((industry, index) => (
                 <TabPanel key={index}>
                   <VStack spacing={4} align="stretch">
-                    {results.filter(r => r.type === industry && r.name.toLowerCase().includes(searchQuery.toLowerCase()) && (!ownedOnly || r.owned)).length === 0 ? (
+                    {results.filter(r => r.type === industry).length === 0 ? (
                       <Text textAlign="center" fontSize="lg" color="gray.500">No results found.</Text>
                     ) : (
                       <List spacing={3}>
-                        {results.filter(r => r.type === industry && r.name.toLowerCase().includes(searchQuery.toLowerCase()) && (!ownedOnly || r.owned)).map((result) => (
+                        {results.filter(r => r.type === industry).map((result) => (
                           <ListItem key={result.id} p={3} shadow="sm" borderWidth="1px" borderRadius="md">
                             <Text fontWeight="bold">{result.name} {result.owned ? "(Owned)" : ""}</Text>
                           </ListItem>
