@@ -15,14 +15,14 @@ import {
   Flex,
   Switch,
 } from "@chakra-ui/react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import { FiSend, FiGithub } from "react-icons/fi";
 import PromoContent from "../../../components/PromoContentMobile";
 import GetStarted from "../../../components/GetStarted";
 import ProxySettings from "../../../components/ProxySettings";
-import ProxyUsage from "../../../components/ProxyUsage"
+import ProxyUsage from "../../../components/ProxyUsage";
 
 const TopUps = () => <Box><Text>Top-Ups Component</Text></Box>;
 const Connections = () => <Box><Text>Connections Component</Text></Box>;
@@ -30,7 +30,7 @@ const Logs = () => <Box><Text>Logs Component</Text></Box>;
 const KeyManagement = () => <Box><Text>Key Management Component</Text></Box>;
 const ReactivationOptions = () => <Box><Text>Reactivation Options Component</Text></Box>;
 
-// ✅ FIX: Corrected Route Export
+// ✅ Correct Route Export
 export const Route = createFileRoute("/_layout/proxies/residential-mobile")({
   component: ResidentialMobileProxy,
 });
@@ -46,40 +46,52 @@ const tabsConfig = [
 ];
 
 function ResidentialMobileProxy() {
-  const [hasSubscription, setHasSubscription] = useState(false);
-  const [isTrial, setIsTrial] = useState(false);
-  const [isDeactivated, setIsDeactivated] = useState(false);
-
   const queryClient = useQueryClient();
-  const currentUser = queryClient.getQueryData(["currentUser"]);
+  const [subscriptionSettings, setSubscriptionSettings] = useState({
+    hasSubscription: false,
+    isTrial: false,
+    isDeactivated: false,
+  });
 
-  // ✅ FIX: Ensure restrictedTabs is defined
-  const restrictedTabs = isTrial ? ["Key Management", "Logs", "Top-Ups","Connections"] : [];
+  // Load subscription settings from localStorage and React Query
+  useEffect(() => {
+    const storedSettings = localStorage.getItem("subscriptionSettings");
+    if (storedSettings) {
+      setSubscriptionSettings(JSON.parse(storedSettings));
+    } else {
+      const querySettings = queryClient.getQueryData("subscriptionSettings");
+      if (querySettings) {
+        setSubscriptionSettings(querySettings);
+      }
+    }
+  }, [queryClient]);
 
+  const { hasSubscription, isTrial, isDeactivated } = subscriptionSettings;
+  const restrictedTabs = isTrial ? ["Key Management", "Logs", "Top-Ups", "Connections"] : [];
   const isLocked = !hasSubscription && !isTrial;
 
   return (
     <Container maxW="full">
       {/* Top Bar with Heading and Toggles */}
       <Flex align="center" justify="space-between" py={6} flexWrap="wrap" gap={4}>
-        <Heading size="lg">Residential Proxies</Heading>
+        <Heading size="lg">Residential Mobile Proxies</Heading>
         <HStack spacing={6}>
           <HStack>
             <Text fontWeight="bold">Subscription:</Text>
-            <Switch isChecked={hasSubscription} onChange={() => setHasSubscription(!hasSubscription)} />
+            <Switch isChecked={hasSubscription} isDisabled />
           </HStack>
           <HStack>
             <Text fontWeight="bold">Trial Mode:</Text>
-            <Switch isChecked={isTrial} onChange={() => setIsTrial(!isTrial)} />
+            <Switch isChecked={isTrial} isDisabled />
           </HStack>
           <HStack>
             <Text fontWeight="bold">Deactivated:</Text>
-            <Switch isChecked={isDeactivated} onChange={() => setIsDeactivated(!isDeactivated)} />
+            <Switch isChecked={isDeactivated} isDisabled />
           </HStack>
         </HStack>
       </Flex>
 
-      {/* Conditional Content */}
+      {/* Conditional Content Based on Subscription Status */}
       {isLocked ? (
         <PromoContent />
       ) : isDeactivated ? (
@@ -91,10 +103,8 @@ function ResidentialMobileProxy() {
         <Flex mt={6} gap={6} justify="space-between">
           <Box flex="1">
             <Box p={4}>
-              <Text fontSize="2xl" fontWeight="bold">
-                Hi, {currentUser?.full_name || currentUser?.email || "User"} 👋🏼
-              </Text>
-              <Text>Welcome back, nice to see you again!</Text>
+              <Text fontSize="2xl" fontWeight="bold">Hi, Welcome Back 👋🏼</Text>
+              <Text>Manage your proxy settings with ease.</Text>
             </Box>
             <Divider my={4} />
             <Tabs variant="enclosed">
@@ -114,6 +124,8 @@ function ResidentialMobileProxy() {
               </TabPanels>
             </Tabs>
           </Box>
+
+          {/* Sidebar Section */}
           <Box w="250px" p={4} borderLeft="1px solid #E2E8F0">
             <VStack spacing={4} align="stretch">
               <Box p={4} shadow="sm" borderWidth="1px" borderRadius="lg">
