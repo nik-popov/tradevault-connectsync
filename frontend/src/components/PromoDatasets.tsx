@@ -16,7 +16,7 @@ import {
   AlertIcon,
 } from "@chakra-ui/react";
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
-import { FiCheckCircle, FiDatabase, FiTrendingUp, FiDollarSign,FiShoppingCart, FiCloud} from 'react-icons/fi';
+import { FiCheckCircle, FiDatabase, FiTrendingUp, FiArrowRight,FiShoppingCart, FiCloud} from 'react-icons/fi';
 
 // Define dataset categories
 const datasetCategories = [
@@ -80,7 +80,16 @@ const PromoDatasets: React.FC = () => {
           <AlertIcon />
           <Text>All datasets are optimized for high-speed querying and secure data access.</Text>
         </Alert>
-
+   {/* Free Trial CTA */}
+        <Box bg="blue.50" borderRadius="xl" p={8} mb={12}>
+          <Heading as="h2" size="lg" fontWeight="bold" mb={4}>Start Your Free Trial Today</Heading>
+          <Text color="gray.600" mb={6}>
+            Experience unlimited access to all features for 7 days, no credit card required.
+          </Text>
+          <Button colorScheme="blue" size="lg" rightIcon={<FiArrowRight />} onClick={() => navigate('/proxies/pricing')}>
+            Start Free Trial
+          </Button>
+        </Box>
         {/* Pricing Plans Section */}
         <Heading as="h2" size="lg" fontWeight="bold" mb={4}>Pricing Plans</Heading>
         <Grid templateColumns={{ base: "1fr", md: "repeat(3, 1fr)" }} gap={6}>
