@@ -40,7 +40,7 @@ const pricingPlans = [
     name: "Archiver",
     price: "$100",
     features: ["Extended dataset history", "1,000 API requests/month", "Priority support"],
-    borderColor: "blue.400",
+    borderColor: "blue.700",
     buttonVariant: "solid",
     badge: "MOST POPULAR",
   },
@@ -48,7 +48,7 @@ const pricingPlans = [
     name: "Researcher",
     price: "$500",
     features: ["High download limits", "10,000 API requests/month", "Advanced analytics"],
-    borderColor: "purple.400",
+    borderColor: "purple.500",
     buttonVariant: "solid",
   },
   {
@@ -68,7 +68,7 @@ const PromoDatasets: React.FC = () => {
       <VStack spacing={8} align="stretch">
         
         {/* Full-Width Title and Free Trial Section */}
-        <Box w="100%">
+        <Box w="100%" bg="white" py={6}>
           <Grid templateColumns={{ base: "1fr", md: "1fr 1fr" }} gap={6} alignItems="center">
             {/* Left: Title */}
             <Box>
@@ -79,7 +79,7 @@ const PromoDatasets: React.FC = () => {
 
             {/* Right: Free Trial Section */}
             <Box
-              bg="blue.500"
+              bg="blue.700"
               color="white"
               borderRadius="lg"
               p={6}
@@ -89,10 +89,10 @@ const PromoDatasets: React.FC = () => {
               flexDirection="column"
               justifyContent="center"
             >
-              <Heading as="h2" size="md" fontWeight="bold">
-                Start Your Free Trial Today!
+              <Heading as="h2" size="lg" fontWeight="extrabold" textShadow="1px 1px 4px rgba(0,0,0,0.2)">
+                🚀 Start Your Free Trial Today!
               </Heading>
-              <Text fontSize="sm" my={2}>
+              <Text fontSize="sm" my={2} color="gray.200">
                 Get full access to our datasets with a 7-day free trial. No credit card required!
               </Text>
               <Button colorScheme="whiteAlpha" variant="solid" onClick={() => navigate('/signup')} mt={2}>
@@ -102,54 +102,58 @@ const PromoDatasets: React.FC = () => {
           </Grid>
         </Box>
 
-        <Text fontSize="lg" color="gray.600">
-          Need specific datasets? Customize and filter data to fit your exact requirements. Our flexible API delivers structured data, empowering you to make informed decisions.
-        </Text>
-        {/* Dataset Categories Section */}
-        <Grid templateColumns={{ base: "1fr", md: "repeat(2, 1fr)" }} gap={6}>
-          {datasetCategories.map((dataset, index) => (
-            <GridItem key={index} p={6} border="1px solid" borderColor="gray.200" borderRadius="lg" boxShadow="sm" _hover={{ boxShadow: "md" }}>
-              <Flex align="center" mb={4}>
-                <Icon as={dataset.icon} boxSize={8} color="blue.500" mr={3} />
-                <Text fontSize="lg" fontWeight="semibold">{dataset.name}</Text>
-              </Flex>
-              <Text fontSize="sm" color="gray.600">{dataset.description}</Text>
-            </GridItem>
-          ))}
-        </Grid>
+        {/* Light Gray Background for Separation */}
+        <Box bg="gray.50" py={10} px={6} borderRadius="lg">
+          <Text fontSize="lg" color="gray.600">
+            Need specific datasets? Customize and filter data to fit your exact requirements. Our flexible API delivers structured data, empowering you to make informed decisions.
+          </Text>
 
-        {/* Pricing Plans Section */}
-        <Grid templateColumns={{ base: "1fr", md: "repeat(4, 1fr)" }} gap={6}>
-          {pricingPlans.map((plan, index) => (
-            <Box key={index} position="relative">
-              {plan.badge && (
-                <Badge colorScheme="blue" variant="solid" px={3} py={1} position="absolute" top="-12px" left="10px">
-                  {plan.badge}
-                </Badge>
-              )}
-              <Box p={6} border="2px solid" borderColor={plan.borderColor} borderRadius="lg" textAlign="left">
-                <Heading as="h3" size="md" fontWeight="semibold" mb={2}>
-                  {plan.name}
-                </Heading>
-                <List spacing={3} mb={6}>
-                  {plan.features.map((feature, idx) => (
-                    <ListItem key={idx} display="flex" alignItems="center">
-                      <ListIcon as={FiCheckCircle} color="blue.500" boxSize={5} />
-                      {feature}
-                    </ListItem>
-                  ))}
-                </List>
-                <Text fontSize="2xl" fontWeight="bold" mb={1}>
-                  {plan.price === "Custom" ? "Contact Us" : plan.price}
-                  {plan.price !== "Custom" && <Text as="span" fontSize="lg" color="gray.500">/mo</Text>}
-                </Text>
-                <Button w="full" colorScheme="blue" variant={plan.buttonVariant} onClick={() => navigate('/datasets/pricing')}>
-                  {plan.price === "Custom" ? "Contact Us" : `Choose ${plan.name}`}
-                </Button>
+          {/* Dataset Categories Section */}
+          <Grid templateColumns={{ base: "1fr", md: "repeat(2, 1fr)" }} gap={6} mt={6}>
+            {datasetCategories.map((dataset, index) => (
+              <GridItem key={index} p={6} border="1px solid" borderColor="gray.200" borderRadius="lg" boxShadow="sm" _hover={{ boxShadow: "md" }}>
+                <Flex align="center" mb={4}>
+                  <Icon as={dataset.icon} boxSize={8} color="blue.700" mr={3} />
+                  <Text fontSize="lg" fontWeight="semibold">{dataset.name}</Text>
+                </Flex>
+                <Text fontSize="sm" color="gray.600">{dataset.description}</Text>
+              </GridItem>
+            ))}
+          </Grid>
+
+          {/* Pricing Plans Section */}
+          <Grid templateColumns={{ base: "1fr", md: "repeat(4, 1fr)" }} gap={6} mt={10}>
+            {pricingPlans.map((plan, index) => (
+              <Box key={index} position="relative">
+                {plan.badge && (
+                  <Badge colorScheme="blue" variant="solid" px={3} py={1} position="absolute" top="-12px" left="10px">
+                    {plan.badge}
+                  </Badge>
+                )}
+                <Box p={6} border="2px solid" borderColor={plan.borderColor} borderRadius="lg" textAlign="left" bg="white">
+                  <Heading as="h3" size="md" fontWeight="semibold" mb={2}>
+                    {plan.name}
+                  </Heading>
+                  <List spacing={3} mb={6}>
+                    {plan.features.map((feature, idx) => (
+                      <ListItem key={idx} display="flex" alignItems="center">
+                        <ListIcon as={FiCheckCircle} color="blue.700" boxSize={5} />
+                        {feature}
+                      </ListItem>
+                    ))}
+                  </List>
+                  <Text fontSize="2xl" fontWeight="bold" mb={1}>
+                    {plan.price === "Custom" ? "Contact Us" : plan.price}
+                    {plan.price !== "Custom" && <Text as="span" fontSize="lg" color="gray.500">/mo</Text>}
+                  </Text>
+                  <Button w="full" colorScheme="blue" variant={plan.buttonVariant} onClick={() => navigate('/datasets/pricing')}>
+                    {plan.price === "Custom" ? "Contact Us" : `Choose ${plan.name}`}
+                  </Button>
+                </Box>
               </Box>
-            </Box>
-          ))}
-        </Grid>
+            ))}
+          </Grid>
+        </Box>
 
         {/* Security & Performance Notice */}
         <Alert status="success" borderRadius="md">
