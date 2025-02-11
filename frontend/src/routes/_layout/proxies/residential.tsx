@@ -278,33 +278,35 @@ const ReactivationOptions = () => {
 /* ====================================================
    ResidentialProxy Component using Mobile Template
    ==================================================== */
-function ResidentialProxy() {
-
-  const isLocked = !hasSubscription && !isTrial;
-
-  const queryClient = useQueryClient();
-  const [subscriptionSettings, setSubscriptionSettings] = useState({
-    hasSubscription: false,
-    isTrial: false,
-    isDeactivated: false,
-  });
-
-  // Load subscription settings from localStorage or React Query cache
-  useEffect(() => {
-    const storedSettings = localStorage.getItem("subscriptionSettings");
-    if (storedSettings) {
-      setSubscriptionSettings(JSON.parse(storedSettings));
-    } else {
-      const querySettings = queryClient.getQueryData("subscriptionSettings");
-      if (querySettings) {
-        setSubscriptionSettings(querySettings);
+   function ResidentialProxy() {
+    const queryClient = useQueryClient();
+    const [subscriptionSettings, setSubscriptionSettings] = useState({
+      hasSubscription: false,
+      isTrial: false,
+      isDeactivated: false,
+    });
+  
+    // Destructure after state is initialized
+    const { hasSubscription, isTrial, isDeactivated } = subscriptionSettings;
+    // Now compute isLocked safely
+    const isLocked = !hasSubscription && !isTrial;
+  
+    // Load subscription settings from localStorage or React Query cache
+    useEffect(() => {
+      const storedSettings = localStorage.getItem("subscriptionSettings");
+      if (storedSettings) {
+        setSubscriptionSettings(JSON.parse(storedSettings));
+      } else {
+        const querySettings = queryClient.getQueryData("subscriptionSettings");
+        if (querySettings) {
+          setSubscriptionSettings(querySettings);
+        }
       }
-    }
-  }, [queryClient]);
-
-  // Load current user data from localStorage (or replace with your own user logic)
-  const currentUser = JSON.parse(localStorage.getItem("currentUser") || "null");
-
+    }, [queryClient]);
+  
+    // Load current user data from localStorage (or replace with your own user logic)
+    const currentUser = JSON.parse(localStorage.getItem("currentUser") || "null");
+  
   const { hasSubscription, isTrial, isDeactivated } = subscriptionSettings;
   // Define restricted tabs when in trial mode
   const restrictedTabs = isTrial
