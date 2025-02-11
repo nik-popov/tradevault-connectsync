@@ -7,7 +7,6 @@ import {
   HStack,
   Divider,
   Flex,
-  Switch,
   Alert,
   AlertIcon,
   Box,
@@ -17,41 +16,42 @@ import {
   FormLabel,
   useToast,
 } from "@chakra-ui/react";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { FiSend, FiGithub, FiMail, FiHelpCircle } from "react-icons/fi";
 import PromoDatasets from "../../../components/PromoDatasets";
+import SubscriptionManagement from "../../../components/UserSettings/SubscriptionManagement";
+
+// Storage and Product Key
+const STORAGE_KEY = "subscriptionSettings";
+const PRODUCT = "Datasets"; // Define product-specific subscription management
 
 export const Route = createFileRoute("/_layout/datasets/request")({
   component: Request,
 });
 
 function Request() {
-  const queryClient = useQueryClient();
   const navigate = useNavigate();
   const toast = useToast();
 
-  // ✅ Load Subscription State
-  const [subscriptionSettings, setSubscriptionSettings] = useState({
+  // ✅ Load Subscription State using useQuery
+  const { data: subscriptionSettings } = useQuery({
+    queryKey: ["subscriptionSettings"],
+    queryFn: () => {
+      const storedSettings = localStorage.getItem(STORAGE_KEY);
+      return storedSettings ? JSON.parse(storedSettings) : {};
+    },
+    staleTime: Infinity,
+  });
+
+  const settings = subscriptionSettings?.[PRODUCT] || {
     hasSubscription: false,
     isTrial: false,
     isDeactivated: false,
-  });
+  };
 
-  useEffect(() => {
-    const storedSettings = localStorage.getItem("subscriptionSettings");
-    if (storedSettings) {
-      setSubscriptionSettings(JSON.parse(storedSettings));
-    } else {
-      const querySettings = queryClient.getQueryData("subscriptionSettings");
-      if (querySettings) {
-        setSubscriptionSettings(querySettings);
-      }
-    }
-  }, [queryClient]);
-
-  const { hasSubscription, isTrial, isDeactivated } = subscriptionSettings;
+  const { hasSubscription, isTrial, isDeactivated } = settings;
   const isLocked = !hasSubscription && !isTrial;
   const isFullyDeactivated = isDeactivated && !hasSubscription;
 
@@ -106,23 +106,10 @@ function Request() {
 
   return (
     <Container maxW="full" overflowX="hidden">
-      {/* 🔄 Title with Subscription Toggles */}
+      {/* 🔄 Title with Subscription Management */}
       <Flex justify="space-between" align="center" my={4} flexWrap="wrap">
         <Heading size="lg">Request a New Dataset</Heading>
-        <HStack spacing={6}>
-          <HStack>
-            <Text fontWeight="bold">Subscription:</Text>
-            <Switch isChecked={hasSubscription} isDisabled />
-          </HStack>
-          <HStack>
-            <Text fontWeight="bold">Trial Mode:</Text>
-            <Switch isChecked={isTrial} isDisabled />
-          </HStack>
-          <HStack>
-            <Text fontWeight="bold">Deactivated:</Text>
-            <Switch isChecked={isDeactivated} isDisabled />
-          </HStack>
-        </HStack>
+        <SubscriptionManagement product={PRODUCT} />
       </Flex>
 
       <Divider my={4} />
