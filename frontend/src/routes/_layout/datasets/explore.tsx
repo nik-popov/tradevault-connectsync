@@ -50,7 +50,6 @@ function Explore() {
 
   // 🔍 Mock Dataset Data
   const datasets = [
-    const datasets = [
       {
         id: "global-traffic",
         name: "Global Traffic Data",
