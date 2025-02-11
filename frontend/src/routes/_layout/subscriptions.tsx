@@ -114,5 +114,4 @@ import {
     component: Subscriptions,
   });
   
-  export default Subscriptions;
-  
+export default Subscriptions;
