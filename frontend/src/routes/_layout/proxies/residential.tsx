@@ -25,7 +25,8 @@ import PromoContent from "../../../components/PromoContent";
 import ProxyStarted from "../../../components/ProxyStarted";
 import ProxySettings from "../../../components/ProxySettings";
 import ProxyUsage from "../../../components/ProxyUsage";
-import SubscriptionManagement from "../../../components/SubscriptionManagement";
+import SubscriptionManagement from "../../../components/UserSettings/SubscriptionManagement";
+
 
 
 
