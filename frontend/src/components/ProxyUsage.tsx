@@ -1,36 +1,99 @@
 import React from 'react';
-import { Box, Heading, Text, Divider, Alert, AlertIcon, List, ListItem, ListIcon } from "@chakra-ui/react";
-import { FiCheckCircle } from "react-icons/fi";
+import {
+  Box,
+  VStack,
+  Heading,
+  Text,
+  Divider,
+  Alert,
+  AlertIcon,
+  Stat,
+  StatLabel,
+  StatNumber,
+  StatHelpText,
+  StatGroup,
+  List,
+  ListItem,
+  ListIcon,
+  Flex
+} from "@chakra-ui/react";
+import { FiCheckCircle, FiBarChart2, FiAlertTriangle } from "react-icons/fi";
 
 const ProxyUsage = () => (
-  <Box maxW="3xl" mx="auto" px={{ base: 4, md: 8 }} py={8}>
-    <Heading size="lg" textAlign="center">Proxy Usage</Heading>
-    <Divider my={4} />
-    <Text>Below are details on how you are utilizing the proxy services:</Text>
-    
-    <List spacing={3} mt={4}>
-      <ListItem>
-        <ListIcon as={FiCheckCircle} color="green.500" />
-        Total Requests: 15,234
-      </ListItem>
-      <ListItem>
-        <ListIcon as={FiCheckCircle} color="green.500" />
-        Data Transferred: 1.2GB
-      </ListItem>
-      <ListItem>
-        <ListIcon as={FiCheckCircle} color="green.500" />
-        Active Connections: 12
-      </ListItem>
-      <ListItem>
-        <ListIcon as={FiCheckCircle} color="green.500" />
-        Failed Requests: 45
-      </ListItem>
-    </List>
-    
-    <Alert status="success" borderRadius="md" mt={6}>
-      <AlertIcon />
-      <Text>All proxy usage details are verified and up-to-date.</Text>
-    </Alert>
+  <Box maxW="100%" mx="auto" px={{ base: 6, md: 12 }} py={12}>
+    <VStack spacing={8} align="stretch">
+      <Heading size="2xl" textAlign="center">Proxy Usage Dashboard</Heading>
+      <Text fontSize="lg" textAlign="center" color="gray.600">
+        Monitor your proxy usage, analyze traffic, and optimize performance.
+      </Text>
+      <Divider />
+      
+      {/* Overview Statistics */}
+      <Heading size="lg">Usage Statistics</Heading>
+      <StatGroup>
+        <Stat>
+          <StatLabel>Total Requests</StatLabel>
+          <StatNumber>15,234</StatNumber>
+          <StatHelpText>Last 24 hours</StatHelpText>
+        </Stat>
+        <Stat>
+          <StatLabel>Data Transferred</StatLabel>
+          <StatNumber>1.2GB</StatNumber>
+          <StatHelpText>Last 24 hours</StatHelpText>
+        </Stat>
+        <Stat>
+          <StatLabel>Avg. Response Time</StatLabel>
+          <StatNumber>120ms</StatNumber>
+          <StatHelpText>Last 24 hours</StatHelpText>
+        </Stat>
+        <Stat>
+          <StatLabel>Peak Active Connections</StatLabel>
+          <StatNumber>18</StatNumber>
+          <StatHelpText>Highest in last 24 hours</StatHelpText>
+        </Stat>
+      </StatGroup>
+      
+      <Divider />
+      
+      {/* Connection Details */}
+      <Heading size="lg">Connection Insights</Heading>
+      <List spacing={4}>
+        <ListItem>
+          <ListIcon as={FiCheckCircle} color="green.500" />
+          Active Connections: 12
+        </ListItem>
+        <ListItem>
+          <ListIcon as={FiCheckCircle} color="green.500" />
+          Successful Requests: 14,900
+        </ListItem>
+        <ListItem>
+          <ListIcon as={FiAlertTriangle} color="yellow.500" />
+          Failed Requests: 45
+        </ListItem>
+        <ListItem>
+          <ListIcon as={FiCheckCircle} color="green.500" />
+          Average Session Duration: 8m 24s
+        </ListItem>
+      </List>
+      
+      <Divider />
+      
+      {/* Alerts and Notifications */}
+      <Heading size="lg">Alerts & Notifications</Heading>
+      <Alert status="success" borderRadius="md">
+        <AlertIcon />
+        <Text>All proxy usage details are verified and up-to-date.</Text>
+      </Alert>
+      <Alert status="warning" borderRadius="md" mt={4}>
+        <AlertIcon />
+        <Text>Some failed requests detected. Check your authentication settings.</Text>
+      </Alert>
+      
+      <Alert status="error" borderRadius="md" mt={4}>
+        <AlertIcon />
+        <Text>Proxy downtime detected in the last 6 hours. Consider switching regions.</Text>
+      </Alert>
+    </VStack>
   </Box>
 );
 
