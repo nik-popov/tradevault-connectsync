@@ -23,11 +23,6 @@ import {
   import { FiSend, FiMail, FiHelpCircle,FiGithub } from "react-icons/fi";
   import React from "react";
   
-  function QuickActionsSidebar() {
-  export const Route = createFileRoute("/_layout/support")({
-    component: Support,
-  });
-  
   function Support() {
     const queryClient = useQueryClient();
     const toast = useToast();
