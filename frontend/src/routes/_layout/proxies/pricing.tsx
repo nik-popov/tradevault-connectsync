@@ -17,6 +17,7 @@ import {
   Container,
 } from "@chakra-ui/react";
 import { useNavigate } from '@tanstack/react-router';
+import { createFileRoute } from "@tanstack/react-router";
 
 const proxyPricing = {
   Residential: [
@@ -51,10 +52,9 @@ const proxyPricing = {
   ],
 };
 
-import { createFileRoute } from "@tanstack/react-router";
-
-
+const PricingPage = () => {
   const navigate = useNavigate();
+
   return (
     <Container maxW="6xl" py={10}>
       <Heading size="lg" textAlign="center" mb={8}>
@@ -122,10 +122,10 @@ import { createFileRoute } from "@tanstack/react-router";
           Contact Sales
         </Button>
       </Box>
-    )
     </Container>
   );
-}
+};
+
 export const Route = createFileRoute("/_layout/proxies/pricing")({
   component: PricingPage,
 });
