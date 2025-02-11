@@ -171,7 +171,7 @@ import {
             )}
           </Box>
   
-    <Box w="250px" p="4" borderLeft="1px solid #E2E8F0">
+          <Box w="250px" p="4" borderLeft="1px solid #E2E8F0">
       <VStack spacing="4" align="stretch">
         <Box p="4" shadow="sm" borderWidth="1px" borderRadius="lg">
           <Text fontWeight="bold">Quick Actions</Text>
@@ -227,7 +227,6 @@ import {
         </Box>
       </VStack>
     </Box>
-
 
         </Flex>
       </Container>
