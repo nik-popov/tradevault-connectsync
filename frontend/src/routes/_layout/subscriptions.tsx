@@ -16,88 +16,49 @@ import {
     TabPanels,
     Badge,
     Button,
-    Alert,
-    AlertIcon,
-    Spinner,
+    Flex,
   } from "@chakra-ui/react";
   import { useState, useEffect } from "react";
   import Navbar from "../../components/Common/Navbar";
-  import { loadStripe } from "@stripe/stripe-js";
   
-  // ✅ Load Stripe with the correct publishable key
-  const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY);
+  // ✅ Mock Subscription Data (Later will be from Backend)
+  const mockUsers = [
+    { id: "1", name: "Alice", email: "alice@example.com", subscription: "Business", isTrial: false, isDeactivated: false },
+    { id: "2", name: "Bob", email: "bob@example.com", subscription: "Starter", isTrial: true, isDeactivated: false },
+    { id: "3", name: "Charlie", email: "charlie@example.com", subscription: "Enterprise", isTrial: false, isDeactivated: true },
+  ];
   
-  // ✅ Mock Subscription Data (Can Be Replaced with API)
-  const subscriptionData = {
-    Proxy: [
-      { id: "1", name: "Starter", price: "$99/mo", hasSubscription: true, isTrial: false, isDeactivated: false },
-      { id: "2", name: "Business", price: "$499/mo", hasSubscription: true, isTrial: false, isDeactivated: false, badge: "Most Popular" },
-      { id: "3", name: "Business Plus+", price: "$2,999/mo", hasSubscription: true, isTrial: false, isDeactivated: false },
-      { id: "4", name: "Ultra Enterprise", price: "Contact Dev", hasSubscription: false, isTrial: false, isDeactivated: true },
-    ],
-    "Scraping API": [
-      { id: "5", name: "For Developers", price: "$100/mo", hasSubscription: true, isTrial: false, isDeactivated: false },
-      { id: "6", name: "SaaS", price: "$500/mo", hasSubscription: true, isTrial: false, isDeactivated: false, badge: "Most Popular" },
-      { id: "7", name: "Pro", price: "$2,000/mo", hasSubscription: true, isTrial: false, isDeactivated: false },
-      { id: "8", name: "Enterprise", price: "Custom Pricing", hasSubscription: false, isTrial: false, isDeactivated: true },
-    ],
-    "Dataset Access": [
-      { id: "9", name: "Explorer", price: "$5/mo", hasSubscription: true, isTrial: false, isDeactivated: false, badge: "Most Popular" },
-      { id: "10", name: "Archiver", price: "$100/mo", hasSubscription: true, isTrial: false, isDeactivated: false },
-      { id: "11", name: "Researcher", price: "$500/mo", hasSubscription: true, isTrial: false, isDeactivated: false },
-      { id: "12", name: "Enterprise", price: "Custom Pricing", hasSubscription: false, isTrial: false, isDeactivated: true },
-    ],
-  };
+  const subscriptionTiers = ["Starter", "Business", "Business Plus+", "Enterprise"];
   
-  // ✅ SubscriptionTable Component
-  function SubscriptionTable({ category }) {
-    const [subscriptions, setSubscriptions] = useState([]);
+  // ✅ Component to Manage Subscriptions Per User
+  function SubscriptionTable() {
+    const [users, setUsers] = useState(mockUsers);
   
-    // ✅ Initialize state properly
-    useEffect(() => {
-      setSubscriptions(subscriptionData[category] || []);
-    }, [category]);
-  
-    const toggleSubscription = (id) => {
-      setSubscriptions((prev) =>
-        prev.map((sub) =>
-          sub.id === id ? { ...sub, hasSubscription: !sub.hasSubscription } : sub
+    // ✅ Toggle Subscription Tier (Later to be API call)
+    const changeSubscription = (id, newSubscription) => {
+      setUsers((prev) =>
+        prev.map((user) =>
+          user.id === id ? { ...user, subscription: newSubscription } : user
         )
       );
     };
   
+    // ✅ Toggle Trial Mode
     const toggleTrial = (id) => {
-      setSubscriptions((prev) =>
-        prev.map((sub) =>
-          sub.id === id ? { ...sub, isTrial: !sub.isTrial } : sub
+      setUsers((prev) =>
+        prev.map((user) =>
+          user.id === id ? { ...user, isTrial: !user.isTrial } : user
         )
       );
     };
   
+    // ✅ Toggle Deactivation
     const toggleDeactivation = (id) => {
-      setSubscriptions((prev) =>
-        prev.map((sub) =>
-          sub.id === id ? { ...sub, isDeactivated: !sub.isDeactivated } : sub
+      setUsers((prev) =>
+        prev.map((user) =>
+          user.id === id ? { ...user, isDeactivated: !user.isDeactivated } : user
         )
       );
-    };
-  
-    const handleSubscriptionPurchase = async (planId) => {
-      const stripe = await stripePromise;
-      if (!stripe) {
-        console.error("Stripe failed to load.");
-        return;
-      }
-  
-      // Mock API Call (Replace with Backend Call)
-      const checkoutSession = await fetch("/api/create-checkout-session", {
-        method: "POST",
-        body: JSON.stringify({ planId }),
-      }).then((res) => res.json());
-  
-      // Redirect to Stripe Checkout
-      const { error } = await stripe.redirectToCheckout({ sessionId: checkoutSession.id });
-      if (error) console.error(error);
     };
   
     return (
@@ -107,39 +68,37 @@ import {
             <Tr>
               <Th>ID</Th>
               <Th>Name</Th>
-              <Th>Price</Th>
+              <Th>Email</Th>
               <Th>Subscription</Th>
               <Th>Trial</Th>
               <Th>Deactivated</Th>
-              <Th>Actions</Th>
             </Tr>
           </Thead>
           <Tbody>
-            {subscriptions.map((sub) => (
-              <Tr key={sub.id}>
-                <Td>{sub.id}</Td>
+            {users.map((user) => (
+              <Tr key={user.id}>
+                <Td>{user.id}</Td>
+                <Td>{user.name}</Td>
+                <Td>{user.email}</Td>
                 <Td>
-                  {sub.name}{" "}
-                  {sub.badge && (
-                    <Badge colorScheme="blue" ml={2}>
-                      {sub.badge}
-                    </Badge>
-                  )}
-                </Td>
-                <Td>{sub.price}</Td>
-                <Td>
-                  <Switch isChecked={sub.hasSubscription} onChange={() => toggleSubscription(sub.id)} />
-                </Td>
-                <Td>
-                  <Switch isChecked={sub.isTrial} onChange={() => toggleTrial(sub.id)} />
-                </Td>
-                <Td>
-                  <Switch isChecked={sub.isDeactivated} onChange={() => toggleDeactivation(sub.id)} />
+                  <Flex gap={2}>
+                    {subscriptionTiers.map((tier) => (
+                      <Button
+                        key={tier}
+                        size="xs"
+                        colorScheme={user.subscription === tier ? "blue" : "gray"}
+                        onClick={() => changeSubscription(user.id, tier)}
+                      >
+                        {tier}
+                      </Button>
+                    ))}
+                  </Flex>
                 </Td>
                 <Td>
-                  <Button colorScheme="blue" size="sm" onClick={() => handleSubscriptionPurchase(sub.id)}>
-                    Subscribe
-                  </Button>
+                  <Switch isChecked={user.isTrial} onChange={() => toggleTrial(user.id)} />
+                </Td>
+                <Td>
+                  <Switch isChecked={user.isDeactivated} onChange={() => toggleDeactivation(user.id)} />
                 </Td>
               </Tr>
             ))}
@@ -149,7 +108,7 @@ import {
     );
   }
   
-  // ✅ Subscriptions Component
+  // ✅ Main Subscriptions Component
   function Subscriptions() {
     return (
       <Container maxW="full">
@@ -159,27 +118,13 @@ import {
   
         <Navbar type={"Subscription"} />
   
-        {/* ✅ Tabs for Different Product Memberships */}
-        <Tabs variant="enclosed">
-          <TabList>
-            {Object.keys(subscriptionData).map((category) => (
-              <Tab key={category}>{category}</Tab>
-            ))}
-          </TabList>
-  
-          <TabPanels>
-            {Object.keys(subscriptionData).map((category) => (
-              <TabPanel key={category}>
-                {subscriptionData[category] ? <SubscriptionTable category={category} /> : null}
-              </TabPanel>
-            ))}
-          </TabPanels>
-        </Tabs>
+        {/* ✅ Subscription Management Table */}
+        <SubscriptionTable />
       </Container>
     );
   }
   
-  // ✅ Fix: Ensure Route is correctly exported
+  // ✅ Fix: Export Route Correctly
 import { createFileRoute } from "@tanstack/react-router";
   
 export const Route = createFileRoute("/_layout/subscriptions")({
