@@ -4,7 +4,6 @@ import {
   Container,
   Text,
   VStack,
-  Input,
   Button,
   Divider,
   Stack,
@@ -16,7 +15,8 @@ import {
   Select,
   Alert,
   AlertIcon,
-  HStack
+  HStack,
+  Input
 } from "@chakra-ui/react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { FiSearch, FiSend, FiGithub } from "react-icons/fi";
@@ -37,38 +37,31 @@ const Explore = () => {
   const [isDeactivated, setIsDeactivated] = useState(false);
   const [sortOption, setSortOption] = useState("name");
 
-  const apis = [
-    { id: "google", name: "Google Search API", type: "Search", owned: ownedApis.includes("google"), price: "Free", rating: 4.7, description: "Fetches real-time search results from Google." },
-    { id: "bing", name: "Bing Search API", type: "Search", owned: ownedApis.includes("bing"), price: "$10/month", rating: 4.5, description: "Provides search results from Bing, including images and news." },
-    { id: "real-estate", name: "Real Estate Data API", type: "Real Estate", owned: ownedApis.includes("real-estate"), price: "$20/month", rating: 4.8, description: "Get property listings, pricing trends, and real estate analytics." },
-    { id: "ecommerce", name: "E-commerce Scraper API", type: "E-commerce", owned: ownedApis.includes("ecommerce"), price: "$30/month", rating: 4.6, description: "Extract product data from e-commerce platforms like Amazon and eBay." },
-    { id: "finance", name: "Financial Data API", type: "Finance", owned: ownedApis.includes("finance"), price: "$50/month", rating: 4.9, description: "Access stock market trends, forex rates, and economic indicators." },
-    { id: "fashion", name: "Fashion Trends API", type: "Fashion", owned: ownedApis.includes("fashion"), price: "$15/month", rating: 4.4, description: "Analyze fashion trends, top-selling apparel, and style reports." },
-    { id: "healthcare", name: "Healthcare Data API", type: "Healthcare", owned: ownedApis.includes("healthcare"), price: "$40/month", rating: 4.7, description: "Retrieve medical research, pharmaceutical pricing, and health trends." },
-    { id: "travel", name: "Travel Deals API", type: "Travel", owned: ownedApis.includes("travel"), price: "$25/month", rating: 4.6, description: "Find flight deals, hotel prices, and travel packages." }
+  const proxyProducts = [
+    { id: "google", name: "Google Search API", type: "Search", owned: ownedApis.includes("google"), description: "Fetches real-time search results from Google." },
+    { id: "bing", name: "Bing Search API", type: "Search", owned: ownedApis.includes("bing"), description: "Provides search results from Bing, including images and news." },
+    { id: "real-estate", name: "Real Estate Data API", type: "Real Estate", owned: ownedApis.includes("real-estate"), description: "Get property listings, pricing trends, and real estate analytics." },
+    { id: "ecommerce", name: "E-commerce Scraper API", type: "E-commerce", owned: ownedApis.includes("ecommerce"), description: "Extract product data from e-commerce platforms like Amazon and eBay." },
+    { id: "finance", name: "Financial Data API", type: "Finance", owned: ownedApis.includes("finance"), description: "Access stock market trends, forex rates, and economic indicators." },
+    { id: "fashion", name: "Fashion Trends API", type: "Fashion", owned: ownedApis.includes("fashion"), description: "Analyze fashion trends, top-selling apparel, and style reports." },
+    { id: "healthcare", name: "Healthcare Data API", type: "Healthcare", owned: ownedApis.includes("healthcare"), description: "Retrieve medical research, pharmaceutical pricing, and health trends." },
+    { id: "travel", name: "Travel Deals API", type: "Travel", owned: ownedApis.includes("travel"), description: "Find flight deals, hotel prices, and travel packages." }
   ];
 
-  const industries = ["All", "Owned", ...new Set(apis.map(api => api.type))];
+  const industries = ["All", "Owned", ...new Set(proxyProducts.map(api => api.type))];
 
   const isLocked = !hasSubscription && !isTrial;
 
-  const filteredResults = useMemo(() => {
-    let filtered = apis.filter(api => {
-      return (
-        (activeFilter === "all" || 
-         (activeFilter === "owned" && api.owned) || 
-         api.type === activeFilter) &&
-        (!ownedOnly || api.owned) &&
-        api.name.toLowerCase().includes(searchQuery.toLowerCase())
-      );
-    });
-
-    return filtered.sort((a, b) => {
-      if (sortOption === "name") return a.name.localeCompare(b.name);
-      if (sortOption === "price") return parseFloat(a.price.replace(/\D/g, "")) - parseFloat(b.price.replace(/\D/g, ""));
-      if (sortOption === "rating") return b.rating - a.rating;
-    });
-  }, [searchQuery, ownedOnly, activeFilter, sortOption]);
+  const filteredProducts = useMemo(() => {
+    return proxyProducts.filter(
+      (product) =>
+        (activeFilter === "all" ||
+          (activeFilter === "owned" && product.owned) ||
+          product.type === activeFilter) &&
+        (!ownedOnly || product.owned) &&
+        product.name.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+  }, [searchQuery, ownedOnly, activeFilter]);
 
   return (
     <Container maxW="full">
@@ -129,24 +122,26 @@ const Explore = () => {
       <Divider my={4} />
 
       {/* API List */}
-      <List spacing={4}>
-        {filteredResults.length === 0 ? (
+      <VStack spacing={6} mt={6} align="stretch">
+        {filteredProducts.length === 0 ? (
           <Text textAlign="center" fontSize="lg" color="gray.500">No APIs match this filter.</Text>
         ) : (
-          filteredResults.map((api) => (
-            <motion.div key={api.id} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.5 }}>
-              <ListItem p={5} shadow="md" borderWidth="1px" borderRadius="lg" bg="gray.50" _hover={{ shadow: "lg", transform: "scale(1.02)" }} transition="0.2s ease-in-out">
-                <Tooltip label={api.description} hasArrow>
-                  <Text fontWeight="bold">{api.name} {api.owned ? "(Owned)" : ""}</Text>
-                </Tooltip>
-                <Button mt={3} size="sm" colorScheme="blue" borderRadius="full" onClick={() => navigate({ to: "/explore/" + api.id })}>
-                  Explore
-                </Button>
-              </ListItem>
-            </motion.div>
-          ))
+          <List spacing={4}>
+            {filteredProducts.map((api) => (
+              <motion.div key={api.id} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.5 }}>
+                <ListItem p={5} shadow="md" borderWidth="1px" borderRadius="lg" bg="gray.50" _hover={{ shadow: "lg", transform: "scale(1.02)" }} transition="0.2s ease-in-out">
+                  <Tooltip label={api.description} hasArrow>
+                    <Text fontWeight="bold">{api.name} {api.owned ? "(Owned)" : ""}</Text>
+                  </Tooltip>
+                  <Button mt={3} size="sm" colorScheme="blue" borderRadius="full" onClick={() => navigate({ to: "/explore/" + api.id })}>
+                    Explore
+                  </Button>
+                </ListItem>
+              </motion.div>
+            ))}
+          </List>
         )}
-      </List>
+      </VStack>
     </Container>
   );
 };
