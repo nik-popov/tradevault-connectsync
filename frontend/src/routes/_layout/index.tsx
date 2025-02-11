@@ -38,10 +38,6 @@ function Dashboard() {
   const isTrial = PRODUCTS.some((p) => settings[p]?.isTrial);
   const isLocked = !hasSubscription && !isTrial;
 
-  // ✅ Toggle for filtering only "owned" products
-  const [ownedOnly, setOwnedOnly] = useState(false);
-  const [activeFilter, setActiveFilter] = useState("all");
-
   // ✅ Define Products & Match Ownership Based on Subscription
   const proxyProducts = [
     { id: "residential", name: "🌐 Residential Proxies", type: "proxy", description: "Highly protected targets, broad location coverage.", path: "/proxies/residential" },
@@ -53,14 +49,14 @@ function Dashboard() {
     { id: "explore-dataset", name: "📊 Explore Datasets", type: "data", description: "Tailored datasets for your needs.", path: "/datasets/explore" },
     { id: "custom-dataset", name: "📊 Request Custom Dataset", type: "data", description: "Tailored data scraping for your needs.", path: "/datasets/request" },
   ];
+  const [ownedOnly, setOwnedOnly] = useState(true); // ✅ Default checked
 
-  // ✅ Filtered Products (Based on Subscription & Ownership)
-  const filteredProducts = useMemo(() => {
-    return proxyProducts.filter((product) => {
-      const isOwned = settings[product.type]?.hasSubscription || settings[product.type]?.isTrial;
-      return (activeFilter === "all" || product.type === activeFilter) && (!ownedOnly || isOwned);
-    });
-  }, [activeFilter, ownedOnly, settings]);
+  const filteredProducts = proxyProducts.filter(
+    (product) =>
+      (activeFilter === "all" || product.type === activeFilter) &&
+      (!ownedOnly || product.owned) // ✅ This ensures we only show "owned" products when the toggle is checked
+  );
+  
 
   return (
     <Container maxW="full">
