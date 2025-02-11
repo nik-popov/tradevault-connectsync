@@ -66,6 +66,18 @@ const PromoDatasets: React.FC = () => {
     <Box w="full" px={{ base: 4, md: 8 }} py={8}>
       <Box maxW="5xl" mx="auto" textAlign="center">
 
+        {/* FREE TRIAL BANNER */}
+        <Box bg="blue.500" color="white" borderRadius="lg" py={4} px={6} mb={6} boxShadow="md">
+          <Heading as="h2" size="lg" fontWeight="bold" mb={2}>
+            Start Your Free Trial Today!
+          </Heading>
+          <Text fontSize="md" mb={3}>
+            Get full access to our SERP API with a 7-day free trial. No credit card required!
+          </Text>
+          <Button colorScheme="whiteAlpha" variant="solid" onClick={() => navigate('/signup')}>
+            Sign Up for Free
+          </Button>
+        </Box>
         {/* Dataset Categories Section */}
         <Grid templateColumns={{ base: "1fr", md: "repeat(2, 1fr)" }} gap={6} mb={12}>
           {datasetCategories.map((dataset, index) => (
@@ -84,17 +96,6 @@ const PromoDatasets: React.FC = () => {
           <AlertIcon />
           <Text>All datasets are optimized for high-speed querying and secure data access.</Text>
         </Alert>
-
-        {/* Free Trial CTA */}
-        <Box bg="blue.50" borderRadius="xl" p={8} mb={12}>
-          <Heading as="h2" size="lg" fontWeight="bold" mb={4}>Start Your Free Trial Today</Heading>
-          <Text color="gray.600" mb={6}>
-            Experience unlimited access to all features for 7 days, no credit card required.
-          </Text>
-          <Button colorScheme="blue" size="lg" rightIcon={<FiArrowRight />} onClick={() => navigate('/datasets/pricing')}>
-            Start Free Trial
-          </Button>
-        </Box>
 
         {/* Pricing Plans Section */}
         <Heading as="h2" size="lg" fontWeight="bold" mb={4}>Pricing Plans</Heading>
