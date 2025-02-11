@@ -18,7 +18,7 @@ import {
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { FiGithub, FiX } from "react-icons/fi";
-import PromoDatasets from "../../../components/PromoDatasets";
+import PromoSERP from "../../../components/PromoSERP";
 
 // Storage and Product Key
 const STORAGE_KEY = "subscriptionSettings";
@@ -318,7 +318,7 @@ function Explore() {
         <Divider my={4} />
   
         {isLocked ? (
-          <PromoDatasets />
+          <PromoSERP />
         ) : isFullyDeactivated ? (
           <Alert status="error" borderRadius="md">
             <AlertIcon />
