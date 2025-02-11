@@ -15,7 +15,6 @@ import {
   List,
   ListItem,
   ListIcon,
-  Flex,
   Progress,
   Table,
   Thead,
@@ -24,7 +23,7 @@ import {
   Th,
   Td
 } from "@chakra-ui/react";
-import { FiCheckCircle, FiBarChart2, FiAlertTriangle, FiTrendingUp } from "react-icons/fi";
+import { FiCheckCircle, FiAlertTriangle } from "react-icons/fi";
 
 const ProxyUsage = () => (
   <Box maxW="100%" mx="auto" px={{ base: 6, md: 12 }} py={12}>
