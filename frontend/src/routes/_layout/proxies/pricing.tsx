@@ -21,7 +21,6 @@ import {
   TabPanels,
   Tab,
   TabPanel,
-  Button,
 } from "@chakra-ui/react";
 import { createFileRoute } from "@tanstack/react-router";
 import {
@@ -36,7 +35,7 @@ import {
   FiSettings,
 } from "react-icons/fi";
 
-// Define Pricing Categories (Tabs)
+// Pricing Categories as Tabs
 const pricingCategories = [
   { name: "Compute", icon: FiCpu, bg: "blue.700" },
   { name: "Traffic", icon: FiGlobe, bg: "purple.600" },
@@ -48,7 +47,7 @@ const pricingCategories = [
   { name: "Enterprise", icon: FiTrendingUp, bg: "yellow.600" },
 ];
 
-// Define Pricing Plans (Cards in Columns)
+// Pricing Plans - Full Length for Side-by-Side Comparison
 const pricingPlans = [
   { name: "On-Demand", description: "Pay-as-you-go flexible pricing.", price: "Per Usage", color: "blue.500" },
   { name: "Reserved", description: "Commit to 1-3 years for lower pricing.", price: "Up to 40% Off", color: "green.500" },
@@ -59,52 +58,16 @@ const pricingPlans = [
 // Pricing Breakdown for Each Category
 const categoryPricing = {
   Compute: [
-    { service: "vCPU (per hour)", rate: "$0.05" },
-    { service: "Memory (per GB-hour)", rate: "$0.01" },
-    { service: "GPU Instance (per hour)", rate: "$2.50" },
-    { service: "Bare Metal Server (per hour)", rate: "$5.00" },
+    { service: "vCPU (per hour)", OnDemand: "$0.05", Reserved: "$0.03", Spot: "$0.015", Enterprise: "Custom Pricing" },
+    { service: "Memory (per GB-hour)", OnDemand: "$0.01", Reserved: "$0.007", Spot: "$0.004", Enterprise: "Custom Pricing" },
+    { service: "GPU Instance (per hour)", OnDemand: "$2.50", Reserved: "$1.80", Spot: "$1.00", Enterprise: "Custom Pricing" },
+    { service: "Bare Metal Server (per hour)", OnDemand: "$5.00", Reserved: "$4.00", Spot: "$2.50", Enterprise: "Custom Pricing" },
   ],
   Traffic: [
-    { service: "Inbound Traffic (per GB)", rate: "Free" },
-    { service: "Outbound Traffic (per GB)", rate: "$0.08" },
-    { service: "Private Network Traffic (per GB)", rate: "$0.02" },
-    { service: "CDN Bandwidth (per GB)", rate: "$0.05" },
-  ],
-  Storage: [
-    { service: "Block Storage (per GB-month)", rate: "$0.10" },
-    { service: "Object Storage (per GB-month)", rate: "$0.02" },
-    { service: "Snapshot (per GB-month)", rate: "$0.05" },
-    { service: "Backup Storage (per GB-month)", rate: "$0.08" },
-  ],
-  Databases: [
-    { service: "Managed PostgreSQL (per hour)", rate: "$0.12" },
-    { service: "MySQL (per hour)", rate: "$0.10" },
-    { service: "MongoDB Cluster (per hour)", rate: "$0.25" },
-    { service: "Redis (per hour)", rate: "$0.15" },
-  ],
-  "AI & ML": [
-    { service: "Inference (per 1M calls)", rate: "$1.00" },
-    { service: "Training (per GPU-hour)", rate: "$3.50" },
-    { service: "AI API Calls (per 1000 reqs)", rate: "$0.50" },
-    { service: "Custom Model Deployment (per hour)", rate: "$5.00" },
-  ],
-  Security: [
-    { service: "DDoS Protection (per GB)", rate: "$0.05" },
-    { service: "Firewall Rules (per rule)", rate: "$0.01" },
-    { service: "SSL Certificates (per year)", rate: "$50" },
-    { service: "Security Audits (per request)", rate: "$200" },
-  ],
-  Support: [
-    { service: "Basic Support", rate: "Free" },
-    { service: "Standard Support", rate: "$99/month" },
-    { service: "Enterprise Support", rate: "Custom Pricing" },
-    { service: "24/7 Dedicated Support", rate: "$499/month" },
-  ],
-  Enterprise: [
-    { service: "Dedicated Account Manager", rate: "Custom Pricing" },
-    { service: "Custom Cloud Deployments", rate: "Custom Pricing" },
-    { service: "On-Prem Cloud Integration", rate: "Custom Pricing" },
-    { service: "99.99% SLA Guarantee", rate: "Custom Pricing" },
+    { service: "Inbound Traffic (per GB)", OnDemand: "Free", Reserved: "Free", Spot: "Free", Enterprise: "Free" },
+    { service: "Outbound Traffic (per GB)", OnDemand: "$0.08", Reserved: "$0.06", Spot: "$0.04", Enterprise: "Custom Pricing" },
+    { service: "Private Network Traffic (per GB)", OnDemand: "$0.02", Reserved: "$0.015", Spot: "$0.01", Enterprise: "Custom Pricing" },
+    { service: "CDN Bandwidth (per GB)", OnDemand: "$0.05", Reserved: "$0.03", Spot: "$0.02", Enterprise: "Custom Pricing" },
   ],
 };
 
@@ -142,7 +105,7 @@ function Pricing() {
                 </Text>
               </Box>
 
-              {/* Pricing Plan Columns */}
+              {/* Side-by-Side Plan Comparisons */}
               <Grid templateColumns={{ base: "1fr", md: "repeat(4, 1fr)" }} gap={6}>
                 {pricingPlans.map((plan, idx) => (
                   <GridItem key={idx} p={6} bg={plan.color} borderRadius="lg">
@@ -153,21 +116,33 @@ function Pricing() {
                 ))}
               </Grid>
 
-              {/* Pricing Details Table */}
-              <Box mt={8}>
+              {/* Full-Length Table Comparison */}
+              <Box mt={8} overflowX="auto">
                 <Table size="md" variant="unstyled">
                   <Thead>
                     <Tr>
                       <Th color="gray.300">Service</Th>
-                      <Th color="gray.300">Rate</Th>
+                      <Th color="gray.300">On-Demand</Th>
+                      <Th color="gray.300">Reserved</Th>
+                      <Th color="gray.300">Spot</Th>
+                      <Th color="gray.300">Enterprise</Th>
                     </Tr>
                   </Thead>
                   <Tbody>
-                    {categoryPricing[category.name].map((item, idy) => (
+                    {categoryPricing[category.name]?.map((item, idy) => (
                       <Tr key={idy}>
                         <Td>{item.service}</Td>
                         <Td>
-                          <Badge colorScheme="blackAlpha" px={2}>{item.rate}</Badge>
+                          <Badge colorScheme="blue" px={2}>{item.OnDemand}</Badge>
+                        </Td>
+                        <Td>
+                          <Badge colorScheme="green" px={2}>{item.Reserved}</Badge>
+                        </Td>
+                        <Td>
+                          <Badge colorScheme="purple" px={2}>{item.Spot}</Badge>
+                        </Td>
+                        <Td>
+                          <Badge colorScheme="orange" px={2}>{item.Enterprise}</Badge>
                         </Td>
                       </Tr>
                     ))}
