@@ -19,6 +19,7 @@ import {
   Thead,
   TabPanel,
   useColorModeValue,
+  Badge,
 } from "@chakra-ui/react";
 import { useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
@@ -76,7 +77,7 @@ const PricingPage = () => {
       <Tabs variant="soft-rounded" colorScheme="blue" onChange={(index) => setSelectedProduct(Object.keys(proxyPricing)[index])}>
         <TabList>
           {Object.keys(proxyPricing).map((product) => (
-            <Tab key={product} bg={tabBg} color={tabColor} px={4} py={2} borderRadius="md" _selected={{ bg: "blue.500", color: "white" }} _hover={{ bg: tabHoverBg }}>
+            <Tab key={product} bg={tabBg} color={tabColor} px={4} py={2} borderRadius="md" _selected={{ color: "white" }} _hover={{ bg: tabHoverBg }}>
               {product.replace(" ", " \u2022 ")}
             </Tab>
           ))}
