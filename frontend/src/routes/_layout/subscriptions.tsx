@@ -19,15 +19,16 @@ import {
   } from "@chakra-ui/react";
   import { useState } from "react";
   import Navbar from "../../components/Common/Navbar";
+  import { createFileRoute } from "@tanstack/react-router";
   
-  // ✅ Subscription State for Each Product
+  // ✅ Initial Subscription State for Each Product
   const initialSubscriptions = {
     proxy: { hasSubscription: false, isTrial: false, isDeactivated: false },
     scrapingAPI: { hasSubscription: false, isTrial: false, isDeactivated: false },
     dataset: { hasSubscription: false, isTrial: false, isDeactivated: false },
-  };  // ✅ Correctly Export Route for TanStack Router
-  import { createFileRoute } from "@tanstack/react-router";
+  };
   
+  // ✅ Correctly Export Route for TanStack Router
   export const Route = createFileRoute("/_layout/subscriptions")({
     component: Subscriptions,
   });
@@ -55,13 +56,13 @@ import {
                 )}
               </Td>
               <Td>
-                <Switch isChecked={state.hasSubscription} onChange={() => toggleState("hasSubscription", product)} />
+                <Switch isChecked={state.hasSubscription} onChange={() => toggleState(product, "hasSubscription")} />
               </Td>
               <Td>
-                <Switch isChecked={state.isTrial} onChange={() => toggleState("isTrial", product)} />
+                <Switch isChecked={state.isTrial} onChange={() => toggleState(product, "isTrial")} />
               </Td>
               <Td>
-                <Switch isChecked={state.isDeactivated} onChange={() => toggleState("isDeactivated", product)} />
+                <Switch isChecked={state.isDeactivated} onChange={() => toggleState(product, "isDeactivated")} />
               </Td>
             </Tr>
           </Tbody>
@@ -73,11 +74,15 @@ import {
   function Subscriptions() {
     const [subscriptions, setSubscriptions] = useState(initialSubscriptions);
   
-    const toggleState = (key, product) => {
-      setSubscriptions((prev) => ({
-        ...prev,
-        [product]: { ...prev[product], [key]: !prev[product][key] },
-      }));
+    // ✅ Prevent Invalid State Updates
+    const toggleState = (product, key) => {
+      setSubscriptions((prev) => {
+        if (!prev[product]) return prev; // Ensure product exists
+        return {
+          ...prev,
+          [product]: { ...prev[product], [key]: !prev[product][key] },
+        };
+      });
     };
   
     return (
@@ -112,6 +117,5 @@ import {
     );
   }
   
-
+  export default Subscriptions;
   
-export default Subscriptions;
