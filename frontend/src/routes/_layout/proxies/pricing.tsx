@@ -32,30 +32,42 @@ const STORAGE_KEY = "subscriptionSettings";
 const PRODUCT = "proxy";
 
 const pricingData = {
-  basic: [
-    { data: "1GB", price: "$1", features: "Basic Support, 1 Endpoint" },
-    { data: "10GB", price: "$9", features: "Standard Support, 2 Endpoints" },
-    { data: "50GB", price: "$40", features: "Priority Support, 5 Endpoints" },
-  ],
-  pro: [
-    { data: "1GB", price: "$2", features: "Faster Speed, API Access" },
-    { data: "10GB", price: "$18", features: "Dedicated Support, Custom Endpoints" },
-    { data: "50GB", price: "$80", features: "Enterprise Features, Unlimited Endpoints" },
-  ],
-  enterprise: [
-    { data: "1GB", price: "$3", features: "24/7 Support, Dedicated API" },
-    { data: "10GB", price: "$25", features: "SLA-backed, Custom Infrastructure" },
-    { data: "50GB", price: "$120", features: "Fully Managed, On-Demand Scaling" },
-  ],
+  basic: {
+    title: "Basic Plan",
+    description: "Ideal for individual use with minimal needs.",
+    options: [
+      { data: "1GB", price: "$1", features: "Basic Support, 1 Endpoint" },
+      { data: "10GB", price: "$9", features: "Standard Support, 2 Endpoints" },
+      { data: "50GB", price: "$40", features: "Priority Support, 5 Endpoints" },
+    ],
+  },
+  pro: {
+    title: "Pro Plan",
+    description: "Perfect for businesses needing extra resources.",
+    options: [
+      { data: "1GB", price: "$2", features: "Faster Speed, API Access" },
+      { data: "10GB", price: "$18", features: "Dedicated Support, Custom Endpoints" },
+      { data: "50GB", price: "$80", features: "Enterprise Features, Unlimited Endpoints" },
+    ],
+  },
+  enterprise: {
+    title: "Enterprise Plan",
+    description: "Advanced needs for scaling and performance.",
+    options: [
+      { data: "1GB", price: "$3", features: "24/7 Support, Dedicated API" },
+      { data: "10GB", price: "$25", features: "SLA-backed, Custom Infrastructure" },
+      { data: "50GB", price: "$120", features: "Fully Managed, On-Demand Scaling" },
+    ],
+  },
 };
 
 const PricingCard = ({ title, price, features }) => (
-  <Card bg="gray.700" borderRadius="md" p={4}>
+  <Card bg="gray.700" borderRadius="md" p={6} _hover={{ bg: "gray.600" }} transition="0.3s">
     <CardBody>
       <Heading size="md" color="white">{title}</Heading>
-      <Text fontSize="lg" color="gray.300" mt={2}>{price}</Text>
+      <Text fontSize="lg" color="gray.300" mt={2} fontWeight="bold">{price}</Text>
       <Text fontSize="sm" color="gray.400" mt={2}>{features}</Text>
-      <Button mt={4} colorScheme="blue">Select Plan</Button>
+      <Button mt={4} colorScheme="blue" width="full">Select Plan</Button>
     </CardBody>
   </Card>
 );
@@ -92,13 +104,19 @@ function Pricing() {
           <Text color="white">Your subscription has expired. Please renew to access all features.</Text>
         </Box>
       ) : (
-        <SimpleGrid columns={{ base: 1, md: 3 }} spacing={6} mb={6}>
-          {Object.entries(pricingData).flatMap(([plan, entries]) =>
-            entries.map((entry, index) => (
-              <PricingCard key={`${plan}-${index}`} title={entry.data} price={entry.price} features={entry.features} />
-            ))
-          )}
-        </SimpleGrid>
+        <VStack spacing={10} align="stretch">
+          {Object.values(pricingData).map((plan, planIndex) => (
+            <Box key={planIndex}>
+              <Text fontSize="xl" fontWeight="bold" color="white" mb={2}>{plan.title}</Text>
+              <Text fontSize="md" color="gray.300" mb={4}>{plan.description}</Text>
+              <SimpleGrid columns={{ base: 1, md: 3 }} spacing={6}>
+                {plan.options.map((entry, index) => (
+                  <PricingCard key={index} title={entry.data} price={entry.price} features={entry.features} />
+                ))}
+              </SimpleGrid>
+            </Box>
+          ))}
+        </VStack>
       )}
     </Container>
   );
