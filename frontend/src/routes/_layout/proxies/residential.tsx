@@ -326,7 +326,14 @@ function ResidentialProxy() {
     <Container maxW="full">
       {/* Top Bar */}
       <Flex align="center" justify="space-between" py={6} flexWrap="wrap" gap={4}>
-        <Heading size="lg">Residential Proxies</Heading>
+       
+      <Box p={4}>
+              <Text fontSize="2xl" fontWeight="bold">
+                Hi, {currentUser?.full_name || currentUser?.email || "User"} 👋🏼
+              </Text>
+              <Text>Manage your proxy settings with ease.</Text>
+            </Box>
+
         <HStack spacing={6}>
           <HStack>
             <Text fontWeight="bold">Subscription:</Text>
@@ -357,12 +364,6 @@ function ResidentialProxy() {
         <Flex mt={6} gap={6} justify="space-between">
           {/* Main Content Area */}
           <Box flex="1">
-            <Box p={4}>
-              <Text fontSize="2xl" fontWeight="bold">
-                Hi, {currentUser?.full_name || currentUser?.email || "User"} 👋🏼
-              </Text>
-              <Text>Manage your proxy settings with ease.</Text>
-            </Box>
             <Divider my={4} />
             <Tabs variant="enclosed">
               <TabList>
