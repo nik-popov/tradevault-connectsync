@@ -16,10 +16,11 @@ import {
   HStack,
   Input,
   Heading,
-  Stack, // ✅ FIXED: Import Stack properly
+  Stack,
 } from "@chakra-ui/react";
 import { createFileRoute } from "@tanstack/react-router";
 import { useQueryClient } from "@tanstack/react-query";
+import PromoSERP from "../../../components/PromoSERP"; // ✅ Corrected PromoSERP usage
 
 export const Route = createFileRoute("/_layout/scraping-api/explore")({
   component: Explore,
@@ -40,7 +41,7 @@ function Explore() {
     );
   }
 
-  // ✅ State Toggles (Debugging & Control)
+  // ✅ Subscription & Trial State
   const [hasSubscription, setHasSubscription] = useState(false);
   const [isTrial, setIsTrial] = useState(false);
   const [isDeactivated, setIsDeactivated] = useState(false);
@@ -51,6 +52,7 @@ function Explore() {
 
   const ownedApis = currentUser?.ownedApis || [];
   const isLocked = !hasSubscription && !isTrial;
+  const isTrialMode = isTrial && !hasSubscription; // ✅ Trial Mode: Grey out everything except search
 
   // 🔍 Mock API Data
   const proxyProducts = [
@@ -93,26 +95,23 @@ function Explore() {
         </HStack>
         <Flex align="center">
           <Text fontWeight="bold" mr={2}>Owned Only</Text>
-          <Switch isChecked={ownedOnly} onChange={() => setOwnedOnly(!ownedOnly)} colorScheme="blue" />
+          <Switch isChecked={ownedOnly} onChange={() => setOwnedOnly(!ownedOnly)} colorScheme="blue" isDisabled={isTrialMode} />
         </Flex>
       </Flex>
 
       <Divider my={4} />
 
-      {/* 🚨 Access Restriction Alert */}
-      {isLocked && (
-        <Alert status="warning" borderRadius="md">
-          <AlertIcon />
-          <Text>You need a subscription or trial to explore APIs.</Text>
-        </Alert>
-      )}
-
-      {/* 🛠 API Explorer - Only Visible if Unlocked */}
-      {!isLocked && (
+      {/* 🚨 Show PromoSERP Inside the Component When Locked */}
+      {isLocked ? (
+        <PromoSERP />
+      ) : (
         <>
+          {/* 🛠 API Explorer - Trial Mode: Greyed Out Except Search */}
           <Flex mt={6} gap={4} justify="space-between" align="center" flexWrap="wrap">
             <Input placeholder="Search APIs..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} w={{ base: "100%", md: "300px" }} />
-            <Select value={sortOption} onChange={(e) => setSortOption(e.target.value)} w="200px">
+            
+            {/* Filters & Sorting Disabled in Trial Mode */}
+            <Select value={sortOption} onChange={(e) => setSortOption(e.target.value)} w="200px" isDisabled={isTrialMode}>
               <option value="name">Sort by Name</option>
               <option value="price">Sort by Price</option>
               <option value="rating">Sort by Rating</option>
@@ -121,7 +120,16 @@ function Explore() {
 
           <Stack direction="row" spacing={3} mt={4}>
             {industries.map((type) => (
-              <Button key={type} size="md" fontWeight="bold" borderRadius="full" colorScheme={activeFilter === type.toLowerCase() ? "blue" : "gray"} variant={activeFilter === type.toLowerCase() ? "solid" : "outline"} onClick={() => setActiveFilter(type.toLowerCase())}>
+              <Button 
+                key={type} 
+                size="md" 
+                fontWeight="bold" 
+                borderRadius="full" 
+                colorScheme={activeFilter === type.toLowerCase() ? "blue" : "gray"} 
+                variant={activeFilter === type.toLowerCase() ? "solid" : "outline"} 
+                onClick={() => setActiveFilter(type.toLowerCase())} 
+                isDisabled={isTrialMode} // ✅ Greyed out in Trial Mode
+              >
                 {type}
               </Button>
             ))}
