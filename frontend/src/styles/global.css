@@ -4,7 +4,6 @@
 /* Root Variables for Consistency */
 :root {
   --font-primary: "42dot Sans", sans-serif;
-  --font-size-base: 20px;
   --line-height-base: 1.7;
   --color-text: #333;
   --color-heading: #222;
@@ -31,7 +30,6 @@ body {
   line-height: var(--line-height-base);
   color: var(--color-text);
   background-color: var(--color-background);
-  margin: 40px; /* Reduced for a more structured layout */
   padding: 20px;
 }
 
