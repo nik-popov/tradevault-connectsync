@@ -277,9 +277,10 @@ const ReactivationOptions = () => {
 /* ====================================================
    ResidentialProxy Component using Mobile Template
    ==================================================== */
-   function ResidentialProxy() {
+function ResidentialProxy() {
 
-  
+  const isLocked = !hasSubscription && !isTrial;
+
   const queryClient = useQueryClient();
   const [subscriptionSettings, setSubscriptionSettings] = useState({
     hasSubscription: false,
@@ -304,8 +305,6 @@ const ReactivationOptions = () => {
   const currentUser = JSON.parse(localStorage.getItem("currentUser") || "null");
 
   const { hasSubscription, isTrial, isDeactivated } = subscriptionSettings;
-  const isLocked = !hasSubscription && !isTrial;
-
   // Define restricted tabs when in trial mode
   const restrictedTabs = isTrial
     ? ["Key Management", "Logs", "Top-Ups", "Connections"]
@@ -352,42 +351,47 @@ const ReactivationOptions = () => {
       </Flex>
 
       {isLocked ? (
-        <PromoContent />
-      ) : isDeactivated ? (
-        <Box mt={6}>
-          <Text>Your subscription has expired. Please renew to access all features.</Text>
-          <ReactivationOptions />
+  <PromoContent />
+) : isDeactivated ? (
+  <Box mt={6}>
+    <Text>Your subscription has expired. Please renew to access all features.</Text>
+    <ReactivationOptions />
+  </Box>
+) : (
+  <Flex mt={6} gap={6} justify="space-between">
+    {/* Main Content Area */}
+    <Box flex="1">
+      {/* Your Tabs and other components */}
+    </Box>
+
+    {/* Sidebar */}
+    <Box
+      w={{ base: "100%", md: "250px" }}
+      p="4"
+      borderLeft={{ md: "1px solid #E2E8F0" }}
+    >
+      <VStack spacing="4" align="stretch">
+        <Box p="4" shadow="sm" borderWidth="1px" borderRadius="lg">
+          <Text fontWeight="bold">Quick Actions</Text>
+          <Button
+            as="a"
+            href="https://github.com/CobaltDataNet"
+            leftIcon={<FiGithub />}
+            variant="outline"
+            size="sm"
+            mt="2"
+          >
+            GitHub Discussions
+          </Button>
         </Box>
-      ) : (
-        <Flex mt={6} gap={6} justify="space-between">
-          {/* Main Content Area */}
-          <Box flex="1">
-            {/* Your Tabs and other components */}
-          </Box>
 
-          {/* Sidebar */}
-          <Box w={{ base: "100%", md: "250px" }} p="4" borderLeft={{ md: "1px solid #E2E8F0" }}>
-            <VStack spacing="4" align="stretch">
-              <Box p="4" shadow="sm" borderWidth="1px" borderRadius="lg">
-                <Text fontWeight="bold">Quick Actions</Text>
-                <Button
-                  as="a"
-                  href="https://github.com/CobaltDataNet"
-                  leftIcon={<FiGithub />}
-                  variant="outline"
-                  size="sm"
-                  mt="2"
-                >
-                  GitHub Discussions
-                </Button>
-              </Box>
+        {/* Render SubscriptionManagement here */}
+        <SubscriptionManagement product="Proxies" />
+      </VStack>
+    </Box>
+  </Flex>
+)}
 
-              {/* Add the SubscriptionManagement component here */}
-              <SubscriptionManagement product="Proxies" />
-            </VStack>
-          </Box>
-        </Flex>
-      )}
     </Container>
   );
 }
