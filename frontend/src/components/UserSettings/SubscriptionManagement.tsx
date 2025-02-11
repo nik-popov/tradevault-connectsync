@@ -18,23 +18,13 @@ type SubscriptionSettings = {
   isDeactivated: boolean;
 };
 
-// Define the structure for multiple products
-type SubscriptionData = {
-  [product: string]: SubscriptionSettings;
-};
-
-// Available products
-const PRODUCTS = [
-  "Residential",
-  "Residential Mobile",
-  "Datacenter",
-  "Datacenter Mobile",
-  "Browser",
-];
+// Define product categories
+const PRODUCTS = ["Proxies", "SERP API", "Datasets"] as const;
+type ProductType = (typeof PRODUCTS)[number];
 
 const STORAGE_KEY = "subscriptionSettings"; // Key for localStorage
 
-const SubscriptionManagement = ({ product }: { product: string }) => {
+const SubscriptionManagement = ({ product }: { product: ProductType }) => {
   const queryClient = useQueryClient();
 
   // Load subscription settings with React Query
