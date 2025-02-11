@@ -2,7 +2,7 @@ import {
   Box, Container, Text, VStack, Button, Divider, Stack, Flex, Switch 
 } from "@chakra-ui/react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { FiGithub,FiMail, FiHelpCircle} from "react-icons/fi";
+import { FiGithub, FiMail, FiHelpCircle } from "react-icons/fi";
 import { useState, useEffect } from "react";
 import useAuth from "../../hooks/useAuth";
 import { useQueryClient } from "@tanstack/react-query";
@@ -69,19 +69,37 @@ function Dashboard() {
   return (
     <Container maxW="full">
       {/* 🚀 Promo Banner */}
-      <Box bg={isLocked ? "red.100" : "blue.100"} p={4} textAlign="center" borderRadius="md">
-        <Text fontWeight="bold" fontSize="lg">
-          {isLocked ? "⚠️ Access Limited - Get a Subscription!" : "🚀 Get a 3-day free trial of our proxies!"}
-        </Text>
-        <Button 
-          colorScheme={isLocked ? "red" : "blue"} 
-          size="sm" 
-          mt={2} 
-          onClick={() => navigate({ to: "/proxies/pricing" })} // ✅ Fixed Type Issue
-        >
-          {isLocked ? "View Subscription Plans" : "Try now"}
-        </Button>
-      </Box>
+      {!isTrial && !hasSubscription && (
+        <Box bg="blue.100" p={4} textAlign="center" borderRadius="md">
+          <Text fontWeight="bold" fontSize="lg">
+            🚀 Get a 3-day free trial of our proxies!
+          </Text>
+          <Button 
+            colorScheme="blue" 
+            size="sm" 
+            mt={2} 
+            onClick={() => navigate({ to: "/proxies/pricing" })}
+          >
+            Try now
+          </Button>
+        </Box>
+      )}
+
+      {isLocked && !isTrial && (
+        <Box bg="red.100" p={4} textAlign="center" borderRadius="md">
+          <Text fontWeight="bold" fontSize="lg">
+            ⚠️ Access Limited - Get a Subscription!
+          </Text>
+          <Button 
+            colorScheme="red" 
+            size="sm" 
+            mt={2} 
+            onClick={() => navigate({ to: "/proxies/pricing" })}
+          >
+            View Subscription Plans
+          </Button>
+        </Box>
+      )}
   
       {/* Filters & Toggle */}
       <Flex mt={6} gap={4} justify="space-between" align="center" flexWrap="wrap">
@@ -149,7 +167,7 @@ function Dashboard() {
                     size="sm" 
                     colorScheme="blue" 
                     borderRadius="full"
-                    onClick={() => navigate({ to: product.path })} // ✅ Fixed Type Issue
+                    onClick={() => navigate({ to: product.path })}
                   >
                     Manage
                   </Button>
@@ -158,37 +176,6 @@ function Dashboard() {
             )}
           </VStack>
         </Box>
-
-          {/* ✅ Sidebar */}
-          <Box w="250px" p={4} borderLeft="1px solid #E2E8F0">
-            <VStack spacing={4} align="stretch">
-              <Box p={4} shadow="sm" borderWidth="1px" borderRadius="lg">
-                <Text fontWeight="bold">Quick Actions</Text>
-                <Button leftIcon={<FiMail />} variant="outline" size="sm" mt={2}>
-                  Email Support
-                </Button>
-                <Button leftIcon={<FiHelpCircle />} variant="outline" size="sm" mt={2}>
-                  Report an Issue
-                </Button>
-              </Box>
-  
-              <Box p={4} shadow="sm" borderWidth="1px" borderRadius="lg">
-                <Text fontWeight="bold">FAQs</Text>
-                <Text fontSize="sm">Common questions and answers.</Text>
-                <Button mt={2} size="sm" variant="outline">
-                  View FAQs
-                </Button>
-              </Box>
-  
-              <Box p={4} shadow="sm" borderWidth="1px" borderRadius="lg">
-                <Text fontWeight="bold">Community Support</Text>
-                <Text fontSize="sm">Join discussions with other users.</Text>
-                <Button mt={2} leftIcon={<FiGithub />} size="sm" variant="outline">
-                  GitHub Discussions
-                </Button>
-              </Box>
-            </VStack>
-          </Box>
       </Flex>
     </Container>
   );
