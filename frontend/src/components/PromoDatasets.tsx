@@ -97,67 +97,68 @@ const PromoDatasets: React.FC = () => {
           <Text>All datasets are optimized for high-speed querying and secure data access.</Text>
         </Alert>
 
-        {/* Pricing Plans Section */}
-        <Heading as="h2" size="lg" fontWeight="bold" mb={4}>Pricing Plans</Heading>
-        <Grid templateColumns={{ base: "1fr", md: "repeat(4, 1fr)" }} gap={6}>
-          {pricingPlans.map((plan, index) => (
-            <Box key={index} position="relative">
-              {/* Badge (if applicable) */}
-              {plan.badge && (
-                <Badge
-                  colorScheme="blue"
-                  variant="solid"
-                  px={3} py={1}
-                  position="absolute"
-                  top="-12px"
-                  left="50%"
-                  transform="translateX(-50%)"
-                  zIndex="1"
-                >
-                  {plan.badge}
-                </Badge>
-              )}
-              <Box
-                p={6}
-                border="2px solid"
-                borderColor={plan.borderColor}
-                borderRadius="lg"
-                textAlign="center"
-                display="flex"
-                flexDirection="column"
-                alignItems="center"
-                justifyContent="space-between"
-                minH="400px"
-              >
-                {/* Plan Title */}
-                <Heading as="h3" size="md" fontWeight="semibold" mb={2} minH="48px">
-                  {plan.name}
-                </Heading>
+{/* Pricing Plans Section */}
+<Heading as="h2" size="lg" fontWeight="bold" mb={4}>Pricing Plans</Heading>
+<Grid templateColumns={{ base: "1fr", md: "repeat(4, 1fr)" }} gap={6}>
+  {pricingPlans.map((plan, index) => (
+    <Box key={index} position="relative">
+      {/* Badge (if applicable) */}
+      {plan.badge && (
+        <Badge
+          colorScheme="blue"
+          variant="solid"
+          px={3} py={1}
+          position="absolute"
+          top="-12px"
+          left="50%"
+          transform="translateX(-50%)"
+          zIndex="1"
+        >
+          {plan.badge}
+        </Badge>
+      )}
+      <Box
+        p={6}
+        border="2px solid"
+        borderColor={plan.borderColor}
+        borderRadius="lg"
+        textAlign="center"
+        display="flex"
+        flexDirection="column"
+        alignItems="center"
+        justifyContent="space-between"
+        minH="400px"
+      >
+        {/* Plan Title */}
+        <Heading as="h3" size="md" fontWeight="semibold" mb={2} minH="48px">
+          {plan.name}
+        </Heading>
 
-                {/* Price Display */}
-                <Text fontSize="2xl" fontWeight="bold" mb={1}>
-                  {plan.price === "Custom" ? "Contact Us" : plan.price}
-                  {plan.price !== "Custom" && <Text as="span" fontSize="lg" color="gray.500">/mo</Text>}
-                </Text>
-
-                {/* Feature List */}
-                <List spacing={3} textAlign="left" mb={6} px={4}>
-                  {plan.features.map((feature, idx) => (
-                    <ListItem key={idx} display="flex" alignItems="center">
-                      <ListIcon as={FiCheckCircle} color="blue.500" boxSize={5} />
-                      {feature}
-                    </ListItem>
-                  ))}
-                </List>
-
-                {/* CTA Button */}
-                <Button w="full" colorScheme="blue" variant={plan.buttonVariant} onClick={() => navigate('/datasets/pricing')}>
-                  {plan.price === "Custom" ? "Contact Us" : `Choose ${plan.name}`}
-                </Button>
-              </Box>
-            </Box>
+        {/* Feature List */}
+        <List spacing={3} textAlign="left" mb={6} px={4}>
+          {plan.features.map((feature, idx) => (
+            <ListItem key={idx} display="flex" alignItems="center">
+              <ListIcon as={FiCheckCircle} color="blue.500" boxSize={5} />
+              {feature}
+            </ListItem>
           ))}
-        </Grid>
+        </List>
+
+        {/* Price Display */}
+        <Text fontSize="2xl" fontWeight="bold" mb={1}>
+          {plan.price === "Custom" ? "Contact Us" : plan.price}
+          {plan.price !== "Custom" && <Text as="span" fontSize="lg" color="gray.500">/mo</Text>}
+        </Text>
+
+        {/* CTA Button */}
+        <Button w="full" colorScheme="blue" variant={plan.buttonVariant} onClick={() => navigate('/datasets/pricing')}>
+          {plan.price === "Custom" ? "Contact Us" : `Choose ${plan.name}`}
+        </Button>
+      </Box>
+    </Box>
+  ))}
+</Grid>
+
       </Box>
     </Box>
   );
