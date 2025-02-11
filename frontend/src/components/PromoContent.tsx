@@ -65,7 +65,8 @@ const PromoContent = () => {
 
   return (
     <Box maxW="100%" mx="auto" px={{ base: 6, md: 12 }} py={12}>
-      <Box maxW="100%" mx="auto" textAlign="center">
+      <VStack spacing={8} align="stretch">
+
         <Heading as="h1" size="xl" fontWeight="bold" mb={4}>
           Unlock Premium Proxies
         </Heading>
@@ -170,7 +171,7 @@ const PromoContent = () => {
           <Text>All proxy requests are securely encrypted and optimized for maximum speed.</Text>
         </Alert>
 
-      </Box>
+      </VStack>
     </Box>
   );
 };
