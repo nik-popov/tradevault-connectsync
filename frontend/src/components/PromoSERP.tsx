@@ -98,11 +98,10 @@ const PromoSERP: React.FC = () => {
           <AlertIcon />
           <Text>All API requests are securely handled and optimized.</Text>
         </Alert>
-
-        {/* Pricing Plans Section */}
+{/* Pricing Plans Section */}
 <Heading as="h2" size="lg" fontWeight="bold" mb={4}>Pricing Plans</Heading>
-<Grid templateColumns={{ base: "1fr", md: "repeat(4, 1fr)" }} gap={6}>
-  {pricingPlans.map((plan, index) => (
+<Grid templateColumns={{ base: "1fr", md: "repeat(3, 1fr)" }} gap={6}>
+  {pricingPlans.slice(0, 3).map((plan, index) => (
     <Box key={index} position="relative">
       {/* Badge (if applicable) */}
       {plan.badge && (
@@ -160,6 +159,65 @@ const PromoSERP: React.FC = () => {
     </Box>
   ))}
 </Grid>
+
+{/* Enterprise Plan (Full-Width) */}
+<Box position="relative" mt={6}>
+  {/* Badge (if applicable) */}
+  {pricingPlans[3].badge && (
+    <Badge
+      colorScheme="blue"
+      variant="solid"
+      px={3} py={1}
+      position="absolute"
+      top="-12px"
+      left="50%"
+      transform="translateX(-50%)"
+      zIndex="1"
+    >
+      {pricingPlans[3].badge}
+    </Badge>
+  )}
+  <Box
+    p={6}
+    border="2px solid"
+    borderColor={pricingPlans[3].borderColor}
+    borderRadius="lg"
+    textAlign="center"
+    display="flex"
+    flexDirection="column"
+    alignItems="center"
+    justifyContent="space-between"
+    minH="400px"
+    w="full"
+  >
+    {/* Plan Title */}
+    <Heading as="h3" size="md" fontWeight="semibold" mb={2} minH="48px">
+      {pricingPlans[3].name}
+    </Heading>
+
+    {/* Feature List */}
+    <List spacing={3} textAlign="left" mb={6} px={4}>
+      {pricingPlans[3].features.map((feature, idx) => (
+        <ListItem key={idx} display="flex" alignItems="center">
+          <ListIcon as={FiCheckCircle} color="blue.500" boxSize={5} />
+          {feature}
+        </ListItem>
+      ))}
+    </List>
+
+    {/* Price Display */}
+    <Text fontSize="2xl" fontWeight="bold" mb={1}>
+      {pricingPlans[3].price === "Custom" ? "Contact Us" : pricingPlans[3].price}
+      {pricingPlans[3].price !== "Custom" && <Text as="span" fontSize="lg" color="gray.500">/mo</Text>}
+    </Text>
+
+    {/* CTA Button */}
+    <Button w="full" colorScheme="blue" variant={pricingPlans[3].buttonVariant} onClick={() => navigate('/search-api/pricing')}>
+      {pricingPlans[3].price === "Custom" ? "Contact Us" : `Choose ${pricingPlans[3].name}`}
+    </Button>
+  </Box>
+</Box>
+
 
       </Box>
     </Box>
