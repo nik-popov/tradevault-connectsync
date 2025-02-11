@@ -43,7 +43,7 @@ function Dashboard() {
     }
   }, [queryClient]);
 
-  const { hasSubscription, isTrial, isDeactivated } = subscriptionSettings;
+  const { hasSubscription, isTrial } = subscriptionSettings;
   const isLocked = !hasSubscription && !isTrial;
 
   const [ownedOnly, setOwnedOnly] = useState(false);
