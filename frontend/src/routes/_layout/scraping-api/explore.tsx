@@ -2,7 +2,6 @@ import React, { useState, useMemo } from 'react';
 import {
   Box,
   Container,
-  Heading,
   Text,
   VStack,
   Input,
@@ -114,11 +113,6 @@ const Explore = () => {
               onChange={(e) => setSearchQuery(e.target.value)}
               w={{ base: "100%", md: "300px" }}
             />
-            <Select value={sortOption} onChange={(e) => setSortOption(e.target.value)} w="200px">
-              <option value="name">Sort by Name</option>
-              <option value="price">Sort by Price</option>
-              <option value="rating">Sort by Rating</option>
-            </Select>
             <Stack direction="row" spacing={3}>
               {industries.map((type) => (
                 <Button
@@ -134,6 +128,11 @@ const Explore = () => {
                 </Button>
               ))}
             </Stack>
+            <Select value={sortOption} onChange={(e) => setSortOption(e.target.value)} w="200px">
+              <option value="name">Sort by Name</option>
+              <option value="price">Sort by Price</option>
+              <option value="rating">Sort by Rating</option>
+            </Select>
           </Flex>
 
           <Divider my={4} />
