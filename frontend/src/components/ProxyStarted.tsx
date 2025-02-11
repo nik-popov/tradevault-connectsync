@@ -106,7 +106,7 @@ const GetStarted = () => {
   ];
 
   return (
-    <Box maxW="4xl" mx="auto" px={{ base: 4, md: 8 }} py={8}>
+    <Box maxW="100%" mx="auto" px={{ base: 6, md: 12 }} py={12}>
       <VStack spacing={8} align="stretch">
         {/* Quick Start Guide Header */}
         <Box textAlign="center">
