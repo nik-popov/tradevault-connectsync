@@ -110,7 +110,9 @@ const Sidebar = () => {
           w="250px"
         >
           <Box>
+          <Link href="https://thedataproxy.com">
             <Image src={Logo} alt="Logo" w="180px" maxW="2xs" p={6} />
+            </Link>
             <SidebarItems />
           </Box>
           <Box>
