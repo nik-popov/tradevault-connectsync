@@ -25,6 +25,8 @@ import PromoContent from "../../../components/PromoContent";
 import ProxyStarted from "../../../components/ProxyStarted";
 import ProxySettings from "../../../components/ProxySettings";
 import ProxyUsage from "../../../components/ProxyUsage";
+import SubscriptionManagement from "./path/to/SubscriptionManagement";
+
 
 
 /* ====================================================
@@ -274,7 +276,9 @@ const ReactivationOptions = () => {
 /* ====================================================
    ResidentialProxy Component using Mobile Template
    ==================================================== */
-function ResidentialProxy() {
+   function ResidentialProxy() {
+
+  
   const queryClient = useQueryClient();
   const [subscriptionSettings, setSubscriptionSettings] = useState({
     hasSubscription: false,
@@ -351,47 +355,18 @@ function ResidentialProxy() {
         <PromoContent />
       ) : isDeactivated ? (
         <Box mt={6}>
-          <Text>
-            Your subscription has expired. Please renew to access all features.
-          </Text>
+          <Text>Your subscription has expired. Please renew to access all features.</Text>
           <ReactivationOptions />
         </Box>
       ) : (
         <Flex mt={6} gap={6} justify="space-between">
           {/* Main Content Area */}
           <Box flex="1">
-            <Divider my={4} />
-            <Tabs variant="enclosed">
-              <TabList>
-                {tabsConfig.map((tab, index) => (
-                  <Tab
-                    key={index}
-                    isDisabled={restrictedTabs.includes(tab.title)}
-                  >
-                    {tab.title}
-                  </Tab>
-                ))}
-              </TabList>
-              <TabPanels>
-                {tabsConfig.map((tab, index) => (
-                  <TabPanel key={index}>
-                    {restrictedTabs.includes(tab.title) ? (
-                      <Text>Feature locked during trial.</Text>
-                    ) : (
-                      tab.component
-                    )}
-                  </TabPanel>
-                ))}
-              </TabPanels>
-            </Tabs>
+            {/* Your Tabs and other components */}
           </Box>
 
-          {/* Sidebar with Quick Actions */}
-          <Box
-            w={{ base: "100%", md: "250px" }}
-            p="4"
-            borderLeft={{ md: "1px solid #E2E8F0" }}
-          >
+          {/* Sidebar */}
+          <Box w={{ base: "100%", md: "250px" }} p="4" borderLeft={{ md: "1px solid #E2E8F0" }}>
             <VStack spacing="4" align="stretch">
               <Box p="4" shadow="sm" borderWidth="1px" borderRadius="lg">
                 <Text fontWeight="bold">Quick Actions</Text>
@@ -406,6 +381,9 @@ function ResidentialProxy() {
                   GitHub Discussions
                 </Button>
               </Box>
+
+              {/* Add the SubscriptionManagement component here */}
+              <SubscriptionManagement product="Proxies" />
             </VStack>
           </Box>
         </Flex>
@@ -413,7 +391,6 @@ function ResidentialProxy() {
     </Container>
   );
 }
-
 export const Route = createFileRoute("/_layout/proxies/residential")({
   component: ResidentialProxy,
 });
