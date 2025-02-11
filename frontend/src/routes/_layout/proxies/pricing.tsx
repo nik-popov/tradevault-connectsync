@@ -305,8 +305,8 @@ function Pricing() {
     <Container maxW="full">
       <Flex align="center" justify="space-between" py={6} flexWrap="wrap" gap={4}>
         <Box textAlign="left" flex="1">
-          <Text fontSize="xl" fontWeight="bold">Residential Proxy</Text>
-          <Text fontSize="sm">Manage your proxy settings and subscriptions.</Text>
+          <Text fontSize="xl" fontWeight="bold">Pricing Breakdown</Text>
+          <Text fontSize="sm">Understand your proxy billing and subscriptions.</Text>
         </Box>
       </Flex>
       <Divider my={4} />
