@@ -12,6 +12,8 @@ import {
   TabPanels,
   Tab,
   Table,
+  Thead,
+  
   TabPanel,
 } from "@chakra-ui/react";
 import { useQueryClient, useQuery } from "@tanstack/react-query";
