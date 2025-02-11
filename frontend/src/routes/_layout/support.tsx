@@ -31,7 +31,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useQueryClient, useQuery } from "@tanstack/react-query";
 import { FiSend, FiMail, FiHelpCircle, FiGithub } from "react-icons/fi";
 
-import PromoContent from "../../../components/PromoContent";
+import PromoContent from "../../../src/components/PromoContent";
 
 // Subscription Settings Key
 const STORAGE_KEY = "subscriptionSettings";
