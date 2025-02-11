@@ -64,7 +64,7 @@ const PromoDatasets: React.FC = () => {
 
   return (
    <Box maxW="100%" mx="auto" px={{ base: 6, md: 12 }} py={12}>
-      <Box maxW="100%" mx="auto" textAlign="center">
+          <VStack spacing={8} align="stretch">
        <Heading as="h1" size="xl" fontWeight="bold" mb={4}>
           Unlock Datasets
         </Heading>
@@ -163,9 +163,9 @@ const PromoDatasets: React.FC = () => {
           <AlertIcon />
           <Text>All datasets are optimized for high-speed querying and secure data access.</Text>
         </Alert>
-
+        </VStack>
       </Box>
-    </Box>
+
   );
 };
 
