@@ -11,6 +11,7 @@ import {
   TabList,
   TabPanels,
   Tab,
+  Table,
   TabPanel,
 } from "@chakra-ui/react";
 import { useQueryClient, useQuery } from "@tanstack/react-query";
