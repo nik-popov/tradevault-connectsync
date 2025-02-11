@@ -14,6 +14,7 @@ import {
   ListIcon,
   Alert,
   AlertIcon,
+  VStack
 } from "@chakra-ui/react";
 import { useNavigate } from '@tanstack/react-router';
 import { FiCheckCircle, FiGlobe, FiZap, FiShield } from 'react-icons/fi';
@@ -62,24 +63,22 @@ const PromoContent = () => {
     }
   ];
 
-
   return (
-    <Box maxW="100%" mx="auto" px={{ base: 6, md: 12 }} py={12}>
-      <VStack spacing={8} align="stretch">
-
-        <Heading as="h1" size="xl" fontWeight="bold" mb={4}>
+    <Box maxW="100%" mx="auto" px={{ base: 6, md: 12 }} py={12} textAlign="left">
+      <VStack spacing={8} align="start">
+        <Heading as="h1" size="xl" fontWeight="bold">
           Unlock Premium Proxies
         </Heading>
-        <Text fontSize="lg" color="gray.600" mb={12}>
+        <Text fontSize="lg" color="gray.600">
           Get instant access to our global network of residential IPs with unlimited bandwidth.
         </Text>
 
         {/* FREE TRIAL BANNER */}
-        <Box bg="blue.500" color="white" borderRadius="lg" py={4} px={6} mb={6} boxShadow="md">
-          <Heading as="h2" size="lg" fontWeight="bold" mb={2}>
+        <Box bg="blue.500" color="white" borderRadius="lg" py={4} px={6} boxShadow="md">
+          <Heading as="h2" size="lg" fontWeight="bold">
             Start Your Free Trial Today!
           </Heading>
-          <Text fontSize="md" mb={3}>
+          <Text fontSize="md" my={3}>
             Experience unlimited access to all features for 7 days. No credit card required!
           </Text>
           <Button colorScheme="whiteAlpha" variant="solid" onClick={() => navigate('/signup')}>
@@ -88,14 +87,14 @@ const PromoContent = () => {
         </Box>
 
         {/* Features Section */}
-        <Grid templateColumns={{ base: "1fr", md: "repeat(3, 1fr)" }} gap={6} mb={12}>
+        <Grid templateColumns={{ base: "1fr", md: "repeat(3, 1fr)" }} gap={6}>
           {features.map((feature, index) => (
             <GridItem key={index} p={6} border="1px solid" borderColor="gray.200" borderRadius="lg" boxShadow="sm" _hover={{ boxShadow: "md" }}>
-              <Flex justify="center" mb={4}>
-                <Icon as={feature.icon} boxSize={10} color="blue.500" />
+              <Flex align="center" mb={4}>
+                <Icon as={feature.icon} boxSize={8} color="blue.500" mr={3} />
+                <Text fontSize="lg" fontWeight="semibold">{feature.title}</Text>
               </Flex>
-              <Text fontSize="lg" fontWeight="semibold">{feature.title}</Text>
-              <Text color="gray.600">{feature.description}</Text>
+              <Text fontSize="sm" color="gray.600">{feature.description}</Text>
             </GridItem>
           ))}
         </Grid>
@@ -104,40 +103,16 @@ const PromoContent = () => {
         <Grid templateColumns={{ base: "1fr", md: "repeat(4, 1fr)" }} gap={6}>
           {pricingPlans.map((plan, index) => (
             <Box key={index} position="relative">
-              {/* Badge (if applicable) */}
               {plan.badge && (
-                <Badge
-                  colorScheme="blue"
-                  variant="solid"
-                  px={3} py={1}
-                  position="absolute"
-                  top="-12px"
-                  left="50%"
-                  transform="translateX(-50%)"
-                  zIndex="1"
-                >
+                <Badge colorScheme="blue" variant="solid" px={3} py={1} position="absolute" top="-12px" left="10px">
                   {plan.badge}
                 </Badge>
               )}
-              <Box
-                p={6}
-                border="2px solid"
-                borderColor={plan.borderColor}
-                borderRadius="lg"
-                textAlign="center"
-                display="flex"
-                flexDirection="column"
-                alignItems="center"
-                justifyContent="space-between"
-                minH="400px"
-              >
-                {/* Plan Title */}
-                <Heading as="h3" size="md" fontWeight="semibold" mb={2} minH="48px">
+              <Box p={6} border="2px solid" borderColor={plan.borderColor} borderRadius="lg" textAlign="left">
+                <Heading as="h3" size="md" fontWeight="semibold" mb={2}>
                   {plan.name}
                 </Heading>
-
-                {/* Feature List */}
-                <List spacing={3} textAlign="left" mb={6} px={4}>
+                <List spacing={3} mb={6}>
                   {plan.features.map((feature, idx) => (
                     <ListItem key={idx} display="flex" alignItems="center">
                       <ListIcon as={FiCheckCircle} color="blue.500" boxSize={5} />
@@ -145,32 +120,17 @@ const PromoContent = () => {
                     </ListItem>
                   ))}
                 </List>
-
-                {/* Price Display */}
-                <Box minH="60px" display="flex" alignItems="center" justifyContent="center">
-                  <Text fontSize="2xl" fontWeight="bold">
-                    {plan.price === "Custom" ? "Contact Us" : plan.price}
-                  </Text>
-                  {plan.price !== "Custom" && (
-                    <Text as="span" fontSize="lg" color="gray.500">/mo</Text>
-                  )}
-                </Box>
-
-                {/* CTA Button */}
-                <Button w="full" colorScheme="blue" size="md" variant={plan.buttonVariant} onClick={() => navigate('/proxies/pricing')}>
+                <Text fontSize="2xl" fontWeight="bold" mb={1}>
+                  {plan.price === "Custom" ? "Contact Us" : plan.price}
+                  {plan.price !== "Custom" && <Text as="span" fontSize="lg" color="gray.500">/mo</Text>}
+                </Text>
+                <Button w="full" colorScheme="blue" variant={plan.buttonVariant} onClick={() => navigate('/proxies/pricing')}>
                   {plan.price === "Custom" ? "Contact Us" : `Choose ${plan.name}`}
                 </Button>
               </Box>
             </Box>
           ))}
         </Grid>
-
-        {/* Security Notice */}
-        <Alert status="success" borderRadius="md" mt={6}>
-          <AlertIcon />
-          <Text>All proxy requests are securely encrypted and optimized for maximum speed.</Text>
-        </Alert>
-
       </VStack>
     </Box>
   );
