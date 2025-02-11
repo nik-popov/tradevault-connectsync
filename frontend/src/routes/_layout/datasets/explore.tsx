@@ -270,9 +270,11 @@ function Explore() {
           </VStack>
         </Box>
         </Flex>
+      )}
     </Container>
   );
 }
+
 
 
 // Dataset list item component with an expand/collapse toggle and locked "View" button when in trial mode.
