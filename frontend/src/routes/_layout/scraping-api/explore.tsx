@@ -47,6 +47,7 @@ function Explore() {
   const isLocked = !hasSubscription && !isTrial;
   const isTrialMode = isTrial && !hasSubscription;
   const isFullyDeactivated = isDeactivated && !hasSubscription;
+
   // 🔍 Mock API Data
   const proxyProducts = [
     {
@@ -272,6 +273,8 @@ function Explore() {
   ];
 
   
+
+  
     const industries = ["all", "owned", ...new Set(proxyProducts.map((api) => api.type))];
   
     // 🔄 Filtered API List
@@ -326,7 +329,6 @@ function Explore() {
             {/* 🔍 API Explorer */}
             <Box flex="1">
               <Flex gap={4} justify="space-between" align="center" flexWrap="wrap">
-                {/* Search Input (Left) */}
                 <Input
                   placeholder="Search APIs..."
                   value={searchQuery}
@@ -352,7 +354,7 @@ function Explore() {
                   ))}
                 </HStack>
   
-                {/* Sorting Dropdown (Right) */}
+                {/* Sorting Dropdown */}
                 {!isTrialMode && (
                   <Select value={sortOption} onChange={(e) => setSortOption(e.target.value)} w="200px">
                     <option value="name">Sort by Name</option>
@@ -361,32 +363,32 @@ function Explore() {
               </Flex>
   
               <VStack spacing={4} mt={6} align="stretch">
-                {filteredProducts.length === 0 ? (
-                  <Text textAlign="center" fontSize="lg" color="gray.500">
-                    No APIs match this filter.
-                  </Text>
-                ) : (
-                  <List spacing={4}>
-                    {filteredProducts.map((api) => (
-                      <ListItem
-                        key={api.id}
-                        p={4}
-                        borderWidth="1px"
-                        borderRadius="lg"
-                        onMouseEnter={() => setHoveredApi(api.id)}
-                        onMouseLeave={() => setHoveredApi(null)}
-                      >
-                        <Flex justify="space-between" align="center">
-                          <Box>
-                            <Text fontWeight="bold">{api.name}</Text>
-                            <Text fontSize="sm" color="gray.600">{api.description}</Text>
-                          </Box>
-                          <Button size="sm" colorScheme="blue" rightIcon={<FiExternalLink />} onClick={() => navigate(`/scraping-api/${api.id}`)}>Manage</Button>
-                        </Flex>
-                      </ListItem>
-                    ))}
-                  </List>
-                )}
+                <List spacing={4}>
+                  {filteredProducts.map((api) => (
+                    <ListItem
+                      key={api.id}
+                      p={4}
+                      borderWidth="1px"
+                      borderRadius="lg"
+                      onMouseEnter={() => setHoveredApi(api.id)}
+                      onMouseLeave={() => setHoveredApi(null)}
+                    >
+                      <Flex justify="space-between" align="center">
+                        <Box>
+                          <Text fontWeight="bold">{api.name}</Text>
+                          <Text fontSize="sm" color="gray.600">{api.description}</Text>
+                        </Box>
+                        <Button size="sm" colorScheme="blue" rightIcon={<FiExternalLink />} onClick={() => navigate(`/scraping-api/${api.id}`)}>Manage</Button>
+                      </Flex>
+                      <Collapse in={hoveredApi === api.id}>
+                        <Box mt={2} p={2} bg="gray.100" borderRadius="md">
+                          <Text fontSize="xs"><strong>Endpoint:</strong> {api.details.endpoint}</Text>
+                          <Text fontSize="xs"><strong>Example:</strong> {api.details.example}</Text>
+                        </Box>
+                      </Collapse>
+                    </ListItem>
+                  ))}
+                </List>
               </VStack>
             </Box>
   
