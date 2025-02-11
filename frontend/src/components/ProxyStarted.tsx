@@ -13,10 +13,30 @@ import {
   AlertIcon,
   Divider
 } from "@chakra-ui/react";
-import { FiCheckCircle, FiCopy, FiGlobe, FiCode, FiSettings, FiServer } from "react-icons/fi";
+import { FiCheckCircle, FiCopy, FiGlobe, FiCode, FiSettings, FiServer, FiList } from "react-icons/fi";
 
 const GetStarted = () => {
   const steps = [
+    {
+      title: "List Available Endpoints",
+      icon: FiList,
+      description: "Retrieve all available proxy endpoints.",
+      content: (
+        <Code p={3} borderRadius="md" fontSize="sm" bg="gray.50">
+          {`curl -X GET https://api.thedataproxy.com/api/v1/endpoints`}
+        </Code>
+      )
+    },
+    {
+      title: "Get Available Locations",
+      icon: FiGlobe,
+      description: "Retrieve a list of supported proxy locations.",
+      content: (
+        <Code p={3} borderRadius="md" fontSize="sm" bg="gray.50">
+          {`curl -X GET https://api.thedataproxy.com/api/v1/locations`}
+        </Code>
+      )
+    },
     {
       title: "Configure Your Endpoint",
       icon: FiGlobe,
@@ -41,6 +61,16 @@ const GetStarted = () => {
             Copy credentials
           </Button>
         </Box>
+      )
+    },
+    {
+      title: "Retrieve Authentication Info",
+      icon: FiCode,
+      description: "Check your authentication details and status.",
+      content: (
+        <Code p={3} borderRadius="md" fontSize="sm" bg="gray.50">
+          {`curl -X GET https://api.thedataproxy.com/api/v1/auth`}
+        </Code>
       )
     },
     {
