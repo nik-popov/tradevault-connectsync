@@ -4,8 +4,6 @@ import {
   Button,
   Text,
   Heading,
-  VStack,
-  HStack,
   Grid,
   GridItem,
   Flex,
@@ -14,14 +12,13 @@ import {
   List,
   ListItem,
   ListIcon,
-  Divider,
   Alert,
-  AlertIcon
+  AlertIcon,
 } from "@chakra-ui/react";
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
 import { FiArrowRight, FiCheckCircle } from 'react-icons/fi';
 
-const PromoSERP = () => {
+const PromoSERP: React.FC = () => {
   const navigate = useNavigate();
 
   const features = [
@@ -59,6 +56,20 @@ const PromoSERP = () => {
   return (
     <Box w="full" px={{ base: 4, md: 8 }} py={8}>
       <Box maxW="4xl" mx="auto" textAlign="center">
+
+        {/* FREE TRIAL BANNER */}
+        <Box bg="blue.500" color="white" borderRadius="lg" py={4} px={6} mb={6} boxShadow="md">
+          <Heading as="h2" size="lg" fontWeight="bold" mb={2}>
+            Start Your Free Trial Today!
+          </Heading>
+          <Text fontSize="md" mb={3}>
+            Get full access to our SERP API with a 7-day free trial. No credit card required!
+          </Text>
+          <Button colorScheme="whiteAlpha" variant="solid" onClick={() => navigate('/signup')}>
+            Sign Up for Free
+          </Button>
+        </Box>
+
         {/* Features Section */}
         <Grid templateColumns={{ base: "1fr", md: "repeat(2, 1fr)" }} gap={6} mb={12}>
           {features.map((feature, index) => (
@@ -119,10 +130,5 @@ const PromoSERP = () => {
     </Box>
   );
 };
-
-// ✅ Ensure this is the ONLY Route export in this file
-export const Route = createFileRoute('/src/components/PromoSERP')({
-  component: PromoSERP
-});
 
 export default PromoSERP;
