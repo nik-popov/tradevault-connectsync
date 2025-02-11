@@ -4,8 +4,6 @@ import {
   VStack,
   Heading,
   Text,
-  Select,
-  Input,
   Button,
   Code,
   HStack,
@@ -13,15 +11,22 @@ import {
   Flex,
   Divider,
   Alert,
-  AlertIcon
+  AlertIcon,
+  Select,
+  Input
 } from "@chakra-ui/react";
-import { FiGlobe, FiKey, FiSettings, FiCheckCircle } from "react-icons/fi";
+import { FiGlobe, FiKey, FiSettings, FiCheckCircle, FiLink, FiActivity } from "react-icons/fi";
 
 const ProxySettings = () => {
   const [region, setRegion] = useState("us");
+  const [city, setCity] = useState("");
+  const [authMethod, setAuthMethod] = useState("username-password");
   const [username, setUsername] = useState("your_username");
   const [password, setPassword] = useState("your_password");
-  const [proxyPort, setProxyPort] = useState(12345);
+  const [apiKey, setApiKey] = useState("");
+  const [proxyPort, setProxyPort] = useState(8080);
+  const [protocol, setProtocol] = useState("HTTP");
+  const [testResult, setTestResult] = useState(null);
   
   const regions = [
     { code: "us", name: "United States" },
@@ -30,13 +35,16 @@ const ProxySettings = () => {
     { code: "au", name: "Australia" }
   ];
 
+  const handleTestConnection = () => {
+    setTestResult("Testing connection... (mock result: Success)");
+  };
+
   return (
     <Box maxW="3xl" mx="auto" px={{ base: 4, md: 8 }} py={8}>
       <VStack spacing={6} align="stretch">
-        <Heading size="lg" textAlign="center">Configure Your Endpoint</Heading>
+        <Heading size="lg" textAlign="center">Advanced Proxy Configuration</Heading>
         <Divider />
         
-        {/* Region Selection */}
         <Box>
           <Text fontWeight="bold" mb={1}>Select Proxy Region:</Text>
           <Select value={region} onChange={(e) => setRegion(e.target.value)}>
@@ -45,36 +53,69 @@ const ProxySettings = () => {
             ))}
           </Select>
         </Box>
-        
-        {/* Authentication */}
+
         <Box>
-          <Text fontWeight="bold" mb={1}>Authentication:</Text>
-          <HStack>
-            <Input value={username} onChange={(e) => setUsername(e.target.value)} placeholder="Username" />
-            <Input type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Password" />
-          </HStack>
+          <Text fontWeight="bold" mb={1}>Specify City (Optional):</Text>
+          <Input value={city} onChange={(e) => setCity(e.target.value)} placeholder="Enter city name (optional)" />
         </Box>
         
-        {/* Proxy Endpoint */}
+        <Box>
+          <Text fontWeight="bold" mb={1}>Authentication Method:</Text>
+          <Select value={authMethod} onChange={(e) => setAuthMethod(e.target.value)}>
+            <option value="username-password">Username & Password</option>
+            <option value="api-key">API Key</option>
+          </Select>
+        </Box>
+
+        {authMethod === "username-password" ? (
+          <Box>
+            <Text fontWeight="bold" mb={1}>Authentication:</Text>
+            <HStack>
+              <Input value={username} onChange={(e) => setUsername(e.target.value)} placeholder="Username" />
+              <Input type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Password" />
+            </HStack>
+          </Box>
+        ) : (
+          <Box>
+            <Text fontWeight="bold" mb={1}>API Key:</Text>
+            <Input type="password" value={apiKey} onChange={(e) => setApiKey(e.target.value)} placeholder="Enter API Key" />
+          </Box>
+        )}
+        
+        <Box>
+          <Text fontWeight="bold" mb={1}>Select Protocol:</Text>
+          <Select value={protocol} onChange={(e) => setProtocol(e.target.value)}>
+            <option value="HTTP">HTTP</option>
+            <option value="SOCKS5">SOCKS5</option>
+          </Select>
+        </Box>
+        
         <Box>
           <Text fontWeight="bold" mb={1}>Proxy Endpoint:</Text>
           <Code p={3} borderRadius="md" bg="gray.50" fontSize="sm">
-            {`https://${region}.proxy.yourdomain.com:${proxyPort}`}
+            {`${protocol.toLowerCase()}://${region}${city ? `-${city}` : ""}.proxy.yourdomain.com:${proxyPort}`}
           </Code>
         </Box>
         
-        {/* Connection Settings */}
         <Box>
           <Text fontWeight="bold" mb={1}>Connection Settings:</Text>
           <Code p={3} borderRadius="md" bg="gray.50" fontSize="sm">
             {`headers = {'User-Agent': 'YourApp/1.0'}`}
           </Code>
         </Box>
-        <Button leftIcon={<FiCheckCircle />} colorScheme="blue" size="lg">
-          Save Settings
+        
+        <Button leftIcon={<FiCheckCircle />} colorScheme="blue" size="lg" onClick={handleTestConnection}>
+          Test Connection
         </Button>
-                {/* Verification & Support */}
-                <Alert status="success" borderRadius="md">
+        
+        {testResult && (
+          <Alert status="info" borderRadius="md">
+            <AlertIcon as={FiActivity} boxSize={5} />
+            <Text>{testResult}</Text>
+          </Alert>
+        )}
+        
+        <Alert status="success" borderRadius="md">
           <AlertIcon as={FiCheckCircle} boxSize={5} />
           <Box>
             <Text fontWeight="bold">Verify Your Setup</Text>
@@ -84,8 +125,6 @@ const ProxySettings = () => {
             </Text>
           </Box>
         </Alert>
-        
-    
       </VStack>
     </Box>
   );
