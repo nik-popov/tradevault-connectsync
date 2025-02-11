@@ -153,7 +153,7 @@ const PromoSERP: React.FC = () => {
         </Text>
 
         {/* CTA Button */}
-        <Button w="full" colorScheme="blue" variant={plan.buttonVariant} onClick={() => navigate('/datasets/pricing')}>
+        <Button w="full" colorScheme="blue" variant={plan.buttonVariant} onClick={() => navigate('/search-api/pricing')}>
           {plan.price === "Custom" ? "Contact Us" : `Choose ${plan.name}`}
         </Button>
       </Box>
