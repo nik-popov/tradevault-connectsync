@@ -64,8 +64,8 @@ const PromoContent = () => {
   ];
 
   return (
-    <Box maxW="100%" mx="auto" px={{ base: 6, md: 12 }} py={12} textAlign="left">
-      <VStack spacing={8} align="start">
+    <Box maxW="100%" mx="auto" px={{ base: 6, md: 12 }} py={12}>
+      <VStack spacing={8} align="stretch">
         <Heading as="h1" size="xl" fontWeight="bold">
           Unlock Premium Proxies
         </Heading>
