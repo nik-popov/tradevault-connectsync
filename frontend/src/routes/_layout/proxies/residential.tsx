@@ -9,6 +9,7 @@ import {
   Flex,
   Tabs,
   Tr,
+  Th,
   TabList,
   TabPanels,
   Tab,
