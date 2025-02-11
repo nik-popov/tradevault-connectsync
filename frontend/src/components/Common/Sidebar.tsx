@@ -68,11 +68,7 @@ const Sidebar = () => {
           <DrawerBody py={8}>
             <Flex flexDir="column" justify="space-between" h="100%">
               <Box>
-              <Link
-      href="https://thedataproxy.com"
-      target="_blank"
-      rel="noopener noreferrer"
-    >
+              <Link href="https://thedataproxy.com">
                 <Image src={Logo} alt="Logo" p={6} />
                 </Link>
                 <SidebarItems onClose={onClose} />
