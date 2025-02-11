@@ -60,18 +60,21 @@ function Explore() {
       name: "Google Search API",
       category: "search",
       description: "Fetches real-time search results from Google.",
+      isLocked: false,
     },
     {
       id: "linkedin-api",
       name: "LinkedIn Scraping API",
       category: "social media",
       description: "Scrapes public LinkedIn profiles, job postings, and company data.",
+      isLocked: true,
     },
     {
       id: "amazon-product-api",
       name: "Amazon Product API",
       category: "ecommerce",
       description: "Fetches product details, reviews, and price history from Amazon.",
+      isLocked: true,
     },
   ];
 
@@ -119,34 +122,20 @@ function Explore() {
       ) : (
         <Flex gap={6} justify="space-between" align="stretch" wrap="wrap">
           <Box flex="1" minW={{ base: "100%", md: "65%" }}>
-            <Flex gap={4} justify="space-between" align="center" flexWrap="wrap">
-              <Input
-                placeholder="Search APIs..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                w={{ base: "100%", md: "250px" }}
-              />
-              <HStack spacing={2}>
-                {categories.map((type) => (
-                  <Button
-                    key={type}
-                    size="sm"
-                    fontWeight="bold"
-                    borderRadius="full"
-                    colorScheme={activeFilter === type ? "blue" : "gray"}
-                    variant={activeFilter === type ? "solid" : "outline"}
-                    onClick={() => setActiveFilter(type)}
-                  >
-                    {type}
-                  </Button>
-                ))}
-              </HStack>
-            </Flex>
             <VStack spacing={4} mt={6} align="stretch">
               {filteredAPIs.map((api) => (
                 <Box key={api.id} p={4} borderWidth="1px" borderRadius="lg">
-                  <Text fontWeight="bold">{api.name}</Text>
-                  <Text fontSize="sm" color="gray.600">{api.description}</Text>
+                  <Flex justify="space-between" align="center">
+                    <Box>
+                      <Text fontWeight="bold">{api.name}</Text>
+                      <Text fontSize="sm" color="gray.600">{api.description}</Text>
+                    </Box>
+                    <HStack spacing={2}>
+                      <Button size="sm" colorScheme="blue" onClick={() => navigate(`/scraper-api/${api.id}`)} isDisabled={api.isLocked}>
+                        {api.isLocked ? "Locked" : "View"}
+                      </Button>
+                    </HStack>
+                  </Flex>
                 </Box>
               ))}
             </VStack>
