@@ -1,59 +1,16 @@
-import {
-  Container,
-  Heading,
-  Tab,
-  TabList,
-  TabPanel,
-  TabPanels,
-  Tabs,
-  Box,
-  Text,
-  Button,
-  VStack,
-  HStack,
-  Divider,
-  Flex,
-  Switch,
-} from "@chakra-ui/react";
-import { useState } from "react";
-import { useQueryClient } from "@tanstack/react-query";
-import { createFileRoute } from "@tanstack/react-router";
-import { FiSend, FiGithub } from "react-icons/fi";
-import PromoContent from "../../../components/PromoContent";
-import GetStarted from "../../../components/GetStarted";
-import ProxySettings from "../../../components/ProxySettings";
-import ProxyUsage from "../../../components/ProxyUsage"
-
-const TopUps = () => <Box><Text>Top-Ups Component</Text></Box>;
-const Connections = () => <Box><Text>Connections Component</Text></Box>;
-const Logs = () => <Box><Text>Logs Component</Text></Box>;
-const KeyManagement = () => <Box><Text>Key Management Component</Text></Box>;
-const ReactivationOptions = () => <Box><Text>Reactivation Options Component</Text></Box>;
-
-// ✅ FIX: Corrected Route Export
-export const Route = createFileRoute("/_layout/proxies/residential")({
-  component: ResidentialProxy,
-});
-
-const tabsConfig = [
-  { title: "Get Started", component: <GetStarted /> },
-  { title: "Endpoints", component: <ProxySettings /> },
-  { title: "Usage", component: <ProxyUsage /> },
-  { title: "Top-Ups", component: <TopUps /> },
-  { title: "Connections", component: <Connections /> },
-  { title: "Logs", component: <Logs /> },
-  { title: "Key Management", component: <KeyManagement /> },
-];
 function ResidentialProxy() {
   const queryClient = useQueryClient();
-  const subscriptionSettings = queryClient.getQueryData("subscriptionSettings") || {
-    hasSubscription: false,
-    isTrial: false,
-    isDeactivated: false,
-  };
+  const storedSettings = localStorage.getItem("subscriptionSettings");
+  
+  const subscriptionSettings = storedSettings
+    ? JSON.parse(storedSettings)
+    : queryClient.getQueryData("subscriptionSettings") || {
+        hasSubscription: false,
+        isTrial: false,
+        isDeactivated: false,
+      };
 
   const { hasSubscription, isTrial, isDeactivated } = subscriptionSettings;
-
   const restrictedTabs = isTrial ? ["Key Management", "Logs", "Top-Ups", "Connections"] : [];
   const isLocked = !hasSubscription && !isTrial;
 
