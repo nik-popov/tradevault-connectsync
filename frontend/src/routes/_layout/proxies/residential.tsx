@@ -1,3 +1,5 @@
+import { useQuery } from "@tanstack/react-query"; // ✅ Move this to the top
+
 import {
   Container,
   Heading,
@@ -14,16 +16,8 @@ import {
   Divider,
   Flex,
   Switch,
-  Table,
-  Thead,
-  Tbody,
-  Tr,
-  Th,
-  Td,
-  Input,
 } from "@chakra-ui/react";
 import { useState, useEffect } from "react";
-import { useQueryClient } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import { FiSend, FiGithub } from "react-icons/fi";
 
@@ -31,6 +25,8 @@ import PromoContent from "../../../components/PromoContent";
 import ProxyStarted from "../../../components/ProxyStarted";
 import ProxySettings from "../../../components/ProxySettings";
 import ProxyUsage from "../../../components/ProxyUsage";
+import SubscriptionManagement from "../../../components/UserSettings/SubscriptionManagement"; // ✅ Ensure this is imported properly
+
 
 /* ====================================================
    Inline Proxy Components (Mobile Template)
@@ -303,29 +299,7 @@ function ResidentialProxy() {
   // Load current user data from localStorage (or replace with your own user logic)
   const currentUser = JSON.parse(localStorage.getItem("currentUser") || "null");
 
-  import { useQuery } from "@tanstack/react-query";
-
-  const STORAGE_KEY = "subscriptionSettings";
-  const PRODUCT_NAME = "Residential"; // ✅ Define specific product
-  
-  const { data: subscriptionSettings, refetch } = useQuery({
-    queryKey: ["subscriptionSettings"],
-    queryFn: () => {
-      const storedSettings = localStorage.getItem(STORAGE_KEY);
-      return storedSettings ? JSON.parse(storedSettings) : {};
-    },
-    staleTime: Infinity,
-  });
-  
-  // ✅ Only extract settings for Residential
-  const productSubscription = subscriptionSettings?.[PRODUCT_NAME] || {
-    hasSubscription: false,
-    isTrial: false,
-    isDeactivated: false,
-  };
-  
-  const { hasSubscription, isTrial, isDeactivated } = productSubscription;
-  
+  const { hasSubscription, isTrial, isDeactivated } = subscriptionSettings;
   const isLocked = !hasSubscription && !isTrial;
 
   // Define restricted tabs when in trial mode
