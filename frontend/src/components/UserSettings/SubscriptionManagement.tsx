@@ -2,14 +2,16 @@ import {
   Box, Heading, Text, VStack, HStack, Switch, Button, Divider 
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
-import { useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 
-// Define the shape of subscription settings per product
-type SubscriptionSettings = {
-  hasSubscription: boolean;
-  isTrial: boolean;
-  isDeactivated: boolean;
-};
+const { data: subscriptionSettings, isLoading } = useQuery({
+  queryKey: ["subscriptionSettings"],
+  queryFn: () => {
+    const storedSettings = localStorage.getItem("subscriptionSettings");
+    return storedSettings ? JSON.parse(storedSettings) : {};
+  },
+  staleTime: Infinity, // Keep settings fresh
+});
 
 // Define the structure for multiple products
 type SubscriptionData = {
