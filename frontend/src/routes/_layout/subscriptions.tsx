@@ -132,12 +132,13 @@ import {
           </TabList>
   
           <TabPanels>
-            {Object.keys(subscriptionData).map((category) => (
-              <TabPanel key={category}>
-                <SubscriptionTable category={category} />
-              </TabPanel>
-            ))}
-          </TabPanels>
+  {Object.keys(subscriptionData).map((category) => (
+    <TabPanel key={category}>
+      {subscriptionData[category] ? <SubscriptionTable category={category} /> : null}
+    </TabPanel>
+  ))}
+</TabPanels>
+
         </Tabs>
       </Container>
     );
