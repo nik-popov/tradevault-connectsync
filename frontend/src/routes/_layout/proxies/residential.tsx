@@ -24,14 +24,7 @@ import PromoContent from "../../../components/PromoContent";
 import ProxyStarted from "../../../components/ProxyStarted";
 import ProxySettings from "../../../components/ProxySettings";
 import ProxyUsage from "../../../components/ProxyUsage";
-
-// Dummy component for Key Management
-const KeyManagement = () => (
-  <Box p={4} borderWidth="1px" borderRadius="md">
-    <Text fontSize="xl" mb={4}>Key Management</Text>
-    <Button colorScheme="blue">Manage Keys</Button>
-  </Box>
-);
+import KeyManagement from "../../../components/KeyManagement"; // Assuming this is correctly imported
 
 function ResidentialProxy() {
   const queryClient = useQueryClient();
@@ -42,7 +35,6 @@ function ResidentialProxy() {
   });
 
   useEffect(() => {
-    // Fetch subscription settings from localStorage or React Query cache
     const storedSettings = localStorage.getItem("subscriptionSettings");
     if (storedSettings) {
       setSubscriptionSettings(JSON.parse(storedSettings));
@@ -54,7 +46,6 @@ function ResidentialProxy() {
     }
   }, [queryClient]);
 
-  // Load current user data from local storage
   const currentUser = useMemo(() => {
     try {
       return JSON.parse(localStorage.getItem("currentUser") || "{}");
@@ -68,16 +59,18 @@ function ResidentialProxy() {
   const isLocked = !hasSubscription && !isTrial;
 
   const tabsConfig = [
-    { title: "Get Started", component: <ProxyStarted /> },
-    { title: "Endpoints", component: <ProxySettings /> },
-    { title: "Usage", component: <ProxyUsage /> },
-    { title: "Key Management", component: <KeyManagement /> },
+    { name: "Get Started", sub: <ProxyStarted /> },
+    { name: "Endpoints", sub: <ProxySettings /> },
+    { name: "Usage", sub: <ProxyUsage /> },
+    { name: "Key Management", sub: <KeyManagement /> },
   ];
+
+  const welcomeMessage = currentUser?.full_name ? `Welcome, ${currentUser.full_name}` : "Welcome to your Proxy Dashboard";
 
   return (
     <Container maxW="full" overflowX="hidden">
       <Flex align="center" justify="space-between" py={6} flexWrap="wrap">
-        <Heading size="lg">Residential Proxies</Heading>
+        <Heading size="lg">{welcomeMessage}</Heading>
         <HStack spacing={6}>
           <HStack>
             <Text fontWeight="bold">Subscription:</Text>
@@ -109,12 +102,12 @@ function ResidentialProxy() {
             <Tabs variant="enclosed">
               <TabList>
                 {tabsConfig.map((tab, index) => (
-                  <Tab key={index}>{tab.title}</Tab>
+                  <Tab key={index}>{tab.name}</Tab>
                 ))}
               </TabList>
               <TabPanels>
                 {tabsConfig.map((tab, index) => (
-                  <TabPanel key={index}>{tab.component}</TabPanel>
+                  <TabPanel key={index}>{tab.sub}</TabPanel>
                 ))}
               </TabPanels>
             </Tabs>
