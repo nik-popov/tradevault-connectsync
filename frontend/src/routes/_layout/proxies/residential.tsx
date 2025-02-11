@@ -20,9 +20,10 @@ import { useQueryClient } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import { FiSend, FiGithub } from "react-icons/fi";
 import PromoContent from "../../../components/PromoContent";
-import GetStarted from "../../../components/ProxyStarted";
+import ProxyStarted from "../../../components/ProxyStarted";
 import ProxySettings from "../../../components/ProxySettings";
 import ProxyUsage from "../../../components/ProxyUsage";
+
 const TopUps = () => <Box><Text>Top-Ups Component</Text></Box>;
 const Connections = () => <Box><Text>Connections Component</Text></Box>;
 const Logs = () => <Box><Text>Logs Component</Text></Box>;
@@ -35,7 +36,7 @@ export const Route = createFileRoute("/_layout/proxies/residential")({
 });
 
 const tabsConfig = [
-  { title: "Get Started", component: <GetStarted /> },
+  { title: "Get Started", component: <ProxyStarted /> },
   { title: "Endpoints", component: <ProxySettings /> },
   { title: "Usage", component: <ProxyUsage /> },
   { title: "Top-Ups", component: <TopUps /> },

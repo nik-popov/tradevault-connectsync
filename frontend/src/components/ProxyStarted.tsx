@@ -15,7 +15,7 @@ import {
 } from "@chakra-ui/react";
 import { FiCheckCircle, FiCopy, FiGlobe, FiCode, FiSettings, FiServer, FiList } from "react-icons/fi";
 
-const GetStarted = () => {
+const ProxyStarted = () => {
   const steps = [
     {
       title: "List Available Endpoints",
@@ -152,4 +152,4 @@ const GetStarted = () => {
   );
 };
 
-export default GetStarted;
+export default ProxyStarted;
