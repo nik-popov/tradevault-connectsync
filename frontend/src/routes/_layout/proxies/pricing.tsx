@@ -1,27 +1,23 @@
+import React from 'react';
 import {
-  Container,
-  Heading,
+  Box,
+  Button,
   Text,
-  VStack,
-  Divider,
-  Badge,
+  Heading,
   Grid,
   GridItem,
-  Button,
+  VStack,
+  Badge,
   Tabs,
   Tab,
   TabList,
   TabPanel,
   TabPanels,
-  Box,
+  Divider,
+  Container,
 } from "@chakra-ui/react";
-import { createFileRoute } from "@tanstack/react-router";
+import { useNavigate } from '@tanstack/react-router';
 
-export const Route = createFileRoute("/_layout/proxies/pricing")({
-  component: PricingPage,
-});
-
-// Proxy Pricing Rates (Per GB) for Each Product
 const proxyPricing = {
   Residential: [
     { tier: "Starter", pricePerGB: "$2.00/GB", trafficLimit: "Up to 500GB" },
@@ -55,15 +51,14 @@ const proxyPricing = {
   ],
 };
 
-function PricingPage() {
+const PricingPage = () => {
+  const navigate = useNavigate();
   return (
     <Container maxW="6xl" py={10}>
-      {/* PAGE TITLE */}
       <Heading size="lg" textAlign="center" mb={8}>
         Proxy Pricing Plans (Per GB)
       </Heading>
 
-      {/* PRICING TABS FOR EACH PROXY TYPE */}
       <Tabs variant="soft-rounded" colorScheme="blue">
         <TabList justifyContent="center" flexWrap="wrap">
           {Object.keys(proxyPricing).map((product) => (
@@ -74,7 +69,6 @@ function PricingPage() {
         <TabPanels>
           {Object.keys(proxyPricing).map((product) => (
             <TabPanel key={product}>
-              {/* Grid Layout for Pricing */}
               <Grid templateColumns={{ base: "1fr", md: "repeat(4, 1fr)" }} gap={6} mt={6}>
                 {proxyPricing[product].map((tier) => (
                   <GridItem key={tier.tier}>
@@ -89,7 +83,6 @@ function PricingPage() {
                       _hover={{ shadow: "md", transform: "scale(1.02)" }}
                       position="relative"
                     >
-                      {/* Badge for Popular Plans */}
                       {tier.badge && (
                         <Badge
                           colorScheme="blue"
@@ -105,23 +98,11 @@ function PricingPage() {
                         </Badge>
                       )}
 
-                      {/* Tier Name */}
                       <Text fontSize="xl" fontWeight="bold">{tier.tier}</Text>
-
-                      {/* Per GB Price */}
-                      <Text fontSize="2xl" fontWeight="bold" color="teal.500" mt={2}>
-                        {tier.pricePerGB}
-                      </Text>
-
-                      {/* Traffic Limit */}
+                      <Text fontSize="2xl" fontWeight="bold" color="teal.500" mt={2}>{tier.pricePerGB}</Text>
                       <Text fontSize="md" color="gray.500">{tier.trafficLimit}</Text>
-
                       <Divider my={4} />
-
-                      {/* CTA Button */}
-                      <Button colorScheme="blue" size="sm">
-                        Choose Plan
-                      </Button>
+                      <Button colorScheme="blue" size="sm">Choose Plan</Button>
                     </Box>
                   </GridItem>
                 ))}
@@ -131,7 +112,6 @@ function PricingPage() {
         </TabPanels>
       </Tabs>
 
-      {/* PRICING NOTICE */}
       <Box mt={8} textAlign="center">
         <Text fontSize="sm" color="gray.500">
           Pricing is based on per GB usage. **Enterprise clients** can request **custom pricing & volume discounts**.
@@ -142,6 +122,6 @@ function PricingPage() {
       </Box>
     </Container>
   );
-}
+};
 
 export default PricingPage;
