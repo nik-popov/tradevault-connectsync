@@ -21,6 +21,7 @@ import {
 import { createFileRoute } from "@tanstack/react-router";
 import { useQueryClient } from "@tanstack/react-query";
 import { FiSend, FiGithub } from "react-icons/fi";
+import PromoSERP from "../../../components/PromoSERP"; // ✅ Ensure PromoSERP is imported
 
 export const Route = createFileRoute("/_layout/scraping-api/explore")({
   component: Explore,
@@ -104,10 +105,13 @@ function Explore() {
         <Box flex="1">
           {/* 🚨 Show Locked Message */}
           {isLocked ? (
-            <Alert status="warning" borderRadius="md">
-              <AlertIcon />
-              <Text>You need a subscription or trial to explore APIs.</Text>
-            </Alert>
+            <>
+              <Alert status="warning" borderRadius="md">
+                <AlertIcon />
+                <Text>You need a subscription or trial to explore APIs.</Text>
+              </Alert>
+              <PromoSERP /> {/* ✅ Promo Content Under Alert */}
+            </>
           ) : isDeactivated ? (
             <Alert status="error" borderRadius="md">
               <AlertIcon />
