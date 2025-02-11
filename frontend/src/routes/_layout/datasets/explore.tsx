@@ -50,457 +50,469 @@ function Explore() {
 
   // 🔍 Mock Dataset Data
   const datasets = [
-      {
-        id: "global-traffic",
-        name: "Global Traffic Data",
-        category: "transportation",
-        owned: ownedDatasets.includes("global-traffic"),
-        description: "Comprehensive traffic data from major cities worldwide.",
-        details: {
-          endpoint: "/datasets/global-traffic",
-          example: `GET /datasets/global-traffic?city=LosAngeles`,
-        },
-      },
-      {
-        id: "weather-forecasts",
-        name: "Weather Forecasts",
-        category: "climate",
-        owned: ownedDatasets.includes("weather-forecasts"),
-        description: "Real-time and predictive weather data.",
-        details: {
-          endpoint: "/datasets/weather-forecasts",
-          example: `GET /datasets/weather-forecasts?city=NewYork`,
-        },
-      },
-      {
-        id: "stock-market",
-        name: "Stock Market Data",
-        category: "finance",
-        owned: ownedDatasets.includes("stock-market"),
-        description: "Historical and real-time stock market information.",
-        details: {
-          endpoint: "/datasets/stock-market",
-          example: `GET /datasets/stock-market?symbol=AAPL`,
-        },
-      },
-      {
-        id: "social-media-trends",
-        name: "Social Media Trends",
-        category: "social",
-        owned: ownedDatasets.includes("social-media-trends"),
-        description: "Trending topics and hashtags across major platforms.",
-        details: {
-          endpoint: "/datasets/social-media-trends",
-          example: `GET /datasets/social-media-trends?platform=Twitter`,
-        },
-      },
-      {
-        id: "covid-statistics",
-        name: "COVID-19 Statistics",
-        category: "health",
-        owned: ownedDatasets.includes("covid-statistics"),
-        description: "Global COVID-19 cases, deaths, and vaccination rates.",
-        details: {
-          endpoint: "/datasets/covid-statistics",
-          example: `GET /datasets/covid-statistics?country=USA`,
-        },
-      },
-      {
-        id: "renewable-energy",
-        name: "Renewable Energy Production",
-        category: "energy",
-        owned: ownedDatasets.includes("renewable-energy"),
-        description: "Global renewable energy production and consumption data.",
-        details: {
-          endpoint: "/datasets/renewable-energy",
-          example: `GET /datasets/renewable-energy?type=solar`,
-        },
-      },
-      {
-        id: "air-quality",
-        name: "Air Quality Index",
-        category: "environment",
-        owned: ownedDatasets.includes("air-quality"),
-        description: "Real-time air quality measurements from major cities.",
-        details: {
-          endpoint: "/datasets/air-quality",
-          example: `GET /datasets/air-quality?city=Beijing`,
-        },
-      },
-      {
-        id: "population-demographics",
-        name: "Population Demographics",
-        category: "demographics",
-        owned: ownedDatasets.includes("population-demographics"),
-        description: "Global population statistics and demographic trends.",
-        details: {
-          endpoint: "/datasets/population-demographics",
-          example: `GET /datasets/population-demographics?country=Canada`,
-        },
-      },
-      {
-        id: "crime-statistics",
-        name: "Crime Statistics",
-        category: "public-safety",
-        owned: ownedDatasets.includes("crime-statistics"),
-        description: "Crime rates and types across major cities.",
-        details: {
-          endpoint: "/datasets/crime-statistics",
-          example: `GET /datasets/crime-statistics?city=Chicago`,
-        },
-      },
-      {
-        id: "real-estate-prices",
-        name: "Real Estate Prices",
-        category: "real-estate",
-        owned: ownedDatasets.includes("real-estate-prices"),
-        description: "Property values and market trends.",
-        details: {
-          endpoint: "/datasets/real-estate-prices",
-          example: `GET /datasets/real-estate-prices?city=SanFrancisco`,
-        },
-      },
-      {
-        id: "education-statistics",
-        name: "Education Statistics",
-        category: "education",
-        owned: ownedDatasets.includes("education-statistics"),
-        description: "Global education metrics and performance indicators.",
-        details: {
-          endpoint: "/datasets/education-statistics",
-          example: `GET /datasets/education-statistics?country=Finland`,
-        },
-      },
-      {
-        id: "restaurant-reviews",
-        name: "Restaurant Reviews",
-        category: "food",
-        owned: ownedDatasets.includes("restaurant-reviews"),
-        description: "Aggregated restaurant reviews and ratings.",
-        details: {
-          endpoint: "/datasets/restaurant-reviews",
-          example: `GET /datasets/restaurant-reviews?city=Paris`,
-        },
-      },
-      {
-        id: "job-market",
-        name: "Job Market Trends",
-        category: "employment",
-        owned: ownedDatasets.includes("job-market"),
-        description: "Employment rates and job market analytics.",
-        details: {
-          endpoint: "/datasets/job-market",
-          example: `GET /datasets/job-market?industry=tech`,
-        },
-      },
-      {
-        id: "public-transportation",
-        name: "Public Transportation Usage",
-        category: "transportation",
-        owned: ownedDatasets.includes("public-transportation"),
-        description: "Public transit ridership and performance metrics.",
-        details: {
-          endpoint: "/datasets/public-transportation",
-          example: `GET /datasets/public-transportation?city=London`,
-        },
-      },
-      {
-        id: "smartphone-usage",
-        name: "Smartphone Usage Statistics",
-        category: "technology",
-        owned: ownedDatasets.includes("smartphone-usage"),
-        description: "Mobile device usage patterns and trends.",
-        details: {
-          endpoint: "/datasets/smartphone-usage",
-          example: `GET /datasets/smartphone-usage?region=Asia`,
-        },
-      },
-      {
-        id: "internet-speeds",
-        name: "Internet Speed Tests",
-        category: "technology",
-        owned: ownedDatasets.includes("internet-speeds"),
-        description: "Global internet speed and connectivity data.",
-        details: {
-          endpoint: "/datasets/internet-speeds",
-          example: `GET /datasets/internet-speeds?country=SouthKorea`,
-        },
-      },
-      {
-        id: "streaming-trends",
-        name: "Streaming Content Trends",
-        category: "entertainment",
-        owned: ownedDatasets.includes("streaming-trends"),
-        description: "Popular content across streaming platforms.",
-        details: {
-          endpoint: "/datasets/streaming-trends",
-          example: `GET /datasets/streaming-trends?platform=Netflix`,
-        },
-      },
-      {
-        id: "sports-statistics",
-        name: "Sports Statistics",
-        category: "sports",
-        owned: ownedDatasets.includes("sports-statistics"),
-        description: "Professional sports leagues and player statistics.",
-        details: {
-          endpoint: "/datasets/sports-statistics",
-          example: `GET /datasets/sports-statistics?sport=basketball`,
-        },
-      },
-      {
-        id: "music-charts",
-        name: "Music Charts Data",
-        category: "entertainment",
-        owned: ownedDatasets.includes("music-charts"),
-        description: "Music popularity charts and streaming statistics.",
-        details: {
-          endpoint: "/datasets/music-charts",
-          example: `GET /datasets/music-charts?country=UK`,
-        },
-      },
-      {
-        id: "flight-data",
-        name: "Flight Statistics",
-        category: "transportation",
-        owned: ownedDatasets.includes("flight-data"),
-        description: "Global flight routes and airline performance.",
-        details: {
-          endpoint: "/datasets/flight-data",
-          example: `GET /datasets/flight-data?airline=Delta`,
-        },
-      },
-      {
-        id: "cryptocurrency",
-        name: "Cryptocurrency Data",
-        category: "finance",
-        owned: ownedDatasets.includes("cryptocurrency"),
-        description: "Cryptocurrency prices and trading volumes.",
-        details: {
-          endpoint: "/datasets/cryptocurrency",
-          example: `GET /datasets/cryptocurrency?coin=Bitcoin`,
-        },
-      },
-      {
-        id: "food-prices",
-        name: "Food Price Index",
-        category: "economics",
-        owned: ownedDatasets.includes("food-prices"),
-        description: "Global food price trends and variations.",
-        details: {
-          endpoint: "/datasets/food-prices",
-          example: `GET /datasets/food-prices?region=Europe`,
-        },
-      },
-      {
-        id: "carbon-emissions",
-        name: "Carbon Emissions",
-        category: "environment",
-        owned: ownedDatasets.includes("carbon-emissions"),
-        description: "Global carbon emission measurements and trends.",
-        details: {
-          endpoint: "/datasets/carbon-emissions",
-          example: `GET /datasets/carbon-emissions?sector=industry`,
-        },
-      },
-      {
-        id: "mental-health",
-        name: "Mental Health Statistics",
-        category: "health",
-        owned: ownedDatasets.includes("mental-health"),
-        description: "Mental health trends and statistics.",
-        details: {
-          endpoint: "/datasets/mental-health",
-          example: `GET /datasets/mental-health?condition=anxiety`,
-        },
-      },
-      {
-        id: "water-quality",
-        name: "Water Quality Data",
-        category: "environment",
-        owned: ownedDatasets.includes("water-quality"),
-        description: "Water quality measurements from major water bodies.",
-        details: {
-          endpoint: "/datasets/water-quality",
-          example: `GET /datasets/water-quality?location=GreatLakes`,
-        },
-      },
-      {
-        id: "gaming-statistics",
-        name: "Gaming Industry Data",
-        category: "entertainment",
-        owned: ownedDatasets.includes("gaming-statistics"),
-        description: "Video game sales and player statistics.",
-        details: {
-          endpoint: "/datasets/gaming-statistics",
-          example: `GET /datasets/gaming-statistics?platform=PlayStation`,
-        },
-      },
-      {
-        id: "waste-management",
-        name: "Waste Management Statistics",
-        category: "environment",
-        owned: ownedDatasets.includes("waste-management"),
-        description: "Global waste production and recycling data.",
-        details: {
-          endpoint: "/datasets/waste-management",
-          example: `GET /datasets/waste-management?city=Tokyo`,
-        },
-      },
-      {
-        id: "vaccination-rates",
-        name: "Vaccination Statistics",
-        category: "health",
-        owned: ownedDatasets.includes("vaccination-rates"),
-        description: "Global vaccination coverage and trends.",
-        details: {
-          endpoint: "/datasets/vaccination-rates",
-          example: `GET /datasets/vaccination-rates?vaccine=Influenza`,
-        },
-      },
-      {
-        id: "housing-starts",
-        name: "Housing Construction Data",
-        category: "real-estate",
-        owned: ownedDatasets.includes("housing-starts"),
-        description: "New housing construction statistics.",
-        details: {
-          endpoint: "/datasets/housing-starts",
-          example: `GET /datasets/housing-starts?region=Northeast`,
-        },
-      },
-      {
-        id: "electric-vehicles",
-        name: "Electric Vehicle Adoption",
-        category: "transportation",
-        owned: ownedDatasets.includes("electric-vehicles"),
-        description: "Electric vehicle sales and charging infrastructure data.",
-        details: {
-          endpoint: "/datasets/electric-vehicles",
-          example: `GET /datasets/electric-vehicles?country=Norway`,
-        },
-      },
-      {
-        id: "tourism-statistics",
-        name: "Tourism Data",
-        category: "travel",
-        owned: ownedDatasets.includes("tourism-statistics"),
-        description: "International tourism trends and statistics.",
-        details: {
-          endpoint: "/datasets/tourism-statistics",
-          example: `GET /datasets/tourism-statistics?destination=Japan`,
-        },
-      },
-      {
-        id: "patent-filings",
-        name: "Patent Statistics",
-        category: "innovation",
-        owned: ownedDatasets.includes("patent-filings"),
-        description: "Global patent filing trends and categories.",
-        details: {
-          endpoint: "/datasets/patent-filings",
-          example: `GET /datasets/patent-filings?industry=biotech`,
-        },
-      },
-      {
-        id: "urban-development",
-        name: "Urban Development Metrics",
-        category: "urban-planning",
-        owned: ownedDatasets.includes("urban-development"),
-        description: "City development and planning statistics.",
-        details: {
-          endpoint: "/datasets/urban-development",
-          example: `GET /datasets/urban-development?city=Singapore`,
-        },
-      },
-      {
-        id: "drug-prescriptions",
-        name: "Prescription Drug Data",
-        category: "health",
-        owned: ownedDatasets.includes("drug-prescriptions"),
-        description: "Prescription drug usage and trends.",
-        details: {
-          endpoint: "/datasets/drug-prescriptions",
-          example: `GET /datasets/drug-prescriptions?drug=antibiotics`,
-        },
-      },
-      {
-        id: "solar-installations",
-        name: "Solar Installation Data",
-        category: "energy",
-        owned: ownedDatasets.includes("solar-installations"),
-        description: "Solar panel installation and capacity statistics.",
-        details: {
-          endpoint: "/datasets/solar-installations",
-          example: `GET /datasets/solar-installations?state=California`,
-        },
-      },
-      {
-        id: "coffee-production",
-        name: "Coffee Production Statistics",
-        category: "agriculture",
-        owned: ownedDatasets.includes("coffee-production"),
-        description: "Global coffee production and consumption data.",
-        details: {
-          endpoint: "/datasets/coffee-production",
-          example: `GET /datasets/coffee-production?country=Brazil`,
-        },
-      },
-      {
-        id: "startup-funding",
-        name: "Startup Funding Data",
-        category: "business",
-        owned: ownedDatasets.includes("startup-funding"),
-        description: "Venture capital and startup funding statistics.",
-        details: {
-          endpoint: "/datasets/startup-funding",
-          example: `GET /datasets/startup-funding?sector=fintech`,
-        },
-      },
-      {
-        id: "ocean-temperatures",
-        name: "Ocean Temperature Data",
-        category: "climate",
-        owned: ownedDatasets.includes("ocean-temperatures"),
-        description: "Global ocean temperature measurements.",
-        details: {
-          endpoint: "/datasets/ocean-temperatures",
-          example: `GET /datasets/ocean-temperatures?ocean=Pacific`,
-        },
-      },
-      {
-        id: "book-sales",
-        name: "Book Sales Statistics",
-        category: "retail",
-        owned: ownedDatasets.includes("book-sales"),
-        description: "Book sales and publishing industry data.",
-        details: {
-          endpoint: "/datasets/book-sales",
-          example: `GET /datasets/book-sales?genre=fiction`,
-        },
-      },
-      {
-        id: "social-media-ads",
-        name: "Social Media Advertising",
-        category: "marketing",
-        owned: ownedDatasets.includes("social-media-ads"),
-        description: "Social media advertising performance metrics.",
-        details: {
-          endpoint: "/datasets/social-media-ads",
-          example: `GET /datasets/social-media-ads?platform=Instagram`,
-        },
-      },
-      {
-        id: "language-usage",
-        name: "Language Usage Statistics",
-        category: "linguistics",
-        owned: ownedDatasets.includes("language-usage"),
-        description: "Global language usage and trends.",
-        details: {
-          endpoint: "/datasets/language-usage",
-          example: `GET /datasets/language-usage?language=Spanish`,
-        },
-      },
+// Define 12 main categories
+// Categories: technology, health, environment, finance, transportation, entertainment, education, real-estate, energy, business, sports, social
+
+const datasets = [
+  // Technology Category (5 entries)
+  {
+    id: "smartphone-usage",
+    name: "Smartphone Usage Statistics",
+    category: "technology",
+    owned: ownedDatasets.includes("smartphone-usage"),
+    description: "Mobile device usage patterns and trends.",
+    details: {
+      endpoint: "/datasets/smartphone-usage",
+      example: `GET /datasets/smartphone-usage?region=Asia`,
+    },
+  },
+  {
+    id: "internet-speeds",
+    name: "Internet Speed Tests",
+    category: "technology",
+    owned: ownedDatasets.includes("internet-speeds"),
+    description: "Global internet speed and connectivity data.",
+    details: {
+      endpoint: "/datasets/internet-speeds",
+      example: `GET /datasets/internet-speeds?country=SouthKorea`,
+    },
+  },
+  {
+    id: "cloud-computing",
+    name: "Cloud Computing Usage",
+    category: "technology",
+    owned: ownedDatasets.includes("cloud-computing"),
+    description: "Cloud service adoption and usage statistics.",
+    details: {
+      endpoint: "/datasets/cloud-computing",
+      example: `GET /datasets/cloud-computing?service=AWS`,
+    },
+  },
+  {
+    id: "cybersecurity-incidents",
+    name: "Cybersecurity Incidents",
+    category: "technology",
+    owned: ownedDatasets.includes("cybersecurity-incidents"),
+    description: "Global cybersecurity breach statistics.",
+    details: {
+      endpoint: "/datasets/cybersecurity-incidents",
+      example: `GET /datasets/cybersecurity-incidents?type=ransomware`,
+    },
+  },
+  {
+    id: "ai-adoption",
+    name: "AI Technology Adoption",
+    category: "technology",
+    owned: ownedDatasets.includes("ai-adoption"),
+    description: "AI implementation across industries.",
+    details: {
+      endpoint: "/datasets/ai-adoption",
+      example: `GET /datasets/ai-adoption?sector=healthcare`,
+    },
+  },
+
+  // Health Category (4 entries)
+  {
+    id: "covid-statistics",
+    name: "COVID-19 Statistics",
+    category: "health",
+    owned: ownedDatasets.includes("covid-statistics"),
+    description: "Global COVID-19 cases and vaccination rates.",
+    details: {
+      endpoint: "/datasets/covid-statistics",
+      example: `GET /datasets/covid-statistics?country=USA`,
+    },
+  },
+  {
+    id: "mental-health",
+    name: "Mental Health Statistics",
+    category: "health",
+    owned: ownedDatasets.includes("mental-health"),
+    description: "Mental health trends and statistics.",
+    details: {
+      endpoint: "/datasets/mental-health",
+      example: `GET /datasets/mental-health?condition=anxiety`,
+    },
+  },
+  {
+    id: "vaccination-rates",
+    name: "Vaccination Statistics",
+    category: "health",
+    owned: ownedDatasets.includes("vaccination-rates"),
+    description: "Global vaccination coverage and trends.",
+    details: {
+      endpoint: "/datasets/vaccination-rates",
+      example: `GET /datasets/vaccination-rates?vaccine=Influenza`,
+    },
+  },
+  {
+    id: "healthcare-costs",
+    name: "Healthcare Costs",
+    category: "health",
+    owned: ownedDatasets.includes("healthcare-costs"),
+    description: "Medical treatment and insurance costs.",
+    details: {
+      endpoint: "/datasets/healthcare-costs",
+      example: `GET /datasets/healthcare-costs?procedure=surgery`,
+    },
+  },
+
+  // Environment Category (4 entries)
+  {
+    id: "air-quality",
+    name: "Air Quality Index",
+    category: "environment",
+    owned: ownedDatasets.includes("air-quality"),
+    description: "Real-time air quality measurements.",
+    details: {
+      endpoint: "/datasets/air-quality",
+      example: `GET /datasets/air-quality?city=Beijing`,
+    },
+  },
+  {
+    id: "carbon-emissions",
+    name: "Carbon Emissions",
+    category: "environment",
+    owned: ownedDatasets.includes("carbon-emissions"),
+    description: "Global carbon emission measurements.",
+    details: {
+      endpoint: "/datasets/carbon-emissions",
+      example: `GET /datasets/carbon-emissions?sector=industry`,
+    },
+  },
+  {
+    id: "water-quality",
+    name: "Water Quality Data",
+    category: "environment",
+    owned: ownedDatasets.includes("water-quality"),
+    description: "Water quality measurements from water bodies.",
+    details: {
+      endpoint: "/datasets/water-quality",
+      example: `GET /datasets/water-quality?location=GreatLakes`,
+    },
+  },
+  {
+    id: "waste-management",
+    name: "Waste Management Statistics",
+    category: "environment",
+    owned: ownedDatasets.includes("waste-management"),
+    description: "Global waste production and recycling data.",
+    details: {
+      endpoint: "/datasets/waste-management",
+      example: `GET /datasets/waste-management?city=Tokyo`,
+    },
+  },
+
+  // Finance Category (4 entries)
+  {
+    id: "stock-market",
+    name: "Stock Market Data",
+    category: "finance",
+    owned: ownedDatasets.includes("stock-market"),
+    description: "Real-time stock market information.",
+    details: {
+      endpoint: "/datasets/stock-market",
+      example: `GET /datasets/stock-market?symbol=AAPL`,
+    },
+  },
+  {
+    id: "cryptocurrency",
+    name: "Cryptocurrency Data",
+    category: "finance",
+    owned: ownedDatasets.includes("cryptocurrency"),
+    description: "Cryptocurrency prices and trading volumes.",
+    details: {
+      endpoint: "/datasets/cryptocurrency",
+      example: `GET /datasets/cryptocurrency?coin=Bitcoin`,
+    },
+  },
+  {
+    id: "forex-rates",
+    name: "Foreign Exchange Rates",
+    category: "finance",
+    owned: ownedDatasets.includes("forex-rates"),
+    description: "Global currency exchange rates.",
+    details: {
+      endpoint: "/datasets/forex-rates",
+      example: `GET /datasets/forex-rates?currency=EUR`,
+    },
+  },
+  {
+    id: "investment-funds",
+    name: "Investment Fund Performance",
+    category: "finance",
+    owned: ownedDatasets.includes("investment-funds"),
+    description: "Mutual and hedge fund performance data.",
+    details: {
+      endpoint: "/datasets/investment-funds",
+      example: `GET /datasets/investment-funds?type=mutual`,
+    },
+  },
+
+  // Transportation Category (4 entries)
+  {
+    id: "global-traffic",
+    name: "Global Traffic Data",
+    category: "transportation",
+    owned: ownedDatasets.includes("global-traffic"),
+    description: "Traffic data from major cities worldwide.",
+    details: {
+      endpoint: "/datasets/global-traffic",
+      example: `GET /datasets/global-traffic?city=LosAngeles`,
+    },
+  },
+  {
+    id: "public-transportation",
+    name: "Public Transportation Usage",
+    category: "transportation",
+    owned: ownedDatasets.includes("public-transportation"),
+    description: "Public transit ridership metrics.",
+    details: {
+      endpoint: "/datasets/public-transportation",
+      example: `GET /datasets/public-transportation?city=London`,
+    },
+  },
+  {
+    id: "flight-data",
+    name: "Flight Statistics",
+    category: "transportation",
+    owned: ownedDatasets.includes("flight-data"),
+    description: "Global flight routes and airline performance.",
+    details: {
+      endpoint: "/datasets/flight-data",
+      example: `GET /datasets/flight-data?airline=Delta`,
+    },
+  },
+  {
+    id: "electric-vehicles",
+    name: "Electric Vehicle Adoption",
+    category: "transportation",
+    owned: ownedDatasets.includes("electric-vehicles"),
+    description: "Electric vehicle sales and infrastructure.",
+    details: {
+      endpoint: "/datasets/electric-vehicles",
+      example: `GET /datasets/electric-vehicles?country=Norway`,
+    },
+  },
+
+  // Entertainment Category (4 entries)
+  {
+    id: "streaming-trends",
+    name: "Streaming Content Trends",
+    category: "entertainment",
+    owned: ownedDatasets.includes("streaming-trends"),
+    description: "Popular content across streaming platforms.",
+    details: {
+      endpoint: "/datasets/streaming-trends",
+      example: `GET /datasets/streaming-trends?platform=Netflix`,
+    },
+  },
+  {
+    id: "music-charts",
+    name: "Music Charts Data",
+    category: "entertainment",
+    owned: ownedDatasets.includes("music-charts"),
+    description: "Music popularity and streaming statistics.",
+    details: {
+      endpoint: "/datasets/music-charts",
+      example: `GET /datasets/music-charts?country=UK`,
+    },
+  },
+  {
+    id: "gaming-statistics",
+    name: "Gaming Industry Data",
+    category: "entertainment",
+    owned: ownedDatasets.includes("gaming-statistics"),
+    description: "Video game sales and player statistics.",
+    details: {
+      endpoint: "/datasets/gaming-statistics",
+      example: `GET /datasets/gaming-statistics?platform=PlayStation`,
+    },
+  },
+  {
+    id: "box-office",
+    name: "Box Office Revenue",
+    category: "entertainment",
+    owned: ownedDatasets.includes("box-office"),
+    description: "Movie theater revenue and attendance.",
+    details: {
+      endpoint: "/datasets/box-office",
+      example: `GET /datasets/box-office?region=NorthAmerica`,
+    },
+  },
+
+  // Education Category (4 entries)
+  {
+    id: "education-statistics",
+    name: "Education Statistics",
+    category: "education",
+    owned: ownedDatasets.includes("education-statistics"),
+    description: "Global education metrics and indicators.",
+    details: {
+      endpoint: "/datasets/education-statistics",
+      example: `GET /datasets/education-statistics?country=Finland`,
+    },
+  },
+  {
+    id: "online-learning",
+    name: "Online Learning Analytics",
+    category: "education",
+    owned: ownedDatasets.includes("online-learning"),
+    description: "E-learning platform usage statistics.",
+    details: {
+      endpoint: "/datasets/online-learning",
+      example: `GET /datasets/online-learning?platform=Coursera`,
+    },
+  },
+  {
+    id: "student-performance",
+    name: "Student Performance Metrics",
+    category: "education",
+    owned: ownedDatasets.includes("student-performance"),
+    description: "Academic performance statistics.",
+    details: {
+      endpoint: "/datasets/student-performance",
+      example: `GET /datasets/student-performance?grade=highschool`,
+    },
+  },
+  {
+    id: "education-spending",
+    name: "Education Spending",
+    category: "education",
+    owned: ownedDatasets.includes("education-spending"),
+    description: "Educational institution funding data.",
+    details: {
+      endpoint: "/datasets/education-spending",
+      example: `GET /datasets/education-spending?level=university`,
+    },
+  },
+
+  // Real Estate Category (4 entries)
+  {
+    id: "real-estate-prices",
+    name: "Real Estate Prices",
+    category: "real-estate",
+    owned: ownedDatasets.includes("real-estate-prices"),
+    description: "Property values and market trends.",
+    details: {
+      endpoint: "/datasets/real-estate-prices",
+      example: `GET /datasets/real-estate-prices?city=SanFrancisco`,
+    },
+  },
+  {
+    id: "housing-starts",
+    name: "Housing Construction Data",
+    category: "real-estate",
+    owned: ownedDatasets.includes("housing-starts"),
+    description: "New housing construction statistics.",
+    details: {
+      endpoint: "/datasets/housing-starts",
+      example: `GET /datasets/housing-starts?region=Northeast`,
+    },
+  },
+  {
+    id: "rental-market",
+    name: "Rental Market Data",
+    category: "real-estate",
+    owned: ownedDatasets.includes("rental-market"),
+    description: "Rental prices and occupancy rates.",
+    details: {
+      endpoint: "/datasets/rental-market",
+      example: `GET /datasets/rental-market?city=Berlin`,
+    },
+  },
+  {
+    id: "commercial-property",
+    name: "Commercial Property Data",
+    category: "real-estate",
+    owned: ownedDatasets.includes("commercial-property"),
+    description: "Commercial real estate market statistics.",
+    details: {
+      endpoint: "/datasets/commercial-property",
+      example: `GET /datasets/commercial-property?type=office`,
+    },
+  },
+
+  // Energy Category (4 entries)
+  {
+    id: "renewable-energy",
+    name: "Renewable Energy Production",
+    category: "energy",
+    owned: ownedDatasets.includes("renewable-energy"),
+    description: "Global renewable energy production data.",
+    details: {
+      endpoint: "/datasets/renewable-energy",
+      example: `GET /datasets/renewable-energy?type=solar`,
+    },
+  },
+  {
+    id: "energy-consumption",
+    name: "Energy Consumption Data",
+    category: "energy",
+    owned: ownedDatasets.includes("energy-consumption"),
+    description: "Global energy usage statistics.",
+    details: {
+      endpoint: "/datasets/energy-consumption",
+      example: `GET /datasets/energy-consumption?sector=residential`,
+    },
+  },
+  {
+    id: "power-grid",
+    name: "Power Grid Statistics",
+    category: "energy",
+    owned: ownedDatasets.includes("power-grid"),
+    description: "Electricity grid performance data.",
+    details: {
+      endpoint: "/datasets/power-grid",
+      example: `GET /datasets/power-grid?region=Texas`,
+    },
+  },
+  {
+    id: "energy-prices",
+    name: "Energy Price Data",
+    category: "energy",
+    owned: ownedDatasets.includes("energy-prices"),
+    description: "Global energy price tracking.",
+    details: {
+      endpoint: "/datasets/energy-prices",
+      example: `GET /datasets/energy-prices?type=electricity`,
+    },
+  },
+
+  // Business Category (4 entries)
+  {
+    id: "startup-funding",
+    name: "Startup Funding Data",
+    category: "business",
+    owned: ownedDatasets.includes("startup-funding"),
+    description: "Venture capital and startup funding.",
+    details: {
+      endpoint: "/datasets/startup-funding",
+      example: `GET /datasets/startup-funding?sector=fintech`,
+    },
+  },
+  {
+    id: "corporate-earnings",
+    name: "Corporate Earnings",
+    category: "business",
+    owned: ownedDatasets.includes("corporate-earnings"),
+    description: "Company financial performance data.",
+    details: {
+      endpoint: "/datasets/corporate-earnings",
+      example: `GET /datasets/corporate-earnings?sector=tech`,
+    },
+  },
+  {
+    id: "market-research",
+    name: "Market Research Data",
+    category: "business",
+    owned: ownedDatasets.includes("market-research"),
+    description: "Consumer behavior and market trends.",
+    details: {
+      endpoint: "/datasets/market-research",
+      example: `GET /datasets/market-research?industry=retail`,
+    },
+  }
   ];
 
   const categories = ["all", "owned", ...new Set(datasets.map((ds) => ds.category))];
