@@ -60,12 +60,14 @@ const PricingPage = () => {
   };
 
   return (
-    <Container maxW="full" py={10}>
-      <Box bg={headerBg} py={5} px={8} borderRadius="md" mb={6} boxShadow="lg">
-        <Text fontSize="lg" fontWeight="bold" color="white">Proxy Pricing Plans</Text>
-        <Text fontSize="sm" color="gray.300">Choose a plan that scales with your needs.</Text>
-      </Box>
-      <Flex>
+    <Container maxW="full">
+      <Flex align="center" justify="space-between" py={6} flexWrap="wrap" gap={4}>
+        <Box textAlign="left" flex="1">
+          <Text fontSize="xl" fontWeight="bold">Proxy Pricing</Text>
+          <Text fontSize="sm">Understand your proxy billing and subscriptions.</Text>
+        </Box>
+      </Flex>
+      <Divider my={4} />
         <Box w={{ base: "full", md: "250px" }}>
           <Tabs variant="unstyled" colorScheme="blue" onChange={(index) => setSelectedProduct(Object.keys(proxyPricing)[index])}>
             <TabList flexDirection="column" alignItems="flex-start" gap={2}>
