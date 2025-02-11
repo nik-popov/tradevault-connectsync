@@ -1,0 +1,124 @@
+/* Import Google Font */
+@import url('https://fonts.googleapis.com/css2?family=42dot+Sans:wght@300..800&display=swap');
+
+/* Root Variables for Consistency */
+:root {
+  --font-primary: "42dot Sans", sans-serif;
+  --font-size-base: 20px;
+  --line-height-base: 1.7;
+  --color-text: #333;
+  --color-heading: #222;
+  --color-background: #f9f9f9;
+  --color-primary: #007bff;
+  --color-secondary: #6c757d;
+  --color-border: #ddd;
+}
+
+/* Global Reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Body Styling */
+body {
+  font-family: var(--font-primary);
+  font-optical-sizing: auto;
+  font-weight: 400;
+  font-style: normal;
+  font-size: var(--font-size-base);
+  line-height: var(--line-height-base);
+  color: var(--color-text);
+  background-color: var(--color-background);
+  margin: 40px; /* Reduced for a more structured layout */
+  padding: 20px;
+}
+
+/* Headings */
+h1, h2, h3, h4, h5, h6 {
+  font-weight: 700;
+  color: var(--color-heading);
+  margin-top: 30px;
+  margin-bottom: 20px;
+}
+
+h1 { font-size: 2.5rem; }
+h2 { font-size: 2rem; }
+h3 { font-size: 1.75rem; }
+h4 { font-size: 1.5rem; }
+h5 { font-size: 1.25rem; }
+h6 { font-size: 1rem; }
+
+/* Paragraphs */
+p {
+  margin-top: 15px;
+  margin-bottom: 15px;
+}
+
+/* Links */
+a {
+  color: var(--color-primary);
+  text-decoration: none;
+  transition: color 0.3s;
+}
+
+a:hover {
+  color: darken(var(--color-primary), 10%);
+  text-decoration: underline;
+}
+
+/* Buttons */
+button {
+  font-size: 18px;
+  padding: 12px 18px;
+  margin-top: 15px;
+  margin-bottom: 15px;
+  border-radius: 8px;
+  border: none;
+  background-color: var(--color-primary);
+  color: white;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+button:hover {
+  background-color: #0056b3;
+}
+
+/* Forms */
+input,
+textarea {
+  font-size: 18px;
+  padding: 10px;
+  margin-top: 15px;
+  margin-bottom: 15px;
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  width: 100%;
+}
+
+input:focus,
+textarea:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.2);
+}
+
+/* Layout Containers */
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 15px; /* Improved spacing */
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  :root {
+    --font-size-base: 18px;
+  }
+  body {
+    margin: 20px;
+    padding: 15px;
+  }
+}
