@@ -21,7 +21,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { FiSend, FiGithub, FiExternalLink, FiX } from "react-icons/fi";
 import PromoSERP from "../../../components/PromoSERP";
 
-export const Route = createFileRoute("/_layout/scraping-api/explore")({
+export const Route = createFileRoute("/_layout/scraper-api/explore")({
   component: Explore,
 });
 
@@ -58,29 +58,28 @@ function Explore() {
   const [sortOption, setSortOption] = useState("name");
 
   // 🛠️ API Data
-  const proxyProducts = [
+  const scraperProducts = [
     { id: "google-serp-api", name: "Google Search API", type: "search", description: "Fetches real-time search results from Google.", isLocked: false },
     { id: "linkedin-api", name: "LinkedIn Scraping API", type: "social media", description: "Scrapes public LinkedIn profiles, job postings, and company data.", isLocked: true },
     { id: "amazon-product-api", name: "Amazon Product API", type: "ecommerce", description: "Fetches product details, reviews, and price history from Amazon.", isLocked: true },
   ];
 
-  const categories = ["all", ...new Set(proxyProducts.map((api) => api.type))];
+  const categories = ["all", ...new Set(scraperProducts.map((api) => api.type))];
 
   // 🔄 Filtered API List
   const filteredProducts = useMemo(() => {
-    return proxyProducts.filter((product) => {
+    return scraperProducts.filter((product) => {
       const matchesFilter =
         activeFilter === "all" || product.type.toLowerCase() === activeFilter.toLowerCase();
       const matchesSearch = product.name.toLowerCase().includes(searchQuery.toLowerCase());
       return matchesFilter && matchesSearch;
     });
-  }, [searchQuery, activeFilter, proxyProducts]);
+  }, [searchQuery, activeFilter, scraperProducts]);
 
   return (
     <Container maxW="full" overflowX="hidden">
-      {/* 🔄 Title & Subscription Toggles */}
       <Flex justify="space-between" align="center" my={4} flexWrap="wrap">
-        <Heading size="lg">Explore APIs</Heading>
+        <Heading size="lg">Explore Scraper APIs</Heading>
         <HStack spacing={6}>
           <HStack>
             <Text fontWeight="bold">Subscription:</Text>
@@ -99,7 +98,6 @@ function Explore() {
 
       <Divider my={4} />
 
-      {/* 🚨 No Subscription - Show Promo */}
       {isLocked ? (
         <PromoSERP />
       ) : isFullyDeactivated ? (
@@ -112,16 +110,14 @@ function Explore() {
         </Alert>
       ) : (
         <Flex mt={6} gap={6} justify="space-between" align="stretch" wrap="wrap">
-          {/* 🔍 API Explorer */}
           <Box flex="1" minW={{ base: "100%", md: "65%" }}>
             <Flex gap={4} justify="space-between" align="center" flexWrap="wrap">
               <Input
-                placeholder="Search APIs..."
+                placeholder="Search Scraper APIs..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 w={{ base: "100%", md: "250px" }}
               />
-
               <HStack spacing={2}>
                 {categories.map((type) => (
                   <Button
@@ -137,54 +133,12 @@ function Explore() {
                   </Button>
                 ))}
               </HStack>
-
-              <Select value={sortOption} onChange={(e) => setSortOption(e.target.value)} w="200px">
-                <option value="name">Sort by Name</option>
-              </Select>
             </Flex>
-
-            <VStack spacing={4} mt={6} align="stretch">
-              {filteredProducts.map((api) => (
-                <ApiListItem key={api.id} api={api} navigate={navigate} hasSubscription={hasSubscription} isTrial={isTrial} />
-              ))}
-            </VStack>
           </Box>
         </Flex>
       )}
     </Container>
   );
 }
-
-// ✅ API List Item Component with Locked APIs
-const ApiListItem = ({ api, navigate, hasSubscription, isTrial }) => {
-  const [isExpanded, setIsExpanded] = useState(false);
-  const isApiLocked = api.isLocked && (isTrial || !hasSubscription);
-
-  return (
-    <Box p={4} borderWidth="1px" borderRadius="lg">
-      <Flex justify="space-between" align="center">
-        <Box>
-          <Text fontWeight="bold">{api.name}</Text>
-          <Text fontSize="sm" color="gray.600">{api.description}</Text>
-        </Box>
-        <HStack spacing={2}>
-          <Button size="sm" colorScheme="blue" onClick={() => setIsExpanded(!isExpanded)}>
-            {isExpanded ? "Less" : "More"}
-          </Button>
-          {isApiLocked ? (
-            <Button size="sm" variant="outline" colorScheme="gray" disabled leftIcon={<FiX />}>Locked</Button>
-          ) : (
-            <Button size="sm" variant="solid" colorScheme="green" leftIcon={<FiSend />} onClick={() => navigate(`/scraping-api/${api.id}`)}>View</Button>
-          )}
-        </HStack>
-      </Flex>
-      <Collapse in={isExpanded} animateOpacity>
-        <Box mt={4} p={2} borderWidth="1px" borderRadius="md">
-          <Text fontSize="sm">Additional details about {api.name}.</Text>
-        </Box>
-      </Collapse>
-    </Box>
-  );
-};
 
 export default Explore;
