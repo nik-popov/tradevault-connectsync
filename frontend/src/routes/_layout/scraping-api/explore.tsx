@@ -20,10 +20,15 @@ import {
 } from "@chakra-ui/react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { FiSearch, FiSend, FiGithub } from "react-icons/fi";
-import { useQueryClient } from '@tanstack/react-query';
+import { useQueryClient } from "@tanstack/react-query";
 import { motion } from "framer-motion";
-import useAuth from "../../../hooks/useAuth";
-const Explore = () => {
+import useAuth from "../../../hooks/useAuth"; // ✅ Ensure this path is correct
+
+export const Route = createFileRoute("/_layout/search-api/explore")({
+  component: Explore
+});
+
+function Explore() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const { user: currentUser } = useAuth();
@@ -48,7 +53,7 @@ const Explore = () => {
     { id: "travel", name: "Travel Deals API", type: "Travel", owned: ownedApis.includes("travel"), description: "Find flight deals, hotel prices, and travel packages." }
   ];
 
-  const industries = ["All", "Owned", ...new Set(proxyProducts.map(api => api.type))];
+  const industries = ["All", ...new Set(proxyProducts.map(api => api.type))];
 
   const isLocked = !hasSubscription && !isTrial;
 
@@ -96,6 +101,12 @@ const Explore = () => {
           <Text fontWeight="bold">Deactivated:</Text>
           <Switch isChecked={isDeactivated} onChange={() => setIsDeactivated(!isDeactivated)} />
         </HStack>
+
+        {/* Owned Filter Toggle (Fixed to Match Dashboard) */}
+        <Flex align="center">
+          <Text fontWeight="bold" mr={2}>Owned Only</Text>
+          <Switch isChecked={ownedOnly} onChange={() => setOwnedOnly(!ownedOnly)} colorScheme="blue" />
+        </Flex>
       </Flex>
 
       <Divider my={4} />
@@ -155,8 +166,6 @@ const Explore = () => {
       </VStack>
     </Container>
   );
-};
-
-export const Route = createFileRoute("/_layout/search-api/explore")({ component: Explore });
+}
 
 export default Explore;
