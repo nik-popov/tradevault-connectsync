@@ -20,10 +20,10 @@ const GetStarted = () => {
     {
       title: "Configure Your Endpoint",
       icon: FiGlobe,
-      description: "Use the provided endpoint to connect to our proxy network.",
+      description: "Use the provided endpoint to connect to our residential proxy network.",
       content: (
         <Code p={3} borderRadius="md" fontSize="sm" bg="gray.50">
-          https://api.thedataproxy.com/api/v1/proxy/
+          https://api.thedataproxy.com/api/v1/proxy/residential/
         </Code>
       )
     },
@@ -46,10 +46,10 @@ const GetStarted = () => {
     {
       title: "Optimize Your Settings",
       icon: FiSettings,
-      description: "Adjust request headers and connection settings for better performance.",
+      description: "Adjust request headers and connection settings for better performance and security.",
       content: (
         <Code p={3} borderRadius="md" fontSize="sm" bg="gray.50">
-          {`headers = {'User-Agent': 'YourApp/1.0'}`}
+          {`headers = {'User-Agent': 'YourApp/1.0', 'X-Proxy-Type': 'residential'}`}
         </Code>
       )
     },
@@ -59,7 +59,17 @@ const GetStarted = () => {
       description: "Use the correct proxy format in your code to start making requests.",
       content: (
         <Code p={3} borderRadius="md" fontSize="sm" bg="gray.50">
-          {`curl --proxy-user username:password -x api.thedataproxy.com/api/v1/proxy/ https://api.mywebsite.com`}
+          {`curl --proxy-user username:password -x api.thedataproxy.com/api/v1/proxy/residential/ https://api.mywebsite.com`}
+        </Code>
+      )
+    },
+    {
+      title: "Monitor and Scale",
+      icon: FiSettings,
+      description: "Track usage statistics and scale your requests based on your needs.",
+      content: (
+        <Code p={3} borderRadius="md" fontSize="sm" bg="gray.50">
+          {`https://api.thedataproxy.com/api/v1/usage/residential/`}
         </Code>
       )
     }
@@ -70,9 +80,9 @@ const GetStarted = () => {
       <VStack spacing={8} align="stretch">
         {/* Quick Start Guide Header */}
         <Box textAlign="center">
-          <Heading size="xl" fontWeight="bold" mb={2}>Quick Start Guide</Heading>
+          <Heading size="xl" fontWeight="bold" mb={2}>Residential Proxy Quick Start Guide</Heading>
           <Text fontSize="lg" color="gray.600">
-            Follow these simple steps to integrate our proxy into your applications.
+            Follow these simple steps to integrate our residential proxy into your applications.
           </Text>
         </Box>
 
@@ -102,7 +112,7 @@ const GetStarted = () => {
           <Box>
             <Text fontWeight="bold">Verify Your Setup</Text>
             <Text fontSize="sm">
-              Test your connection using the examples above. If your IP is masked, you're all set! 
+              Test your connection using the examples above. If your IP is masked and geolocation matches expectations, you're all set! 
               Need help? Visit our <Button variant="link" colorScheme="blue" size="sm">troubleshooting guide</Button> or contact support.
             </Text>
           </Box>
