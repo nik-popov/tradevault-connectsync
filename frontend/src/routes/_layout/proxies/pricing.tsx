@@ -55,14 +55,14 @@ function Pricing() {
       <Divider my={4} />
 
       <Tabs variant="enclosed" colorScheme="gray">
-        <TabList>
+        <TabList bg="gray.700" borderRadius="md">
           {pricingPlans.map((plan, index) => (
             <Tab key={index} _selected={{ bg: "gray.700", color: "white" }}>
               <Icon as={plan.icon} mr={2} /> {plan.name}
             </Tab>
           ))}
         </TabList>
-        <TabPanels>
+        <TabPanels bg="gray.700" borderRadius="md">
           {pricingPlans.map((plan, index) => (
             <TabPanel key={index}>
               <Box p={6} border="2px solid" borderColor={plan.borderColor} borderRadius="lg" bg="gray.700">
