@@ -20,7 +20,7 @@ import {
 import { useState, useEffect } from "react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useQueryClient } from "@tanstack/react-query";
-import { FiSend } from "react-icons/fi";
+import { FiSend, FiGithub, FiMail, FiHelpCircle } from "react-icons/fi";
 import PromoDatasets from "../../../components/PromoDatasets";
 
 export const Route = createFileRoute("/_layout/datasets/request")({
@@ -32,7 +32,7 @@ function Request() {
   const navigate = useNavigate();
   const toast = useToast();
 
-  // ✅ Load Subscription State from LocalStorage & React Query
+  // ✅ Load Subscription State
   const [subscriptionSettings, setSubscriptionSettings] = useState({
     hasSubscription: false,
     isTrial: false,
@@ -105,11 +105,10 @@ function Request() {
   };
 
   return (
-    <Container maxW="full">
+    <Container maxW="full" overflowX="hidden">
       {/* 🔄 Title with Subscription Toggles */}
       <Flex justify="space-between" align="center" my={4} flexWrap="wrap">
         <Heading size="lg">Request a New Dataset</Heading>
-
         <HStack spacing={6}>
           <HStack>
             <Text fontWeight="bold">Subscription:</Text>
@@ -142,9 +141,9 @@ function Request() {
           </Flex>
         </Alert>
       ) : (
-        <Flex gap={6} mt={6}>
-          <Box flex="1">
-            {/* ✅ Request Dataset Form */}
+        <Flex mt={6} gap={6} justify="space-between" align="stretch" wrap="wrap">
+          {/* ✅ Request Dataset Form */}
+          <Box flex="1" minW={{ base: "100%", md: "65%" }}>
             <Box p={6} border="1px solid" borderColor="gray.200" borderRadius="md" boxShadow="sm">
               <Text fontSize="xl" fontWeight="bold" mb={4}>
                 Request a New Dataset
@@ -188,18 +187,43 @@ function Request() {
               </Button>
             </Box>
           </Box>
-   {/* ✅ Sidebar */}
-   <Box w={{ base: "100%", md: "250px" }} p="4" borderLeft={{ md: "1px solid #E2E8F0" }}>
+
+          {/* ✅ Sidebar */}
+          <Box w={{ base: "100%", md: "250px" }} p="4" borderLeft={{ md: "1px solid #E2E8F0" }}>
             <VStack spacing="4" align="stretch">
               <Box p="4" shadow="sm" borderWidth="1px" borderRadius="lg">
                 <Text fontWeight="bold">Quick Actions</Text>
                 <Button
                   as="a"
-                  href="https://github.com/CobaltDataNet"
-                  leftIcon={<FiGithub />}
+                  href="mailto:support@thedataproxy.com"
+                  leftIcon={<FiMail />}
                   variant="outline"
                   size="sm"
                   mt="2"
+                >
+                  Email Support
+                </Button>
+                <Button
+                  as="a"
+                  href="https://thedataproxy.com/report-issue"
+                  leftIcon={<FiHelpCircle />}
+                  variant="outline"
+                  size="sm"
+                  mt="2"
+                >
+                  Report an Issue
+                </Button>
+              </Box>
+
+              <Box p="4" shadow="sm" borderWidth="1px" borderRadius="lg">
+                <Text fontWeight="bold">Community Support</Text>
+                <Button
+                  as="a"
+                  href="https://github.com/CobaltDataNet"
+                  mt="2"
+                  leftIcon={<FiGithub />}
+                  size="sm"
+                  variant="outline"
                 >
                   GitHub Discussions
                 </Button>
@@ -211,7 +235,5 @@ function Request() {
     </Container>
   );
 }
-
-
 
 export default Request;
