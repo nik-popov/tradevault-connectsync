@@ -1,4 +1,6 @@
+import React from "react";
 import {
+  Box,
   Container,
   Heading,
   Text,
@@ -13,13 +15,24 @@ import {
   TabList,
   TabPanel,
   TabPanels,
-  Box,
 } from "@chakra-ui/react";
 import { createFileRoute } from "@tanstack/react-router";
 
-export const Route = createFileRoute("/_layout/proxies/pricing")({
-  component: PricingPage,
-});
+// Dummy Header component (replace with your own header)
+const Header = () => (
+  <Box as="header" bg="blue.500" color="white" py={4} textAlign="center">
+    <Heading size="md">My Proxy Service</Heading>
+  </Box>
+);
+
+// Dummy Footer component (replace with your own footer)
+const Footer = () => (
+  <Box as="footer" bg="gray.200" py={4} textAlign="center">
+    <Text fontSize="sm">
+      © {new Date().getFullYear()} My Proxy Service. All rights reserved.
+    </Text>
+  </Box>
+);
 
 // Proxy Pricing Rates (Per GB) for Each Product
 const proxyPricing = {
@@ -55,7 +68,8 @@ const proxyPricing = {
   ],
 };
 
-function PricingPage() {
+// The main pricing content
+function PricingContent() {
   return (
     <Container maxW="6xl" py={10}>
       {/* PAGE TITLE */}
@@ -75,7 +89,11 @@ function PricingPage() {
           {Object.keys(proxyPricing).map((product) => (
             <TabPanel key={product}>
               {/* Grid Layout for Pricing */}
-              <Grid templateColumns={{ base: "1fr", md: "repeat(4, 1fr)" }} gap={6} mt={6}>
+              <Grid
+                templateColumns={{ base: "1fr", md: "repeat(4, 1fr)" }}
+                gap={6}
+                mt={6}
+              >
                 {proxyPricing[product].map((tier) => (
                   <GridItem key={tier.tier}>
                     <Box
@@ -106,7 +124,9 @@ function PricingPage() {
                       )}
 
                       {/* Tier Name */}
-                      <Text fontSize="xl" fontWeight="bold">{tier.tier}</Text>
+                      <Text fontSize="xl" fontWeight="bold">
+                        {tier.tier}
+                      </Text>
 
                       {/* Per GB Price */}
                       <Text fontSize="2xl" fontWeight="bold" color="teal.500" mt={2}>
@@ -114,7 +134,9 @@ function PricingPage() {
                       </Text>
 
                       {/* Traffic Limit */}
-                      <Text fontSize="md" color="gray.500">{tier.trafficLimit}</Text>
+                      <Text fontSize="md" color="gray.500">
+                        {tier.trafficLimit}
+                      </Text>
 
                       <Divider my={4} />
 
@@ -144,4 +166,22 @@ function PricingPage() {
   );
 }
 
-export default PricingPage;
+// The overall PricingLayout that wraps the pricing content with a header and footer
+function PricingLayout() {
+  return (
+    <Box minH="100vh" display="flex" flexDirection="column">
+      <Header />
+      <Box as="main" flex="1">
+        <PricingContent />
+      </Box>
+      <Footer />
+    </Box>
+  );
+}
+
+// ✅ Correct Route Export
+export const Route = createFileRoute("/_layout/proxies/pricing")({
+  component: PricingLayout,
+});
+
+export default PricingLayout;
