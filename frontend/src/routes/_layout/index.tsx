@@ -2,7 +2,7 @@ import {
   Box, Container, Text, Button, Divider, Flex, Switch, VStack,
 } from "@chakra-ui/react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useState, useMemo } from "react";
+import { useState } from "react";
 import useAuth from "../../hooks/useAuth";
 import { useQuery } from "@tanstack/react-query";
 // import SubscriptionManagement from "../../components/UserSettings/SubscriptionManagement";
@@ -49,13 +49,18 @@ function Dashboard() {
     { id: "explore-dataset", name: "📊 Explore Datasets", type: "data", description: "Tailored datasets for your needs.", path: "/datasets/explore" },
     { id: "custom-dataset", name: "📊 Request Custom Dataset", type: "data", description: "Tailored data scraping for your needs.", path: "/datasets/request" },
   ];
-  const [ownedOnly, setOwnedOnly] = useState(true); // ✅ Default checked
+  const [activeFilter, setActiveFilter] = useState("all");
+  const [ownedOnly, setOwnedOnly] = useState(true); // ✅ Default to "Owned Only"
+  
 
-  const filteredProducts = proxyProducts.filter(
-    (product) =>
-      (activeFilter === "all" || product.type === activeFilter) &&
-      (!ownedOnly || product.owned) // ✅ This ensures we only show "owned" products when the toggle is checked
-  );
+  const filteredProducts = useMemo(() => {
+    return proxyProducts.filter((product) => {
+      const matchesFilter = activeFilter === "all" || product.type === activeFilter;
+      const matchesOwnership = !ownedOnly || product.owned; // ✅ Ensure `owned` exists in products
+      return matchesFilter && matchesOwnership;
+    });
+  }, [activeFilter, ownedOnly, proxyProducts]); // ✅ Recalculate only when dependencies change
+  
   
 
   return (
@@ -129,7 +134,7 @@ function Dashboard() {
                 <Box key={product.id} p={5} shadow="md" borderWidth="1px" borderRadius="lg" bg="gray.50" _hover={{ shadow: "lg", transform: "scale(1.02)" }} transition="0.2s ease-in-out">
                   <Text fontWeight="bold" fontSize="lg">{product.name}</Text>
                   <Text fontSize="sm" color="gray.600">{product.description}</Text>
-                  <Button mt={3} size="sm" colorScheme="blue" borderRadius="full" onClick={() => navigate({ to: product.path })}>
+                  <Butgiton mt={3} size="sm" colorScheme="blue" borderRadius="full" onClick={() => navigate({ to: product.path })}>
                     Manage
                   </Button>
                 </Box>
