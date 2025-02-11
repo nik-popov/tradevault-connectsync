@@ -97,47 +97,15 @@ function Explore() {
 
       <Divider my={4} />
 
-      {isLocked ? (
-        <PromoDatasets />
-      ) : isFullyDeactivated ? (
-        <Alert status="error" borderRadius="md">
-          <AlertIcon />
-          <Flex justify="space-between" align="center" w="full">
-            <Text>Your subscription has been deactivated. Please renew to access APIs.</Text>
-            <Button colorScheme="red" onClick={() => navigate("/billing")}>Reactivate Now</Button>
-          </Flex>
-        </Alert>
-      ) : (
-        <Flex gap={6} justify="space-between" align="stretch" wrap="wrap">
-          <Box flex="1" minW={{ base: "100%", md: "65%" }}>
-            <Flex gap={4} justify="space-between" align="center" flexWrap="wrap">
-              <Input
-                placeholder="Search APIs..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                w={{ base: "100%", md: "250px" }}
-              />
-            </Flex>
-
-            <VStack spacing={4} mt={6} align="stretch">
-              {filteredAPIs.map((api) => (
-                <APIListItem key={api.id} api={api} navigate={navigate} />
-              ))}
-            </VStack>
-          </Box>
-
-          <Box w={{ base: "100%", md: "250px" }} p="4" borderLeft={{ md: "1px solid #E2E8F0" }}>
-            <VStack spacing="4" align="stretch">
-              <Box p="4" shadow="sm" borderWidth="1px" borderRadius="lg">
-                <Text fontWeight="bold">Quick Actions</Text>
-                <Button as="a" href="https://github.com/CobaltDataNet" leftIcon={<FiGithub />} variant="outline" size="sm" mt="2">
-                  GitHub Discussions
-                </Button>
-              </Box>
-            </VStack>
-          </Box>
-        </Flex>
-      )}
+      <Flex gap={6} justify="space-between" align="stretch" wrap="wrap">
+        <Box flex="1" minW={{ base: "100%", md: "65%" }}>
+          <VStack spacing={4} mt={6} align="stretch">
+            {filteredAPIs.map((api) => (
+              <APIListItem key={api.id} api={api} navigate={navigate} />
+            ))}
+          </VStack>
+        </Box>
+      </Flex>
     </Container>
   );
 }
