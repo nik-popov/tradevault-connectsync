@@ -8,20 +8,20 @@ import {
   Divider,
   Flex,
   Switch,
+  List,
+  Alert,
+  AlertIcon,
   HStack,
   Input,
   Heading,
   Collapse,
-  Alert,
-  AlertIcon,
-  Select,
 } from "@chakra-ui/react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useQueryClient } from "@tanstack/react-query";
 import { FiExternalLink, FiX, FiGithub } from "react-icons/fi";
-import PromoSERP from "../../../components/PromoSERP";
+import PromoDatasets from "../../../components/PromoDatasets";
 
-export const Route = createFileRoute("/_layout/scraper-api/explore")({
+export const Route = createFileRoute("/_layout/apis/explore")({
   component: Explore,
 });
 
@@ -29,6 +29,7 @@ function Explore() {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
 
+  // ✅ Load Subscription State from LocalStorage & React Query
   const [subscriptionSettings, setSubscriptionSettings] = useState({
     hasSubscription: false,
     isTrial: false,
@@ -51,9 +52,11 @@ function Explore() {
   const isLocked = !hasSubscription && !isTrial;
   const isFullyDeactivated = isDeactivated && !hasSubscription;
 
+  // 🔍 Search & Filter State
   const [searchQuery, setSearchQuery] = useState("");
   const [activeFilter, setActiveFilter] = useState("all");
 
+  // 🔍 Scraper APIs Data
   const scraperAPIs = [
     {
       id: "google-serp-api",
@@ -80,6 +83,7 @@ function Explore() {
 
   const categories = ["all", ...new Set(scraperAPIs.map((api) => api.category))];
 
+  // 🔄 Filtered API List
   const filteredAPIs = useMemo(() => {
     return scraperAPIs.filter((api) => {
       const matchesFilter =
@@ -108,35 +112,49 @@ function Explore() {
           </HStack>
         </HStack>
       </Flex>
+
       <Divider my={4} />
+
       {isLocked ? (
-        <PromoSERP />
+        <PromoDatasets />
       ) : isFullyDeactivated ? (
         <Alert status="error" borderRadius="md">
           <AlertIcon />
           <Flex justify="space-between" align="center" w="full">
-            <Text>Your subscription has been deactivated. Please renew to explore APIs.</Text>
-            <Button colorScheme="red">Reactivate Now</Button>
+            <Text>Your subscription has been deactivated. Please renew to access APIs.</Text>
+            <Button colorScheme="red" onClick={() => navigate("/billing")}>Reactivate Now</Button>
           </Flex>
         </Alert>
       ) : (
         <Flex gap={6} justify="space-between" align="stretch" wrap="wrap">
           <Box flex="1" minW={{ base: "100%", md: "65%" }}>
+            <Flex gap={4} justify="space-between" align="center" flexWrap="wrap">
+              <Input
+                placeholder="Search APIs..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                w={{ base: "100%", md: "250px" }}
+              />
+              <HStack spacing={2}>
+                {categories.map((type) => (
+                  <Button
+                    key={type}
+                    size="sm"
+                    fontWeight="bold"
+                    borderRadius="full"
+                    colorScheme={activeFilter === type ? "blue" : "gray"}
+                    variant={activeFilter === type ? "solid" : "outline"}
+                    onClick={() => setActiveFilter(type)}
+                  >
+                    {type}
+                  </Button>
+                ))}
+              </HStack>
+            </Flex>
+
             <VStack spacing={4} mt={6} align="stretch">
               {filteredAPIs.map((api) => (
-                <Box key={api.id} p={4} borderWidth="1px" borderRadius="lg">
-                  <Flex justify="space-between" align="center">
-                    <Box>
-                      <Text fontWeight="bold">{api.name}</Text>
-                      <Text fontSize="sm" color="gray.600">{api.description}</Text>
-                    </Box>
-                    <HStack spacing={2}>
-                      <Button size="sm" colorScheme="blue" onClick={() => navigate(`/scraper-api/${api.id}`)} isDisabled={api.isLocked}>
-                        {api.isLocked ? "Locked" : "View"}
-                      </Button>
-                    </HStack>
-                  </Flex>
-                </Box>
+                <APIListItem key={api.id} api={api} isTrial={isTrial} />
               ))}
             </VStack>
           </Box>
@@ -145,5 +163,24 @@ function Explore() {
     </Container>
   );
 }
+
+const APIListItem = ({ api }) => {
+  return (
+    <Box p={4} borderWidth="1px" borderRadius="lg">
+      <Flex justify="space-between" align="center">
+        <Box>
+          <Text fontWeight="bold">{api.name}</Text>
+          <Text fontSize="sm" color="gray.600">{api.description}</Text>
+        </Box>
+        <HStack spacing={2}>
+          <Button size="sm" colorScheme="blue">View Details</Button>
+          <Button size="sm" variant="outline" colorScheme="gray" isDisabled={api.isLocked}>
+            {api.isLocked ? "Locked" : "Access"}
+          </Button>
+        </HStack>
+      </Flex>
+    </Box>
+  );
+};
 
 export default Explore;
