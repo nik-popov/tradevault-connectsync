@@ -25,7 +25,7 @@ import {
 } from "@chakra-ui/react";
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
-import { FiCheckCircle, FiDollarSign, FiPackage, FiTrendingUp, FiSettings } from 'react-icons/fi';
+import { FiCheckCircle, FiDollarSign, FiPackage, FiTrendingUp, FiSettings, FiDatabase, FiServer, FiCloud } from 'react-icons/fi';
 
 const STORAGE_KEY = "subscriptionSettings";
 const PRODUCT = "proxy";
@@ -35,6 +35,12 @@ const pricingPlans = [
   { name: "SaaS", price: "$500", features: ["1,000 requests/month", "Faster response times", "Priority support"], borderColor: "blue.600", badge: "MOST POPULAR", icon: FiTrendingUp },
   { name: "Pro", price: "$2,000", features: ["1,000,000 requests/month", "Enterprise-grade performance", "Dedicated support"], borderColor: "blue.500", icon: FiSettings },
   { name: "Enterprise", price: "Custom", features: ["Unlimited requests", "Dedicated account manager", "Custom integrations"], borderColor: "blue.400", icon: FiDollarSign },
+];
+
+const additionalServices = [
+  { name: "Storage", price: "$0.10 per GB", features: ["High availability", "Scalable storage", "Secure data encryption"], icon: FiDatabase },
+  { name: "Hosting", price: "$0.05 per CPU/hr", features: ["Dedicated servers", "99.99% uptime", "Global infrastructure"], icon: FiServer },
+  { name: "Cloud Functions", price: "$0.02 per execution", features: ["Auto-scaling", "Pay-per-use", "Integrated monitoring"], icon: FiCloud },
 ];
 
 function Pricing() {
@@ -48,16 +54,16 @@ function Pricing() {
     <Container maxW="100%" mx="auto" px={6} py={10} bg="gray.800">
       <Flex align="center" justify="space-between" py={6}>
         <Box>
-          <Text fontSize="2xl" fontWeight="bold" color="white">Flexible Pricing Plans</Text>
-          <Text fontSize="md" color="gray.300">Select a plan that scales with your needs.</Text>
+          <Text fontSize="2xl" fontWeight="bold" color="white">Comprehensive Pricing Options</Text>
+          <Text fontSize="md" color="gray.300">Flexible plans tailored for your needs, including API, storage, and hosting.</Text>
         </Box>
       </Flex>
       <Divider my={4} />
 
       <Tabs variant="enclosed" colorScheme="gray">
-        <TabList bg="gray.700" borderRadius="md">
+        <TabList bg="gray.800" borderRadius="md">
           {pricingPlans.map((plan, index) => (
-            <Tab key={index} _selected={{ bg: "gray.700", color: "white" }}>
+            <Tab key={index} _selected={{ bg: "gray.700", color: "white", fontWeight: "bold" }}>
               <Icon as={plan.icon} mr={2} /> {plan.name}
             </Tab>
           ))}
@@ -91,6 +97,26 @@ function Pricing() {
           ))}
         </TabPanels>
       </Tabs>
+      
+      <Divider my={6} />
+      <Heading fontSize="xl" color="white" mb={4}>Additional Services</Heading>
+      <Grid templateColumns={{ base: "1fr", md: "repeat(3, 1fr)" }} gap={6}>
+        {additionalServices.map((service, index) => (
+          <Box key={index} p={6} borderRadius="lg" bg="gray.700" textAlign="center">
+            <Icon as={service.icon} boxSize={8} color="blue.400" mb={3} />
+            <Text fontSize="lg" fontWeight="bold" color="white">{service.name}</Text>
+            <Text fontSize="md" color="gray.300" mb={3}>{service.price}</Text>
+            <List spacing={2} mb={4}>
+              {service.features.map((feature, idx) => (
+                <ListItem key={idx} display="flex" alignItems="center" justifyContent="center">
+                  <ListIcon as={FiCheckCircle} color="blue.500" boxSize={5} />
+                  <Text fontSize="sm" color="gray.300">{feature}</Text>
+                </ListItem>
+              ))}
+            </List>
+          </Box>
+        ))}
+      </Grid>
     </Container>
   );
 }
