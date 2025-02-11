@@ -43,7 +43,7 @@ const ProxySettings = () => {
   };
 
   return (
-    <Box maxW="3xl" mx="auto" px={{ base: 4, md: 8 }} py={8}>
+    <Box maxW="100%" mx="auto" px={{ base: 6, md: 12 }} py={12}>
       <VStack spacing={6} align="stretch">
         <Heading size="lg" textAlign="center">Advanced Proxy Configuration</Heading>
         <Divider />
