@@ -77,7 +77,7 @@ function Dashboard() {
           <Text fontWeight="bold" fontSize="lg">
             ⚠️ Access Limited - Get a Subscription!
           </Text>
-          <Button colorScheme="red" size="sm" mt={2} onClick={() => navigate("/proxies/pricing")}>
+          <Button colorScheme="red" size="sm" mt={2} onClick={() => navigate({ to: "/proxies/pricing" })}>
             View Subscription Plans
           </Button>
         </Box>
@@ -122,7 +122,7 @@ function Dashboard() {
                 <Box key={product.id} p={5} shadow="md" borderWidth="1px" borderRadius="lg" bg="gray.50">
                   <Text fontWeight="bold" fontSize="lg">{product.name}</Text>
                   <Text fontSize="sm" color="gray.600">{product.description}</Text>
-                  <Button mt={3} size="sm" colorScheme="blue" borderRadius="full" onClick={() => navigate(product.path)}>
+                  <Button mt={3} size="sm" colorScheme="blue" borderRadius="full" onClick={() => navigate({ to: product.path })}>
                     Manage
                   </Button>
                 </Box>
