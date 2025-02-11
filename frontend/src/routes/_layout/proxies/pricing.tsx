@@ -117,7 +117,7 @@ function Pricing() {
       ) : (
         <Flex mt={6} gap={6} justify="space-between">
           <Box flex="1">
-            <Tabs variant="enclosed" bg="gray.100">
+            <Tabs variant="enclosed" bg="gray.700">
               <TabList>
                 {tabsConfig.map((tab, index) => (
                   <Tab key={index} isDisabled={restrictedTabs.includes(tab.title)} bg="gray.200">
