@@ -1,16 +1,14 @@
 import {
   Container,
   Heading,
-  Tab,
-  TabList,
-  TabPanel,
-  TabPanels,
-  Tabs,
+  Grid,
+  GridItem,
   Box,
   Text,
   VStack,
   Divider,
   Badge,
+  Flex,
 } from "@chakra-ui/react";
 import { createFileRoute } from "@tanstack/react-router";
 
@@ -18,65 +16,69 @@ export const Route = createFileRoute("/_layout/proxies/pricing")({
   component: PricingPage,
 });
 
-// Proxy Billing Rates (Per GB)
-const pricingRates = {
+// Per GB Pricing for Each Product and Tier
+const pricingPlans = {
   Residential: [
-    { tier: "Starter", price: "$2.00/GB", details: ["Up to 500GB", "Standard Speed", "Shared IP Pool"] },
-    { tier: "Business", price: "$1.50/GB", details: ["Up to 2TB", "Faster Speeds", "Priority Support"], badge: "Most Popular" },
-    { tier: "Enterprise", price: "Custom Pricing", details: ["Unlimited Data", "Dedicated IP Pools", "24/7 Support"] },
+    { name: "Starter", pricePerGB: "$2.00/GB", traffic: "Up to 500GB", features: ["Standard Speed", "Shared IP Pool"] },
+    { name: "Business", pricePerGB: "$1.50/GB", traffic: "Up to 2TB", features: ["Faster Speeds", "Priority Support"], badge: "Most Popular" },
+    { name: "Enterprise", pricePerGB: "Custom Pricing", traffic: "Unlimited", features: ["Dedicated IP Pools", "24/7 Support"] },
   ],
   "Residential Mobile": [
-    { tier: "Starter", price: "$2.50/GB", details: ["Up to 500GB", "Mobile IPs", "Basic Support"] },
-    { tier: "Business", price: "$1.80/GB", details: ["Up to 2TB", "Fast Mobile IPs", "Priority Support"] },
-    { tier: "Enterprise", price: "Custom Pricing", details: ["Unlimited Mobile Data", "Custom IPs", "Dedicated Support"] },
+    { name: "Starter", pricePerGB: "$2.50/GB", traffic: "Up to 500GB", features: ["Mobile IPs", "Basic Support"] },
+    { name: "Business", pricePerGB: "$1.80/GB", traffic: "Up to 2TB", features: ["Fast Mobile IPs", "Priority Support"] },
+    { name: "Enterprise", pricePerGB: "Custom Pricing", traffic: "Unlimited", features: ["Custom Mobile IPs", "Dedicated Support"] },
   ],
   Datacenter: [
-    { tier: "Basic", price: "$1.00/GB", details: ["Up to 5TB", "Shared IPs", "Basic Support"] },
-    { tier: "Business", price: "$0.75/GB", details: ["Up to 20TB", "Dedicated IPs", "Priority Support"] },
-    { tier: "Enterprise", price: "Custom Pricing", details: ["Unlimited Traffic", "Dedicated Resources", "24/7 SLA"] },
+    { name: "Basic", pricePerGB: "$1.00/GB", traffic: "Up to 5TB", features: ["Shared IPs", "Basic Support"] },
+    { name: "Business", pricePerGB: "$0.75/GB", traffic: "Up to 20TB", features: ["Dedicated IPs", "Priority Support"] },
+    { name: "Enterprise", pricePerGB: "Custom Pricing", traffic: "Unlimited", features: ["Dedicated Resources", "24/7 SLA"] },
   ],
   "Datacenter Mobile": [
-    { tier: "Basic", price: "$1.20/GB", details: ["Up to 5TB", "Mobile-Friendly", "Basic Support"] },
-    { tier: "Business", price: "$0.85/GB", details: ["Up to 20TB", "Dedicated Mobile IPs", "Priority Support"] },
-    { tier: "Enterprise", price: "Custom Pricing", details: ["Custom Traffic Limits", "Private Pools", "Dedicated Manager"] },
+    { name: "Basic", pricePerGB: "$1.20/GB", traffic: "Up to 5TB", features: ["Mobile-Friendly", "Basic Support"] },
+    { name: "Business", pricePerGB: "$0.85/GB", traffic: "Up to 20TB", features: ["Dedicated Mobile IPs", "Priority Support"] },
+    { name: "Enterprise", pricePerGB: "Custom Pricing", traffic: "Unlimited", features: ["Private Pools", "Dedicated Manager"] },
   ],
   "Browser Proxy": [
-    { tier: "Standard", price: "$2.00/GB", details: ["Secure Browser Proxy", "Standard Speed", "Basic Support"] },
-    { tier: "Premium", price: "$1.50/GB", details: ["High Speed", "Anonymity Mode", "Priority Support"] },
-    { tier: "Enterprise", price: "Custom Pricing", details: ["Custom Browser Configs", "Dedicated Sessions", "Private Network"] },
+    { name: "Standard", pricePerGB: "$2.00/GB", traffic: "Up to 500GB", features: ["Secure Browser Proxy", "Basic Support"] },
+    { name: "Premium", pricePerGB: "$1.50/GB", traffic: "Up to 2TB", features: ["Anonymity Mode", "Priority Support"] },
+    { name: "Enterprise", pricePerGB: "Custom Pricing", traffic: "Unlimited", features: ["Custom Browser Configs", "Dedicated Sessions"] },
   ],
 };
 
 function PricingPage() {
   return (
-    <Container maxW="6xl">
-      {/* HEADER */}
-      <Heading size="lg" textAlign="center" py={8}>
+    <Container maxW="6xl" py={10}>
+      {/* PAGE TITLE */}
+      <Heading size="lg" textAlign="center" mb={8}>
         Proxy Billing Rates (Per GB)
       </Heading>
 
-      {/* PRICING TABS */}
-      <Tabs variant="enclosed">
-        <TabList>
-          {Object.keys(pricingRates).map((category) => (
-            <Tab key={category}>{category}</Tab>
-          ))}
-        </TabList>
+      {/* PRICING GRID BY CATEGORY */}
+      <VStack spacing={12}>
+        {Object.keys(pricingPlans).map((category) => (
+          <Box key={category} w="full">
+            {/* Category Title */}
+            <Heading size="md" textAlign="left" mb={4} borderBottom="2px solid #E2E8F0" pb={2}>
+              {category}
+            </Heading>
 
-        <TabPanels>
-          {Object.keys(pricingRates).map((category) => (
-            <TabPanel key={category}>
-              <VStack spacing={6} align="stretch">
-                {pricingRates[category].map((tier) => (
+            {/* Grid Layout for Plans */}
+            <Grid templateColumns={{ base: "1fr", md: "repeat(3, 1fr)" }} gap={6}>
+              {pricingPlans[category].map((plan) => (
+                <GridItem key={plan.name}>
                   <Box
-                    key={tier.tier}
                     p={6}
-                    shadow="md"
-                    borderWidth="1px"
+                    borderWidth="2px"
                     borderRadius="lg"
+                    textAlign="center"
+                    borderColor="gray.300"
+                    shadow="sm"
+                    transition="all 0.2s ease-in-out"
+                    _hover={{ shadow: "md" }}
                     position="relative"
                   >
-                    {tier.badge && (
+                    {/* Badge for Popular Plans */}
+                    {plan.badge && (
                       <Badge
                         colorScheme="blue"
                         variant="solid"
@@ -85,29 +87,41 @@ function PricingPage() {
                         left="50%"
                         transform="translateX(-50%)"
                       >
-                        {tier.badge}
+                        {plan.badge}
                       </Badge>
                     )}
-                    <Text fontSize="xl" fontWeight="bold">{tier.tier}</Text>
-                    <Text fontSize="lg" color="teal.500">{tier.price}</Text>
+
+                    {/* Plan Name */}
+                    <Text fontSize="xl" fontWeight="bold">{plan.name}</Text>
+
+                    {/* Price Per GB */}
+                    <Text fontSize="2xl" fontWeight="bold" color="teal.500" mt={2}>
+                      {plan.pricePerGB}
+                    </Text>
+
+                    {/* Traffic Limit */}
+                    <Text fontSize="md" color="gray.500">{plan.traffic}</Text>
+
                     <Divider my={4} />
-                    <VStack align="start">
-                      {tier.details.map((detail, index) => (
-                        <Text key={index}>- {detail}</Text>
+
+                    {/* Feature List */}
+                    <VStack align="center" spacing={2}>
+                      {plan.features.map((feature, index) => (
+                        <Text key={index} fontSize="sm">• {feature}</Text>
                       ))}
                     </VStack>
                   </Box>
-                ))}
-              </VStack>
-            </TabPanel>
-          ))}
-        </TabPanels>
-      </Tabs>
+                </GridItem>
+              ))}
+            </Grid>
+          </Box>
+        ))}
+      </VStack>
 
-      {/* SECURITY & PRICING NOTICE */}
+      {/* PRICING NOTICE */}
       <Box mt={8} textAlign="center">
         <Text fontSize="sm" color="gray.500">
-          Pricing is based on per GB usage. **Enterprise clients** can request **custom volume pricing**.
+          Pricing is based on per GB usage. **Enterprise clients** can request **custom pricing & volume discounts**.
         </Text>
       </Box>
     </Container>
