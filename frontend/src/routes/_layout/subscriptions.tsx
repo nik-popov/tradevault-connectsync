@@ -16,7 +16,7 @@ import {
     TabPanels,
     Badge,
   } from "@chakra-ui/react";
-  import { useState } from "react";
+  import { useState, useEffect } from "react";
   import Navbar from "../../components/Common/Navbar";
   
   // Mock Subscription Data
@@ -42,9 +42,12 @@ import {
   };
   
   function SubscriptionTable({ category }) {
-    const [subscriptions, setSubscriptions] = useState(subscriptionData[category]);
+    const [subscriptions, setSubscriptions] = useState([]);
   
-    // Toggle Subscription Status
+    useEffect(() => {
+      setSubscriptions(subscriptionData[category] || []);
+    }, [category]);
+  
     const toggleSubscription = (id) => {
       setSubscriptions((prev) =>
         prev.map((sub) =>
@@ -53,7 +56,6 @@ import {
       );
     };
   
-    // Toggle Trial Status
     const toggleTrial = (id) => {
       setSubscriptions((prev) =>
         prev.map((sub) =>
@@ -62,7 +64,6 @@ import {
       );
     };
   
-    // Toggle Deactivation Status
     const toggleDeactivation = (id) => {
       setSubscriptions((prev) =>
         prev.map((sub) =>
@@ -123,7 +124,6 @@ import {
   
         <Navbar type={"Subscription"} />
   
-        {/* Tabs for Different Product Memberships */}
         <Tabs variant="enclosed">
           <TabList>
             {Object.keys(subscriptionData).map((category) => (
@@ -132,13 +132,12 @@ import {
           </TabList>
   
           <TabPanels>
-  {Object.keys(subscriptionData).map((category) => (
-    <TabPanel key={category}>
-      {subscriptionData[category] ? <SubscriptionTable category={category} /> : null}
-    </TabPanel>
-  ))}
-</TabPanels>
-
+            {Object.keys(subscriptionData).map((category) => (
+              <TabPanel key={category}>
+                {subscriptionData[category] ? <SubscriptionTable category={category} /> : null}
+              </TabPanel>
+            ))}
+          </TabPanels>
         </Tabs>
       </Container>
     );
