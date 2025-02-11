@@ -62,7 +62,7 @@ const PromoDatasets: React.FC = () => {
   const navigate = useNavigate();
 
   return (
-    <Box maxW="100%" mx="auto" px={{ base: 6, md: 12 }} py={10} bg="gray.900">
+    <Box maxW="100%" mx="auto" px={{ base: 6, md: 12 }} py={10} bg="gray.800">
       <VStack spacing={6} align="stretch">
 
         {/* 🚀 Alert Goes to the Top */}
