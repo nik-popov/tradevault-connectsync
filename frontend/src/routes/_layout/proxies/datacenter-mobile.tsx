@@ -310,7 +310,7 @@ function DatacenterMobileProxy() {
         </Box>
       
       </Flex>
-
+      <Divider my={4} />
       {isLocked ? (
         <PromoContent />
       ) : isDeactivated ? (
@@ -320,7 +320,6 @@ function DatacenterMobileProxy() {
       ) : (
         <Flex mt={6} gap={6} justify="space-between">
           <Box flex="1">
-            <Divider my={4} />
             <Tabs variant="enclosed">
               <TabList>
                 {tabsConfig.map((tab, index) => (
