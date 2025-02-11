@@ -75,16 +75,15 @@ import {
       }
     }, [page, queryClient, hasNextPage]);
   
-    // ✅ Mutation to update user subscription in backend
-    const mutation = useMutation(
-      ({ userId, key, value }) =>
-        UsersService.updateUserSubscription(userId, { [key]: value }),
-      {
-        onSuccess: () => {
-          queryClient.invalidateQueries(["users"]);
-        },
-      }
-    );
+    // ✅ Fix: Correct `useMutation` usage
+    const mutation = useMutation({
+      mutationFn: async ({ userId, key, value }) => {
+        return UsersService.updateUserSubscription(userId, { [key]: value });
+      },
+      onSuccess: () => {
+        queryClient.invalidateQueries(["users"]);
+      },
+    });
   
     const toggleSubscriptionState = (userId, key, value) => {
       mutation.mutate({ userId, key, value });
