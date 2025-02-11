@@ -170,6 +170,19 @@ function Explore() {
               </List>
             </VStack>
           </Box>
+          {/* ✅ Sidebar */}
+          <Box w="250px" p={4} borderLeft="1px solid #E2E8F0">
+            <VStack spacing={4} align="stretch">
+              <Box p={4} shadow="sm" borderWidth="1px" borderRadius="lg">
+                <Text fontWeight="bold">How It Works</Text>
+                <Text fontSize="sm">Explore various APIs and integrate them easily.</Text>
+              </Box>
+              <Box p={4} shadow="sm" borderWidth="1px" borderRadius="lg">
+                <Text fontWeight="bold">Need Help?</Text>
+                <Text fontSize="sm">Contact support for assistance.</Text>
+              </Box>
+            </VStack>
+          </Box>
         </Flex>
       )}
     </Container>
