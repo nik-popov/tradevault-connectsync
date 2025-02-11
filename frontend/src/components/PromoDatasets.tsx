@@ -155,7 +155,7 @@ const PromoDatasets: React.FC = () => {
         </Grid>
 
         {/* Security & Performance Notice */}
-        <Alert status="success" borderRadius="md">
+        <Alert status="success" borderRadius="md" mt={6}>
           <AlertIcon />
           <Text>All datasets are optimized for high-speed querying and secure data access.</Text>
         </Alert>
