@@ -7,13 +7,10 @@ import {
   HStack,
   Divider,
   Flex,
-  Tabs,
-  TabList,
-  TabPanels,
-  Tab,
-  TabPanel,
   Badge,
   Icon,
+  Grid,
+  GridItem,
 } from "@chakra-ui/react";
 import { createFileRoute } from "@tanstack/react-router";
 import {
@@ -58,8 +55,8 @@ const pricingPlans = [
 
 function Pricing() {
   return (
-    <Container maxW="full">
-      <Flex align="center" justify="space-between" py={6} flexWrap="wrap" gap={4}>
+    <Container maxW="full" py={8}>
+      <Flex align="center" justify="space-between" flexWrap="wrap" gap={4} mb={6}>
         <Box textAlign="left" flex="1">
           <Text fontSize="xl" fontWeight="bold">Pricing Plans</Text>
           <Text fontSize="sm">Choose the right plan for your needs.</Text>
@@ -68,45 +65,37 @@ function Pricing() {
 
       <Divider my={4} />
 
-      <Flex mt={6} gap={6} justify="space-between">
-        <Box flex="1">
-          <Tabs variant="enclosed">
-            <TabList>
-              {pricingPlans.map((plan, index) => (
-                <Tab key={index}>
-                  <Icon as={plan.icon} mr={2} /> {plan.name}
-                </Tab>
-              ))}
-            </TabList>
+      <Grid templateColumns={{ base: "1fr", md: "repeat(4, 1fr)" }} gap={6}>
+        {pricingPlans.map((plan, index) => (
+          <GridItem key={index}>
+            <Box p={6} border="2px solid" borderColor={plan.borderColor} borderRadius="lg" bg="gray.700" position="relative">
+              {plan.badge && (
+                <Badge bg="blue.600" color="white" px={3} py={1} position="absolute" top="-12px" left="10px">
+                  {plan.badge}
+                </Badge>
+              )}
+              <Flex align="center" mb={2}>
+                <Icon as={plan.icon} boxSize={6} color="white" mr={2} />
+                <Text fontSize="lg" fontWeight="bold" color="white">{plan.name}</Text>
+              </Flex>
+              <Text fontSize="2xl" fontWeight="bold" color="white" mb={4}>{plan.price}</Text>
 
-            <TabPanels>
-              {pricingPlans.map((plan, index) => (
-                <TabPanel key={index}>
-                  <Box p={6} border="2px solid" borderColor={plan.borderColor} borderRadius="lg" bg="gray.600">
-                    {plan.badge && (
-                      <Badge bg="blue.600" color="white" px={3} py={1} position="absolute" top="-12px" left="10px">
-                        {plan.badge}
-                      </Badge>
-                    )}
-                    <Text fontSize="lg" fontWeight="bold" color="white">{plan.price}</Text>
-                    <VStack spacing={3} align="start" mt={3}>
-                      {plan.features.map((feature, idx) => (
-                        <HStack key={idx}>
-                          <Icon as={FiCheckCircle} color="blue.500" />
-                          <Text fontSize="sm" color="gray.300">{feature}</Text>
-                        </HStack>
-                      ))}
-                    </VStack>
-                    <Button w="full" mt={4} bg="blue.600" color="white" _hover={{ bg: "blue.500" }}>
-                      {plan.price === "Custom" ? "Contact Us" : `Choose ${plan.name}`}
-                    </Button>
-                  </Box>
-                </TabPanel>
-              ))}
-            </TabPanels>
-          </Tabs>
-        </Box>
-      </Flex>
+              <VStack spacing={3} align="start" mt={3}>
+                {plan.features.map((feature, idx) => (
+                  <HStack key={idx}>
+                    <Icon as={FiCheckCircle} color="blue.500" />
+                    <Text fontSize="sm" color="gray.300">{feature}</Text>
+                  </HStack>
+                ))}
+              </VStack>
+
+              <Button w="full" mt={4} bg="blue.600" color="white" _hover={{ bg: "blue.500" }}>
+                {plan.price === "Custom" ? "Contact Us" : `Choose ${plan.name}`}
+              </Button>
+            </Box>
+          </GridItem>
+        ))}
+      </Grid>
     </Container>
   );
 }
