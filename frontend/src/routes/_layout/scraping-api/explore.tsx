@@ -19,7 +19,7 @@ import {
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useQueryClient } from "@tanstack/react-query";
 import { FiExternalLink, FiX, FiGithub } from "react-icons/fi";
-import PromoDatasets from "../../../components/PromoDatasets"; // Update the import if necessary for consistency in naming or path
+import PromoSERP from "../../../components/PromoSERP"; // Update the import if necessary for consistency in naming or path
 
 export const Route = createFileRoute("/_layout/apis/explore")({
   component: Explore,
@@ -121,7 +121,7 @@ function Explore() {
       <Divider my={4} />
 
       {isLocked ? (
-        <PromoDatasets />
+        <PromoSERP />
       ) : isFullyDeactivated ? (
         <Alert status="error" borderRadius="md">
           <AlertIcon />
