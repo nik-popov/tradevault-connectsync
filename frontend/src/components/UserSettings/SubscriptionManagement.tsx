@@ -1,13 +1,29 @@
-import { Box, Heading, Text, VStack, HStack, Switch, Button } from "@chakra-ui/react";
+import { 
+  Box, Heading, Text, VStack, HStack, Switch, Button, Divider 
+} from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 
-// Define the shape of the subscription settings
+// Define the shape of subscription settings per product
 type SubscriptionSettings = {
   hasSubscription: boolean;
   isTrial: boolean;
   isDeactivated: boolean;
 };
+
+// Define the structure for multiple products
+type SubscriptionData = {
+  [product: string]: SubscriptionSettings;
+};
+
+// Available products
+const PRODUCTS = [
+  "Residential",
+  "Residential Mobile",
+  "Datacenter",
+  "Datacenter Mobile",
+  "Browser",
+];
 
 const STORAGE_KEY = "subscriptionSettings"; // Key for localStorage
 
@@ -16,15 +32,15 @@ const SubscriptionManagement = () => {
 
   // Load initial state from localStorage (fallback to React Query)
   const storedSettings = localStorage.getItem(STORAGE_KEY);
-  const initialSubscriptionState: SubscriptionSettings = storedSettings
+  const initialSubscriptionState: SubscriptionData = storedSettings
     ? JSON.parse(storedSettings)
-    : queryClient.getQueryData<SubscriptionSettings>(["subscriptionSettings"]) || {
-        hasSubscription: false,
-        isTrial: false,
-        isDeactivated: false,
-      };
+    : queryClient.getQueryData<SubscriptionData>(["subscriptionSettings"]) ||
+      PRODUCTS.reduce((acc, product) => {
+        acc[product] = { hasSubscription: false, isTrial: false, isDeactivated: false };
+        return acc;
+      }, {} as SubscriptionData);
 
-  const [subscriptionSettings, setSubscriptionSettings] = useState<SubscriptionSettings>(initialSubscriptionState);
+  const [subscriptionSettings, setSubscriptionSettings] = useState<SubscriptionData>(initialSubscriptionState);
 
   // Effect: Sync state with localStorage on changes
   useEffect(() => {
@@ -32,35 +48,54 @@ const SubscriptionManagement = () => {
     queryClient.setQueryData(["subscriptionSettings"], subscriptionSettings);
   }, [subscriptionSettings, queryClient]);
 
-  // Toggle function with properly typed keys
-  const toggleSetting = (key: keyof SubscriptionSettings) => {
+  // Toggle function for a specific product
+  const toggleSetting = (product: string, key: keyof SubscriptionSettings) => {
     setSubscriptionSettings((prev) => ({
       ...prev,
-      [key]: !prev[key],
+      [product]: {
+        ...prev[product],
+        [key]: !prev[product][key],
+      },
     }));
   };
 
   return (
     <Box>
       <Heading size="md">Subscription Management</Heading>
-      <Text mt={2}>Enable or disable access to your products.</Text>
+      <Text mt={2}>Manage subscriptions for each product.</Text>
 
-      <VStack mt={4} align="stretch" spacing={4}>
-        <HStack justify="space-between">
-          <Text fontWeight="bold">Subscription Active</Text>
-          <Switch isChecked={subscriptionSettings.hasSubscription} onChange={() => toggleSetting("hasSubscription")} />
-        </HStack>
+      {PRODUCTS.map((product) => (
+        <Box key={product} mt={4}>
+          <Heading size="sm" mt={4}>{product}</Heading>
+          <Divider my={2} />
 
-        <HStack justify="space-between">
-          <Text fontWeight="bold">Trial Mode</Text>
-          <Switch isChecked={subscriptionSettings.isTrial} onChange={() => toggleSetting("isTrial")} />
-        </HStack>
+          <VStack align="stretch" spacing={3}>
+            <HStack justify="space-between">
+              <Text fontWeight="bold">Subscription Active</Text>
+              <Switch 
+                isChecked={subscriptionSettings[product].hasSubscription} 
+                onChange={() => toggleSetting(product, "hasSubscription")} 
+              />
+            </HStack>
 
-        <HStack justify="space-between">
-          <Text fontWeight="bold">Deactivated</Text>
-          <Switch isChecked={subscriptionSettings.isDeactivated} onChange={() => toggleSetting("isDeactivated")} />
-        </HStack>
-      </VStack>
+            <HStack justify="space-between">
+              <Text fontWeight="bold">Trial Mode</Text>
+              <Switch 
+                isChecked={subscriptionSettings[product].isTrial} 
+                onChange={() => toggleSetting(product, "isTrial")} 
+              />
+            </HStack>
+
+            <HStack justify="space-between">
+              <Text fontWeight="bold">Deactivated</Text>
+              <Switch 
+                isChecked={subscriptionSettings[product].isDeactivated} 
+                onChange={() => toggleSetting(product, "isDeactivated")} 
+              />
+            </HStack>
+          </VStack>
+        </Box>
+      ))}
 
       <Button mt={6} colorScheme="blue" onClick={() => console.log("Updated Settings:", subscriptionSettings)}>
         Save Changes
