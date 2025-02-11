@@ -2,7 +2,6 @@ import { Box, Flex, Icon, Text, useColorModeValue } from "@chakra-ui/react";
 import { useQueryClient } from "@tanstack/react-query";
 import { Link } from "@tanstack/react-router";
 import {
-  FiBriefcase,
   FiHome,
   FiSettings,
   FiUsers,
@@ -53,7 +52,6 @@ const sidebarStructure: SidebarItem[] = [
     icon: FiDatabase,
   },
   { title: "Settings", icon: FiSettings, path: "/settings" },
-  { title: "Billing", icon: FiBriefcase, path: "/subscriptions" },
   { title: "Help & Support", icon: FiTool, path: "/help-support" },
 ];
 
