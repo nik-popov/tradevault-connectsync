@@ -24,9 +24,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { motion } from "framer-motion";
 import useAuth from "../../../hooks/useAuth"; // ✅ Ensure this path is correct
 
-export const Route = createFileRoute("/_layout/search-api/explore")({
-  component: Explore
-});
+
 
 function Explore() {
   const navigate = useNavigate();
@@ -167,5 +165,7 @@ function Explore() {
     </Container>
   );
 }
-
+export const Route = createFileRoute("/_layout/search-api/explore")({
+  component: Explore
+});
 export default Explore;
