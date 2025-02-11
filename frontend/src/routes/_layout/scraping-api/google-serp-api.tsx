@@ -310,7 +310,7 @@ function GoogleSerpApi() {
           <Text fontSize="sm">Manage your proxy settings and subscriptions.</Text>
         </Box>
       </Flex>
-
+        <Divider my={4} />
       {isLocked ? (
         <PromoContent />
       ) : isDeactivated ? (
