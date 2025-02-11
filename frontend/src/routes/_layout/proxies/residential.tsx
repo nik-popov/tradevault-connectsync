@@ -24,12 +24,16 @@ import ProxyStarted from "../../../components/ProxyStarted";
 import ProxySettings from "../../../components/ProxySettings";
 import ProxyUsage from "../../../components/ProxyUsage";
 
-const TopUps = () => <Box><Text>Top-Ups Component</Text></Box>;
-const Connections = () => <Box><Text>Connections Component</Text></Box>;
-const Logs = () => <Box><Text>Logs Component</Text></Box>;
-const KeyManagement = () => <Box><Text>Key Management Component</Text></Box>;
-const ReactivationOptions = () => <Box><Text>Reactivation Options Component</Text></Box>;
-
+// Import proxy components from ProxyComponents.tsx
+import {
+  TopUps,
+  Connections,
+  Logs,
+  KeyManagement,
+  ReactivationOptions,
+  // Optionally, if you need the Route from ProxyComponents:
+  // Route as ProxyComponentsRoute
+} from "./ProxyComponents";
 // ✅ Route Export
 export const Route = createFileRoute("/_layout/proxies/residential")({
   component: ResidentialProxy,

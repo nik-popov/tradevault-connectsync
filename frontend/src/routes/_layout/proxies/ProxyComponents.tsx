@@ -18,7 +18,7 @@ import {
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 
-// Placeholder API functions (replace these with your real API calls)
+// Placeholder API functions (replace with real API calls)
 const fetchTopUps = async () => []; 
 const fetchConnections = async () => [];
 const fetchLogs = async () => [];
@@ -28,7 +28,6 @@ const fetchReactivationOptions = async () => [];
 /** Top-Ups Component */
 const TopUps = () => {
   const { data: topUps, isLoading, error } = useQuery(["topUps"], fetchTopUps);
-  
   return (
     <Box p={4} borderWidth={1} borderRadius="md">
       <Text fontSize="xl" mb={4}>Top-Ups</Text>
@@ -68,7 +67,6 @@ const TopUps = () => {
 /** Connections Component */
 const Connections = () => {
   const { data: connections, isLoading, error } = useQuery(["connections"], fetchConnections);
-
   return (
     <Box p={4} borderWidth={1} borderRadius="md">
       <Text fontSize="xl" mb={4}>Connections</Text>
@@ -105,7 +103,6 @@ const Connections = () => {
 /** Logs Component */
 const Logs = () => {
   const { data: logs, isLoading, error } = useQuery(["logs"], fetchLogs);
-
   return (
     <Box p={4} borderWidth={1} borderRadius="md">
       <Text fontSize="xl" mb={4}>Logs</Text>
@@ -141,7 +138,7 @@ const Logs = () => {
 const KeyManagement = () => {
   const [newKey, setNewKey] = useState("");
   const { data: keys, isLoading, error } = useQuery(["keys"], fetchKeys);
-  const mutation = useMutation(() => Promise.resolve()); // Replace with your API call
+  const mutation = useMutation(() => Promise.resolve()); // Replace with API call
 
   const addKey = () => {
     mutation.mutate(newKey);
@@ -177,11 +174,7 @@ const KeyManagement = () => {
 
 /** Reactivation Options Component */
 const ReactivationOptions = () => {
-  const { data: options, isLoading, error } = useQuery(
-    ["reactivationOptions"],
-    fetchReactivationOptions
-  );
-
+  const { data: options, isLoading, error } = useQuery(["reactivationOptions"], fetchReactivationOptions);
   return (
     <Box p={4} borderWidth={1} borderRadius="md">
       <Text fontSize="xl" mb={4}>Reactivation Options</Text>
