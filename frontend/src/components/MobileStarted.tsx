@@ -10,44 +10,36 @@ import {
   Flex,
   Alert,
   AlertIcon,
-  Divider,
+  Divider
 } from "@chakra-ui/react";
-import { 
-  FiCheckCircle, 
-  FiCopy, 
-  FiGlobe, 
-  FiCode, 
-  FiSettings, 
-  FiServer, 
-  FiList 
-} from "react-icons/fi";
+import { FiCheckCircle, FiCopy, FiGlobe, FiCode, FiSettings, FiServer, FiList } from "react-icons/fi";
 
 const MobileResidentialApiStartGuide = () => {
   const steps = [
     {
       title: "List Available Endpoints",
       icon: FiList,
-      description: "Retrieve all available endpoints for our mobile residential proxy network.",
+      description: "Retrieve all available mobile residential proxy endpoints.",
       content: (
         <Code p={3} borderRadius="md" fontSize="sm" bg="gray.50">
-          {`curl -X GET "https://api.thedataproxy.com/api/v1/endpoints?type=mobile-residential"`}
+          {`curl -X GET https://api.thedataproxy.com/api/v1/endpoints?type=mobile-residential`}
         </Code>
       )
     },
     {
       title: "Get Available Locations",
       icon: FiGlobe,
-      description: "Retrieve supported locations for optimal proxy routing.",
+      description: "Retrieve a list of supported locations for mobile residential proxies.",
       content: (
         <Code p={3} borderRadius="md" fontSize="sm" bg="gray.50">
-          {`curl -X GET "https://api.thedataproxy.com/api/v1/locations?type=mobile-residential"`}
+          {`curl -X GET https://api.thedataproxy.com/api/v1/locations?type=mobile-residential`}
         </Code>
       )
     },
     {
       title: "Configure Your Endpoint",
       icon: FiGlobe,
-      description: "Connect to our mobile residential proxy network using this endpoint.",
+      description: "Use the provided endpoint to connect to our mobile residential proxy network.",
       content: (
         <Code p={3} borderRadius="md" fontSize="sm" bg="gray.50">
           https://api.thedataproxy.com/api/v1/proxy/mobile-residential/
@@ -57,11 +49,11 @@ const MobileResidentialApiStartGuide = () => {
     {
       title: "Set Your Authentication",
       icon: FiCode,
-      description: "Authenticate your API requests with your provided credentials.",
+      description: "Use your credentials to authenticate requests.",
       content: (
         <Box bg="gray.50" p={3} borderRadius="md">
           <Code display="block" mb={2}>
-            Username: your_username<br />
+            Username: your_username<br/>
             Password: your_password
           </Code>
           <Button leftIcon={<FiCopy />} variant="link" size="sm" colorScheme="blue">
@@ -73,43 +65,40 @@ const MobileResidentialApiStartGuide = () => {
     {
       title: "Retrieve Authentication Info",
       icon: FiCode,
-      description: "Verify your authentication details and status.",
+      description: "Check your authentication details and status.",
       content: (
         <Code p={3} borderRadius="md" fontSize="sm" bg="gray.50">
-          {`curl -X GET "https://api.thedataproxy.com/api/v1/auth/mobile-residential"`}
+          {`curl -X GET https://api.thedataproxy.com/api/v1/auth/mobile-residential`}
         </Code>
       )
     },
     {
       title: "Optimize Your Settings",
       icon: FiSettings,
-      description: "Adjust headers and connection settings for enhanced performance.",
+      description: "Adjust request headers and connection settings for better performance and security.",
       content: (
         <Code p={3} borderRadius="md" fontSize="sm" bg="gray.50">
-          {`headers = {
-  'User-Agent': 'YourApp/1.0', 
-  'X-Proxy-Type': 'mobile-residential'
-}`}
+          {`headers = {'User-Agent': 'YourApp/1.0', 'X-Proxy-Type': 'mobile-residential'}`}
         </Code>
       )
     },
     {
       title: "Send Your First Request",
       icon: FiServer,
-      description: "Test your connection using our mobile residential proxy.",
+      description: "Use the correct proxy format in your code to start making requests.",
       content: (
         <Code p={3} borderRadius="md" fontSize="sm" bg="gray.50">
-          {`curl --proxy-user username:password -x "api.thedataproxy.com/api/v1/proxy/mobile-residential/" "https://api.mywebsite.com"`}
+          {`curl --proxy-user username:password -x api.thedataproxy.com/api/v1/proxy/mobile-residential/ https://api.mywebsite.com`}
         </Code>
       )
     },
     {
       title: "Monitor and Scale",
       icon: FiSettings,
-      description: "Track usage and scale your API calls as needed.",
+      description: "Track usage statistics and scale your requests based on your needs.",
       content: (
         <Code p={3} borderRadius="md" fontSize="sm" bg="gray.50">
-          {`curl -X GET "https://api.thedataproxy.com/api/v1/usage/mobile-residential/"`}
+          {`curl -X GET https://api.thedataproxy.com/api/v1/usage/mobile-residential/`}
         </Code>
       )
     }
@@ -118,30 +107,23 @@ const MobileResidentialApiStartGuide = () => {
   return (
     <Box maxW="100%" mx="auto" px={{ base: 6, md: 12 }} py={12}>
       <VStack spacing={8} align="stretch">
-        {/* Header */}
+        {/* Quick Start Guide Header */}
         <Box textAlign="center">
           <Heading size="xl" fontWeight="bold" mb={2}>
-            Mobile Residential API Start Guide
+            Mobile Residential Proxy Quick Start Guide
           </Heading>
           <Text fontSize="lg" color="gray.600">
-            Follow these steps to integrate our mobile residential proxy API into your application.
+            Follow these simple steps to integrate our mobile residential proxy into your applications.
           </Text>
         </Box>
 
         <Divider />
 
-        {/* Step-by-Step Instructions */}
+        {/* Step-by-Step Guide */}
         <VStack spacing={6} align="stretch">
           {steps.map((step, index) => (
             <Flex key={index} gap={4} align="flex-start">
-              <Flex
-                align="center"
-                justify="center"
-                w="50px"
-                h="50px"
-                borderRadius="full"
-                bg="blue.100"
-              >
+              <Flex align="center" justify="center" w="50px" h="50px" borderRadius="full" bg="blue.100">
                 <Icon as={step.icon} boxSize={6} color="blue.500" />
               </Flex>
               <Box flex={1}>
@@ -165,7 +147,7 @@ const MobileResidentialApiStartGuide = () => {
           <Box>
             <Text fontWeight="bold">Verify Your Setup</Text>
             <Text fontSize="sm">
-              Test your connection using the examples above. If your IP is masked and your geolocation aligns with your settings, you're ready to go!
+              Test your connection using the examples above. If your IP is masked and geolocation matches expectations, you're all set! 
               Need help? Visit our{" "}
               <Button variant="link" colorScheme="blue" size="sm">
                 troubleshooting guide
