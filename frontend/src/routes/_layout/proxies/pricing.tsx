@@ -41,7 +41,7 @@ const proxyPricing = {
 };
 
 const PricingPage = () => {
-  const [selectedProduct, setSelectedProduct] = useState("");
+  const [selectedProduct, setSelectedProduct] = useState("Residential");
   const tabBg = useColorModeValue("gray.700", "gray.700");
   const tabHoverBg = useColorModeValue("gray.600", "gray.600");
   const textColor = useColorModeValue("gray.900", "white");
@@ -73,43 +73,28 @@ const PricingPage = () => {
             <TabPanels>
               {Object.keys(proxyPricing).map((product) => (
                 <TabPanel key={product}>
-                  <Table variant="simple" size="lg" mt={6}>
-                    <Thead>
-                      <Tr>
-                        <Th>Plan</Th>
-                        <Th>Price</Th>
-                        <Th>Traffic Limit</Th>
-                        <Th>Features</Th>
-                        <Th>Action</Th>
-                      </Tr>
-                    </Thead>
-                    <Tbody>
-                      {proxyPricing[product].map((tier) => (
-                        <Tr key={tier.tier}>
-                          <Td>
-                            <Text fontWeight="bold">{tier.tier}</Text>
-                            {tier.badge && <Badge colorScheme="blue" ml={2}>{tier.badge}</Badge>}
-                          </Td>
-                          <Td color="blue.400" fontWeight="bold">{tier.price}</Td>
-                          <Td>{tier.trafficLimit}</Td>
-                          <Td>
-                            <List spacing={1}>
-                              {tier.features.map((feature, index) => (
-                                <ListItem key={index} display="flex" alignItems="center">
-                                  <ListIcon as={FiCheckCircle} color="blue.400" boxSize={4} /> {feature}
-                                </ListItem>
-                              ))}
-                            </List>
-                          </Td>
-                          <Td>
-                            <Button colorScheme="blue" size="sm">
-                              {tier.price === "Custom" ? "Contact Sales" : "Choose Plan"}
-                            </Button>
-                          </Td>
-                        </Tr>
-                      ))}
-                    </Tbody>
-                  </Table>
+                  <VStack spacing={6} align="stretch">
+                    {proxyPricing[product].map((tier) => (
+                      <Box key={tier.tier} p={6} borderWidth="2px" borderRadius="lg" textAlign="center" bg="gray.700" borderColor="blue.500">
+                        {tier.badge && (
+                          <Badge colorScheme="blue" px={2} py={1} mb={2}>{tier.badge}</Badge>
+                        )}
+                        <Heading as="h3" size="md" color={textColor} mb={2}>{tier.tier}</Heading>
+                        <Text fontSize="lg" fontWeight="bold" color="blue.400">{tier.price}</Text>
+                        <Text fontSize="sm" color="gray.300" mt={1}>{tier.trafficLimit}</Text>
+                        <List spacing={2} my={4} textAlign="left">
+                          {tier.features.map((feature, index) => (
+                            <ListItem key={index} display="flex" alignItems="center">
+                              <ListIcon as={FiCheckCircle} color="blue.400" boxSize={4} /> {feature}
+                            </ListItem>
+                          ))}
+                        </List>
+                        <Button colorScheme="blue" size="sm" w="full">
+                          {tier.price === "Custom" ? "Contact Sales" : "Choose Plan"}
+                        </Button>
+                      </Box>
+                    ))}
+                  </VStack>
                 </TabPanel>
               ))}
             </TabPanels>
