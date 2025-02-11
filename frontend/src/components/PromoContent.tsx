@@ -26,42 +26,42 @@ const PromoContent = () => {
     { icon: FiZap, title: "Lightning Fast", description: "Industry-leading connection speeds with 99.9% uptime." },
     { icon: FiShield, title: "Secure & Private", description: "Enterprise-grade security with IP rotation and authentication." }
   ];
-
   const pricingPlans = [
     {
       name: "Starter",
-      price: "$29",
-      traffic: "10GB/month",
-      features: ["1 concurrent connection", "Basic support"],
+      price: "$99",
+      traffic: "100GB/month",
+      features: ["1 concurrent connection", "Basic support", "Shared IP pool"],
       borderColor: "gray.300",
       buttonVariant: "outline",
     },
     {
-      name: "Basic",
-      price: "$49",
-      traffic: "50GB/month",
-      features: ["5 concurrent connections", "Standard support"],
+      name: "Business",
+      price: "$499",
+      traffic: "1TB/month",
+      features: ["10 concurrent connections", "Priority support", "Dedicated IP options"],
       borderColor: "blue.400",
       buttonVariant: "solid",
       badge: "MOST POPULAR",
     },
     {
-      name: "Premium",
-      price: "$99",
+      name: "Business Plus+",
+      price: "$2,999",
       traffic: "Unlimited",
-      features: ["Unlimited connections", "Priority support"],
+      features: ["Unlimited concurrent connections", "Dedicated support", "Custom IP pools", "24/7 SLA"],
       borderColor: "purple.400",
       buttonVariant: "solid",
     },
     {
-      name: "Enterprise",
+      name: "Ultra Enterprise",
       price: "Custom",
-      traffic: "Custom",
-      features: ["Dedicated IPs", "Custom traffic limits", "Dedicated account manager"],
+      traffic: "Unlimited + Dedicated Resources",
+      features: ["Dedicated proxies", "Custom traffic limits", "Dedicated account manager", "Private network setup"],
       borderColor: "gray.600",
       buttonVariant: "outline",
     }
   ];
+
 
   return (
     <Box w="full" px={{ base: 4, md: 8 }} py={8}>
