@@ -95,7 +95,7 @@ function Explore() {
     }
   ];
 
-  const industries = ["All", "Owned", ...new Set(proxyProducts.map(api => api.type))];
+  const industries = ["All", "owned", ...new Set(proxyProducts.map(api => api.type))];
 
   // 🔄 Filtered List Logic
   const filteredProducts = useMemo(() => {

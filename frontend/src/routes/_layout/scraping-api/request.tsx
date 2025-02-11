@@ -11,12 +11,16 @@ import {
   Alert,
   AlertIcon,
   Box,
+  Input,
+  Textarea,
+  FormControl,
+  FormLabel,
+  useToast,
 } from "@chakra-ui/react";
 import { useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { useQueryClient } from "@tanstack/react-query";
-import { FiSend, FiGithub } from "react-icons/fi";
-import PromoSERP from "../../../components/PromoSERP";
+import { FiSend } from "react-icons/fi";
 
 export const Route = createFileRoute("/_layout/scraping-api/request")({
   component: Request,
@@ -25,6 +29,7 @@ export const Route = createFileRoute("/_layout/scraping-api/request")({
 function Request() {
   const queryClient = useQueryClient();
   const currentUser = queryClient.getQueryData(["currentUser"]);
+  const toast = useToast();
 
   if (!currentUser) {
     return (
@@ -41,15 +46,63 @@ function Request() {
   const [hasSubscription, setHasSubscription] = useState(false);
   const [isTrial, setIsTrial] = useState(false);
   const [isDeactivated, setIsDeactivated] = useState(false);
-
   const isLocked = !hasSubscription && !isTrial;
   const isFullyDeactivated = isDeactivated && !hasSubscription;
+
+  // ✅ Form State
+  const [apiName, setApiName] = useState("");
+  const [apiDescription, setApiDescription] = useState("");
+  const [apiUrl, setApiUrl] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const handleSubmit = async () => {
+    if (!apiName || !apiDescription || !apiUrl) {
+      toast({
+        title: "Error",
+        description: "Please fill in all fields before submitting.",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
+      return;
+    }
+
+    setIsSubmitting(true);
+
+    try {
+      // Simulate API request
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+
+      toast({
+        title: "Request Submitted",
+        description: "Your API request has been submitted successfully.",
+        status: "success",
+        duration: 3000,
+        isClosable: true,
+      });
+
+      // Reset form
+      setApiName("");
+      setApiDescription("");
+      setApiUrl("");
+    } catch (error) {
+      toast({
+        title: "Submission Failed",
+        description: "Something went wrong. Please try again later.",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
+    }
+
+    setIsSubmitting(false);
+  };
 
   return (
     <Container maxW="full">
       {/* 🔄 Title with Debug Toggles */}
       <Flex justify="space-between" align="center" my={4} flexWrap="wrap">
-        <Heading size="lg">Submit API Request</Heading>
+        <Heading size="lg">Request a New API</Heading>
 
         {/* Debugging Toggles */}
         <HStack spacing={6}>
@@ -79,7 +132,6 @@ function Request() {
                 <AlertIcon />
                 <Text>You need a subscription or trial to submit requests.</Text>
               </Alert>
-              <PromoSERP /> {/* ✅ Promo Content Under Alert */}
             </>
           ) : isFullyDeactivated ? (
             <Alert status="error" borderRadius="md">
@@ -93,13 +145,46 @@ function Request() {
             </Alert>
           ) : (
             <>
-              {/* ✅ Submit Request Section */}
+              {/* ✅ Request API Form */}
               <Box p={6} border="1px solid" borderColor="gray.200" borderRadius="md" boxShadow="sm">
-                <Text fontSize="xl" fontWeight="bold" mb={2}>Submit Your API Request</Text>
-                <Text fontSize="sm" color="gray.600" mb={4}>
-                  Click below to submit a request to the API.
+                <Text fontSize="xl" fontWeight="bold" mb={4}>
+                  Request a New API
                 </Text>
-                <Button colorScheme="blue" leftIcon={<FiSend />} size="lg">
+
+                <FormControl mb={4}>
+                  <FormLabel>API Name</FormLabel>
+                  <Input
+                    placeholder="Enter API name"
+                    value={apiName}
+                    onChange={(e) => setApiName(e.target.value)}
+                  />
+                </FormControl>
+
+                <FormControl mb={4}>
+                  <FormLabel>API Description</FormLabel>
+                  <Textarea
+                    placeholder="Describe the API and its purpose"
+                    value={apiDescription}
+                    onChange={(e) => setApiDescription(e.target.value)}
+                  />
+                </FormControl>
+
+                <FormControl mb={4}>
+                  <FormLabel>API Website URL</FormLabel>
+                  <Input
+                    placeholder="https://example.com/api"
+                    value={apiUrl}
+                    onChange={(e) => setApiUrl(e.target.value)}
+                  />
+                </FormControl>
+
+                <Button
+                  colorScheme="blue"
+                  leftIcon={<FiSend />}
+                  size="lg"
+                  isLoading={isSubmitting}
+                  onClick={handleSubmit}
+                >
                   Submit Request
                 </Button>
               </Box>
@@ -111,18 +196,12 @@ function Request() {
         <Box w="250px" p={4} borderLeft="1px solid #E2E8F0">
           <VStack spacing={4} align="stretch">
             <Box p={4} shadow="sm" borderWidth="1px" borderRadius="lg">
-              <Text fontWeight="bold">Test Your Request</Text>
-              <Text fontSize="sm">Ensure your setup is correct.</Text>
-              <Button mt={2} leftIcon={<FiSend />} size="sm" variant="outline">
-                Send Test Request
-              </Button>
+              <Text fontWeight="bold">How It Works</Text>
+              <Text fontSize="sm">Submit your API request, and we’ll review it.</Text>
             </Box>
             <Box p={4} shadow="sm" borderWidth="1px" borderRadius="lg">
-              <Text fontWeight="bold">GitHub</Text>
-              <Text fontSize="sm">Explore open-source projects.</Text>
-              <Button mt={2} leftIcon={<FiGithub />} size="sm" variant="outline">
-                Join GitHub
-              </Button>
+              <Text fontWeight="bold">Need Help?</Text>
+              <Text fontSize="sm">Contact support for assistance.</Text>
             </Box>
           </VStack>
         </Box>
