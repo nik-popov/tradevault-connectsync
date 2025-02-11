@@ -1,3 +1,4 @@
+import React from "react";
 import {
   Container,
   Heading,
@@ -55,10 +56,10 @@ function UserSettings() {
         </TabList>
         <TabPanels>
           {finalTabs.map((tab, index) => (
-      <TabPanel key={index}>
-      {React.createElement(tab.component)}
-    </TabPanel>
-    
+   <TabPanel key={index}>
+   {React.createElement(tab.component)}
+ </TabPanel>
+ 
           ))}
         </TabPanels>
       </Tabs>
