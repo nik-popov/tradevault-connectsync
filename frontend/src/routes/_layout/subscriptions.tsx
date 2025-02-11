@@ -143,5 +143,12 @@ import {
     );
   }
   
+  // ✅ Fix: Ensure Route is correctly exported
+  import { createFileRoute } from "@tanstack/react-router";
+  
+  export const Route = createFileRoute("/_layout/subscriptions")({
+    component: Subscriptions,
+  });
+  
   export default Subscriptions;
   
