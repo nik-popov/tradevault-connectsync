@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo } from "react";
 import {
   Box,
   Container,
@@ -19,19 +19,31 @@ import {
   Input
 } from "@chakra-ui/react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { FiSearch, FiSend, FiGithub } from "react-icons/fi";
+import { FiSearch } from "react-icons/fi";
 import { useQueryClient } from "@tanstack/react-query";
 import { motion } from "framer-motion";
-import useAuth from "../../../hooks/useAuth"; // ✅ Ensure this path is correct
 
-
+export const Route = createFileRoute("/_layout/search-api/explore")({
+  component: Explore
+});
 
 function Explore() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
-  const { user: currentUser } = useAuth();
-  const ownedApis = currentUser?.ownedApis || [];
+  const currentUser = queryClient.getQueryData(["currentUser"]);
 
+  if (!currentUser) {
+    return (
+      <Container maxW="full">
+        <Alert status="warning" borderRadius="md">
+          <AlertIcon />
+          <Text>Loading user data...</Text>
+        </Alert>
+      </Container>
+    );
+  }
+
+  const ownedApis = currentUser?.ownedApis || [];
   const [searchQuery, setSearchQuery] = useState("");
   const [ownedOnly, setOwnedOnly] = useState(false);
   const [activeFilter, setActiveFilter] = useState("all");
@@ -41,44 +53,46 @@ function Explore() {
   const [sortOption, setSortOption] = useState("name");
 
   const proxyProducts = [
-    { id: "google", name: "Google Search API", type: "Search", owned: ownedApis.includes("google"), description: "Fetches real-time search results from Google." },
-    { id: "bing", name: "Bing Search API", type: "Search", owned: ownedApis.includes("bing"), description: "Provides search results from Bing, including images and news." },
-    { id: "real-estate", name: "Real Estate Data API", type: "Real Estate", owned: ownedApis.includes("real-estate"), description: "Get property listings, pricing trends, and real estate analytics." },
-    { id: "ecommerce", name: "E-commerce Scraper API", type: "E-commerce", owned: ownedApis.includes("ecommerce"), description: "Extract product data from e-commerce platforms like Amazon and eBay." },
-    { id: "finance", name: "Financial Data API", type: "Finance", owned: ownedApis.includes("finance"), description: "Access stock market trends, forex rates, and economic indicators." },
-    { id: "fashion", name: "Fashion Trends API", type: "Fashion", owned: ownedApis.includes("fashion"), description: "Analyze fashion trends, top-selling apparel, and style reports." },
-    { id: "healthcare", name: "Healthcare Data API", type: "Healthcare", owned: ownedApis.includes("healthcare"), description: "Retrieve medical research, pharmaceutical pricing, and health trends." },
-    { id: "travel", name: "Travel Deals API", type: "Travel", owned: ownedApis.includes("travel"), description: "Find flight deals, hotel prices, and travel packages." }
+    { id: "google", name: "Google Search API", type: "search", owned: ownedApis.includes("google"), description: "Fetches real-time search results from Google." },
+    { id: "bing", name: "Bing Search API", type: "search", owned: ownedApis.includes("bing"), description: "Provides search results from Bing, including images and news." },
+    { id: "real-estate", name: "Real Estate Data API", type: "real estate", owned: ownedApis.includes("real-estate"), description: "Get property listings, pricing trends, and real estate analytics." },
+    { id: "ecommerce", name: "E-commerce Scraper API", type: "e-commerce", owned: ownedApis.includes("ecommerce"), description: "Extract product data from e-commerce platforms like Amazon and eBay." },
+    { id: "finance", name: "Financial Data API", type: "finance", owned: ownedApis.includes("finance"), description: "Access stock market trends, forex rates, and economic indicators." },
+    { id: "fashion", name: "Fashion Trends API", type: "fashion", owned: ownedApis.includes("fashion"), description: "Analyze fashion trends, top-selling apparel, and style reports." },
+    { id: "healthcare", name: "Healthcare Data API", type: "healthcare", owned: ownedApis.includes("healthcare"), description: "Retrieve medical research, pharmaceutical pricing, and health trends." },
+    { id: "travel", name: "Travel Deals API", type: "travel", owned: ownedApis.includes("travel"), description: "Find flight deals, hotel prices, and travel packages." }
   ];
 
-  const industries = ["All", ...new Set(proxyProducts.map(api => api.type))];
-
+  const industries = ["All", "Owned", ...new Set(proxyProducts.map(api => api.type))];
   const isLocked = !hasSubscription && !isTrial;
 
   const filteredProducts = useMemo(() => {
-    return proxyProducts.filter(
-      (product) =>
-        (activeFilter === "all" ||
-          (activeFilter === "owned" && product.owned) ||
-          product.type === activeFilter) &&
-        (!ownedOnly || product.owned) &&
-        product.name.toLowerCase().includes(searchQuery.toLowerCase())
-    );
-  }, [searchQuery, ownedOnly, activeFilter, hasSubscription, isTrial]);
+    return proxyProducts.filter((product) => {
+      const matchesFilter = activeFilter === "all" || product.type.toLowerCase() === activeFilter.toLowerCase();
+      const matchesOwned = !ownedOnly || product.owned;
+      const matchesSearch = product.name.toLowerCase().includes(searchQuery.toLowerCase());
+
+      return matchesFilter && matchesOwned && matchesSearch;
+    });
+  }, [searchQuery, ownedOnly, activeFilter]);
 
   return (
     <Container maxW="full">
-      {/* Header Section */}
       <Box bg="blue.100" p={4} textAlign="center" borderRadius="md">
         <Text fontWeight="bold" fontSize="lg">🚀 Get a 3-day free trial of our APIs!</Text>
-        <Button colorScheme="blue" size="sm" mt={2} onClick={() => navigate({ to: "/pricing" })}>
+        <Button colorScheme="blue" size="sm" mt={2} onClick={() => navigate("/pricing")}>
           Try Now
         </Button>
       </Box>
 
-      {/* Filters & Toggles */}
+      {isLocked && (
+        <Alert status="warning" borderRadius="md" mt={4}>
+          <AlertIcon />
+          <Text>You need a subscription or trial to explore APIs.</Text>
+        </Alert>
+      )}
+
       <Flex mt={6} gap={4} justify="space-between" align="center" flexWrap="wrap">
-        {/* Welcome Message */}
         <Box textAlign="left" flex="1">
           <Text fontSize="xl" fontWeight="bold">
             Hi, {currentUser?.full_name || currentUser?.email} 👋🏼
@@ -86,7 +100,6 @@ function Explore() {
           <Text fontSize="sm">Welcome back, let’s get started!</Text>
         </Box>
 
-        {/* Subscription Toggles */}
         <HStack>
           <Text fontWeight="bold">Subscription:</Text>
           <Switch isChecked={hasSubscription} onChange={() => setHasSubscription(!hasSubscription)} />
@@ -100,7 +113,6 @@ function Explore() {
           <Switch isChecked={isDeactivated} onChange={() => setIsDeactivated(!isDeactivated)} />
         </HStack>
 
-        {/* Owned Filter Toggle (Fixed to Match Dashboard) */}
         <Flex align="center">
           <Text fontWeight="bold" mr={2}>Owned Only</Text>
           <Switch isChecked={ownedOnly} onChange={() => setOwnedOnly(!ownedOnly)} colorScheme="blue" />
@@ -109,25 +121,11 @@ function Explore() {
 
       <Divider my={4} />
 
-      {/* Search, Filters, and Sorting */}
       <Flex mt={6} gap={4} justify="space-between" align="center" flexWrap="wrap">
-        <Input
-          placeholder="Search APIs..."
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          w={{ base: "100%", md: "300px" }}
-        />
+        <Input placeholder="Search APIs..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} w={{ base: "100%", md: "300px" }} />
         <Stack direction="row" spacing={3}>
           {industries.map((type) => (
-            <Button
-              key={type}
-              size="md"
-              fontWeight="bold"
-              borderRadius="full"
-              colorScheme={activeFilter === type.toLowerCase() ? "blue" : "gray"}
-              variant={activeFilter === type.toLowerCase() ? "solid" : "outline"}
-              onClick={() => setActiveFilter(type.toLowerCase())}
-            >
+            <Button key={type} size="md" fontWeight="bold" borderRadius="full" colorScheme={activeFilter === type.toLowerCase() ? "blue" : "gray"} variant={activeFilter === type.toLowerCase() ? "solid" : "outline"} onClick={() => setActiveFilter(type.toLowerCase())}>
               {type}
             </Button>
           ))}
@@ -141,31 +139,15 @@ function Explore() {
 
       <Divider my={4} />
 
-      {/* API List */}
       <VStack spacing={6} mt={6} align="stretch">
         {filteredProducts.length === 0 ? (
           <Text textAlign="center" fontSize="lg" color="gray.500">No APIs match this filter.</Text>
         ) : (
-          <List spacing={4}>
-            {filteredProducts.map((api) => (
-              <motion.div key={api.id} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.5 }}>
-                <ListItem p={5} shadow="md" borderWidth="1px" borderRadius="lg" bg="gray.50" _hover={{ shadow: "lg", transform: "scale(1.02)" }} transition="0.2s ease-in-out">
-                  <Tooltip label={api.description} hasArrow>
-                    <Text fontWeight="bold">{api.name} {api.owned ? `(Owned by ${currentUser?.full_name || "You"})` : ""}</Text>
-                  </Tooltip>
-                  <Button mt={3} size="sm" colorScheme="blue" borderRadius="full" onClick={() => navigate({ to: "/explore/" + api.id })}>
-                    Explore
-                  </Button>
-                </ListItem>
-              </motion.div>
-            ))}
-          </List>
+          <List spacing={4}>{filteredProducts.map((api) => <ListItem key={api.id}><Text>{api.name}</Text></ListItem>)}</List>
         )}
       </VStack>
     </Container>
   );
 }
-export const Route = createFileRoute("/_layout/search-api/explore")({
-  component: Explore
-});
+
 export default Explore;
