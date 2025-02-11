@@ -17,11 +17,12 @@ import {
   Input,
   Heading,
   Stack,
+  Collapse,
 } from "@chakra-ui/react";
 import { createFileRoute } from "@tanstack/react-router";
 import { useQueryClient } from "@tanstack/react-query";
 import { FiSend, FiGithub } from "react-icons/fi";
-import PromoSERP from "../../../components/PromoSERP"; // ✅ Ensure PromoSERP is imported
+import PromoSERP from "../../../components/PromoSERP";
 
 export const Route = createFileRoute("/_layout/scraping-api/explore")({
   component: Explore,
@@ -45,26 +46,56 @@ function Explore() {
   // ✅ Subscription & Trial State
   const [hasSubscription, setHasSubscription] = useState(false);
   const [isTrial, setIsTrial] = useState(false);
-  const [isDeactivated, setIsDeactivated] = useState(false); // ✅ Fixed: Deactivation state now works properly
+  const [isDeactivated, setIsDeactivated] = useState(false);
   const [ownedOnly, setOwnedOnly] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [activeFilter, setActiveFilter] = useState("all");
   const [sortOption, setSortOption] = useState("name");
+  const [expandedApi, setExpandedApi] = useState(null); // ✅ Tracks which API is expanded
 
   const ownedApis = currentUser?.ownedApis || [];
   const isLocked = !hasSubscription && !isTrial;
   const isTrialMode = isTrial && !hasSubscription;
-  const isFullyDeactivated = isDeactivated && !hasSubscription; // ✅ Now properly checks for a deactivated account
+  const isFullyDeactivated = isDeactivated && !hasSubscription;
 
   // 🔍 Mock API Data
   const proxyProducts = [
-    { id: "google", name: "Google Search API", type: "search", owned: ownedApis.includes("google"), description: "Fetches real-time search results from Google." },
-    { id: "bing", name: "Bing Search API", type: "search", owned: ownedApis.includes("bing"), description: "Provides search results from Bing, including images and news." },
-    { id: "real-estate", name: "Real Estate Data API", type: "real estate", owned: ownedApis.includes("real-estate"), description: "Get property listings, pricing trends, and real estate analytics." },
-    { id: "finance", name: "Financial Data API", type: "finance", owned: ownedApis.includes("finance"), description: "Access stock market trends, forex rates, and economic indicators." },
+    { 
+      id: "google-serp-api", 
+      name: "Google Search API", 
+      type: "search", 
+      owned: ownedApis.includes("google-serp-api"), 
+      description: "Fetches real-time search results from Google.",
+      details: {
+        endpoint: "/scraping-api/google-serp-api",
+        example: `GET /scraping-api/google-serp-api?query=OpenAI`,
+      }
+    },
+    { 
+      id: "bing-serp-api", 
+      name: "Bing Search API", 
+      type: "search", 
+      owned: ownedApis.includes("bing-serp-api"), 
+      description: "Provides search results from Bing, including images and news.",
+      details: {
+        endpoint: "/scraping-api/bing-serp-api",
+        example: `GET /scraping-api/bing-serp-api?query=AI Trends`,
+      }
+    },
+    { 
+      id: "real-estate-api", 
+      name: "Real Estate Data API", 
+      type: "real estate", 
+      owned: ownedApis.includes("real-estate-api"), 
+      description: "Get property listings, pricing trends, and real estate analytics.",
+      details: {
+        endpoint: "/scraping-api/real-estate-api",
+        example: `GET /scraping-api/real-estate-api?location=NewYork`,
+      }
+    }
   ];
 
-  const industries = ["All", "owned", ...new Set(proxyProducts.map(api => api.type))];
+  const industries = ["All", "Owned", ...new Set(proxyProducts.map(api => api.type))];
 
   // 🔄 Filtered List Logic
   const filteredProducts = useMemo(() => {
@@ -104,16 +135,15 @@ function Explore() {
 
       <Flex gap={6} mt={6}>
         <Box flex="1">
-          {/* 🚨 Show Locked Message */}
           {isLocked ? (
             <>
               <Alert status="warning" borderRadius="md">
                 <AlertIcon />
                 <Text>You need a subscription or trial to explore APIs.</Text>
               </Alert>
-              <PromoSERP /> {/* ✅ Promo Content Under Alert */}
+              <PromoSERP />
             </>
-          ) : isFullyDeactivated ? ( // ✅ Fixed: This correctly detects deactivated users
+          ) : isFullyDeactivated ? (
             <Alert status="error" borderRadius="md">
               <AlertIcon />
               <Flex justify="space-between" align="center" w="full">
@@ -128,6 +158,7 @@ function Explore() {
               {/* ✅ API Explorer */}
               <Flex gap={4} justify="space-between" align="center" flexWrap="wrap">
                 <Input placeholder="Search APIs..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} w={{ base: "100%", md: "300px" }} />
+
                 
                 <Select value={sortOption} onChange={(e) => setSortOption(e.target.value)} w="200px" isDisabled={isTrialMode}>
                   <option value="name">Sort by Name</option>
