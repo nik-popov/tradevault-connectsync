@@ -143,11 +143,12 @@ function Explore() {
               </Box>
             </VStack>
           </Box>
-        </Flex>
+          </Flex>
       )}
     </Container>
   );
 }
+
 
 // ✅ API List Item Component
 const ApiListItem = ({ api, navigate }) => {
