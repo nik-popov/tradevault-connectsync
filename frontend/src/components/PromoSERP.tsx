@@ -79,18 +79,6 @@ const PromoSERP: React.FC = () => {
                 Access structured and real-time search data with flexible API integration.
               </Text>
             </Box>
-
-            <Box bg="blue.800" color="gray.300" borderRadius="md" p={5} boxShadow="lg" textAlign="left" display="flex" flexDirection="column" justifyContent="center">
-              <Heading as="h2" size="md" fontWeight="light" color="gray.100">
-                Start Your Free Trial Today!
-              </Heading>
-              <Text fontSize="xs" my={2} color="gray.300">
-                Get full access to our Search API with a 7-day free trial. No credit card required!
-              </Text>
-              <Button bg="blue.600" color="gray.100" _hover={{ bg: "blue.500" }} variant="solid" onClick={() => navigate('/signup')} size="sm">
-                Sign Up for Free
-              </Button>
-            </Box>
           </Grid>
         </Box>
 
@@ -106,31 +94,35 @@ const PromoSERP: React.FC = () => {
               </GridItem>
             ))}
           </Grid>
-        </Box>
-                {/* Price Display */}
-                <Box minH="60px" display="flex" alignItems="center" justifyContent="center">
-                  <Text fontSize="2xl" fontWeight="bold">
-                    {plan.price === "Custom" ? "Contact Us" : plan.price}
-                  </Text>
-                  {plan.price !== "Custom" && (
-                    <Text as="span" fontSize="lg" color="gray.500">/mo</Text>
-                  )}
+
+          <Grid templateColumns={{ base: "1fr", md: "repeat(4, 1fr)" }} gap={6} mt={10}>
+            {pricingPlans.map((plan, index) => (
+              <Box key={index} position="relative">
+                {plan.badge && (
+                  <Badge bg="blue.600" color="white" px={3} py={1} position="absolute" top="-12px" left="10px">
+                    {plan.badge}
+                  </Badge>
+                )}
+                <Box p={6} border="2px solid" borderColor={plan.borderColor} borderRadius="lg" textAlign="left" bg="gray.700">
+                  <Heading as="h3" size="sm" fontWeight="semibold" mb={2} color="gray.200">
+                    {plan.name}
+                  </Heading>
+                  <List spacing={2} mb={6}>
+                    {plan.features.map((feature, idx) => (
+                      <ListItem key={idx} display="flex" alignItems="center">
+                        <ListIcon as={FiCheckCircle} color="blue.500" boxSize={5} />
+                        <Text fontSize="sm" color="gray.300">{feature}</Text>
+                      </ListItem>
+                    ))}
+                  </List>
+                  <Button w="full" bg="blue.600" color="white" _hover={{ bg: "blue.500" }} variant={plan.buttonVariant} onClick={() => navigate('/search-api/pricing')} size="sm">
+                    {plan.price === "Custom" ? "Contact Us" : `Choose ${plan.name}`}
+                  </Button>
                 </Box>
-
-                {/* CTA Button */}
-                <Button w="full" colorScheme="blue" size="md" variant={plan.buttonVariant} onClick={() => navigate('/search-api/pricing')}>
-                  {plan.price === "Custom" ? "Contact Us" : `Choose ${plan.name}`}
-                </Button>
               </Box>
-            </Box>
-          ))}
-        </Grid>
-
-        {/* Security Notice */}
-        <Alert status="success" borderRadius="md" mt={6}>
-          <AlertIcon />
-          <Text>All API requests are securely handled and optimized.</Text>
-        </Alert>
+            ))}
+          </Grid>
+        </Box>
       </VStack>
     </Box>
   );
