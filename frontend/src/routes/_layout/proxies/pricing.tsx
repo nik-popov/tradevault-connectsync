@@ -46,7 +46,7 @@ const PricingChart = ({ plan }) => {
   };
 
   return (
-    <Box p={4} borderWidth="1px" borderRadius="md" bg="gray.100">
+    <Box p={4} borderWidth="1px" borderRadius="md" bg="gray.700">
       <Text fontSize="xl" mb={4}>{plan.charAt(0).toUpperCase() + plan.slice(1)} Plan Pricing</Text>
       <Table variant="simple">
         <Thead>
