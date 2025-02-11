@@ -68,21 +68,22 @@ const PromoSERP: React.FC = () => {
   return (
     <Box maxW="100%" mx="auto" px={{ base: 6, md: 12 }} py={12}>
       <VStack spacing={8} align="stretch">
-       <Heading as="h1" size="xl" fontWeight="bold" mb={4}>
+        <Heading as="h1" size="xl" fontWeight="bold" mb={4}>
           Unlock Search API
         </Heading>
         <Text fontSize="lg" color="gray.600">
-        Leverage our AI-driven Search API to query vast amounts of structured and unstructured data in real time. Optimize performance with precision-based search capabilities.
+          Leverage our AI-driven Search API to query vast amounts of structured and unstructured data in real time. Optimize performance with precision-based search capabilities.
         </Text>
+
         {/* FREE TRIAL BANNER */}
-        <Box bg="blue.500" color="white" borderRadius="lg" py={4} px={6} mb={6} boxShadow="md">
+        <Box bg="blue.500" color="white" borderRadius="lg" py={6} px={8} mb={6} boxShadow="md" textAlign="center">
           <Heading as="h2" size="lg" fontWeight="bold" mb={2}>
             Start Your Free Trial Today!
           </Heading>
-          <Text fontSize="md" mb={3}>
+          <Text fontSize="md" mb={4}>
             Get full access to our SERP API with a 7-day free trial. No credit card required!
           </Text>
-          <Button colorScheme="whiteAlpha" variant="solid" onClick={() => navigate('/signup')}>
+          <Button colorScheme="whiteAlpha" size="lg" variant="solid" onClick={() => navigate('/signup')}>
             Sign Up for Free
           </Button>
         </Box>
@@ -94,7 +95,7 @@ const PromoSERP: React.FC = () => {
               <Flex justify="center" mb={4}>
                 <Icon as={FiCheckCircle} boxSize={10} color="blue.500" />
               </Flex>
-              <Text fontSize="lg" fontWeight="semibold">{feature}</Text>
+              <Text fontSize="lg" fontWeight="semibold" textAlign="center">{feature}</Text>
             </GridItem>
           ))}
         </Grid>
@@ -145,7 +146,7 @@ const PromoSERP: React.FC = () => {
                   ))}
                 </List>
 
-                {/* Price Display (Ensuring Same Height) */}
+                {/* Price Display */}
                 <Box minH="60px" display="flex" alignItems="center" justifyContent="center">
                   <Text fontSize="2xl" fontWeight="bold">
                     {plan.price === "Custom" ? "Contact Us" : plan.price}
@@ -155,7 +156,7 @@ const PromoSERP: React.FC = () => {
                   )}
                 </Box>
 
-                {/* CTA Button (Same Size for All Plans) */}
+                {/* CTA Button */}
                 <Button w="full" colorScheme="blue" size="md" variant={plan.buttonVariant} onClick={() => navigate('/search-api/pricing')}>
                   {plan.price === "Custom" ? "Contact Us" : `Choose ${plan.name}`}
                 </Button>
@@ -169,10 +170,8 @@ const PromoSERP: React.FC = () => {
           <AlertIcon />
           <Text>All API requests are securely handled and optimized.</Text>
         </Alert>
-
-     
-         </VStack>
-       </Box>
+      </VStack>
+    </Box>
   );
 };
 
