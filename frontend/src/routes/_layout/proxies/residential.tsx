@@ -96,27 +96,40 @@ function ResidentialProxy() {
         <PromoContent />
       ) : (
         <Flex mt={6} gap={6} justify="space-between" align="stretch" wrap="wrap">
-          <Box flex="1" minW={{ base: "100%", md: "65%" }}>
-            <Box p={4}>
-              <Text fontSize="2xl" fontWeight="bold">
-                Hi, {currentUser?.full_name || currentUser?.email} 👋🏼
-              </Text>
-              <Text>Manage your proxy settings with ease.</Text>
-            </Box>
-            <Divider my={4} />
-            <Tabs variant="enclosed">
-              <TabList>
-                {tabsConfig.map((tab, index) => (
-                  <Tab key={index}>{tab.title}</Tab>
-                ))}
-              </TabList>
-              <TabPanels>
-                {tabsConfig.map((tab, index) => (
-                  <TabPanel key={index}>{tab.component}</TabPanel>
-                ))}
-              </TabPanels>
-            </Tabs>
-          </Box>
+        {/* Main Content */}
+        <Box flex="1">
+          <VStack spacing={6} mt={6} align="stretch">
+            {filteredProducts.length === 0 ? (
+              <Text textAlign="center" fontSize="lg" color="gray.500">No products match this filter.</Text>
+            ) : (
+              filteredProducts.map((product) => (
+                <Box 
+                  key={product.id} 
+                  p={5} 
+                  shadow="md" 
+                  borderWidth="1px" 
+                  borderRadius="lg" 
+                  bg="gray.50"
+                  _hover={{ shadow: "lg", transform: "scale(1.02)" }}
+                  transition="0.2s ease-in-out"
+                >
+                  <Text fontWeight="bold" fontSize="lg">{product.name}</Text>
+                  <Text fontSize="sm" color="gray.600">{product.description}</Text>
+                  <Button 
+                    mt={3} 
+                    size="sm" 
+                    colorScheme="blue" 
+                    borderRadius="full"
+                    onClick={() => navigate({ to: product.path })}
+
+                  >
+                    Manage
+                  </Button>
+                </Box>
+              ))
+            )}
+          </VStack>
+        </Box>
 
           {/* ✅ Sidebar */}
           <Box w={{ base: "100%", md: "250px" }} p="4" borderLeft={{ md: "1px solid #E2E8F0" }}>
