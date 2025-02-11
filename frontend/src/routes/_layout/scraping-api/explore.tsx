@@ -22,7 +22,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useQueryClient } from "@tanstack/react-query";
 import { FiSend, FiGithub, FiExternalLink } from "react-icons/fi";
 import PromoSERP from "../../../components/PromoSERP";
-
+import { FiX } from "react-icons/fi";
 export const Route = createFileRoute("/_layout/scraping-api/explore")({
   component: Explore,
 });
@@ -193,16 +193,18 @@ const ApiListItem = ({ api, navigate, isTrial }) => {
           <Button size="sm" colorScheme="blue" onClick={() => setIsExpanded(!isExpanded)}>
             {isExpanded ? "Less" : "More"}
           </Button>
-          <Button
+
+<Button
   size="sm"
   colorScheme="gray"
-  rightIcon={<FiExternalLink />}
-  disabled={true}
-  _hover={{ bg: "inherit" }}       // No hover background change
+  disabled
+  leftIcon={<FiX />}
+  _hover={{ bg: "gray.200", cursor: "not-allowed" }} // Ensures no hover effect change
   _disabled={{
-    opacity: 0.6,                 // Slightly faded look
-    cursor: "not-allowed",        // Shows not-allowed cursor
-    bg: "gray.200",               // Use a grey background
+    bg: "gray.200",
+    color: "gray.500",
+    cursor: "not-allowed",
+    _hover: { bg: "gray.200" }, // Cancel any hover effect while disabled
   }}
 >
   Locked
