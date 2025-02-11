@@ -45,9 +45,6 @@ function Dashboard() {
 
   const { hasSubscription, isTrial, isDeactivated } = subscriptionSettings;
   const isLocked = !hasSubscription && !isTrial;
-  
-  // Only display when the subscription is deactivated
-  const isFullyDeactivated = isDeactivated && !hasSubscription;
 
   const [ownedOnly, setOwnedOnly] = useState(false);
   const [activeFilter, setActiveFilter] = useState("all");
@@ -80,7 +77,7 @@ function Dashboard() {
           colorScheme={isLocked ? "red" : "blue"} 
           size="sm" 
           mt={2} 
-          onClick={() => navigate("/proxies/pricing")}
+          onClick={() => navigate({ to: "/proxies/pricing" })} // ✅ Fixed Type Issue
         >
           {isLocked ? "View Subscription Plans" : "Try now"}
         </Button>
@@ -152,7 +149,7 @@ function Dashboard() {
                     size="sm" 
                     colorScheme="blue" 
                     borderRadius="full"
-                    onClick={() => navigate(product.path)}
+                    onClick={() => navigate({ to: product.path })} // ✅ Fixed Type Issue
                   >
                     Manage
                   </Button>
