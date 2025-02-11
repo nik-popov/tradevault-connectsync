@@ -18,7 +18,6 @@ import {
   Heading,
   Stack,
   Collapse,
-  Link,
 } from "@chakra-ui/react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useQueryClient } from "@tanstack/react-query";
@@ -33,26 +32,15 @@ function Explore() {
   const currentUser = queryClient.getQueryData(["currentUser"]);
   const navigate = useNavigate();
 
-  if (!currentUser) {
-    return (
-      <Container maxW="full">
-        <Alert status="warning" borderRadius="md">
-          <AlertIcon />
-          <Text>Loading user data...</Text>
-        </Alert>
-      </Container>
-    );
-  }
-
-  // ✅ Subscription & Trial State
+  // ✅ DEV Debug States (fully functional)
   const [hasSubscription, setHasSubscription] = useState(false);
   const [isTrial, setIsTrial] = useState(false);
   const [isDeactivated, setIsDeactivated] = useState(false);
-  const [ownedOnly, setOwnedOnly] = useState(false);
+
   const [searchQuery, setSearchQuery] = useState("");
   const [activeFilter, setActiveFilter] = useState("all");
   const [sortOption, setSortOption] = useState("name");
-  const [hoveredApi, setHoveredApi] = useState(null); // ✅ Track API being hovered
+  const [hoveredApi, setHoveredApi] = useState(null);
 
   const ownedApis = currentUser?.ownedApis || [];
   const isLocked = !hasSubscription && !isTrial;
@@ -97,25 +85,24 @@ function Explore() {
 
   const industries = ["all", "owned", ...new Set(proxyProducts.map((api) => api.type))];
 
-  // 🔄 Filtered List Logic
+  // 🔄 Filtered API List
   const filteredProducts = useMemo(() => {
     return proxyProducts.filter((product) => {
       const matchesFilter =
         activeFilter === "all" || product.type.toLowerCase() === activeFilter.toLowerCase();
-      const matchesOwned = !ownedOnly || product.owned;
       const matchesSearch = product.name.toLowerCase().includes(searchQuery.toLowerCase());
 
-      return matchesFilter && matchesOwned && matchesSearch;
+      return matchesFilter && matchesSearch;
     });
-  }, [searchQuery, ownedOnly, activeFilter]);
+  }, [searchQuery, activeFilter]);
 
   return (
     <Container maxW="full">
-      {/* 🔄 Title & Debugging Toggles */}
+      {/* 🔄 Title & Debug Toggles */}
       <Flex justify="space-between" align="center" my={4} flexWrap="wrap">
         <Heading size="lg">Explore APIs</Heading>
 
-        {/* DEV Debug Bar */}
+        {/* DEV Debug Bar (Functional Toggles) */}
         <HStack spacing={6}>
           <HStack>
             <Text fontWeight="bold">Subscription:</Text>
