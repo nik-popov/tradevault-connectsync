@@ -23,7 +23,7 @@ import {
   import { FiSend, FiMail, FiHelpCircle,FiGithub } from "react-icons/fi";
   import React from "react";
   
-  function Support() {
+function Support() {
     const queryClient = useQueryClient();
     const toast = useToast();
   
@@ -233,5 +233,5 @@ import {
     );
   }
   
-  export default Support;
+export default Support;
   
