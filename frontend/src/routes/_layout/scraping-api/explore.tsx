@@ -25,6 +25,7 @@ import {
 import { FiSearch } from "react-icons/fi";
 import { useQueryClient } from "@tanstack/react-query";
 import { motion } from "framer-motion";
+import { createFileRoute } from "@tanstack/react-router";
 
 function Explore() {
   const queryClient = useQueryClient();
@@ -155,5 +156,9 @@ function Explore() {
     </Container>
   );
 }
+
+export const Route = createFileRoute("/_layout/scraping-api/explore")({
+  component: Explore,
+});
 
 export default Explore;
