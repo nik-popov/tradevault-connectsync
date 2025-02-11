@@ -30,24 +30,35 @@ const PromoSERP: React.FC = () => {
 
   const pricingPlans = [
     {
-      name: "Basic",
-      price: "$19",
-      features: ["100 searches per month", "Standard support", "JSON output"],
+      name: "Dev",
+      price: "$100",
+      requests: "100 requests/month",
+      features: ["For developers & small teams", "Basic API access", "Email support"],
       borderColor: "gray.300",
       buttonVariant: "outline",
     },
     {
-      name: "Pro",
-      price: "$49",
-      features: ["1,000 searches per month", "Priority support", "Advanced filtering"],
+      name: "SaaS",
+      price: "$500",
+      requests: "1,000 requests/month",
+      features: ["For SaaS & medium usage", "Faster response times", "Priority support"],
       borderColor: "blue.400",
       buttonVariant: "solid",
       badge: "MOST POPULAR",
     },
     {
+      name: "Pro",
+      price: "$2,000",
+      requests: "1,000,000 requests/month",
+      features: ["For large-scale applications", "Enterprise-grade performance", "Dedicated support"],
+      borderColor: "purple.400",
+      buttonVariant: "solid",
+    },
+    {
       name: "Enterprise",
-      price: "Enterprise",
-      features: ["Unlimited searches", "Dedicated account manager", "Custom integrations"],
+      price: "Custom",
+      requests: "Unlimited requests",
+      features: ["Fully customized solution", "Dedicated account manager", "Custom integrations"],
       borderColor: "gray.600",
       buttonVariant: "outline",
     }
@@ -90,44 +101,55 @@ const PromoSERP: React.FC = () => {
 
         {/* Pricing Plans */}
         <Heading as="h2" size="lg" fontWeight="bold" mb={4}>Pricing Plans</Heading>
-        <Grid templateColumns={{ base: "1fr", md: "repeat(3, 1fr)" }} gap={6}>
+        <Grid templateColumns={{ base: "1fr", md: "repeat(4, 1fr)" }} gap={6}>
           {pricingPlans.map((plan, index) => (
-            <Box
-              key={index}
-              p={6}
-              border="2px solid"
-              borderColor={plan.borderColor}
-              borderRadius="lg"
-              textAlign="center"
-              display="flex"
-              flexDirection="column"
-              alignItems="center"
-              justifyContent="space-between"
-              minH="350px" // Ensures consistent height for all plans
-            >
+            <Box key={index} position="relative">
               {plan.badge && (
-                <Badge colorScheme="blue" variant="solid" px={3} py={1} mb={4}>
+                <Badge 
+                  colorScheme="blue" 
+                  variant="solid" 
+                  px={3} py={1} 
+                  position="absolute" 
+                  top="-12px" 
+                  left="50%" 
+                  transform="translateX(-50%)"
+                  zIndex="1"
+                >
                   {plan.badge}
                 </Badge>
               )}
-              <Heading as="h3" size="md" fontWeight="semibold" mb={4} minH="48px">
-                {plan.name}
-              </Heading>
-              <Text fontSize="3xl" fontWeight="bold" mb={4}>
-                {plan.price === "Enterprise" ? "Contact Us" : plan.price}
-                {plan.price !== "Enterprise" && <Text as="span" fontSize="lg" color="gray.500">/mo</Text>}
-              </Text>
-              <List spacing={3} textAlign="left" mb={6} px={4}>
-                {plan.features.map((feature, idx) => (
-                  <ListItem key={idx} display="flex" alignItems="center">
-                    <ListIcon as={FiCheckCircle} color="blue.500" boxSize={5} />
-                    {feature}
-                  </ListItem>
-                ))}
-              </List>
-              <Button w="full" colorScheme="blue" variant={plan.buttonVariant} onClick={() => navigate('/search-api/pricing')}>
-                {plan.price === "Enterprise" ? "Contact Us" : `Choose ${plan.name}`}
-              </Button>
+              <Box
+                p={6}
+                border="2px solid"
+                borderColor={plan.borderColor}
+                borderRadius="lg"
+                textAlign="center"
+                display="flex"
+                flexDirection="column"
+                alignItems="center"
+                justifyContent="space-between"
+                minH="400px" // Ensures uniform height for all plans
+              >
+                <Heading as="h3" size="md" fontWeight="semibold" mb={2} minH="48px">
+                  {plan.name}
+                </Heading>
+                <Text fontSize="2xl" fontWeight="bold" mb={1}>
+                  {plan.price === "Custom" ? "Contact Us" : plan.price}
+                  {plan.price !== "Custom" && <Text as="span" fontSize="lg" color="gray.500">/mo</Text>}
+                </Text>
+                <Text fontSize="sm" color="gray.600" mb={4}>{plan.requests}</Text>
+                <List spacing={3} textAlign="left" mb={6} px={4}>
+                  {plan.features.map((feature, idx) => (
+                    <ListItem key={idx} display="flex" alignItems="center">
+                      <ListIcon as={FiCheckCircle} color="blue.500" boxSize={5} />
+                      {feature}
+                    </ListItem>
+                  ))}
+                </List>
+                <Button w="full" colorScheme="blue" variant={plan.buttonVariant} onClick={() => navigate('/search-api/pricing')}>
+                  {plan.price === "Custom" ? "Contact Us" : `Choose ${plan.name}`}
+                </Button>
+              </Box>
             </Box>
           ))}
         </Grid>
