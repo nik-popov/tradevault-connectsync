@@ -38,7 +38,7 @@ const pricingPlans = [
 
 function Pricing() {
   return (
-    <Box maxW="100%" mx="auto" px={{ base: 6, md: 12 }} py={10} bg="gray.800" minH="100vh">
+    <Box maxW="100vw" minH="100vh" mx="auto" px={{ base: 6, md: 12 }} py={10} bg="gray.800">
       <VStack spacing={6} align="stretch">
         <Flex align="center" justify="space-between" py={6}>
           <Box>
