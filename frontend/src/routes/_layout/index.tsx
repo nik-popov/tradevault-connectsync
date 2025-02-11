@@ -106,17 +106,13 @@ function Dashboard() {
         {/* Filter Buttons */}
         <Flex gap={2}>
           {["All", ...PRODUCTS].map((type) => (
-            <Button 
-              key={type} 
-              size="md"
-              fontWeight="bold"
-              borderRadius="full"
-              colorScheme={activeFilter === type || (type === "All" && activeFilter === "all") ? "blue" : "gray"}
-              variant={activeFilter === type || (type === "All" && activeFilter === "all") ? "solid" : "outline"}
-              onClick={() => setActiveFilter(type === "All" ? "all" : type)}
-            >
-              {type}
-            </Button>
+    <Button
+    key={type}
+    onClick={() => setActiveFilter(type === "All" ? "all" : type)} // ✅ Fix
+  >
+    {type}
+  </Button>
+  
           ))}
         </Flex>
       </Flex>
@@ -134,7 +130,7 @@ function Dashboard() {
                 <Box key={product.id} p={5} shadow="md" borderWidth="1px" borderRadius="lg" bg="gray.50" _hover={{ shadow: "lg", transform: "scale(1.02)" }} transition="0.2s ease-in-out">
                   <Text fontWeight="bold" fontSize="lg">{product.name}</Text>
                   <Text fontSize="sm" color="gray.600">{product.description}</Text>
-                  <Butgiton mt={3} size="sm" colorScheme="blue" borderRadius="full" onClick={() => navigate({ to: product.path })}>
+                  <Button mt={3} size="sm" colorScheme="blue" borderRadius="full" onClick={() => navigate({ to: product.path })}>
                     Manage
                   </Button>
                 </Box>
