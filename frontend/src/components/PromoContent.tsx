@@ -109,17 +109,17 @@ const PromoContent: React.FC = () => {
 
           <Grid templateColumns={{ base: "1fr", md: "repeat(4, 1fr)" }} gap={6} mt={10}>
             {proxyPlans.map((plan, index) => (
-              <Box key={index} position="relative">
+              <Box key={index} position="relative" display="flex" flexDirection="column" height="100%">
                 {plan.badge && (
                   <Badge bg="blue.600" color="white" px={3} py={1} position="absolute" top="-12px" left="10px">
                     {plan.badge}
                   </Badge>
                 )}
-                <Box p={6} border="2px solid" borderColor={plan.borderColor} borderRadius="lg" textAlign="left" bg="gray.700">
+                <Box p={6} border="2px solid" borderColor={plan.borderColor} borderRadius="lg" textAlign="left" bg="gray.700" flex="1" display="flex" flexDirection="column" justifyContent="space-between">
                   <Heading as="h3" size="sm" fontWeight="semibold" mb={2} color="gray.200">
                     {plan.name}
                   </Heading>
-                  <List spacing={2} mb={6}>
+                  <List spacing={2} mb={6} flexGrow={1}>
                     {plan.features.map((feature, idx) => (
                       <ListItem key={idx} display="flex" alignItems="center">
                         <ListIcon as={FiCheckCircle} color="blue.500" boxSize={5} />
