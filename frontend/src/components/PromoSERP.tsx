@@ -46,7 +46,7 @@ const PromoSERP: React.FC = () => {
     },
     {
       name: "Enterprise",
-      price: "Custom",
+      price: "Enterprise",
       features: ["Unlimited searches", "Dedicated account manager", "Custom integrations"],
       borderColor: "gray.600",
       buttonVariant: "outline",
@@ -101,16 +101,21 @@ const PromoSERP: React.FC = () => {
               textAlign="center"
               display="flex"
               flexDirection="column"
+              alignItems="center"
               justifyContent="space-between"
+              minH="350px" // Ensures consistent height for all plans
             >
               {plan.badge && (
                 <Badge colorScheme="blue" variant="solid" px={3} py={1} mb={4}>
                   {plan.badge}
                 </Badge>
               )}
-              <Heading as="h3" size="md" fontWeight="semibold" mb={4}>{plan.name}</Heading>
+              <Heading as="h3" size="md" fontWeight="semibold" mb={4} minH="48px">
+                {plan.name}
+              </Heading>
               <Text fontSize="3xl" fontWeight="bold" mb={4}>
-                {plan.price}<Text as="span" fontSize="lg" color="gray.500">/mo</Text>
+                {plan.price === "Enterprise" ? "Contact Us" : plan.price}
+                {plan.price !== "Enterprise" && <Text as="span" fontSize="lg" color="gray.500">/mo</Text>}
               </Text>
               <List spacing={3} textAlign="left" mb={6} px={4}>
                 {plan.features.map((feature, idx) => (
@@ -121,7 +126,7 @@ const PromoSERP: React.FC = () => {
                 ))}
               </List>
               <Button w="full" colorScheme="blue" variant={plan.buttonVariant} onClick={() => navigate('/search-api/pricing')}>
-                {plan.name === "Enterprise" ? "Contact Us" : `Choose ${plan.name}`}
+                {plan.price === "Enterprise" ? "Contact Us" : `Choose ${plan.name}`}
               </Button>
             </Box>
           ))}
