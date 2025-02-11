@@ -48,7 +48,7 @@ const proxyPricing = {
 
 const PricingPage = () => {
   const [selectedProduct, setSelectedProduct] = useState("Residential");
-  const headerBg = useColorModeValue("gray.800", "gray.900");
+  const headerBg = useColorModeValue("gray.800", "gray.700");
   const tabBg = useColorModeValue("gray.700", "gray.800");
   const tabHoverBg = useColorModeValue("gray.600", "gray.700");
   const tabColor = "white";
