@@ -40,7 +40,6 @@ const sidebarStructure: SidebarItem[] = [
     subItems: [
       { title: "Explore", path: "/scraping-api/explore" },
       { title: "Google SERP", path: "/scraping-api/google-serp-api" },
-      { title: "Pricing", path: "/scraping-api/pricing" },
       { title: "Request Scraper", path: "/scraping-api/request" },
     ],
     icon: FiLayers,
@@ -49,7 +48,6 @@ const sidebarStructure: SidebarItem[] = [
     title: "Datasets",
     subItems: [
       { title: "Explore", path: "/datasets/explore" },
-      { title: "Pricing", path: "/datasets/pricing" },
       { title: "Request Data", path: "/datasets/request" },
     ],
     icon: FiDatabase,
