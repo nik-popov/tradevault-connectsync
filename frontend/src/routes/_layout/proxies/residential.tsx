@@ -145,7 +145,8 @@ const KeyManagement = () => {
 
   // Generate a random alphanumeric secret of a given length.
   const generateSecret = (length = 16) => {
-    const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    const chars =
+      "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
     let secret = "";
     for (let i = 0; i < length; i++) {
       secret += chars.charAt(Math.floor(Math.random() * chars.length));
@@ -287,6 +288,9 @@ function ResidentialProxy() {
     }
   }, [queryClient]);
 
+  // Load current user data from localStorage (or replace with your own user fetch logic)
+  const currentUser = JSON.parse(localStorage.getItem("currentUser") || "null");
+
   const { hasSubscription, isTrial, isDeactivated } = subscriptionSettings;
 
   // Define restricted tabs based on subscription state
@@ -327,7 +331,7 @@ function ResidentialProxy() {
         </HStack>
       </Flex>
 
-      {/* Conditional Content Based on Subscription Status */}
+      {/* Main Content or Alternate Views */}
       {isLocked ? (
         <PromoContent />
       ) : isDeactivated ? (
@@ -342,8 +346,9 @@ function ResidentialProxy() {
           {/* Main Content */}
           <Box flex="1">
             <Box p={4}>
+              {/* Updated Greeting with currentUser information */}
               <Text fontSize="2xl" fontWeight="bold">
-                Hi, Welcome Back 👋🏼
+                Hi, {currentUser?.full_name || currentUser?.email} 👋🏼
               </Text>
               <Text>Manage your proxy settings with ease.</Text>
             </Box>
