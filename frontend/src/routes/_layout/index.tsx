@@ -24,16 +24,26 @@ function Dashboard() {
 
   useEffect(() => {
     const storedSettings = localStorage.getItem("subscriptionSettings");
+  
     if (storedSettings) {
       setSubscriptionSettings(JSON.parse(storedSettings));
     } else {
       const querySettings = queryClient.getQueryData(["subscriptionSettings"]);
-      if (querySettings) {
+      
+      // ✅ Ensure querySettings is valid before setting state
+      if (querySettings && typeof querySettings === "object") {
         setSubscriptionSettings(querySettings);
+      } else {
+        // ✅ Provide a proper default structure instead of an empty object
+        setSubscriptionSettings({
+          hasSubscription: false,
+          isTrial: false,
+          isDeactivated: false,
+        });
       }
     }
   }, [queryClient]);
-
+  
   const { hasSubscription, isTrial } = subscriptionSettings;
   const isLocked = !hasSubscription && !isTrial;
 
