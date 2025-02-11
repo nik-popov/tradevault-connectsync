@@ -24,7 +24,6 @@ import PromoContent from "../../../components/PromoContent";
 import ProxyStarted from "../../../components/ProxyStarted";
 import ProxySettings from "../../../components/ProxySettings";
 import ProxyUsage from "../../../components/ProxyUsage";
-import KeyManagement from "../../../components/KeyManagement"; // Assuming this is correctly imported
 
 function ResidentialProxy() {
   const queryClient = useQueryClient();
@@ -61,8 +60,7 @@ function ResidentialProxy() {
   const tabsConfig = [
     { name: "Get Started", sub: <ProxyStarted /> },
     { name: "Endpoints", sub: <ProxySettings /> },
-    { name: "Usage", sub: <ProxyUsage /> },
-    { name: "Key Management", sub: <KeyManagement /> },
+    { name: "Usage", sub: <ProxyUsage /> }
   ];
 
   const welcomeMessage = currentUser?.full_name ? `Welcome, ${currentUser.full_name}` : "Welcome to your Proxy Dashboard";
