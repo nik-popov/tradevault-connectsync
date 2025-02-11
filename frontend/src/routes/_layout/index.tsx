@@ -28,7 +28,11 @@ function Dashboard() {
     if (storedSettings) {
       setSubscriptionSettings(JSON.parse(storedSettings));
     } else {
-      const querySettings = queryClient.getQueryData("subscriptionSettings");
+      const querySettings = queryClient.getQueryData<{ 
+        hasSubscription: boolean; 
+        isTrial: boolean; 
+        isDeactivated: boolean;
+      }>(["subscriptionSettings"]);
       if (querySettings) {
         setSubscriptionSettings(querySettings);
       }
@@ -168,6 +172,7 @@ function Dashboard() {
             )}
           </VStack>
         </Box>
+
           {/* ✅ Sidebar */}
           <Box w="250px" p={4} borderLeft="1px solid #E2E8F0">
             <VStack spacing={4} align="stretch">
