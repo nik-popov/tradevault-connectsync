@@ -102,20 +102,20 @@ function Pricing() {
         <Flex mt={6} gap={6}>
           <Box flex="1">
             <Tabs variant="enclosed" colorScheme="gray" bg="gray.700" borderRadius="md" p={4}>
-              <TabList bg="gray.800" borderRadius="md">
+              <TabList bg="gray.700" borderRadius="md">
                 {tabsConfig.map((tab, index) => (
                   <Tab
                     key={index}
                     isDisabled={restrictedTabs.includes(tab.title)}
                     color="gray.300"
                     _selected={{ bg: "gray.800", color: "white", fontWeight: "bold" }}
-                    _hover={{ bg: "gray.600", color: "white" }}
+                    _hover={{ bg: "gray.700", color: "white" }}
                   >
                     {tab.title}
                   </Tab>
                 ))}
               </TabList>
-              <TabPanels bg="gray.700" borderRadius="md" p={4}>
+              <TabPanels bg="gray.800" borderRadius="md" p={4}>
                 {tabsConfig.map((tab, index) => (
                   <TabPanel key={index}>{tab.component}</TabPanel>
                 ))}
