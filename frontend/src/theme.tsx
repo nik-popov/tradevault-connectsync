@@ -1,11 +1,19 @@
-import { extendTheme } from "@chakra-ui/react";
+import { extendTheme, ThemeConfig } from "@chakra-ui/react";
+
+const config: ThemeConfig = {
+  initialColorMode: "dark", // 👈 Default to dark mode
+  useSystemColorMode: false, // Ignore system preferences
+};
 
 const theme = extendTheme({
+  config,
   styles: {
     global: {
-      body: {
+      "html, body": {
         fontFamily: '"42dot Sans", sans-serif',
         lineHeight: "1.7",
+        bg: "ui.dark", // 👈 Ensure dark mode background
+        color: "ui.light",
         padding: "20px",
       },
     },
@@ -13,13 +21,13 @@ const theme = extendTheme({
   colors: {
     ui: {
       main: "#0A2540", // Deep cobalt blue
-      secondary: "#EDF2F7",
-      success: "#48BB78",
-      danger: "#E53E3E",
-      light: "#FAFAFA",
-      dark: "#1A202C",
-      darkSlate: "#252D3D",
-      dim: "#A0AEC0",
+      secondary: "#EDF2F7", // Light blue-gray
+      success: "#48BB78", // Green success
+      danger: "#E53E3E", // Red error
+      light: "#FAFAFA", // Off-white
+      dark: "#1A202C", // Dark background
+      darkSlate: "#252D3D", // Darker gray-blue
+      dim: "#A0AEC0", // Muted gray
     },
   },
   components: {
@@ -33,7 +41,7 @@ const theme = extendTheme({
           backgroundColor: "ui.main",
           color: "ui.light",
           _hover: {
-            backgroundColor: "#082135", // Even darker for hover
+            backgroundColor: "#082135", // Darker hover
           },
           _disabled: {
             backgroundColor: "ui.main",
