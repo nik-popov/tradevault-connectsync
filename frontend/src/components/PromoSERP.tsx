@@ -67,7 +67,12 @@ const PromoSERP: React.FC = () => {
   return (
     <Box w="full" px={{ base: 4, md: 8 }} py={8}>
       <Box maxW="5xl" mx="auto" textAlign="center">
-
+       <Heading as="h1" size="xl" fontWeight="bold" mb={4}>
+          Unlock Search API
+        </Heading>
+        <Text fontSize="lg" color="gray.600" mb={12}>
+        Leverage our AI-driven Search API to query vast amounts of structured and unstructured data in real time. Optimize performance with precision-based search capabilities.
+        </Text>
         {/* FREE TRIAL BANNER */}
         <Box bg="blue.500" color="white" borderRadius="lg" py={4} px={6} mb={6} boxShadow="md">
           <Heading as="h2" size="lg" fontWeight="bold" mb={2}>
