@@ -26,7 +26,6 @@ import {
   Tbody,
   Tr,
   Th,
-  Badge,
   Td,
 } from "@chakra-ui/react";
 import { FaNetworkWired, FaCloud, FaMobileAlt, FaDatabase, FaDollarSign } from "react-icons/fa";
@@ -42,7 +41,7 @@ const proxyPricing = {
 };
 
 const PricingPage = () => {
-  const [selectedProduct, setSelectedProduct] = useState("Residential");
+  const [selectedProduct, setSelectedProduct] = useState("");
   const tabBg = useColorModeValue("gray.700", "gray.700");
   const tabHoverBg = useColorModeValue("gray.600", "gray.600");
   const textColor = useColorModeValue("gray.900", "white");
