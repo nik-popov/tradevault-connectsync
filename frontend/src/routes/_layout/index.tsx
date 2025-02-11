@@ -13,7 +13,7 @@ export const Route = createFileRoute("/_layout/")({
 });
 
 const STORAGE_KEY = "subscriptionSettings";
-const PRODUCTS = ["Proxies", "SERP API", "Datasets"] as const;
+const PRODUCTS = ["proxy", "serp", "data"] as const;
 
 function Dashboard() {
   const { user: currentUser } = useAuth();
