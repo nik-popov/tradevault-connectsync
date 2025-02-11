@@ -345,7 +345,7 @@ function DatacenterMobileProxy() {
   );
 }
 
-export const Route = createFileRoute("/_layout/proxies/residential")({
+export const Route = createFileRoute("/_layout/proxies/datacenter-mobile")({
   component: DatacenterMobileProxy,
 });
 
