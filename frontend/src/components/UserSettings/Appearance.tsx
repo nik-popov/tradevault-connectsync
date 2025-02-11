@@ -28,12 +28,12 @@ const Appearance: React.FC = () => {
               the theme defaults apply. */}
           <Radio value="light">
             Light Mode
-            <Badge ml="1">
-              Default
-            </Badge>
           </Radio>
           <Radio value="dark">
             Dark Mode
+                <Badge ml="1">
+              Default
+            </Badge>
           </Radio>
         </Stack>
       </RadioGroup>
