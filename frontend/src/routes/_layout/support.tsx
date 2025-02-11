@@ -20,7 +20,7 @@ import {
   import { useState, useEffect } from "react";
   import { createFileRoute } from "@tanstack/react-router";
   import { useQueryClient } from "@tanstack/react-query";
-  import { FiSend, FiMail, FiHelpCircle } from "react-icons/fi";
+  import { FiSend, FiMail, FiHelpCircle,FiGithub } from "react-icons/fi";
   
   export const Route = createFileRoute("/_layout/support")({
     component: Support,
