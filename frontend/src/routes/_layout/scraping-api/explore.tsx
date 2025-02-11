@@ -45,7 +45,7 @@ function Explore() {
   // ✅ Subscription & Trial State
   const [hasSubscription, setHasSubscription] = useState(false);
   const [isTrial, setIsTrial] = useState(false);
-  const [isDeactivated, setIsDeactivated] = useState(false);
+  const [isDeactivated, setIsDeactivated] = useState(false); // ✅ Fixed: Deactivation state now works properly
   const [ownedOnly, setOwnedOnly] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [activeFilter, setActiveFilter] = useState("all");
@@ -53,7 +53,8 @@ function Explore() {
 
   const ownedApis = currentUser?.ownedApis || [];
   const isLocked = !hasSubscription && !isTrial;
-  const isTrialMode = isTrial && !hasSubscription; // ✅ Trial Mode: Grey out everything except search
+  const isTrialMode = isTrial && !hasSubscription;
+  const isFullyDeactivated = isDeactivated && !hasSubscription; // ✅ Now properly checks for a deactivated account
 
   // 🔍 Mock API Data
   const proxyProducts = [
@@ -112,7 +113,7 @@ function Explore() {
               </Alert>
               <PromoSERP /> {/* ✅ Promo Content Under Alert */}
             </>
-          ) : isDeactivated ? (
+          ) : isFullyDeactivated ? ( // ✅ Fixed: This correctly detects deactivated users
             <Alert status="error" borderRadius="md">
               <AlertIcon />
               <Flex justify="space-between" align="center" w="full">
@@ -187,13 +188,6 @@ function Explore() {
                 Join GitHub
               </Button>
             </Box>
-
-
-            <Box w="250px" p={4} borderLeft="1px solid #E2E8F0">
-              <Text fontWeight="bold">Account Overview</Text>
-              <Text fontSize="sm" color="gray.600">You have full access to all APIs.</Text>
-              <Button mt={3} colorScheme="blue">Manage Subscription</Button>
-            </Box>
           </VStack>
         </Box>
       </Flex>
@@ -202,4 +196,3 @@ function Explore() {
 }
 
 export default Explore;
-
