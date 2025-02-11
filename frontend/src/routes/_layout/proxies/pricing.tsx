@@ -25,7 +25,6 @@ import ProxyUsage from "../../../components/ProxyUsage";
 
 const STORAGE_KEY = "subscriptionSettings";
 const PRODUCT = "proxy";
-
 const PricingChart = ({ plan }) => {
   const pricingData = {
     basic: [
@@ -51,19 +50,19 @@ const PricingChart = ({ plan }) => {
         {plan.charAt(0).toUpperCase() + plan.slice(1)} Plan Pricing
       </Text>
       <Table variant="simple">
-        <Thead>
+        <Thead bg="gray.800">
           <Tr>
-            <Th color="white">Data</Th>
-            <Th color="white">Price</Th>
-            <Th color="white">Features</Th>
+            <Th color="gray.300" borderColor="gray.600">Data</Th>
+            <Th color="gray.300" borderColor="gray.600">Price</Th>
+            <Th color="gray.300" borderColor="gray.600">Features</Th>
           </Tr>
         </Thead>
         <Tbody>
           {pricingData[plan].map((entry, index) => (
-            <Tr key={index}>
-              <Td color="white">{entry.data}</Td>
-              <Td color="white">{entry.price}</Td>
-              <Td color="white">{entry.features}</Td>
+            <Tr key={index} bg={index % 2 === 0 ? "gray.750" : "gray.700"}>
+              <Td color="gray.200" borderColor="gray.600">{entry.data}</Td>
+              <Td color="gray.200" borderColor="gray.600">{entry.price}</Td>
+              <Td color="gray.200" borderColor="gray.600">{entry.features}</Td>
             </Tr>
           ))}
         </Tbody>
