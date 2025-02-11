@@ -54,7 +54,7 @@ function Support() {
   const isFullyDeactivated = isDeactivated && !hasSubscription;
 
   // ✅ Force disable support form for now
-  const forceDisableSupport = true;
+  const forceDisableSupport = false;
 
   // ✅ Form State
   const [name, setName] = useState("");
