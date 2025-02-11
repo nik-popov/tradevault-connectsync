@@ -65,7 +65,7 @@ const PromoContent = () => {
 
   return (
     <Box maxW="100%" mx="auto" px={{ base: 6, md: 12 }} py={12}>
-      <Box maxW="5xl" mx="auto" textAlign="center">
+      <Box maxW="100%" mx="auto" textAlign="center">
         <Heading as="h1" size="xl" fontWeight="bold" mb={4}>
           Unlock Premium Proxies
         </Heading>
