@@ -291,10 +291,10 @@ const ReactivationOptions = () => {
       isDeactivated: false,
     });
   
-    // Destructure after the state is declared
+    // Destructure once after state initialization
     const { hasSubscription, isTrial, isDeactivated } = subscriptionSettings;
   
-    // Now compute isLocked using the destructured values
+    // Compute isLocked using the destructured values
     const isLocked = !hasSubscription && !isTrial;
   
     // Load subscription settings from localStorage or React Query cache
@@ -312,99 +312,96 @@ const ReactivationOptions = () => {
   
     // Load current user data
     const currentUser = JSON.parse(localStorage.getItem("currentUser") || "null");
-
-  // Define restricted tabs when in trial mode
-  const restrictedTabs = isTrial
-    ? ["Key Management", "Logs", "Top-Ups", "Connections"]
-    : [];
-
-  // Define tabs configuration
-  const tabsConfig = [
-    { title: "Get Started", component: <ProxyStarted /> },
-    { title: "Endpoints", component: <ProxySettings /> },
-    { title: "Usage", component: <ProxyUsage /> },
-    { title: "Top-Ups", component: <TopUps /> },
-    { title: "Connections", component: <Connections /> },
-    { title: "Logs", component: <Logs /> },
-    { title: "Key Management", component: <KeyManagement /> },
-  ];
-
-  return (
-    <Container maxW="full">
-      {/* Top Bar */}
-      <Flex align="center" justify="space-between" py={6} flexWrap="wrap" gap={4}>
-       
-      <Box textAlign="left" flex="1">
-          <Text fontSize="xl" fontWeight="bold">
-            Hi, {currentUser?.full_name || currentUser?.email} 👋🏼
-          </Text>
-          <Text fontSize="sm">Welcome back, let’s get started!</Text>
-        </Box>
-
-
-        <HStack spacing={6}>
-          <HStack>
-            <Text fontWeight="bold">Subscription:</Text>
-            <Switch isChecked={hasSubscription} isDisabled />
+  
+    // Define restricted tabs when in trial mode
+    const restrictedTabs = isTrial
+      ? ["Key Management", "Logs", "Top-Ups", "Connections"]
+      : [];
+  
+    // Define tabs configuration (if needed)
+    const tabsConfig = [
+      { title: "Get Started", component: <ProxyStarted /> },
+      { title: "Endpoints", component: <ProxySettings /> },
+      { title: "Usage", component: <ProxyUsage /> },
+      { title: "Top-Ups", component: <TopUps /> },
+      { title: "Connections", component: <Connections /> },
+      { title: "Logs", component: <Logs /> },
+      { title: "Key Management", component: <KeyManagement /> },
+    ];
+  
+    return (
+      <Container maxW="full">
+        {/* Top Bar */}
+        <Flex align="center" justify="space-between" py={6} flexWrap="wrap" gap={4}>
+          <Box textAlign="left" flex="1">
+            <Text fontSize="xl" fontWeight="bold">
+              Hi, {currentUser?.full_name || currentUser?.email} 👋🏼
+            </Text>
+            <Text fontSize="sm">Welcome back, let’s get started!</Text>
+          </Box>
+          <HStack spacing={6}>
+            <HStack>
+              <Text fontWeight="bold">Subscription:</Text>
+              <Switch isChecked={hasSubscription} isDisabled />
+            </HStack>
+            <HStack>
+              <Text fontWeight="bold">Trial Mode:</Text>
+              <Switch isChecked={isTrial} isDisabled />
+            </HStack>
+            <HStack>
+              <Text fontWeight="bold">Deactivated:</Text>
+              <Switch isChecked={isDeactivated} isDisabled />
+            </HStack>
           </HStack>
-          <HStack>
-            <Text fontWeight="bold">Trial Mode:</Text>
-            <Switch isChecked={isTrial} isDisabled />
-          </HStack>
-          <HStack>
-            <Text fontWeight="bold">Deactivated:</Text>
-            <Switch isChecked={isDeactivated} isDisabled />
-          </HStack>
-        </HStack>
-      </Flex>
-
-      {isLocked ? (
-  <PromoContent />
-) : isDeactivated ? (
-  <Box mt={6}>
-    <Text>Your subscription has expired. Please renew to access all features.</Text>
-    <ReactivationOptions />
-  </Box>
-) : (
-  <Flex mt={6} gap={6} justify="space-between">
-    {/* Main Content Area */}
-    <Box flex="1">
-      {/* Your Tabs and other components */}
-    </Box>
-
-    {/* Sidebar */}
-    <Box
-      w={{ base: "100%", md: "250px" }}
-      p="4"
-      borderLeft={{ md: "1px solid #E2E8F0" }}
-    >
-      <VStack spacing="4" align="stretch">
-        <Box p="4" shadow="sm" borderWidth="1px" borderRadius="lg">
-          <Text fontWeight="bold">Quick Actions</Text>
-          <Button
-            as="a"
-            href="https://github.com/CobaltDataNet"
-            leftIcon={<FiGithub />}
-            variant="outline"
-            size="sm"
-            mt="2"
-          >
-            GitHub Discussions
-          </Button>
-        </Box>
-
-        {/* Render SubscriptionManagement here */}
-        <SubscriptionManagement product="Proxies" />
-      </VStack>
-    </Box>
-  </Flex>
-)}
-
-    </Container>
-  );
-}
-export const Route = createFileRoute("/_layout/proxies/residential")({
-  component: ResidentialProxy,
-});
-
-export default ResidentialProxy;
+        </Flex>
+  
+        {isLocked ? (
+          <PromoContent />
+        ) : isDeactivated ? (
+          <Box mt={6}>
+            <Text>Your subscription has expired. Please renew to access all features.</Text>
+            <ReactivationOptions />
+          </Box>
+        ) : (
+          <Flex mt={6} gap={6} justify="space-between">
+            {/* Main Content Area */}
+            <Box flex="1">
+              {/* Your Tabs and other components */}
+            </Box>
+  
+            {/* Sidebar */}
+            <Box
+              w={{ base: "100%", md: "250px" }}
+              p="4"
+              borderLeft={{ md: "1px solid #E2E8F0" }}
+            >
+              <VStack spacing="4" align="stretch">
+                <Box p="4" shadow="sm" borderWidth="1px" borderRadius="lg">
+                  <Text fontWeight="bold">Quick Actions</Text>
+                  <Button
+                    as="a"
+                    href="https://github.com/CobaltDataNet"
+                    leftIcon={<FiGithub />}
+                    variant="outline"
+                    size="sm"
+                    mt="2"
+                  >
+                    GitHub Discussions
+                  </Button>
+                </Box>
+                {/* Render SubscriptionManagement here */}
+                <SubscriptionManagement product="Proxies" />
+              </VStack>
+            </Box>
+          </Flex>
+        )}
+      </Container>
+    );
+  }
+  
+  export const Route = createFileRoute("/_layout/proxies/residential")({
+    component: ResidentialProxy,
+  });
+  
+  export default ResidentialProxy;
+  
