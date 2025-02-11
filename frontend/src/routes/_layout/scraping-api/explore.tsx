@@ -77,7 +77,7 @@ function Explore() {
 
   return (
     <Container maxW="full" overflowX="hidden">
-      {/* 🔄 Title & Debugging Toggles */}
+      {/* 🔄 Title & Subscription Toggles */}
       <Flex justify="space-between" align="center" my={4} flexWrap="wrap">
         <Heading size="lg">Explore APIs</Heading>
         <HStack spacing={6}>
@@ -143,15 +143,14 @@ function Explore() {
               </Box>
             </VStack>
           </Box>
-          </Flex>
+        </Flex>
       )}
     </Container>
   );
 }
 
-
-// ✅ API List Item Component
-const ApiListItem = ({ api, navigate }) => {
+// ✅ API List Item Component with all buttons
+const ApiListItem = ({ api, navigate, isTrial }) => {
   const [isExpanded, setIsExpanded] = useState(false);
 
   return (
@@ -161,9 +160,38 @@ const ApiListItem = ({ api, navigate }) => {
           <Text fontWeight="bold">{api.name}</Text>
           <Text fontSize="sm" color="gray.600">{api.description}</Text>
         </Box>
-        <Button size="sm" colorScheme="blue" onClick={() => setIsExpanded(!isExpanded)}>
-          {isExpanded ? "Less" : "More"}
-        </Button>
+        <HStack spacing={2}>
+          <Button size="sm" colorScheme="blue" onClick={() => setIsExpanded(!isExpanded)}>
+            {isExpanded ? "Less" : "More"}
+          </Button>
+          <Button
+            size="sm"
+            variant="solid"
+            colorScheme="green"
+            leftIcon={<FiSend />}
+            onClick={() => navigate(`/scraping-api/${api.id}`)}
+          >
+            View
+          </Button>
+          {isTrial && (
+            <Button
+              size="sm"
+              variant="outline"
+              colorScheme="gray"
+              disabled
+              leftIcon={<FiX />}
+              _hover={{ bg: "gray.200", cursor: "not-allowed" }}
+              _disabled={{
+                bg: "gray.200",
+                borderColor: "gray.200",
+                color: "gray.500",
+                cursor: "not-allowed",
+              }}
+            >
+              Locked
+            </Button>
+          )}
+        </HStack>
       </Flex>
       <Collapse in={isExpanded} animateOpacity>
         <Box mt={4} p={2} borderWidth="1px" borderRadius="md">
