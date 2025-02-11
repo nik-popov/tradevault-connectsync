@@ -13,6 +13,7 @@ import {
   ListItem,
   ListIcon,
   Alert,
+  VStack,
   AlertIcon,
 } from "@chakra-ui/react";
 import { useNavigate } from '@tanstack/react-router';

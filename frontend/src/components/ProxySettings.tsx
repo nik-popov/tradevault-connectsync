@@ -7,15 +7,13 @@ import {
   Button,
   Code,
   HStack,
-  Icon,
-  Flex,
   Divider,
   Alert,
   AlertIcon,
   Select,
   Input
 } from "@chakra-ui/react";
-import { FiGlobe, FiKey, FiSettings, FiCheckCircle, FiLink, FiActivity } from "react-icons/fi";
+import { FiCheckCircle, FiActivity } from "react-icons/fi";
 
 const ProxySettings = () => {
   const [region, setRegion] = useState("us");
