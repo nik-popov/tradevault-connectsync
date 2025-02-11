@@ -18,7 +18,6 @@ import {
   Table,
   Thead,
   TabPanel,
-  Badge,
   useColorModeValue,
 } from "@chakra-ui/react";
 import { useState } from "react";
@@ -48,7 +47,7 @@ const proxyPricing = {
 
 const PricingPage = () => {
   const [selectedProduct, setSelectedProduct] = useState("Residential");
-  const headerBg = useColorModeValue("gray.700", "gray.800");
+  const tabHeaderBg = useColorModeValue("gray.700", "gray.700");
   const tabBg = useColorModeValue("gray.600", "gray.700");
   const tabHoverBg = useColorModeValue("gray.500", "gray.600");
   const tabColor = "white";
@@ -60,15 +59,10 @@ const PricingPage = () => {
   };
 
   return (
-    <Container maxW="full">
-      <Flex align="center" justify="space-between" py={6} flexWrap="wrap" gap={4}>
-        <Box textAlign="left" flex="1">
-          <Text fontSize="xl" fontWeight="bold">Proxy Pricing</Text>
-          <Text fontSize="sm">Understand your proxy billing and subscriptions.</Text>
-        </Box>
-      </Flex>
-      <Divider my={4} />
-        <Box w={{ base: "full", md: "250px" }}>
+    <Container maxW="full" py={10}>
+      <Text fontSize="lg" fontWeight="bold" color="white" mb={4}>Proxy Pricing Plans</Text>
+      <Flex>
+        <Box w={{ base: "full", md: "250px" }} bg={tabHeaderBg} p={4} borderRadius="md">
           <Tabs variant="unstyled" colorScheme="blue" onChange={(index) => setSelectedProduct(Object.keys(proxyPricing)[index])}>
             <TabList flexDirection="column" alignItems="flex-start" gap={2}>
               {Object.keys(proxyPricing).map((product) => (
