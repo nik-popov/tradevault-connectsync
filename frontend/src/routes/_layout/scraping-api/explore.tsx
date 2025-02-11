@@ -33,7 +33,7 @@ function Explore() {
   const currentUser = queryClient.getQueryData(["currentUser"]);
   const navigate = useNavigate();
 
-  // ✅ Subscription & Trial State (Fully Functional)
+  // ✅ Subscription & Trial State
   const [hasSubscription, setHasSubscription] = useState(false);
   const [isTrial, setIsTrial] = useState(false);
   const [isDeactivated, setIsDeactivated] = useState(false);
@@ -47,7 +47,6 @@ function Explore() {
   const isLocked = !hasSubscription && !isTrial;
   const isTrialMode = isTrial && !hasSubscription;
   const isFullyDeactivated = isDeactivated && !hasSubscription;
-
   // 🔍 Mock API Data
   const proxyProducts = [
     {
@@ -272,112 +271,143 @@ function Explore() {
     },
   ];
 
-  const filteredProducts = useMemo(() => {
-    return proxyProducts.filter((product) => {
-      const matchesFilter = activeFilter === "all" || product.type.toLowerCase() === activeFilter.toLowerCase();
-      const matchesSearch = product.name.toLowerCase().includes(searchQuery.toLowerCase());
-
-      return matchesFilter && matchesSearch;
-    });
-  }, [searchQuery, activeFilter]);
-
-  return (
-    <Container maxW="full">
-      {/* 🔄 Title & Debugging Toggles */}
-      <Flex justify="space-between" align="center" my={4} flexWrap="wrap">
-        <Heading size="lg">Explore APIs</Heading>
-
-        {/* DEV Debug Bar (Functional Toggles) */}
-        <HStack spacing={6}>
-          <HStack>
-            <Text fontWeight="bold">Subscription:</Text>
-            <Switch isChecked={hasSubscription} onChange={() => setHasSubscription(!hasSubscription)} />
+  
+    const industries = ["all", "owned", ...new Set(proxyProducts.map((api) => api.type))];
+  
+    // 🔄 Filtered API List
+    const filteredProducts = useMemo(() => {
+      return proxyProducts.filter((product) => {
+        const matchesFilter =
+          activeFilter === "all" || product.type.toLowerCase() === activeFilter.toLowerCase();
+        const matchesSearch = product.name.toLowerCase().includes(searchQuery.toLowerCase());
+  
+        return matchesFilter && matchesSearch;
+      });
+    }, [searchQuery, activeFilter]);
+  
+    return (
+      <Container maxW="full">
+        {/* 🔄 Title & Debugging Toggles */}
+        <Flex justify="space-between" align="center" my={4} flexWrap="wrap">
+          <Heading size="lg">Explore APIs</Heading>
+  
+          {/* DEV Debug Bar */}
+          <HStack spacing={6}>
+            <HStack>
+              <Text fontWeight="bold">Subscription:</Text>
+              <Switch isChecked={hasSubscription} onChange={() => setHasSubscription(!hasSubscription)} />
+            </HStack>
+            <HStack>
+              <Text fontWeight="bold">Trial Mode:</Text>
+              <Switch isChecked={isTrial} onChange={() => setIsTrial(!isTrial)} />
+            </HStack>
+            <HStack>
+              <Text fontWeight="bold">Deactivated:</Text>
+              <Switch isChecked={isDeactivated} onChange={() => setIsDeactivated(!isDeactivated)} />
+            </HStack>
           </HStack>
-          <HStack>
-            <Text fontWeight="bold">Trial Mode:</Text>
-            <Switch isChecked={isTrial} onChange={() => setIsTrial(!isTrial)} />
-          </HStack>
-          <HStack>
-            <Text fontWeight="bold">Deactivated:</Text>
-            <Switch isChecked={isDeactivated} onChange={() => setIsDeactivated(!isDeactivated)} />
-          </HStack>
-        </HStack>
-      </Flex>
-
-      <Divider my={4} />
-
-      {/* 🚨 No Subscription - Show Promo */}
-      {isLocked ? (
-        <PromoSERP />
-      ) : isFullyDeactivated ? (
-        <Alert status="error" borderRadius="md">
-          <AlertIcon />
-          <Flex justify="space-between" align="center" w="full">
-            <Text>Your subscription has been deactivated. Please renew to explore APIs.</Text>
-            <Button colorScheme="red" onClick={() => setHasSubscription(true)}>
-              Reactivate Now
-            </Button>
-          </Flex>
-        </Alert>
-      ) : (
-        <Flex gap={6}>
-          {/* 🔍 API Explorer */}
-          <Box flex="1">
-            <Flex gap={4} justify="space-between" align="center" flexWrap="wrap">
-              <Input
-                placeholder="Search APIs..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                w={{ base: "100%", md: "250px" }}
-              />
-
-              {/* Trial mode can only search and manage */}
-              {!isTrialMode && (
-                <Select value={sortOption} onChange={(e) => setSortOption(e.target.value)} w="200px">
-                  <option value="name">Sort by Name</option>
-                </Select>
-              )}
-            </Flex>
-
-            <VStack spacing={4} mt={6} align="stretch">
-              {filteredProducts.length === 0 ? (
-                <Text textAlign="center" fontSize="lg" color="gray.500">
-                  No APIs match this filter.
-                </Text>
-              ) : (
-                <List spacing={4}>
-                  {filteredProducts.map((api) => (
-                    <ListItem
-                      key={api.id}
-                      p={4}
-                      borderWidth="1px"
-                      borderRadius="lg"
-                      bg={hoveredApi === api.id ? "gray.50" : "white"}
-                      transition="background 0.2s ease-in-out"
-                      onMouseEnter={() => setHoveredApi(api.id)}
-                      onMouseLeave={() => setHoveredApi(null)}
-                    >
-                      <Flex justify="space-between" align="center">
-                        <Box>
-                          <Text fontWeight="bold">{api.name}</Text>
-                          <Text fontSize="sm" color="gray.600">
-                            {api.description}
-                          </Text>
-                        </Box>
-                        <Button size="sm" colorScheme="blue" rightIcon={<FiExternalLink />} onClick={() => navigate(`/scraping-api/${api.id}`)}>
-                          Manage
-                        </Button>
-                      </Flex>
-                    </ListItem>
-                  ))}
-                </List>
-              )}
-            </VStack>
-          </Box>
         </Flex>
-      )}
-    </Container>
-  );
-}
-
-export default Explore;
+  
+        <Divider my={4} />
+  
+        {/* 🚨 No Subscription - Show Promo */}
+        {isLocked ? (
+          <PromoSERP />
+        ) : isFullyDeactivated ? (
+          <Alert status="error" borderRadius="md">
+            <AlertIcon />
+            <Flex justify="space-between" align="center" w="full">
+              <Text>Your subscription has been deactivated. Please renew to explore APIs.</Text>
+              <Button colorScheme="red" onClick={() => setHasSubscription(true)}>Reactivate Now</Button>
+            </Flex>
+          </Alert>
+        ) : (
+          <Flex gap={6}>
+            {/* 🔍 API Explorer */}
+            <Box flex="1">
+              <Flex gap={4} justify="space-between" align="center" flexWrap="wrap">
+                {/* Search Input (Left) */}
+                <Input
+                  placeholder="Search APIs..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  w={{ base: "100%", md: "250px" }}
+                />
+  
+                {/* Filter Buttons */}
+                <HStack spacing={2}>
+                  {industries.map((type) => (
+                    <Button
+                      key={type}
+                      size="sm"
+                      fontWeight="bold"
+                      borderRadius="full"
+                      colorScheme={activeFilter === type ? "blue" : "gray"}
+                      variant={activeFilter === type ? "solid" : "outline"}
+                      textTransform="lowercase"
+                      onClick={() => setActiveFilter(type)}
+                    >
+                      {type}
+                    </Button>
+                  ))}
+                </HStack>
+  
+                {/* Sorting Dropdown (Right) */}
+                {!isTrialMode && (
+                  <Select value={sortOption} onChange={(e) => setSortOption(e.target.value)} w="200px">
+                    <option value="name">Sort by Name</option>
+                  </Select>
+                )}
+              </Flex>
+  
+              <VStack spacing={4} mt={6} align="stretch">
+                {filteredProducts.length === 0 ? (
+                  <Text textAlign="center" fontSize="lg" color="gray.500">
+                    No APIs match this filter.
+                  </Text>
+                ) : (
+                  <List spacing={4}>
+                    {filteredProducts.map((api) => (
+                      <ListItem
+                        key={api.id}
+                        p={4}
+                        borderWidth="1px"
+                        borderRadius="lg"
+                        onMouseEnter={() => setHoveredApi(api.id)}
+                        onMouseLeave={() => setHoveredApi(null)}
+                      >
+                        <Flex justify="space-between" align="center">
+                          <Box>
+                            <Text fontWeight="bold">{api.name}</Text>
+                            <Text fontSize="sm" color="gray.600">{api.description}</Text>
+                          </Box>
+                          <Button size="sm" colorScheme="blue" rightIcon={<FiExternalLink />} onClick={() => navigate(`/scraping-api/${api.id}`)}>Manage</Button>
+                        </Flex>
+                      </ListItem>
+                    ))}
+                  </List>
+                )}
+              </VStack>
+            </Box>
+  
+            {/* 📌 Sidebar */}
+            <Box w="250px" p={4} borderLeft="1px solid #E2E8F0">
+              <VStack spacing={4} align="stretch">
+                <Box p={4} borderWidth="1px" borderRadius="lg">
+                  <Text fontWeight="bold">Need Help?</Text>
+                  <Text fontSize="sm">Contact support or visit our documentation.</Text>
+                </Box>
+                <Box p={4} borderWidth="1px" borderRadius="lg">
+                  <Text fontWeight="bold">GitHub</Text>
+                  <Button mt={2} leftIcon={<FiGithub />} size="sm" variant="outline">Join GitHub</Button>
+                </Box>
+              </VStack>
+            </Box>
+          </Flex>
+        )}
+      </Container>
+    );
+  }
+  
+  export default Explore;
+  
