@@ -8,11 +8,17 @@ import {
   Divider,
   Flex,
   Tabs,
+  Tr,
+  Tbody,
+  Th,
+  Td,
   TabList,
   TabPanels,
   Tab,
+  Table,
+  Thead,
+  
   TabPanel,
-  Switch,
 } from "@chakra-ui/react";
 import { useQueryClient, useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
