@@ -17,7 +17,18 @@
   } from "@chakra-ui/react";
   import { useQuery, useMutation } from "@tanstack/react-query";
   
-  // Placeholder API functions
+import { createFileRoute } from '@tanstack/react-router';
+
+// Define your route component (if needed)
+const ProxyComponentsRoute = () => {
+    // Possibly render something or just act as a container for the subcomponents?
+    return null;
+  };
+  
+  export const Route = createFileRoute('/_layout/proxies/ProxyComponents')({
+    component: ProxyComponentsRoute,
+  });
+  
   const fetchTopUps = async () => []; // Replace with API call later
   const fetchConnections = async () => [];
   const fetchLogs = async () => [];
