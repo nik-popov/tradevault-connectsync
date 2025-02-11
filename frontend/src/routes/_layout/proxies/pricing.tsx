@@ -11,6 +11,7 @@ import {
   Tr,
   Tbody,
   Th,
+  Badge,
   Td,
   TabList,
   TabPanels,
