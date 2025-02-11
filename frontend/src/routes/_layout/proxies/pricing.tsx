@@ -122,7 +122,7 @@ import { createFileRoute } from "@tanstack/react-router";
           Contact Sales
         </Button>
       </Box>
-    )}
+    )
     </Container>
   );
 export const Route = createFileRoute("/_layout/proxies/pricing")({
