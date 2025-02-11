@@ -22,36 +22,13 @@
 /* Body Styling */
 body {
   font-family: var(--font-primary);
-  font-optical-sizing: auto;
-  font-weight: 400;
-  font-style: normal;
-  font-size: var(--font-size-base);
-  line-height: var(--line-height-base);
   color: var(--color-text);
   background-color: var(--color-background);
-  margin: 0;
-  padding: var(--spacing);
 }
 
 /* Headings */
 h1, h2, h3, h4, h5, h6 {
-  font-weight: 700;
   color: var(--color-heading);
-  margin-top: 24px;
-  margin-bottom: 12px;
-}
-
-h1 { font-size: 2.5rem; }
-h2 { font-size: 2rem; }
-h3 { font-size: 1.75rem; }
-h4 { font-size: 1.5rem; }
-h5 { font-size: 1.25rem; }
-h6 { font-size: 1rem; }
-
-/* Paragraphs */
-p {
-  margin-top: 12px;
-  margin-bottom: 12px;
 }
 
 /* Links */
