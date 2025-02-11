@@ -1,6 +1,4 @@
 import {
-  Box,
-  Button,
   Container,
   Heading,
   Tab,
@@ -8,7 +6,6 @@ import {
   TabPanel,
   TabPanels,
   Tabs,
-  Text,
 } from "@chakra-ui/react";
 
 import { useQueryClient } from "@tanstack/react-query";
