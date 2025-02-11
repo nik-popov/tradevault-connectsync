@@ -15,16 +15,23 @@ import {
   List,
   ListItem,
   ListIcon,
-  Flex
+  Flex,
+  Progress,
+  Table,
+  Thead,
+  Tbody,
+  Tr,
+  Th,
+  Td
 } from "@chakra-ui/react";
-import { FiCheckCircle, FiBarChart2, FiAlertTriangle } from "react-icons/fi";
+import { FiCheckCircle, FiBarChart2, FiAlertTriangle, FiTrendingUp } from "react-icons/fi";
 
 const ProxyUsage = () => (
   <Box maxW="100%" mx="auto" px={{ base: 6, md: 12 }} py={12}>
     <VStack spacing={8} align="stretch">
       <Heading size="2xl" textAlign="center">Proxy Usage Dashboard</Heading>
       <Text fontSize="lg" textAlign="center" color="gray.600">
-        Monitor your proxy usage, analyze traffic, and optimize performance.
+        Monitor your proxy usage, analyze traffic trends, and optimize performance.
       </Text>
       <Divider />
       
@@ -75,6 +82,44 @@ const ProxyUsage = () => (
           Average Session Duration: 8m 24s
         </ListItem>
       </List>
+      
+      <Divider />
+      
+      {/* Bandwidth Usage */}
+      <Heading size="lg">Bandwidth Usage</Heading>
+      <Text>Current Usage: 1.2GB / 10GB Monthly Limit</Text>
+      <Progress value={12} size="lg" colorScheme="blue" />
+      
+      <Divider />
+      
+      {/* Top Proxy Requests */}
+      <Heading size="lg">Top Proxy Requests</Heading>
+      <Table variant="simple">
+        <Thead>
+          <Tr>
+            <Th>Endpoint</Th>
+            <Th>Requests</Th>
+            <Th>Status</Th>
+          </Tr>
+        </Thead>
+        <Tbody>
+          <Tr>
+            <Td>/api/data</Td>
+            <Td>5,234</Td>
+            <Td><ListIcon as={FiCheckCircle} color="green.500" /> Success</Td>
+          </Tr>
+          <Tr>
+            <Td>/api/auth</Td>
+            <Td>3,120</Td>
+            <Td><ListIcon as={FiAlertTriangle} color="yellow.500" /> Warning</Td>
+          </Tr>
+          <Tr>
+            <Td>/api/stats</Td>
+            <Td>2,560</Td>
+            <Td><ListIcon as={FiCheckCircle} color="green.500" /> Success</Td>
+          </Tr>
+        </Tbody>
+      </Table>
       
       <Divider />
       
