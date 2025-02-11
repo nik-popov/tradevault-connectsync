@@ -1,7 +1,5 @@
 import { Box, Button, Heading, Text, VStack, HStack, Switch } from "@chakra-ui/react";
 import { useState } from "react";
-import { useQueryClient } from "@tanstack/react-query";
-
 const SubscriptionManagement = () => {
   // Subscription states
   const [hasSubscription, setHasSubscription] = useState(false);
