@@ -67,6 +67,7 @@ const PromoSERP: React.FC = () => {
   return (
     <Box w="full" px={{ base: 4, md: 8 }} py={8}>
       <Box maxW="4xl" mx="auto" textAlign="center">
+      <Heading size="lg">API Access Plans</Heading>
 
         {/* FREE TRIAL BANNER */}
         <Box bg="blue.500" color="white" borderRadius="lg" py={4} px={6} mb={6} boxShadow="md">
