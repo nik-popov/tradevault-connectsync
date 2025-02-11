@@ -19,7 +19,6 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { FiGithub, FiX } from "react-icons/fi";
 import PromoDatasets from "../../../components/PromoDatasets";
-import SubscriptionManagement from "../../../components/UserSettings/SubscriptionManagement";
 
 // Storage and Product Key
 const STORAGE_KEY = "subscriptionSettings";
@@ -314,7 +313,6 @@ function Explore() {
       <Container maxW="full" overflowX="hidden">
         <Flex justify="space-between" align="center" my={4} flexWrap="wrap">
           <Heading size="lg">Explore APIs</Heading>
-          <SubscriptionManagement product={PRODUCT} />
         </Flex>
   
         <Divider my={4} />

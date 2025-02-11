@@ -29,7 +29,7 @@ import PromoContent from "../../../components/PromoSERP";
 import ProxyStarted from "../../../components/GoogleSerpStarted";
 import ProxySettings from "../../../components/ProxySettings";
 import ProxyUsage from "../../../components/ProxyUsage";
-import SubscriptionManagement from "../../../components/UserSettings/SubscriptionManagement";
+
 /* 
   Expanded Inline Proxy Components 
   Replace dummy data and logic with your actual API calls or state management as needed.
@@ -309,7 +309,6 @@ function GoogleSerpApi() {
           <Text fontSize="xl" fontWeight="bold">Search Apis</Text>
           <Text fontSize="sm">Manage your proxy settings and subscriptions.</Text>
         </Box>
-        <SubscriptionManagement product={PRODUCT} />
       </Flex>
 
       {isLocked ? (

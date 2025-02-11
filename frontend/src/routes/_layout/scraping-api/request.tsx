@@ -22,7 +22,6 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { FiSend, FiGithub } from "react-icons/fi";
 import PromoSERP from "../../../components/PromoSERP";
-import SubscriptionManagement from "../../../components/UserSettings/SubscriptionManagement";
 
 // Storage and Product Key
 const STORAGE_KEY = "subscriptionSettings";
@@ -110,7 +109,7 @@ function Request() {
       {/* 🔄 Title with Subscription Management */}
       <Flex justify="space-between" align="center" my={4} flexWrap="wrap">
         <Heading size="lg">Request a New API</Heading>
-        <SubscriptionManagement product={PRODUCT} />
+
       </Flex>
 
       <Divider my={4} />
