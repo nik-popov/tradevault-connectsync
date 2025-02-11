@@ -20,7 +20,7 @@ import {
 } from "@chakra-ui/react";
 import { createFileRoute } from "@tanstack/react-router";
 import { useQueryClient } from "@tanstack/react-query";
-import PromoSERP from "../../../components/PromoSERP"; // ✅ Corrected PromoSERP usage
+import PromoSERP from "../../../components/PromoSERP"; // ✅ Import PromoSERP
 
 export const Route = createFileRoute("/_layout/scraping-api/explore")({
   component: Explore,
@@ -77,26 +77,25 @@ function Explore() {
 
   return (
     <Container maxW="full">
-      <Heading size="lg" my={4}>Explore APIs</Heading>
+      {/* 🔄 Title with Debug Toggles */}
+      <Flex justify="space-between" align="center" my={4} flexWrap="wrap">
+        <Heading size="lg">Explore APIs</Heading>
 
-      {/* 🔄 Debugging Toggles */}
-      <Flex mt={6} gap={4} justify="space-between" align="center" flexWrap="wrap">
-        <HStack>
-          <Text fontWeight="bold">Subscription:</Text>
-          <Switch isChecked={hasSubscription} onChange={() => setHasSubscription(!hasSubscription)} />
+        {/* Debugging Toggles (Moved to Title Row) */}
+        <HStack spacing={6}>
+          <HStack>
+            <Text fontWeight="bold">Subscription:</Text>
+            <Switch isChecked={hasSubscription} onChange={() => setHasSubscription(!hasSubscription)} />
+          </HStack>
+          <HStack>
+            <Text fontWeight="bold">Trial Mode:</Text>
+            <Switch isChecked={isTrial} onChange={() => setIsTrial(!isTrial)} />
+          </HStack>
+          <HStack>
+            <Text fontWeight="bold">Deactivated:</Text>
+            <Switch isChecked={isDeactivated} onChange={() => setIsDeactivated(!isDeactivated)} />
+          </HStack>
         </HStack>
-        <HStack>
-          <Text fontWeight="bold">Trial Mode:</Text>
-          <Switch isChecked={isTrial} onChange={() => setIsTrial(!isTrial)} />
-        </HStack>
-        <HStack>
-          <Text fontWeight="bold">Deactivated:</Text>
-          <Switch isChecked={isDeactivated} onChange={() => setIsDeactivated(!isDeactivated)} />
-        </HStack>
-        <Flex align="center">
-          <Text fontWeight="bold" mr={2}>Owned Only</Text>
-          <Switch isChecked={ownedOnly} onChange={() => setOwnedOnly(!ownedOnly)} colorScheme="blue" isDisabled={isTrialMode} />
-        </Flex>
       </Flex>
 
       <Divider my={4} />
@@ -106,6 +105,16 @@ function Explore() {
         <PromoSERP />
       ) : (
         <>
+          {/* ✅ Display Subscription Info */}
+          {hasSubscription && (
+            <Alert status="success" borderRadius="md" mb={4}>
+              <AlertIcon />
+              <Text>
+                ✅ You have an active subscription. Enjoy full access to all APIs!
+              </Text>
+            </Alert>
+          )}
+
           {/* 🛠 API Explorer - Trial Mode: Greyed Out Except Search */}
           <Flex mt={6} gap={4} justify="space-between" align="center" flexWrap="wrap">
             <Input placeholder="Search APIs..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} w={{ base: "100%", md: "300px" }} />
