@@ -20,7 +20,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import { FiSend, FiGithub } from "react-icons/fi";
 import PromoContent from "../../../components/PromoContent";
-import ProxyStarted from "../../../components/ProxyStarted";
+import GetStarted from "../../../components/GetStarted";
 import ProxySettings from "../../../components/ProxySettings";
 import ProxyUsage from "../../../components/ProxyUsage";
 
@@ -36,7 +36,7 @@ export const Route = createFileRoute("/_layout/proxies/residential")({
 });
 
 const tabsConfig = [
-  { title: "Get Started", component: <ProxyStarted /> },
+  { title: "Get Started", component: <GetStarted /> },
   { title: "Endpoints", component: <ProxySettings /> },
   { title: "Usage", component: <ProxyUsage /> },
   { title: "Top-Ups", component: <TopUps /> },
@@ -52,7 +52,6 @@ function ResidentialProxy() {
     isTrial: false,
     isDeactivated: false,
   });
-
 
   // Load subscription settings from localStorage and React Query
   useEffect(() => {
