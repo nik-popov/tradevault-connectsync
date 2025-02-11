@@ -7,95 +7,108 @@ import {
   HStack,
   Divider,
   Flex,
-  Badge,
   Icon,
   Grid,
   GridItem,
+  Table,
+  Thead,
+  Tbody,
+  Tr,
+  Th,
+  Td,
+  Badge,
 } from "@chakra-ui/react";
 import { createFileRoute } from "@tanstack/react-router";
-import {
-  FiCheckCircle,
-  FiDollarSign,
-  FiPackage,
-  FiTrendingUp,
-  FiSettings,
-} from "react-icons/fi";
+import { FiCpu, FiDatabase, FiCloud, FiGlobe, FiHeadphones } from "react-icons/fi";
 
-const pricingPlans = [
+const pricingCategories = [
   {
-    name: "Dev",
-    price: "$100",
-    features: ["100 requests/month", "Basic API access", "Email support"],
-    borderColor: "blue.700",
-    icon: FiPackage,
+    title: "Compute Pricing",
+    icon: FiCpu,
+    items: [
+      { name: "vCPU (per hour)", rate: "$0.05" },
+      { name: "Memory (per GB-hour)", rate: "$0.01" },
+      { name: "GPU Instance (per hour)", rate: "$2.50" },
+    ],
   },
   {
-    name: "SaaS",
-    price: "$500",
-    features: ["1,000 requests/month", "Faster response times", "Priority support"],
-    borderColor: "blue.600",
-    badge: "MOST POPULAR",
-    icon: FiTrendingUp,
+    title: "Traffic Pricing",
+    icon: FiGlobe,
+    items: [
+      { name: "Inbound Traffic (per GB)", rate: "Free" },
+      { name: "Outbound Traffic (per GB)", rate: "$0.08" },
+      { name: "Private Network Traffic (per GB)", rate: "$0.02" },
+    ],
   },
   {
-    name: "Pro",
-    price: "$2,000",
-    features: ["1,000,000 requests/month", "Enterprise-grade performance", "Dedicated support"],
-    borderColor: "blue.500",
-    icon: FiSettings,
+    title: "Storage Pricing",
+    icon: FiDatabase,
+    items: [
+      { name: "Block Storage (per GB-month)", rate: "$0.10" },
+      { name: "Object Storage (per GB-month)", rate: "$0.02" },
+      { name: "Snapshot (per GB-month)", rate: "$0.05" },
+    ],
   },
   {
-    name: "Enterprise",
-    price: "Custom",
-    features: ["Unlimited requests", "Dedicated account manager", "Custom integrations"],
-    borderColor: "blue.400",
-    icon: FiDollarSign,
+    title: "Support Plans",
+    icon: FiHeadphones,
+    items: [
+      { name: "Basic Support", rate: "Free" },
+      { name: "Standard Support", rate: "$99/month" },
+      { name: "Enterprise Support", rate: "Custom Pricing" },
+    ],
   },
 ];
 
 function Pricing() {
   return (
-    <Container maxW="full" py={8}>
-      <Flex align="center" justify="space-between" flexWrap="wrap" gap={4} mb={6}>
+    <Container maxW="100vw" minH="100vh" bg="gray.900" color="white" py={8}>
+      <Flex align="center" justify="space-between" py={6} flexWrap="wrap">
         <Box textAlign="left" flex="1">
-          <Text fontSize="xl" fontWeight="bold">Pricing Plans</Text>
-          <Text fontSize="sm">Choose the right plan for your needs.</Text>
+          <Text fontSize="2xl" fontWeight="bold">Cloud Service Pricing</Text>
+          <Text fontSize="md" color="gray.400">Transparent and predictable pricing for compute, storage, and traffic.</Text>
         </Box>
       </Flex>
 
-      <Divider my={4} />
+      <Divider my={4} borderColor="gray.600" />
 
-      <Grid templateColumns={{ base: "1fr", md: "repeat(4, 1fr)" }} gap={6}>
-        {pricingPlans.map((plan, index) => (
-          <GridItem key={index}>
-            <Box p={6} border="2px solid" borderColor={plan.borderColor} borderRadius="lg" bg="gray.700" position="relative">
-              {plan.badge && (
-                <Badge bg="blue.600" color="white" px={3} py={1} position="absolute" top="-12px" left="10px">
-                  {plan.badge}
-                </Badge>
-              )}
-              <Flex align="center" mb={2}>
-                <Icon as={plan.icon} boxSize={6} color="white" mr={2} />
-                <Text fontSize="lg" fontWeight="bold" color="white">{plan.name}</Text>
-              </Flex>
-              <Text fontSize="2xl" fontWeight="bold" color="white" mb={4}>{plan.price}</Text>
+      <Grid templateColumns={{ base: "1fr", md: "repeat(2, 1fr)" }} gap={6}>
+        {pricingCategories.map((category, index) => (
+          <GridItem key={index} p={6} border="2px solid" borderColor="blue.600" borderRadius="lg" bg="gray.800">
+            <Flex align="center" mb={4}>
+              <Icon as={category.icon} boxSize={6} color="blue.400" mr={2} />
+              <Text fontSize="xl" fontWeight="bold">{category.title}</Text>
+            </Flex>
 
-              <VStack spacing={3} align="start" mt={3}>
-                {plan.features.map((feature, idx) => (
-                  <HStack key={idx}>
-                    <Icon as={FiCheckCircle} color="blue.500" />
-                    <Text fontSize="sm" color="gray.300">{feature}</Text>
-                  </HStack>
+            <Table size="sm" variant="unstyled">
+              <Thead>
+                <Tr>
+                  <Th color="gray.400">Service</Th>
+                  <Th color="gray.400">Rate</Th>
+                </Tr>
+              </Thead>
+              <Tbody>
+                {category.items.map((item, idx) => (
+                  <Tr key={idx}>
+                    <Td>{item.name}</Td>
+                    <Td>
+                      <Badge colorScheme={item.rate === "Free" ? "green" : "blue"} px={2}>
+                        {item.rate}
+                      </Badge>
+                    </Td>
+                  </Tr>
                 ))}
-              </VStack>
-
-              <Button w="full" mt={4} bg="blue.600" color="white" _hover={{ bg: "blue.500" }}>
-                {plan.price === "Custom" ? "Contact Us" : `Choose ${plan.name}`}
-              </Button>
-            </Box>
+              </Tbody>
+            </Table>
           </GridItem>
         ))}
       </Grid>
+
+      <Flex justify="center" mt={8}>
+        <Button bg="blue.600" color="white" _hover={{ bg: "blue.500" }}>
+          Get Started
+        </Button>
+      </Flex>
     </Container>
   );
 }
