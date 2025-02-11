@@ -128,10 +128,11 @@ function Pricing() {
                     _selected={{ bg: "gray.600", color: "white", fontWeight: "bold" }}
                     _hover={{ bg: "gray.600", color: "white" }}
                   >
+                    {tab.title}
                   </Tab>
                 ))}
               </TabList>
-              <TabPanels bg="gray.700" borderRadius="md" p={4}>
+              <TabPanels bg="gray.800" borderRadius="md" p={4}>
                 {tabsConfig.map((tab, index) => (
                   <TabPanel key={index}>
                     {restrictedTabs.includes(tab.title) ? (
