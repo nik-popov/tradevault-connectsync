@@ -141,9 +141,6 @@ function Dashboard() {
             )}
           </VStack>
         </Box>
-
-        {/* Sidebar */}
-        <SubscriptionManagement />
       </Flex>
     </Container>
   );
