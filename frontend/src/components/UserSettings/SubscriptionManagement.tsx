@@ -34,7 +34,7 @@ const PRODUCTS = [
 
 const STORAGE_KEY = "subscriptionSettings"; // Key for localStorage
 
-const SubscriptionManagement = () => {
+const SubscriptionManagement = ({ product }: { product: string }) => {
   const queryClient = useQueryClient();
 
   // Load subscription settings with React Query
@@ -47,79 +47,61 @@ const SubscriptionManagement = () => {
     staleTime: Infinity,
   });
 
-  // Ensure all products have a default state
-  const [settings, setSettings] = useState<SubscriptionData>({});
+  // Ensure the selected product has a default state
+  const [settings, setSettings] = useState<SubscriptionSettings>({
+    hasSubscription: false,
+    isTrial: false,
+    isDeactivated: false,
+  });
 
   useEffect(() => {
-    const newSettings: SubscriptionData = PRODUCTS.reduce((acc, product) => {
-      acc[product] = subscriptionSettings?.[product] || {
-        hasSubscription: false,
-        isTrial: false,
-        isDeactivated: false,
-      };
-      return acc;
-    }, {} as SubscriptionData);
-
-    setSettings(newSettings);
-  }, [subscriptionSettings]);
+    if (subscriptionSettings?.[product]) {
+      setSettings(subscriptionSettings[product]);
+    }
+  }, [subscriptionSettings, product]);
 
   // Sync state with localStorage and React Query
-  const updateSettings = (newSettings: SubscriptionData) => {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(newSettings));
-    queryClient.setQueryData(["subscriptionSettings"], newSettings);
+  const updateSettings = (newSettings: SubscriptionSettings) => {
+    const updatedSettings = { ...subscriptionSettings, [product]: newSettings };
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(updatedSettings));
+    queryClient.setQueryData(["subscriptionSettings"], updatedSettings);
     refetch(); // Ensure updates propagate
-  };
-
-  // Toggle a setting for a specific product
-  const toggleSetting = (product: string, key: keyof SubscriptionSettings) => {
-    const newSettings = {
-      ...settings,
-      [product]: {
-        ...settings[product],
-        [key]: !settings[product][key],
-      },
-    };
-    setSettings(newSettings);
-    updateSettings(newSettings);
   };
 
   return (
     <Box>
-      <Heading size="md">Subscription Management</Heading>
-      <Text mt={2}>Manage subscriptions for each product.</Text>
+      <Heading size="md">{product} Subscription</Heading>
+      <Divider my={3} />
 
-      {PRODUCTS.map((product) => (
-        <Box key={product} mt={4}>
-          <Heading size="sm" mt={4}>{product}</Heading>
-          <Divider my={2} />
+      <VStack align="stretch" spacing={3}>
+        <HStack justify="space-between">
+          <Text fontWeight="bold">Subscription Active</Text>
+          <Switch
+            isChecked={settings.hasSubscription}
+            onChange={() =>
+              updateSettings({ ...settings, hasSubscription: !settings.hasSubscription })
+            }
+          />
+        </HStack>
 
-          <VStack align="stretch" spacing={3}>
-            <HStack justify="space-between">
-              <Text fontWeight="bold">Subscription Active</Text>
-              <Switch
-                isChecked={settings[product]?.hasSubscription}
-                onChange={() => toggleSetting(product, "hasSubscription")}
-              />
-            </HStack>
+        <HStack justify="space-between">
+          <Text fontWeight="bold">Trial Mode</Text>
+          <Switch
+            isChecked={settings.isTrial}
+            onChange={() => updateSettings({ ...settings, isTrial: !settings.isTrial })}
+          />
+        </HStack>
 
-            <HStack justify="space-between">
-              <Text fontWeight="bold">Trial Mode</Text>
-              <Switch
-                isChecked={settings[product]?.isTrial}
-                onChange={() => toggleSetting(product, "isTrial")}
-              />
-            </HStack>
-
-            <HStack justify="space-between">
-              <Text fontWeight="bold">Deactivated</Text>
-              <Switch
-                isChecked={settings[product]?.isDeactivated}
-                onChange={() => toggleSetting(product, "isDeactivated")}
-              />
-            </HStack>
-          </VStack>
-        </Box>
-      ))}
+        <HStack justify="space-between">
+          <Text fontWeight="bold">Deactivated</Text>
+          <Switch
+            isChecked={settings.isDeactivated}
+            onChange={() =>
+              updateSettings({ ...settings, isDeactivated: !settings.isDeactivated })
+            }
+          />
+        </HStack>
+      </VStack>
 
       <Button mt={6} colorScheme="blue" onClick={() => console.log("Updated Settings:", settings)}>
         Save Changes

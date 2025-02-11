@@ -25,26 +25,27 @@ const tabsConfig = [
   { title: "Password", component: ChangePassword },
   { title: "Appearance", component: Appearance },
   { title: "Billing", component: Billing },
-  { title: "Subscription", component: SubscriptionManagement }, // ✅ Now properly referenced
+  { title: "Subscription", component: () => <SubscriptionManagement product="Residential" /> }, // ✅ Pass product name
   { title: "Danger zone", component: DeleteAccount },
 ];
 
 export const Route = createFileRoute("/_layout/settings")({
   component: UserSettings,
 });
+
 function UserSettings() {
   const queryClient = useQueryClient();
   const currentUser = queryClient.getQueryData<UserPublic>(["currentUser"]);
-  
+
   if (!currentUser) {
     return <p>Loading user data...</p>;
   }
-  
+
   const finalTabs = currentUser?.is_superuser
     ? [...tabsConfig.slice(0, 3), tabsConfig[4]] // Ensures Subscription tab is included for superusers
     : tabsConfig;
 
-  return ( // ✅ Add 'return' here
+  return (
     <Container maxW="full">
       <Heading size="lg" textAlign={{ base: "center", md: "left" }} py={12}>
         User Settings
@@ -66,3 +67,5 @@ function UserSettings() {
     </Container>
   );
 }
+
+export default UserSettings;
