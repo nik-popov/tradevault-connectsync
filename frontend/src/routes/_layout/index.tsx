@@ -74,7 +74,8 @@ function Dashboard() {
             colorScheme="blue" 
             size="sm" 
             mt={2} 
-            onClick={() => navigate("/proxies/pricing")}
+            onClick={() => navigate({ to: "/proxies/pricing" })}
+
           >
             Try now
           </Button>
@@ -90,7 +91,8 @@ function Dashboard() {
             colorScheme="red" 
             size="sm" 
             mt={2} 
-            onClick={() => navigate("/proxies/pricing")}
+            onClick={() => navigate({ to: "/proxies/pricing" })}
+
           >
             View Subscription Plans
           </Button>
@@ -163,7 +165,8 @@ function Dashboard() {
                     size="sm" 
                     colorScheme="blue" 
                     borderRadius="full"
-                    onClick={() => navigate(product.path)}
+                    onClick={() => navigate({ to: product.path })}
+
                   >
                     Manage
                   </Button>
