@@ -18,7 +18,7 @@ import {
   import { createFileRoute, useNavigate } from "@tanstack/react-router";
   import { useState } from "react";
   import useAuth from "../../hooks/useAuth";
-  import Navbar from "../../components/Common/Navbar"; // ✅ Make sure this file exists!
+  import Navbar from "../../components/Common/Navbar"; // ✅ Ensure this exists!
   
   // ✅ Fix Route Path
   export const Route = createFileRoute("/subscriptions")({
@@ -27,11 +27,12 @@ import {
   
   // ✅ Mock Subscription State
   const initialSubscriptions = {
-    proxy: { hasSubscription: false, isTrial: false, isDeactivated: false },
+    proxy: { hasSubscription: true, isTrial: false, isDeactivated: false }, // ✅ One subscription enabled by default
     scrapingAPI: { hasSubscription: false, isTrial: false, isDeactivated: false },
     dataset: { hasSubscription: false, isTrial: false, isDeactivated: false },
   };
   
+  // ✅ Subscription Toggle Component
   function SubscriptionToggle({ product, state, toggleState }) {
     return (
       <Box p={5} shadow="md" borderWidth="1px" borderRadius="lg" bg="gray.50">
@@ -52,6 +53,7 @@ import {
     );
   }
   
+  // ✅ Subscriptions Page Component
   function Subscriptions() {
     const { user: currentUser } = useAuth();
     const navigate = useNavigate();
