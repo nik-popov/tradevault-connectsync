@@ -23,6 +23,7 @@ import {
 } from "@chakra-ui/react";
 import { useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
+import { FaNetworkWired, FaCloud, FaMobileAlt } from "react-icons/fa";
 
 const proxyPricing = {
   Residential: [
@@ -47,10 +48,15 @@ const proxyPricing = {
 
 const PricingPage = () => {
   const [selectedProduct, setSelectedProduct] = useState("Residential");
-  const tabBg = useColorModeValue("gray.800", "gray.600");
+  const tabBg = useColorModeValue("gray.700", "gray.800");
   const tabColor = "white";
-  const tabHoverBg = useColorModeValue("gray.700", "gray.500");
+  const tabHoverBg = useColorModeValue("gray.600", "gray.700");
 
+  const productIcons = {
+    Residential: <FaCloud size={18} />, 
+    "Residential Mobile": <FaMobileAlt size={18} />, 
+    Datacenter: <FaNetworkWired size={18} />,
+  };
   return (
     <Container maxW="full" py={10}>
       <Flex align="center" justify="space-between" py={6} flexWrap="wrap" gap={4}>
