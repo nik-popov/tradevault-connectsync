@@ -108,8 +108,10 @@ const ProxyStarted = () => {
     <Box maxW="100%" mx="auto" px={{ base: 6, md: 12 }} py={12}>
       <VStack spacing={8} align="stretch">
         {/* Quick Start Guide Header */}
-        <Box textAlign="center">
-          <Heading size="xl" fontWeight="bold" mb={2}>Residential Proxy Quick Start Guide</Heading>
+        <Box textAlign="left"> {/* Changed from center to left */}
+          <Heading size="xl" fontWeight="bold" mb={2}>
+            Residential Proxy Quick Start Guide
+          </Heading>
           <Text fontSize="lg" color="gray.600">
             Follow these simple steps to integrate our residential proxy into your applications.
           </Text>
