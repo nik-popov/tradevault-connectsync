@@ -98,7 +98,7 @@ const PromoDatasets: React.FC = () => {
         </Alert>
 
 {/* Pricing Plans Section */}
-<Heading as="h2" size="lg" fontWeight="bold" mb={4}>Pricing Plans</Heading>
+<Heading as="h2" size="lg" fontWeight="bold" mb={4}>DataSet Pricing Plans</Heading>
 <Grid templateColumns={{ base: "1fr", md: "repeat(4, 1fr)" }} gap={6}>
   {pricingPlans.map((plan, index) => (
     <Box key={index} position="relative">

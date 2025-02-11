@@ -67,7 +67,6 @@ const PromoSERP: React.FC = () => {
   return (
     <Box w="full" px={{ base: 4, md: 8 }} py={8}>
       <Box maxW="4xl" mx="auto" textAlign="center">
-      <Heading size="lg">API Access Plans</Heading>
 
         {/* FREE TRIAL BANNER */}
         <Box bg="blue.500" color="white" borderRadius="lg" py={4} px={6} mb={6} boxShadow="md">
@@ -100,7 +99,7 @@ const PromoSERP: React.FC = () => {
           <Text>All API requests are securely handled and optimized.</Text>
         </Alert>
 {/* Pricing Plans Section */}
-<Heading as="h2" size="lg" fontWeight="bold" mb={4}>Pricing Plans</Heading>
+<Heading as="h2" size="lg" fontWeight="bold" mb={4}>API Pricing Plans</Heading>
 <Grid templateColumns={{ base: "1fr", md: "repeat(3, 1fr)" }} gap={6}>
   {pricingPlans.slice(0, 3).map((plan, index) => (
     <Box key={index} position="relative">
