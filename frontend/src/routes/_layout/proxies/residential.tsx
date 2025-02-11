@@ -20,6 +20,8 @@ import {
   
   TabPanel,
 } from "@chakra-ui/react";
+import { useState, useEffect } from "react";
+
 import { useQueryClient, useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 
