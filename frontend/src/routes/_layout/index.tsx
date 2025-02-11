@@ -1,42 +1,56 @@
-import { 
-  Box, Container, Text, Button, Divider, Flex, Switch, VStack,
+import { useState, useMemo } from "react";
+import {
+  Box,
+  Container,
+  Text,
+  VStack,
+  Button,
+  Divider,
+  Flex,
+  Switch,
 } from "@chakra-ui/react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useState } from "react";
-import useAuth from "../../hooks/useAuth";
+import { FiGithub, FiMail, FiHelpCircle } from "react-icons/fi";
 import { useQuery } from "@tanstack/react-query";
-// import SubscriptionManagement from "../../components/UserSettings/SubscriptionManagement";
+
+// Import useMemo correctly ✅
+import { useMemo } from "react";
 
 export const Route = createFileRoute("/_layout/")({
   component: Dashboard,
 });
 
-const STORAGE_KEY = "subscriptionSettings";
-const PRODUCTS = ["proxy", "serp", "data"] as const;
-
 function Dashboard() {
-  const { user: currentUser } = useAuth();
   const navigate = useNavigate();
-
-  // ✅ Load Subscription Settings using React Query
+  
+  // Load Subscription State ✅
   const { data: subscriptionSettings } = useQuery({
     queryKey: ["subscriptionSettings"],
     queryFn: () => {
-      const storedSettings = localStorage.getItem(STORAGE_KEY);
+      const storedSettings = localStorage.getItem("subscriptionSettings");
       return storedSettings ? JSON.parse(storedSettings) : {};
     },
     staleTime: Infinity,
   });
 
-  // Default to "no subscription" if not available
-  const settings = subscriptionSettings || PRODUCTS.reduce((acc, product) => {
-    acc[product] = { hasSubscription: false, isTrial: false, isDeactivated: false };
-    return acc;
-  }, {} as Record<string, { hasSubscription: boolean; isTrial: boolean; isDeactivated: boolean }>);
-
-  const hasSubscription = PRODUCTS.some((p) => settings[p]?.hasSubscription);
-  const isTrial = PRODUCTS.some((p) => settings[p]?.isTrial);
+  // Ensure subscription settings exist ✅
+  const hasSubscription = subscriptionSettings?.Proxies?.hasSubscription || false;
+  const isTrial = subscriptionSettings?.Proxies?.isTrial || false;
   const isLocked = !hasSubscription && !isTrial;
+
+  // UI State
+  const [ownedOnly, setOwnedOnly] = useState(true); // ✅ Default to owned products
+  const [activeFilter, setActiveFilter] = useState("all");
+
+  // ✅ Define `proxyProducts` with `owned` property
+  type Product = {
+    id: string;
+    name: string;
+    type: string;
+    description: string;
+    owned: boolean;
+    path: string;
+  };
 
   // ✅ Define Products & Match Ownership Based on Subscription
   const proxyProducts = [
@@ -49,9 +63,6 @@ function Dashboard() {
     { id: "explore-dataset", name: "📊 Explore Datasets", type: "data", description: "Tailored datasets for your needs.", path: "/datasets/explore" },
     { id: "custom-dataset", name: "📊 Request Custom Dataset", type: "data", description: "Tailored data scraping for your needs.", path: "/datasets/request" },
   ];
-  const [activeFilter, setActiveFilter] = useState("all");
-  const [ownedOnly, setOwnedOnly] = useState(true); // ✅ Default to "Owned Only"
-  
 
   const filteredProducts = useMemo(() => {
     return proxyProducts.filter((product) => {
