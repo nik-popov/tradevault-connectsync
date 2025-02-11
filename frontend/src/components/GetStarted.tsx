@@ -65,15 +65,18 @@ const GetStarted = () => {
   ];
 
   return (
-    <Box maxW="4xl" mx="auto" px={{ base: 4, md: 8 }} py={8}>
+    <Box maxW="100%" mx="auto" px={{ base: 6, md: 12 }} py={12}>
       <VStack spacing={8} align="stretch">
         {/* Quick Start Guide Header */}
-        <Box textAlign="center">
-          <Heading size="xl" fontWeight="bold" mb={2}>Quick Start Guide</Heading>
+        <Box textAlign="left"> {/* Changed from center to left */}
+          <Heading size="xl" fontWeight="bold" mb={2}>
+           Quick Start Guide
+          </Heading>
           <Text fontSize="lg" color="gray.600">
-            Follow these simple steps to integrate our proxy into your applications.
+            Follow these simple steps to integrate our residential proxy into your applications.
           </Text>
         </Box>
+
 
         <Divider />
 

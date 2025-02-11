@@ -114,17 +114,7 @@ const CenterStarted = () => {
   ];
 
   return (
-    <Box maxW="100%" mx="auto" px={{ base: 6, md: 12 }} py={12}>
-      <VStack spacing={8} align="stretch">
-        {/* Guide Header */}
-        <Box textAlign="center">
-          <Heading size="xl" fontWeight="bold" mb={2}>
-            Datacenter Proxy Quick Start Guide
-          </Heading>
-          <Text fontSize="lg" color="gray.600">
-            Follow these simple steps to integrate our datacenter proxy into your applications.
-          </Text>
-        </Box>
+
 
         <Divider />
 

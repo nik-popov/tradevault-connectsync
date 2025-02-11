@@ -115,15 +115,16 @@ const MobileCenterStarted = () => {
   return (
     <Box maxW="100%" mx="auto" px={{ base: 6, md: 12 }} py={12}>
       <VStack spacing={8} align="stretch">
-        {/* Guide Header */}
-        <Box textAlign="center">
+        {/* Quick Start Guide Header */}
+        <Box textAlign="left"> {/* Changed from center to left */}
           <Heading size="xl" fontWeight="bold" mb={2}>
             Datacenter Mobile Proxy Quick Start Guide
           </Heading>
           <Text fontSize="lg" color="gray.600">
-            Follow these simple steps to integrate our datacenter mobile proxy into your applications.
+            Follow these simple steps to integrate our residential proxy into your applications.
           </Text>
         </Box>
+
 
         <Divider />
 
