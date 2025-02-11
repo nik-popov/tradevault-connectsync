@@ -137,7 +137,7 @@ function Pricing() {
                   </Tab>
                 ))}
               </TabList>
-              <TabPanels bg="gray.600" borderRadius="md" p={4}>
+              <TabPanels bg="gray.700" borderRadius="md" p={4}>
                 {tabsConfig.map((tab, index) => (
                   <TabPanel key={index}>
                     {restrictedTabs.includes(tab.title) ? (
