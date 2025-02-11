@@ -46,7 +46,7 @@ const tabsConfig = [
 ];
 function ResidentialProxy() {
   const queryClient = useQueryClient();
-  const subscriptionSettings = queryClient.getQueryData("subscriptionSettings") || {
+  const subscriptionSettings = queryClient.getQueryData(["subscriptionSettings"]) || {
     hasSubscription: false,
     isTrial: false,
     isDeactivated: false,
