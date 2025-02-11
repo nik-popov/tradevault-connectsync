@@ -15,11 +15,19 @@ import {
     TabPanel,
     TabPanels,
     Badge,
+    Button,
+    Alert,
+    AlertIcon,
+    Spinner,
   } from "@chakra-ui/react";
   import { useState, useEffect } from "react";
   import Navbar from "../../components/Common/Navbar";
+  import { loadStripe } from "@stripe/stripe-js";
   
-  // ✅ Mock Subscription Data
+  // ✅ Load Stripe with the correct publishable key
+  const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY);
+  
+  // ✅ Mock Subscription Data (Can Be Replaced with API)
   const subscriptionData = {
     Proxy: [
       { id: "1", name: "Starter", price: "$99/mo", hasSubscription: true, isTrial: false, isDeactivated: false },
@@ -50,7 +58,6 @@ import {
       setSubscriptions(subscriptionData[category] || []);
     }, [category]);
   
-    // Toggle Subscription Status
     const toggleSubscription = (id) => {
       setSubscriptions((prev) =>
         prev.map((sub) =>
@@ -59,7 +66,6 @@ import {
       );
     };
   
-    // Toggle Trial Status
     const toggleTrial = (id) => {
       setSubscriptions((prev) =>
         prev.map((sub) =>
@@ -68,13 +74,30 @@ import {
       );
     };
   
-    // Toggle Deactivation Status
     const toggleDeactivation = (id) => {
       setSubscriptions((prev) =>
         prev.map((sub) =>
           sub.id === id ? { ...sub, isDeactivated: !sub.isDeactivated } : sub
         )
       );
+    };
+  
+    const handleSubscriptionPurchase = async (planId) => {
+      const stripe = await stripePromise;
+      if (!stripe) {
+        console.error("Stripe failed to load.");
+        return;
+      }
+  
+      // Mock API Call (Replace with Backend Call)
+      const checkoutSession = await fetch("/api/create-checkout-session", {
+        method: "POST",
+        body: JSON.stringify({ planId }),
+      }).then((res) => res.json());
+  
+      // Redirect to Stripe Checkout
+      const { error } = await stripe.redirectToCheckout({ sessionId: checkoutSession.id });
+      if (error) console.error(error);
     };
   
     return (
@@ -88,6 +111,7 @@ import {
               <Th>Subscription</Th>
               <Th>Trial</Th>
               <Th>Deactivated</Th>
+              <Th>Actions</Th>
             </Tr>
           </Thead>
           <Tbody>
@@ -111,6 +135,11 @@ import {
                 </Td>
                 <Td>
                   <Switch isChecked={sub.isDeactivated} onChange={() => toggleDeactivation(sub.id)} />
+                </Td>
+                <Td>
+                  <Button colorScheme="blue" size="sm" onClick={() => handleSubscriptionPurchase(sub.id)}>
+                    Subscribe
+                  </Button>
                 </Td>
               </Tr>
             ))}
