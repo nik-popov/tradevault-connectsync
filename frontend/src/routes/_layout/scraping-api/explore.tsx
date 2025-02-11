@@ -195,12 +195,19 @@ const ApiListItem = ({ api, navigate, isTrial }) => {
           </Button>
           <Button
   size="sm"
-  colorScheme="blue"
+  colorScheme="gray"
   rightIcon={<FiExternalLink />}
   disabled={true}
+  _hover={{ bg: "inherit" }}       // No hover background change
+  _disabled={{
+    opacity: 0.6,                 // Slightly faded look
+    cursor: "not-allowed",        // Shows not-allowed cursor
+    bg: "gray.200",               // Use a grey background
+  }}
 >
   Locked
 </Button>
+
 
         </HStack>
       </Flex>
