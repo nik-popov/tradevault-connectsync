@@ -51,7 +51,12 @@ const proxyPricing = {
   ],
 };
 
-const PricingPage = () => {
+import { createFileRoute } from "@tanstack/react-router";
+
+export const Route = createFileRoute("/_layout/proxies/pricing")({
+  component: PricingPage,
+});
+
   const navigate = useNavigate();
   return (
     <Container maxW="6xl" py={10}>
