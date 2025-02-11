@@ -8,19 +8,23 @@ const SubscriptionManagement = () => {
   const [isTrial, setIsTrial] = useState(false);
   const [isDeactivated, setIsDeactivated] = useState(false);
 
-  // Query current user data
-  const queryClient = useQueryClient();
-  const currentUser = queryClient.getQueryData(["currentUser"]);
+  // Query current user data (Removed since it was unused)
+  // const queryClient = useQueryClient();
+  // const currentUser = queryClient.getQueryData(["currentUser"]);
 
-  // Product subscription states
-  const [productSubscriptions, setProductSubscriptions] = useState({
+  // Product subscription states with explicit TypeScript typing
+  const [productSubscriptions, setProductSubscriptions] = useState<{
+    product1: boolean;
+    product2: boolean;
+    product3: boolean;
+  }>({
     product1: false,
     product2: false,
     product3: false,
   });
 
-  // Toggle function for subscription products
-  const toggleSubscription = (product: string) => {
+  // Toggle function with explicit keyof type
+  const toggleSubscription = (product: keyof typeof productSubscriptions) => {
     setProductSubscriptions((prev) => ({
       ...prev,
       [product]: !prev[product],
