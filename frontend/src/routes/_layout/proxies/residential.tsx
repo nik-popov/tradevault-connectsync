@@ -8,6 +8,7 @@ import {
   Divider,
   Flex,
   Tabs,
+  Tr,
   TabList,
   TabPanels,
   Tab,
