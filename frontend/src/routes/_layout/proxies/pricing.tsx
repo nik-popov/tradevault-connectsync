@@ -19,7 +19,6 @@ import {
   Thead,
   TabPanel,
   useColorModeValue,
-  Badge,
 } from "@chakra-ui/react";
 import { useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
@@ -48,9 +47,9 @@ const proxyPricing = {
 
 const PricingPage = () => {
   const [selectedProduct, setSelectedProduct] = useState("Residential");
-  const headerBg = useColorModeValue("gray.800", "gray.700");
-  const tabBg = useColorModeValue("gray.700", "gray.800");
-  const tabHoverBg = useColorModeValue("gray.600", "gray.700");
+  const headerBg = useColorModeValue("gray.700", "gray.800");
+  const tabBg = useColorModeValue("gray.600", "gray.700");
+  const tabHoverBg = useColorModeValue("gray.500", "gray.600");
   const tabColor = "white";
 
   const productIcons = {
@@ -63,7 +62,7 @@ const PricingPage = () => {
     <Container maxW="full" py={10}>
       <Box bg={headerBg} py={5} px={8} borderRadius="md" mb={6} boxShadow="lg">
         <Text fontSize="lg" fontWeight="bold" color="white">Proxy Pricing Plans</Text>
-        <Text fontSize="sm" color="gray.400">Choose a plan that scales with your needs.</Text>
+        <Text fontSize="sm" color="gray.300">Choose a plan that scales with your needs.</Text>
       </Box>
       <Flex>
         <Box w={{ base: "full", md: "250px" }}>
