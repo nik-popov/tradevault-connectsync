@@ -314,7 +314,7 @@ function DatacenterMobileProxy() {
     <Container maxW="full">
       {/* Top Bar */}
       <Flex align="center" justify="space-between" py={6} flexWrap="wrap" gap={4}>
-        <Heading size="lg">Residential Proxies</Heading>
+        <Heading size="lg">Datacenter Mobile Proxies</Heading>
         <HStack spacing={6}>
           <HStack>
             <Text fontWeight="bold">Subscription:</Text>
