@@ -43,6 +43,12 @@ const additionalServices = [
   { name: "Cloud Functions", price: "$0.02 per execution", features: ["Auto-scaling", "Pay-per-use", "Integrated monitoring"], icon: FiCloud },
 ];
 
+const enterpriseSolutions = [
+  { name: "Custom API", description: "Build a tailored API solution with dedicated infrastructure.", price: "Contact Us" },
+  { name: "Dedicated Servers", description: "Exclusive server access for maximum performance.", price: "Custom Pricing" },
+  { name: "Private Cloud", description: "Fully managed private cloud solutions for enterprises.", price: "Request Quote" },
+];
+
 function Pricing() {
   const { data: subscriptionSettings } = useQuery({
     queryKey: ["subscriptionSettings"],
@@ -114,6 +120,18 @@ function Pricing() {
                 </ListItem>
               ))}
             </List>
+          </Box>
+        ))}
+      </Grid>
+      
+      <Divider my={6} />
+      <Heading fontSize="xl" color="white" mb={4}>Enterprise Solutions</Heading>
+      <Grid templateColumns={{ base: "1fr", md: "repeat(3, 1fr)" }} gap={6}>
+        {enterpriseSolutions.map((solution, index) => (
+          <Box key={index} p={6} borderRadius="lg" bg="gray.600" textAlign="center">
+            <Text fontSize="lg" fontWeight="bold" color="white">{solution.name}</Text>
+            <Text fontSize="md" color="gray.300" mb={3}>{solution.description}</Text>
+            <Button bg="blue.600" color="white" _hover={{ bg: "blue.500" }}> {solution.price} </Button>
           </Box>
         ))}
       </Grid>
