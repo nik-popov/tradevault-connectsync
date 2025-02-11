@@ -30,7 +30,6 @@ import PromoContent from "../../../components/PromoContent";
 import MobileResidentialApiStartGuide from "../../../components/MobileStarted";
 import ProxySettings from "../../../components/ProxySettings";
 import ProxyUsage from "../../../components/ProxyUsage";
-import SubscriptionManagement from "../../../components/UserSettings/SubscriptionManagement";
 
 
 // Top-Ups Component
@@ -307,7 +306,6 @@ function ResidentialMobileProxy() {
           <Text fontSize="xl" fontWeight="bold">Residential Mobile Proxy</Text>
           <Text fontSize="sm">Manage your proxy settings and subscriptions.</Text>
         </Box>
-        <SubscriptionManagement product={PRODUCT} />
       </Flex>
 
       {/* Main Content or Alternate Views */}
