@@ -194,14 +194,14 @@ const ApiListItem = ({ api, navigate, isTrial }) => {
             {isExpanded ? "Less" : "More"}
           </Button>
           <Button
-            size="sm"
-            colorScheme="blue"
-            rightIcon={<FiExternalLink />}
-            onClick={() => navigate(`/scraping-api/${api.id}`)}
-            disabled={isTrial}
-          >
-            {isTrial ? "Locked" : "Manage"}
-          </Button>
+  size="sm"
+  colorScheme="blue"
+  rightIcon={<FiExternalLink />}
+  disabled={true}
+>
+  Locked
+</Button>
+
         </HStack>
       </Flex>
       <Collapse in={isExpanded} animateOpacity>
