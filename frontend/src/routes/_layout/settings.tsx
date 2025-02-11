@@ -25,7 +25,9 @@ const tabsConfig = [
   { title: "Password", component: ChangePassword },
   { title: "Appearance", component: Appearance },
   { title: "Billing", component: Billing },
-  { title: "Subscription", component: () => <SubscriptionManagement product="Residential" /> }, // ✅ Pass product name
+  { title: "Subscription (Proxies)", component: () => <SubscriptionManagement product="Proxies" /> },
+  { title: "Subscription (SERP API)", component: () => <SubscriptionManagement product="SERP API" /> },
+  { title: "Subscription (Datasets)", component: () => <SubscriptionManagement product="Datasets" /> },
   { title: "Danger zone", component: DeleteAccount },
 ];
 
