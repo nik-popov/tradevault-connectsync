@@ -11,7 +11,6 @@ import {
   Tr,
   Tbody,
   Th,
-  Badge,
   Td,
   TabList,
   TabPanels,
@@ -19,6 +18,7 @@ import {
   Table,
   Thead,
   TabPanel,
+  Progress,
 } from "@chakra-ui/react";
 import { useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
@@ -46,6 +46,7 @@ const proxyPricing = {
 
 const PricingPage = () => {
   const [selectedProduct, setSelectedProduct] = useState("Residential");
+  const [usageProgress, setUsageProgress] = useState(0);
 
   return (
     <Container maxW="full" py={10}>
@@ -56,6 +57,10 @@ const PricingPage = () => {
         </Box>
       </Flex>
       <Divider my={4} />
+      <Box mb={6}>
+        <Text fontSize="md" fontWeight="bold">Usage Progress (Higher Usage = Better Rates)</Text>
+        <Progress colorScheme="blue" size="lg" value={usageProgress} />
+      </Box>
       <Tabs variant="enclosed" onChange={(index) => setSelectedProduct(Object.keys(proxyPricing)[index])}>
         <TabList>
           {Object.keys(proxyPricing).map((product) => (
