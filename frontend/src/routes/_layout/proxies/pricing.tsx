@@ -19,7 +19,6 @@ import {
   Thead,
   TabPanel,
   useColorModeValue,
-  Badge,
 } from "@chakra-ui/react";
 import { useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
@@ -48,15 +47,16 @@ const proxyPricing = {
 
 const PricingPage = () => {
   const [selectedProduct, setSelectedProduct] = useState("Residential");
-  const tabBg = useColorModeValue("gray.700", "gray.800");
+  const tabBg = useColorModeValue("gray.800", "gray.900");
   const tabColor = "white";
-  const tabHoverBg = useColorModeValue("gray.600", "gray.700");
+  const tabSelectedBg = useColorModeValue("gray.700", "gray.800");
 
   const productIcons = {
     Residential: <FaCloud size={18} />, 
     "Residential Mobile": <FaMobileAlt size={18} />, 
     Datacenter: <FaNetworkWired size={18} />,
   };
+
   return (
     <Container maxW="full" py={10}>
       <Flex align="center" justify="space-between" py={6} flexWrap="wrap" gap={4}>
@@ -66,25 +66,13 @@ const PricingPage = () => {
         </Box>
       </Flex>
       <Divider my={4} />
-      <VStack spacing={6} align="stretch" mb={6}>
-        <Box p={4} borderWidth="1px" borderRadius="md">
-          <Text fontSize="lg" fontWeight="bold">Better Rates Over Time</Text>
-          <Text fontSize="sm">As you use more bandwidth, you unlock lower pricing tiers, ensuring the best rates for high-volume users.</Text>
-        </Box>
-        <Box p={4} borderWidth="1px" borderRadius="md">
-          <Text fontSize="lg" fontWeight="bold">Scalable Plans</Text>
-          <Text fontSize="sm">Upgrade seamlessly as your needs grow. Flexible pricing ensures cost efficiency for all user levels.</Text>
-        </Box>
-        <Box p={4} borderWidth="1px" borderRadius="md">
-          <Text fontSize="lg" fontWeight="bold">Enterprise Discounts</Text>
-          <Text fontSize="sm">Custom pricing is available for high-volume clients with special requirements. Contact our sales team for exclusive offers.</Text>
-        </Box>
-      </VStack>
-      <Tabs variant="soft-rounded" colorScheme="blue" onChange={(index) => setSelectedProduct(Object.keys(proxyPricing)[index])}>
-        <TabList>
+      <Tabs variant="unstyled" colorScheme="blue" onChange={(index) => setSelectedProduct(Object.keys(proxyPricing)[index])}>
+        <TabList display="flex" justifyContent="center" gap={3}>
           {Object.keys(proxyPricing).map((product) => (
-            <Tab key={product} bg={tabBg} color={tabColor} px={4} py={2} borderRadius="md" _selected={{ color: "white" }} _hover={{ bg: tabHoverBg }}>
-              {product.replace(" ", " \u2022 ")}
+            <Tab key={product} bg={tabBg} color={tabColor} px={5} py={3} borderRadius="lg" fontSize="sm" fontWeight="bold" _selected={{ bg: tabSelectedBg }}>
+              <HStack spacing={2}>
+                {productIcons[product]} <Text>{product}</Text>
+              </HStack>
             </Tab>
           ))}
         </TabList>
