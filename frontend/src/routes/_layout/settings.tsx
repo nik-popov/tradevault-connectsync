@@ -35,6 +35,10 @@ export const Route = createFileRoute("/_layout/settings")({
 function UserSettings() {
   const queryClient = useQueryClient();
   const currentUser = queryClient.getQueryData<UserPublic>(["currentUser"]);
+  if (!currentUser) {
+    return <p>Loading user data...</p>;
+  }
+  
   const finalTabs = currentUser?.is_superuser
   ? [...tabsConfig.slice(0, 3), tabsConfig[4]] // Ensures Subscription tab is included for superusers
   : tabsConfig;
@@ -51,9 +55,10 @@ function UserSettings() {
         </TabList>
         <TabPanels>
           {finalTabs.map((tab, index) => (
-            <TabPanel key={index}>
-              <tab.component /> {/* ✅ Correct usage of a React component */}
-            </TabPanel>
+      <TabPanel key={index}>
+      {React.createElement(tab.component)}
+    </TabPanel>
+    
           ))}
         </TabPanels>
       </Tabs>
