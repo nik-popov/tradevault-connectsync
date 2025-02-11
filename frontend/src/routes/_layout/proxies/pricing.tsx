@@ -123,7 +123,7 @@ function Pricing() {
       ) : (
         <Flex mt={6} gap={6} justify="space-between">
           <Box flex="1">
-            <Tabs variant="soft-rounded" colorScheme="gray" bg="gray.700" borderRadius="md" p={4}>
+            <Tabs variant="soft-rounded" colorScheme="gray" bg="gray.800" borderRadius="md" p={4}>
               <TabList bg="gray.700" borderRadius="md">
                 {tabsConfig.map((tab, index) => (
                   <Tab
