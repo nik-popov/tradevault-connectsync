@@ -1,28 +1,25 @@
-import React, { useState } from 'react';
 import {
-  Box,
-  Button,
-  Text,
-  Heading,
-  Grid,
-  GridItem,
-  VStack,
-  Badge,
-  Tabs,
-  Tab,
-  TabList,
-  TabPanel,
-  TabPanels,
-  Divider,
   Container,
-  Table,
-  Thead,
-  Tbody,
+  Box,
+  Text,
+  Button,
+  VStack,
+  HStack,
+  Divider,
+  Flex,
+  Tabs,
   Tr,
+  Tbody,
   Th,
   Td,
+  TabList,
+  TabPanels,
+  Tab,
+  Table,
+  Thead,
+  TabPanel,
 } from "@chakra-ui/react";
-import { useNavigate } from '@tanstack/react-router';
+import { useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 
 const proxyPricing = {
@@ -48,16 +45,18 @@ const proxyPricing = {
 
 const PricingPage = () => {
   const [selectedProduct, setSelectedProduct] = useState("Residential");
-  const navigate = useNavigate();
 
   return (
-    <Container maxW="6xl" py={10}>
-      <Heading size="lg" textAlign="center" mb={8}>
-        Proxy Pricing Plans
-      </Heading>
-      
-      <Tabs variant="solid-rounded" colorScheme="blue" onChange={(index) => setSelectedProduct(Object.keys(proxyPricing)[index])}>
-        <TabList justifyContent="center" flexWrap="wrap">
+    <Container maxW="full" py={10}>
+      <Flex align="center" justify="space-between" py={6} flexWrap="wrap" gap={4}>
+        <Box textAlign="left" flex="1">
+          <Text fontSize="xl" fontWeight="bold">Proxy Pricing Plans</Text>
+          <Text fontSize="sm">Compare our flexible and scalable pricing options.</Text>
+        </Box>
+      </Flex>
+      <Divider my={4} />
+      <Tabs variant="enclosed" onChange={(index) => setSelectedProduct(Object.keys(proxyPricing)[index])}>
+        <TabList>
           {Object.keys(proxyPricing).map((product) => (
             <Tab key={product}>{product}</Tab>
           ))}
