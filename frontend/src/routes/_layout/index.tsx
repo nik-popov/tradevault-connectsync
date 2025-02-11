@@ -7,6 +7,7 @@ import { useState, useMemo } from "react";
 import useAuth from "../../hooks/useAuth";
 import { useQuery } from "@tanstack/react-query";
 import SubscriptionManagement from "../../components/UserSettings/SubscriptionManagement";
+import { Box, Container } from "@chakra-ui/react";
 
 export const Route = createFileRoute("/_layout/")({
   component: Dashboard,
