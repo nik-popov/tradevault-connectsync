@@ -115,7 +115,7 @@ const PromoDatasets: React.FC = () => {
           {/* Dataset Categories Section */}
           <Grid templateColumns={{ base: "1fr", md: "repeat(2, 1fr)" }} gap={6} mt={6}>
             {datasetCategories.map((dataset, index) => (
-              <GridItem key={index} p={5} borderRadius="lg" boxShadow="md" _hover={{ boxShadow: "lg" }} bg="gray.700">
+              <GridItem key={index} p={5} borderRadius="lg" boxShadow="md" _hover={{ boxShadow: "lg" }} bg="gray.600">
                 <Flex align="center" mb={3}>
                   <Icon as={dataset.icon} boxSize={6} color="blue.400" mr={3} />
                   <Text fontSize="md" fontWeight="semibold" color="gray.200">{dataset.name}</Text>
