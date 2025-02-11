@@ -83,11 +83,6 @@ function Pricing() {
 
   const tabsConfig = [
     { title: "Pricing", component: <PricingChart /> },
-    { title: "Endpoints", component: <ProxySettings /> },
-    { title: "Usage", component: <ProxyUsage /> },
-    { title: "Top-Ups", component: <TopUps /> },
-    { title: "Connections", component: <Connections /> },
-    { title: "Logs", component: <Logs /> },
   ];
 
   return (
