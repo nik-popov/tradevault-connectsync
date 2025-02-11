@@ -34,7 +34,7 @@ import ProxyUsage from "../../../components/ProxyUsage";
 
 /* 
   Expanded Inline Proxy Components 
-  Replace the dummy data and logic with your actual API calls or state management as needed.
+  Replace dummy data and logic with your actual API calls or state management as needed.
 */
 
 // Top-Ups Component
@@ -132,27 +132,62 @@ const Logs = () => {
   );
 };
 
-// Key Management Component
+// Improved Key Management Component
 const KeyManagement = () => {
-  const [newKey, setNewKey] = useState("");
-  const dummyKeys = [
+  const [keys, setKeys] = useState([
     { id: 1, value: "abc123" },
     { id: 2, value: "def456" },
-  ];
+  ]);
+  const [newKey, setNewKey] = useState("");
+
+  const addKey = () => {
+    if (!newKey.trim()) return; // Avoid adding empty keys
+    const nextId = keys.length ? Math.max(...keys.map((k) => k.id)) + 1 : 1;
+    setKeys([...keys, { id: nextId, value: newKey }]);
+    setNewKey("");
+  };
+
+  const deleteKey = (id: number) => {
+    setKeys(keys.filter((key) => key.id !== id));
+  };
 
   return (
     <Box p={4} borderWidth="1px" borderRadius="md">
       <Text fontSize="xl" mb={4}>Key Management</Text>
-      <VStack align="stretch">
-        {dummyKeys.map((key) => (
-          <Text key={key.id}>{key.value}</Text>
-        ))}
-        <Input
-          placeholder="New Key"
-          value={newKey}
-          onChange={(e) => setNewKey(e.target.value)}
-        />
-        <Button mt={2} colorScheme="blue">Add Key</Button>
+      <VStack align="stretch" spacing={3}>
+        {keys.length > 0 ? (
+          keys.map((key) => (
+            <Flex
+              key={key.id}
+              align="center"
+              justify="space-between"
+              p={2}
+              borderWidth="1px"
+              borderRadius="md"
+            >
+              <Text>{key.value}</Text>
+              <Button
+                size="xs"
+                colorScheme="red"
+                onClick={() => deleteKey(key.id)}
+              >
+                Delete
+              </Button>
+            </Flex>
+          ))
+        ) : (
+          <Text>No keys available.</Text>
+        )}
+        <HStack>
+          <Input
+            placeholder="Enter new key"
+            value={newKey}
+            onChange={(e) => setNewKey(e.target.value)}
+          />
+          <Button colorScheme="blue" onClick={addKey}>
+            Add Key
+          </Button>
+        </HStack>
       </VStack>
     </Box>
   );
@@ -187,7 +222,7 @@ function ResidentialProxy() {
     isDeactivated: false,
   });
 
-  // Load subscription settings from localStorage (or React Query cache)
+  // Load subscription settings from localStorage or React Query cache
   useEffect(() => {
     const storedSettings = localStorage.getItem("subscriptionSettings");
     if (storedSettings) {
@@ -203,7 +238,9 @@ function ResidentialProxy() {
   const { hasSubscription, isTrial, isDeactivated } = subscriptionSettings;
 
   // Define restricted tabs based on subscription state
-  const restrictedTabs = isTrial ? ["Key Management", "Logs", "Top-Ups", "Connections"] : [];
+  const restrictedTabs = isTrial
+    ? ["Key Management", "Logs", "Top-Ups", "Connections"]
+    : [];
   const isLocked = !hasSubscription && !isTrial;
 
   // Define tabs configuration with inline components
@@ -243,7 +280,9 @@ function ResidentialProxy() {
         <PromoContent />
       ) : isDeactivated ? (
         <Box mt={6}>
-          <Text>Your subscription has expired. Please renew to access all features.</Text>
+          <Text>
+            Your subscription has expired. Please renew to access all features.
+          </Text>
           <ReactivationOptions />
         </Box>
       ) : (
@@ -260,7 +299,10 @@ function ResidentialProxy() {
             <Tabs variant="enclosed">
               <TabList>
                 {tabsConfig.map((tab, index) => (
-                  <Tab key={index} isDisabled={restrictedTabs.includes(tab.title)}>
+                  <Tab
+                    key={index}
+                    isDisabled={restrictedTabs.includes(tab.title)}
+                  >
                     {tab.title}
                   </Tab>
                 ))}
@@ -285,14 +327,26 @@ function ResidentialProxy() {
               <Box p={4} shadow="sm" borderWidth="1px" borderRadius="lg">
                 <Text fontWeight="bold">Pick by Your Target</Text>
                 <Text fontSize="sm">Not sure which product to choose?</Text>
-                <Button mt={2} leftIcon={<FiSend />} size="sm" variant="outline">
+                <Button
+                  mt={2}
+                  leftIcon={<FiSend />}
+                  size="sm"
+                  variant="outline"
+                >
                   Send Test Request
                 </Button>
               </Box>
               <Box p={4} shadow="sm" borderWidth="1px" borderRadius="lg">
                 <Text fontWeight="bold">GitHub</Text>
-                <Text fontSize="sm">Explore integration guides and open-source projects.</Text>
-                <Button mt={2} leftIcon={<FiGithub />} size="sm" variant="outline">
+                <Text fontSize="sm">
+                  Explore integration guides and open-source projects.
+                </Text>
+                <Button
+                  mt={2}
+                  leftIcon={<FiGithub />}
+                  size="sm"
+                  variant="outline"
+                >
                   Join GitHub
                 </Button>
               </Box>
