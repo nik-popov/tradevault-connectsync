@@ -312,9 +312,7 @@ const ReactivationOptions = () => {
   
     // Load current user data
     const currentUser = JSON.parse(localStorage.getItem("currentUser") || "null");
-  
-  
-  const { hasSubscription, isTrial, isDeactivated } = subscriptionSettings;
+
   // Define restricted tabs when in trial mode
   const restrictedTabs = isTrial
     ? ["Key Management", "Logs", "Top-Ups", "Connections"]
