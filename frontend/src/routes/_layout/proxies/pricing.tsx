@@ -18,7 +18,6 @@ import {
   Table,
   Thead,
   TabPanel,
-  Badge,
   useColorModeValue,
 } from "@chakra-ui/react";
 import { useState } from "react";
@@ -60,17 +59,14 @@ const PricingPage = () => {
 
   return (
     <Container maxW="full" py={10}>
-      <Flex align="center" justify="space-between" py={6} flexWrap="wrap" gap={4}>
-        <Box textAlign="left" flex="1">
-          <Text fontSize="xl" fontWeight="bold">Proxy Pricing Plans</Text>
-          <Text fontSize="sm">Compare our flexible and scalable pricing options.</Text>
-        </Box>
-      </Flex>
-      <Divider my={4} />
+      <Box bg="gray.800" py={4} px={6} borderRadius="md" mb={6}>
+        <Text fontSize="lg" fontWeight="bold" color="white">Proxy Pricing Plans</Text>
+        <Text fontSize="sm" color="gray.400">Compare our flexible and scalable pricing options.</Text>
+      </Box>
       <Tabs variant="unstyled" colorScheme="blue" onChange={(index) => setSelectedProduct(Object.keys(proxyPricing)[index])}>
-        <TabList display="flex" justifyContent="center" gap={3}>
+        <TabList flexDirection="column" alignItems="flex-start" gap={2}>
           {Object.keys(proxyPricing).map((product) => (
-            <Tab key={product} bg={tabBg} color={tabColor} px={5} py={3} borderRadius="lg" fontSize="sm" fontWeight="bold" _selected={{ bg: tabSelectedBg }}>
+            <Tab key={product} bg={tabBg} color={tabColor} px={4} py={2} borderRadius="md" fontSize="sm" fontWeight="bold" _selected={{ bg: tabSelectedBg }}>
               <HStack spacing={2}>
                 {productIcons[product]} <Text>{product}</Text>
               </HStack>
@@ -100,7 +96,7 @@ const PricingPage = () => {
                       <Td>{tier.trafficLimit}</Td>
                       <Td>
                         {tier.pricePerGB === "Custom Pricing" ? (
-                          <Button colorScheme="blue" variant="outline" size="sm">Contact Sales</Button>
+                          <Button colorScheme="blue" size="sm">Contact Sales</Button>
                         ) : (
                           <Button colorScheme="blue" size="sm">Choose Plan</Button>
                         )}
