@@ -81,7 +81,19 @@ const PromoSERP: React.FC = () => {
             </Box>
           </Grid>
         </Box>
-
+          <Box bg="blue.800" color="gray.300" borderRadius="md" p={5} boxShadow="lg" textAlign="left" display="flex" flexDirection="column" justifyContent="center">
+              <Heading as="h2" size="md" fontWeight="light" color="gray.100">
+                Start Your Free Trial Today!
+              </Heading>
+              <Text fontSize="xs" my={2} color="gray.300">
+                Get full access to our proxies with a 7-day free trial. No credit card required!
+              </Text>
+              <Button bg="blue.600" color="gray.100" _hover={{ bg: "blue.500" }} variant="solid" onClick={() => navigate('/signup')} size="sm">
+                Sign Up for Free
+              </Button>
+            </Box>
+          </Grid>
+        </Box>
         <Box bg="gray.700" py={10} px={6} borderRadius="md" boxShadow="lg">
           <Grid templateColumns={{ base: "1fr", md: "repeat(2, 1fr)" }} gap={6} mt={6}>
             {features.map((feature, index) => (
