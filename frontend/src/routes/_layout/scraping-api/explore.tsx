@@ -16,7 +16,8 @@ import {
   Tooltip,
   Select,
   Alert,
-  AlertIcon
+  AlertIcon,
+  HStack
 } from "@chakra-ui/react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { FiSearch, FiSend, FiGithub } from "react-icons/fi";
@@ -76,6 +77,22 @@ const Explore = () => {
         </Button>
       </Box>
 
+      {/* Toggle Section */}
+      <Flex justify="space-between" py={6} flexWrap="wrap" gap={4}>
+        <HStack>
+          <Text fontWeight="bold">Subscription:</Text>
+          <Switch isChecked={hasSubscription} onChange={() => setHasSubscription(!hasSubscription)} />
+        </HStack>
+        <HStack>
+          <Text fontWeight="bold">Trial Mode:</Text>
+          <Switch isChecked={isTrial} onChange={() => setIsTrial(!isTrial)} />
+        </HStack>
+        <HStack>
+          <Text fontWeight="bold">Deactivated:</Text>
+          <Switch isChecked={isDeactivated} onChange={() => setIsDeactivated(!isDeactivated)} />
+        </HStack>
+      </Flex>
+
       {/* Subscription Alerts */}
       {isLocked ? (
         <Alert status="warning" borderRadius="md" mt={4}>
@@ -117,10 +134,6 @@ const Explore = () => {
                 </Button>
               ))}
             </Stack>
-            <Flex align="center">
-              <Text fontWeight="bold" mr={2}>Owned Only</Text>
-              <Switch isChecked={ownedOnly} onChange={() => setOwnedOnly(prev => !prev)} colorScheme="blue" />
-            </Flex>
           </Flex>
 
           <Divider my={4} />
