@@ -66,13 +66,13 @@ const PromoDatasets: React.FC = () => {
       <VStack spacing={6} align="stretch">
 
         {/* 🚀 Alert Goes to the Top */}
-        <Alert status="info" borderRadius="md" bg="gray.800" color="gray.300">
+        <Alert status="info" borderRadius="md" bg="gray.700" color="gray.300">
           <AlertIcon color="blue.500" />
           <Text fontSize="sm">All datasets are optimized for high-speed querying and secure data access.</Text>
         </Alert>
 
         {/* Title & Free Trial Section */}
-        <Box w="100%" py={6} bg="gray.800" borderRadius="md" boxShadow="lg" px={6}>
+        <Box w="100%" py={6} bg="gray.700" borderRadius="md" boxShadow="lg" px={6}>
           <Grid templateColumns={{ base: "1fr", md: "1fr 1fr" }} gap={6} alignItems="center">
             {/* Left: Title & Subtitle Together */}
             <Box>
@@ -110,7 +110,7 @@ const PromoDatasets: React.FC = () => {
         </Box>
 
         {/* 📌 Layered Background for Main Content */}
-        <Box bg="gray.800" py={10} px={6} borderRadius="md" boxShadow="lg">
+        <Box bg="gray.700" py={10} px={6} borderRadius="md" boxShadow="lg">
           
           {/* Dataset Categories Section */}
           <Grid templateColumns={{ base: "1fr", md: "repeat(2, 1fr)" }} gap={6} mt={6}>
