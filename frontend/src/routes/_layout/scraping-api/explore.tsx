@@ -57,6 +57,7 @@ function Explore() {
 
   // 🔍 Mock API Data
   const apis = [
+    // SEARCH & DISCOVERY
     {
       id: "google-serp-api",
       name: "Google Search API",
@@ -64,19 +65,75 @@ function Explore() {
       description: "Fetches real-time search results from Google.",
       details: {
         endpoint: "/apis/google-serp",
-        example: `GET /apis/google-serp?query=OpenAI`,
+        example: "GET /apis/google-serp?query=OpenAI",
       },
     },
     {
+      id: "bing-api",
+      name: "Bing Search API",
+      category: "search",
+      description: "Retrieves search results and related data from Bing.",
+      details: {
+        endpoint: "/apis/bing",
+        example: "GET /apis/bing?query=artificial+intelligence",
+      },
+    },
+  
+    // LEAD GENERATION
+    {
+      id: "sales-leads-api",
+      name: "B2B Sales Leads API",
+      category: "lead_generation",
+      description: "Generates qualified B2B sales leads with contact information.",
+      details: {
+        endpoint: "/apis/sales-leads",
+        example: "GET /apis/sales-leads?industry=technology&role=CTO",
+      },
+    },
+    {
+      id: "email-verification-api",
+      name: "Email Verification API",
+      category: "lead_generation",
+      description: "Verifies email addresses and enriches contact data.",
+      details: {
+        endpoint: "/apis/email-verify",
+        example: "GET /apis/email-verify?email=contact@company.com",
+      },
+    },
+    {
+      id: "website-visitor-api",
+      name: "Website Visitor Intelligence API",
+      category: "lead_generation",
+      description: "Identifies companies visiting your website and their interests.",
+      details: {
+        endpoint: "/apis/visitor-intel",
+        example: "GET /apis/visitor-intel?domain=example.com",
+      },
+    },
+  
+    // SOCIAL MEDIA
+    {
       id: "linkedin-api",
       name: "LinkedIn Scraping API",
-      category: "social media",
+      category: "social",
       description: "Scrapes public LinkedIn profiles, job postings, and company data.",
       details: {
         endpoint: "/apis/linkedin",
-        example: `GET /apis/linkedin?profile_id=12345`,
+        example: "GET /apis/linkedin?profile_id=12345",
       },
     },
+    {
+      id: "twitter-api",
+      name: "Twitter Scraping API",
+      category: "social",
+      description: "Scrapes tweets, user profiles, and trends from Twitter.",
+      details: {
+        endpoint: "/apis/twitter",
+        example: "GET /apis/twitter?username=elonmusk",
+      },
+    },
+  
+    // E-COMMERCE
     {
       id: "amazon-product-api",
       name: "Amazon Product API",
@@ -84,11 +141,162 @@ function Explore() {
       description: "Fetches product details, reviews, and price history from Amazon.",
       details: {
         endpoint: "/apis/amazon-product",
-        example: `GET /apis/amazon-product?product_id=B08L5VG4RZ`,
+        example: "GET /apis/amazon-product?product_id=B08L5VG4RZ",
       },
     },
+    {
+      id: "shopify-store-api",
+      name: "Shopify Store API",
+      category: "ecommerce",
+      description: "Fetches product data from any Shopify store.",
+      details: {
+        endpoint: "/apis/shopify",
+        example: "GET /apis/shopify?store=example-store&product_id=123",
+      },
+    },
+  
+    // REAL ESTATE
+    {
+      id: "property-listings-api",
+      name: "Property Listings API",
+      category: "real_estate",
+      description: "Aggregates real estate listings from multiple sources.",
+      details: {
+        endpoint: "/apis/properties",
+        example: "GET /apis/properties?location=Miami&type=residential",
+      },
+    },
+    {
+      id: "property-valuation-api",
+      name: "Property Valuation API",
+      category: "real_estate",
+      description: "Provides property valuations and market analysis.",
+      details: {
+        endpoint: "/apis/valuation",
+        example: "GET /apis/valuation?address=123+Main+St",
+      },
+    },
+    {
+      id: "mortgage-api",
+      name: "Mortgage Data API",
+      category: "real_estate",
+      description: "Fetches mortgage rates and lending information.",
+      details: {
+        endpoint: "/apis/mortgage",
+        example: "GET /apis/mortgage?loan_type=30year_fixed",
+      },
+    },
+  
+    // FINANCE & MARKETS
+    {
+      id: "crypto-api",
+      name: "Cryptocurrency Market API",
+      category: "finance",
+      description: "Fetches real-time cryptocurrency prices and trends.",
+      details: {
+        endpoint: "/apis/crypto",
+        example: "GET /apis/crypto?symbol=BTC",
+      },
+    },
+    {
+      id: "stock-market-api",
+      name: "Stock Market API",
+      category: "finance",
+      description: "Real-time stock prices and market data.",
+      details: {
+        endpoint: "/apis/stocks",
+        example: "GET /apis/stocks?symbol=AAPL",
+      },
+    },
+  
+    // TRAVEL & HOSPITALITY
+    {
+      id: "flight-api",
+      name: "Flight Data API",
+      category: "travel",
+      description: "Fetches real-time flight statuses and pricing.",
+      details: {
+        endpoint: "/apis/flight",
+        example: "GET /apis/flight?flight_no=AA100",
+      },
+    },
+    {
+      id: "hotel-booking-api",
+      name: "Hotel Booking API",
+      category: "travel",
+      description: "Searches and books hotels worldwide.",
+      details: {
+        endpoint: "/apis/hotels",
+        example: "GET /apis/hotels?city=Paris",
+      },
+    },
+  
+    // ENTERTAINMENT & MEDIA
+    {
+      id: "streaming-api",
+      name: "Streaming Services API",
+      category: "entertainment",
+      description: "Aggregates content from major streaming platforms.",
+      details: {
+        endpoint: "/apis/streaming",
+        example: "GET /apis/streaming?title=Stranger+Things",
+      },
+    },
+    {
+      id: "gaming-api",
+      name: "Gaming Platform API",
+      category: "entertainment",
+      description: "Retrieves game data from major gaming platforms.",
+      details: {
+        endpoint: "/apis/gaming",
+        example: "GET /apis/gaming?game=Fortnite",
+      },
+    },
+  
+    // BUSINESS INTELLIGENCE
+    {
+      id: "company-data-api",
+      name: "Company Intelligence API",
+      category: "business",
+      description: "Provides company information and financials.",
+      details: {
+        endpoint: "/apis/company",
+        example: "GET /apis/company?name=Apple+Inc",
+      },
+    },
+    {
+      id: "market-research-api",
+      name: "Market Research API",
+      category: "business",
+      description: "Delivers industry trends and market analysis.",
+      details: {
+        endpoint: "/apis/market-research",
+        example: "GET /apis/market-research?industry=Technology",
+      },
+    },
+  
+    // ANALYTICS & RESEARCH
+    {
+      id: "web-analytics-api",
+      name: "Web Analytics API",
+      category: "analytics",
+      description: "Aggregates website traffic and user behavior data.",
+      details: {
+        endpoint: "/apis/analytics",
+        example: "GET /apis/analytics?website=example.com",
+      },
+    },
+    {
+      id: "competitive-analysis-api",
+      name: "Competitive Analysis API",
+      category: "analytics",
+      description: "Analyzes competitor websites, pricing, and strategies.",
+      details: {
+        endpoint: "/apis/competitive",
+        example: "GET /apis/competitive?competitor=competitor.com",
+      },
+    }
   ];
-
   const categories = ["all", ...new Set(apis.map((api) => api.category))];
 
   // 🔄 Filtered API List
