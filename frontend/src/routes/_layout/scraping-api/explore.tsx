@@ -16,7 +16,7 @@ import {
   HStack,
   Input,
   Heading,
-  Stack
+  Stack, // ✅ FIXED: Import Stack properly
 } from "@chakra-ui/react";
 import { createFileRoute } from "@tanstack/react-router";
 import { useQueryClient } from "@tanstack/react-query";
@@ -29,7 +29,6 @@ function Explore() {
   const queryClient = useQueryClient();
   const currentUser = queryClient.getQueryData(["currentUser"]);
 
-  // 🔄 User is not loaded yet
   if (!currentUser) {
     return (
       <Container maxW="full">
@@ -41,7 +40,7 @@ function Explore() {
     );
   }
 
-  // ✅ State Toggles (For Debugging & Control)
+  // ✅ State Toggles (Debugging & Control)
   const [hasSubscription, setHasSubscription] = useState(false);
   const [isTrial, setIsTrial] = useState(false);
   const [isDeactivated, setIsDeactivated] = useState(false);
@@ -58,10 +57,7 @@ function Explore() {
     { id: "google", name: "Google Search API", type: "search", owned: ownedApis.includes("google"), description: "Fetches real-time search results from Google." },
     { id: "bing", name: "Bing Search API", type: "search", owned: ownedApis.includes("bing"), description: "Provides search results from Bing, including images and news." },
     { id: "real-estate", name: "Real Estate Data API", type: "real estate", owned: ownedApis.includes("real-estate"), description: "Get property listings, pricing trends, and real estate analytics." },
-    { id: "ecommerce", name: "E-commerce Scraper API", type: "e-commerce", owned: ownedApis.includes("ecommerce"), description: "Extract product data from e-commerce platforms like Amazon and eBay." },
     { id: "finance", name: "Financial Data API", type: "finance", owned: ownedApis.includes("finance"), description: "Access stock market trends, forex rates, and economic indicators." },
-    { id: "healthcare", name: "Healthcare Data API", type: "healthcare", owned: ownedApis.includes("healthcare"), description: "Retrieve medical research, pharmaceutical pricing, and health trends." },
-    { id: "travel", name: "Travel Deals API", type: "travel", owned: ownedApis.includes("travel"), description: "Find flight deals, hotel prices, and travel packages." }
   ];
 
   const industries = ["All", "Owned", ...new Set(proxyProducts.map(api => api.type))];
