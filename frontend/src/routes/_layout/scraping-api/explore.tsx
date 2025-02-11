@@ -158,7 +158,6 @@ function Explore() {
 // ✅ API List Item Component with Locked APIs
 const ApiListItem = ({ api, navigate, hasSubscription, isTrial }) => {
   const [isExpanded, setIsExpanded] = useState(false);
-
   const isApiLocked = api.isLocked && (isTrial || !hasSubscription);
 
   return (
@@ -173,32 +172,9 @@ const ApiListItem = ({ api, navigate, hasSubscription, isTrial }) => {
             {isExpanded ? "Less" : "More"}
           </Button>
           {isApiLocked ? (
-            <Button
-              size="sm"
-              variant="outline"
-              colorScheme="gray"
-              disabled
-              leftIcon={<FiX />}
-              _hover={{ bg: "gray.200", cursor: "not-allowed" }}
-              _disabled={{
-                bg: "gray.200",
-                borderColor: "gray.200",
-                color: "gray.500",
-                cursor: "not-allowed",
-              }}
-            >
-              Locked
-            </Button>
+            <Button size="sm" variant="outline" colorScheme="gray" disabled leftIcon={<FiX />}>Locked</Button>
           ) : (
-            <Button
-              size="sm"
-              variant="solid"
-              colorScheme="green"
-              leftIcon={<FiSend />}
-              onClick={() => navigate(`/scraping-api/${api.id}`)}
-            >
-              View
-            </Button>
+            <Button size="sm" variant="solid" colorScheme="green" leftIcon={<FiSend />} onClick={() => navigate(`/scraping-api/${api.id}`)}>View</Button>
           )}
         </HStack>
       </Flex>
