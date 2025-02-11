@@ -1,6 +1,5 @@
 import {
   Container,
-  Heading,
   Tab,
   TabList,
   TabPanel,
@@ -11,7 +10,6 @@ import {
   Button,
   VStack,
   HStack,
-  Divider,
   Flex,
   Switch,
 } from "@chakra-ui/react";
@@ -24,14 +22,7 @@ import PromoContent from "../../../components/PromoContent";
 import ProxyStarted from "../../../components/ProxyStarted";
 import ProxySettings from "../../../components/ProxySettings";
 import ProxyUsage from "../../../components/ProxyUsage";
-
-// Dummy data for example purposes
-const KeyManagement = () => (
-  <Box p={4} borderWidth="1px" borderRadius="md">
-    <Text fontSize="xl" mb={4}>Key Management</Text>
-    <Button colorScheme="blue">Manage Keys</Button>
-  </Box>
-);
+import KeyManagement from "../../../components/KeyManagement";
 
 function ResidentialProxy() {
   const queryClient = useQueryClient();
@@ -53,7 +44,6 @@ function ResidentialProxy() {
     }
   }, [queryClient]);
 
-  // Load current user data
   const currentUser = useMemo(() => {
     try {
       return JSON.parse(localStorage.getItem("currentUser") || "{}");
@@ -65,77 +55,45 @@ function ResidentialProxy() {
   const { hasSubscription, isTrial, isDeactivated } = subscriptionSettings;
   const isLocked = !hasSubscription && !isTrial;
 
-  const tabsConfig = [
-    { title: "Get Started", component: <ProxyStarted /> },
-    { title: "Endpoints", component: <ProxySettings /> },
-    { title: "Usage", component: <ProxyUsage /> },
-    { title: "Key Management", component: <KeyManagement /> },
-  ];
-
   return (
     <Container maxW="full" overflowX="hidden">
       <Flex align="center" justify="space-between" py={6} flexWrap="wrap">
-        {/* Welcome Message and Subtitle */}
         <VStack align="left">
-          <Text fontSize="2xl" fontWeight="bold">Welcome to Residential Proxies</Text>
-          <Text fontSize="md">Manage your proxy settings with ease.</Text>
+          <Text fontSize="2xl" fontWeight="bold">Hi, {currentUser.full_name || 'User'}!</Text>
+          <Text fontSize="md">Explore your proxy settings and manage your connections seamlessly.</Text>
         </VStack>
         <HStack spacing={6}>
-          <HStack>
-            <Text fontWeight="bold">Subscription:</Text>
-            <Switch isChecked={hasSubscription} isDisabled />
-          </HStack>
-          <HStack>
-            <Text fontWeight="bold">Trial Mode:</Text>
-            <Switch isChecked={isTrial} isDisabled />
-          </HStack>
-          <HStack>
-            <Text fontWeight="bold">Deactivated:</Text>
-            <Switch isChecked={isDeactivated} isDisabled />
-          </HStack>
+          <Switch isChecked={hasSubscription} isDisabled />
+          <Text fontWeight="bold">Subscription</Text>
+          <Switch isChecked={isTrial} isDisabled />
+          <Text fontWeight="bold">Trial Mode</Text>
+          <Switch isChecked={isDeactivated} isDisabled />
+          <Text fontWeight="bold">Deactivated</Text>
         </HStack>
       </Flex>
 
       {isLocked ? (
         <PromoContent />
       ) : (
-        <Flex mt={6} gap={6} justify="space-between">
-          {/* Main Content */}
-          <Box flex="1">
-            <VStack spacing={6} mt={6} align="stretch">
-              {tabsConfig.map((tab, index) => (
-                <TabPanel key={index}>
-                  {tab.component}
-                </TabPanel>
-              ))}
-            </VStack>
-          </Box>
-
-          {/* Sidebar */}
-          <Box w="250px" p="4" borderLeft="1px solid #E2E8F0">
-            <VStack spacing="4" align="stretch">
-              <Box p="4" shadow="sm" borderWidth="1px" borderRadius="lg">
-                <Text fontWeight="bold">Quick Actions</Text>
-                <Button
-                  as="a"
-                  href="https://github.com/CobaltDataNet"
-                  leftIcon={<FiGithub />}
-                  variant="outline"
-                  size="sm"
-                  mt="2"
-                >
-                  GitHub Discussions
-                </Button>
-              </Box>
-            </VStack>
-          </Box>
-        </Flex>
+        <Tabs variant="enclosed">
+          <TabList>
+            <Tab>Get Started</Tab>
+            <Tab>Endpoints</Tab>
+            <Tab>Usage</Tab>
+            <Tab>Key Management</Tab>
+          </TabList>
+          <TabPanels>
+            <TabPanel><ProxyStarted /></TabPanel>
+            <TabPanel><ProxySettings /></TabPanel>
+            <TabPanel><ProxyUsage /></TabPanel>
+            <TabPanel><KeyManagement /></TabPanel>
+          </TabPanels>
+        </Tabs>
       )}
     </Container>
   );
 }
 
-// Export Route AFTER the component definition
 export const Route = createFileRoute("/_layout/proxies/residential")({
   component: ResidentialProxy,
 });
