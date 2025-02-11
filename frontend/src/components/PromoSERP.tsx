@@ -95,8 +95,8 @@ const PromoSERP: React.FC = () => {
 
         {/* Pricing Plans Section */}
         <Heading as="h2" size="lg" fontWeight="bold" mb={4}>API Pricing Plans</Heading>
-        <Grid templateColumns={{ base: "1fr", md: "repeat(3, 1fr)" }} gap={6}>
-          {pricingPlans.slice(0, 3).map((plan, index) => (
+        <Grid templateColumns={{ base: "1fr", md: "repeat(4, 1fr)" }} gap={6}>
+          {pricingPlans.map((plan, index) => (
             <Box key={index} position="relative">
               {/* Badge (if applicable) */}
               {plan.badge && (
@@ -142,60 +142,18 @@ const PromoSERP: React.FC = () => {
 
                 {/* Price Display */}
                 <Text fontSize="2xl" fontWeight="bold" mb={1}>
-                  {plan.price}
-                  <Text as="span" fontSize="lg" color="gray.500">/mo</Text>
+                  {plan.price === "Custom" ? "Contact Us" : plan.price}
+                  {plan.price !== "Custom" && <Text as="span" fontSize="lg" color="gray.500">/mo</Text>}
                 </Text>
 
-                {/* CTA Button */}
-                <Button w="full" colorScheme="blue" variant={plan.buttonVariant} onClick={() => navigate('/search-api/pricing')}>
-                  Choose {plan.name}
+                {/* CTA Button (Same Size for All Plans) */}
+                <Button w="full" colorScheme="blue" size="md" variant={plan.buttonVariant} onClick={() => navigate('/search-api/pricing')}>
+                  {plan.price === "Custom" ? "Contact Us" : `Choose ${plan.name}`}
                 </Button>
               </Box>
             </Box>
           ))}
         </Grid>
-
-        {/* Enterprise Plan (Full-Width) */}
-        <Box position="relative" mt={6}>
-          <Box
-            p={6}
-            border="2px solid"
-            borderColor={pricingPlans[3].borderColor}
-            borderRadius="lg"
-            textAlign="center"
-            display="flex"
-            flexDirection="column"
-            alignItems="center"
-            justifyContent="space-between"
-            minH="400px"
-            w="full"
-          >
-            {/* Plan Title */}
-            <Heading as="h3" size="md" fontWeight="semibold" mb={2} minH="48px">
-              {pricingPlans[3].name}
-            </Heading>
-
-            {/* Feature List */}
-            <List spacing={3} textAlign="left" mb={6} px={4}>
-              {pricingPlans[3].features.map((feature, idx) => (
-                <ListItem key={idx} display="flex" alignItems="center">
-                  <ListIcon as={FiCheckCircle} color="blue.500" boxSize={5} />
-                  {feature}
-                </ListItem>
-              ))}
-            </List>
-
-            {/* Price Display */}
-            <Text fontSize="2xl" fontWeight="bold" mb={1}>
-              Contact Us
-            </Text>
-
-            {/* CTA Button */}
-            <Button w="full" colorScheme="blue" variant={pricingPlans[3].buttonVariant} onClick={() => navigate('/search-api/pricing')}>
-              Contact Us
-            </Button>
-          </Box>
-        </Box>
 
         {/* Security Notice */}
         <Alert status="success" borderRadius="md" mt={6}>
