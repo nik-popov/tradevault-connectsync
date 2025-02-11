@@ -1,3 +1,4 @@
+// ../../../components/DatacenterGuide.js
 import React from 'react';
 import {
   Box,
@@ -22,42 +23,42 @@ import {
   FiList,
 } from "react-icons/fi";
 
-const BrowserStarted = () => {
+const CenterStarted = () => {
   const steps = [
     {
       title: "List Available Endpoints",
       icon: FiList,
-      description: "Retrieve all available browser proxy endpoints.",
+      description: "Retrieve all available datacenter proxy endpoints.",
       content: (
         <Code p={3} borderRadius="md" fontSize="sm" bg="gray.50">
-          {`curl -X GET "https://api.thedataproxy.com/api/v1/endpoints?type=browser"`}
+          {`curl -X GET https://api.thedataproxy.com/api/v1/endpoints?type=datacenter`}
         </Code>
       ),
     },
     {
       title: "Get Available Locations",
       icon: FiGlobe,
-      description: "Retrieve a list of supported locations for browser proxies.",
+      description: "Retrieve a list of supported locations for datacenter proxies.",
       content: (
         <Code p={3} borderRadius="md" fontSize="sm" bg="gray.50">
-          {`curl -X GET "https://api.thedataproxy.com/api/v1/locations?type=browser"`}
+          {`curl -X GET https://api.thedataproxy.com/api/v1/locations?type=datacenter`}
         </Code>
       ),
     },
     {
       title: "Configure Your Endpoint",
       icon: FiGlobe,
-      description: "Connect to our browser proxy network using this endpoint.",
+      description: "Connect to our datacenter proxy network using this endpoint.",
       content: (
         <Code p={3} borderRadius="md" fontSize="sm" bg="gray.50">
-          https://api.thedataproxy.com/api/v1/proxy/browser/
+          https://api.thedataproxy.com/api/v1/proxy/datacenter/
         </Code>
       ),
     },
     {
       title: "Set Your Authentication",
       icon: FiCode,
-      description: "Use your credentials to authenticate your requests.",
+      description: "Use your credentials to authenticate requests.",
       content: (
         <Box bg="gray.50" p={3} borderRadius="md">
           <Code display="block" mb={2}>
@@ -76,37 +77,37 @@ const BrowserStarted = () => {
       description: "Check your authentication details and status.",
       content: (
         <Code p={3} borderRadius="md" fontSize="sm" bg="gray.50">
-          {`curl -X GET "https://api.thedataproxy.com/api/v1/auth/browser"`}
+          {`curl -X GET https://api.thedataproxy.com/api/v1/auth/datacenter`}
         </Code>
       ),
     },
     {
       title: "Optimize Your Settings",
       icon: FiSettings,
-      description: "Adjust request headers and connection settings for enhanced performance and security.",
+      description: "Adjust request headers and connection settings for better performance and security.",
       content: (
         <Code p={3} borderRadius="md" fontSize="sm" bg="gray.50">
-          {`headers = {'User-Agent': 'YourApp/1.0', 'X-Proxy-Type': 'browser'}`}
+          {`headers = {'User-Agent': 'YourApp/1.0', 'X-Proxy-Type': 'datacenter'}`}
         </Code>
       ),
     },
     {
       title: "Send Your First Request",
       icon: FiServer,
-      description: "Use the proper proxy format to start sending requests.",
+      description: "Use the correct proxy format in your code to start making requests.",
       content: (
         <Code p={3} borderRadius="md" fontSize="sm" bg="gray.50">
-          {`curl --proxy-user username:password -x api.thedataproxy.com/api/v1/proxy/browser/ https://api.mywebsite.com`}
+          {`curl --proxy-user username:password -x api.thedataproxy.com/api/v1/proxy/datacenter/ https://api.mywebsite.com`}
         </Code>
       ),
     },
     {
       title: "Monitor and Scale",
       icon: FiSettings,
-      description: "Track your usage statistics and scale your requests as needed.",
+      description: "Track usage statistics and scale your requests based on your needs.",
       content: (
         <Code p={3} borderRadius="md" fontSize="sm" bg="gray.50">
-          {`curl -X GET "https://api.thedataproxy.com/api/v1/usage/browser/"`}
+          {`curl -X GET https://api.thedataproxy.com/api/v1/usage/datacenter/`}
         </Code>
       ),
     },
@@ -118,10 +119,10 @@ const BrowserStarted = () => {
         {/* Guide Header */}
         <Box textAlign="center">
           <Heading size="xl" fontWeight="bold" mb={2}>
-            Browser Proxy Quick Start Guide
+            Datacenter Proxy Quick Start Guide
           </Heading>
           <Text fontSize="lg" color="gray.600">
-            Follow these simple steps to integrate our browser proxy into your web applications.
+            Follow these simple steps to integrate our datacenter proxy into your applications.
           </Text>
         </Box>
 
@@ -131,14 +132,7 @@ const BrowserStarted = () => {
         <VStack spacing={6} align="stretch">
           {steps.map((step, index) => (
             <Flex key={index} gap={4} align="flex-start">
-              <Flex
-                align="center"
-                justify="center"
-                w="50px"
-                h="50px"
-                borderRadius="full"
-                bg="blue.100"
-              >
+              <Flex align="center" justify="center" w="50px" h="50px" borderRadius="full" bg="blue.100">
                 <Icon as={step.icon} boxSize={6} color="blue.500" />
               </Flex>
               <Box flex={1}>
@@ -162,7 +156,7 @@ const BrowserStarted = () => {
           <Box>
             <Text fontWeight="bold">Verify Your Setup</Text>
             <Text fontSize="sm">
-              Test your connection using the examples above. If your IP is masked and the geolocation matches expectations, you're all set!
+              Test your connection using the examples above. If your IP is masked and geolocation matches expectations, you're all set!
               Need help? Visit our{" "}
               <Button variant="link" colorScheme="blue" size="sm">
                 troubleshooting guide
@@ -176,4 +170,4 @@ const BrowserStarted = () => {
   );
 };
 
-export default BrowserStarted;
+export default CenterStarted;
