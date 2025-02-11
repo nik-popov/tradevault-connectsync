@@ -1,8 +1,7 @@
 import { 
-  Box, Container, Text, VStack, Button, Divider, Stack, Flex, Switch, HStack 
+  Box, Container, Text, Button, Divider, Flex, Switch, HStack 
 } from "@chakra-ui/react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { FiSend, FiGithub } from "react-icons/fi";
 import { useState, useEffect } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import useAuth from "../../hooks/useAuth";
@@ -35,7 +34,7 @@ function Dashboard() {
     }
   }, [queryClient]);
 
-  const { hasSubscription, isTrial, isDeactivated } = subscriptionSettings;
+  const { hasSubscription, isTrial } = subscriptionSettings;
   const isLocked = !hasSubscription && !isTrial;
 
   return (
