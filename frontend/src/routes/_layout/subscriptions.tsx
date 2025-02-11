@@ -18,9 +18,10 @@ import {
   import { createFileRoute, useNavigate } from "@tanstack/react-router";
   import { useState } from "react";
   import useAuth from "../../hooks/useAuth";
-  import Navbar from "../../components/Common/Navbar";
+  import Navbar from "../../components/Common/Navbar"; // ✅ Make sure this file exists!
   
-  export const Route = createFileRoute("/_layout/subscriptions")({
+  // ✅ Fix Route Path
+  export const Route = createFileRoute("/subscriptions")({
     component: Subscriptions,
   });
   
@@ -71,14 +72,14 @@ import {
           <Text fontWeight="bold" fontSize="lg">🚀 Manage Your Subscriptions</Text>
         </Box>
   
-        {/* ✅ Navbar */}
-        <Navbar type="Subscription" />
+        {/* ✅ Ensure Navbar Exists */}
+        {Navbar ? <Navbar type="Subscription" /> : <Text color="red.500">Error: Navbar not found!</Text>}
   
         {/* ✅ User Welcome Section */}
         <Flex mt={6} gap={4} justify="space-between" align="center">
           <Box textAlign="left">
             <Text fontSize="xl" fontWeight="bold">
-              Hi, {currentUser?.full_name || currentUser?.email} 👋🏼
+              Hi, {currentUser?.full_name || currentUser?.email || "User"} 👋🏼
             </Text>
             <Text fontSize="sm">Manage your subscriptions below.</Text>
           </Box>
