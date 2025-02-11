@@ -20,7 +20,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { FiExternalLink, FiX, FiGithub } from "react-icons/fi";
 import PromoDatasets from "../../../components/PromoDatasets";
 
-export const Route = createFileRoute("/_layout/apis/explore")({
+export const Route = createFileRoute("/_layout/scraper-api/explore")({
   component: Explore,
 });
 
@@ -131,11 +131,11 @@ function Explore() {
             <Text>
               Your subscription has been deactivated. Please renew to access APIs.
             </Text>
-            <Button colorScheme="red" onClick={() => navigate("/billing")}>
+            <Button colorScheme="red" onClick={() => navigate("/proxies/billing")}>
               Reactivate Now
             </Button>
           </Flex>
-        </Alert
+          </Alert>
       ) : (
         <Flex gap={6} justify="space-between" align="stretch" wrap="wrap">
           <Box flex="1" minW={{ base: "100%", md: "65%" }}>
