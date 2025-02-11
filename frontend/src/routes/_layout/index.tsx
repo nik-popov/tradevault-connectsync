@@ -1,5 +1,5 @@
 import { 
-  Box, Container, Text, VStack, Button, Divider, Stack, Flex, Switch 
+  Box, Container, Text, Button, Divider, Flex, Switch ,VStack,
 } from "@chakra-ui/react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { FiGithub, FiMail, FiHelpCircle } from "react-icons/fi";
@@ -17,11 +17,7 @@ function Dashboard() {
   const queryClient = useQueryClient();
 
   // ✅ Load Subscription Settings from LocalStorage & React Query
-  const [subscriptionSettings, setSubscriptionSettings] = useState<{
-    hasSubscription: boolean;
-    isTrial: boolean;
-    isDeactivated: boolean;
-  }>({
+  const [subscriptionSettings, setSubscriptionSettings] = useState({
     hasSubscription: false,
     isTrial: false,
     isDeactivated: false,
@@ -32,11 +28,7 @@ function Dashboard() {
     if (storedSettings) {
       setSubscriptionSettings(JSON.parse(storedSettings));
     } else {
-      const querySettings = queryClient.getQueryData<{ 
-        hasSubscription: boolean; 
-        isTrial: boolean; 
-        isDeactivated: boolean;
-      }>(["subscriptionSettings"]);
+      const querySettings = queryClient.getQueryData("subscriptionSettings");
       if (querySettings) {
         setSubscriptionSettings(querySettings);
       }
@@ -78,7 +70,7 @@ function Dashboard() {
             colorScheme="blue" 
             size="sm" 
             mt={2} 
-            onClick={() => navigate({ to: "/proxies/pricing" })}
+            onClick={() => navigate("/proxies/pricing")}
           >
             Try now
           </Button>
@@ -94,7 +86,7 @@ function Dashboard() {
             colorScheme="red" 
             size="sm" 
             mt={2} 
-            onClick={() => navigate({ to: "/proxies/pricing" })}
+            onClick={() => navigate("/proxies/pricing")}
           >
             View Subscription Plans
           </Button>
@@ -123,7 +115,7 @@ function Dashboard() {
         </Flex>
 
         {/* Filter Buttons */}
-        <Stack direction="row" spacing={3} flexWrap="wrap">
+        <Flex gap={2}>
           {["All", "SERP", "Proxy", "Data"].map((type) => (
             <Button 
               key={type} 
@@ -137,7 +129,7 @@ function Dashboard() {
               {type}
             </Button>
           ))}
-        </Stack>
+        </Flex>
       </Flex>
   
       <Divider my={4} />
@@ -167,7 +159,7 @@ function Dashboard() {
                     size="sm" 
                     colorScheme="blue" 
                     borderRadius="full"
-                    onClick={() => navigate({ to: product.path })}
+                    onClick={() => navigate(product.path)}
                   >
                     Manage
                   </Button>
@@ -176,6 +168,36 @@ function Dashboard() {
             )}
           </VStack>
         </Box>
+          {/* ✅ Sidebar */}
+          <Box w="250px" p={4} borderLeft="1px solid #E2E8F0">
+            <VStack spacing={4} align="stretch">
+              <Box p={4} shadow="sm" borderWidth="1px" borderRadius="lg">
+                <Text fontWeight="bold">Quick Actions</Text>
+                <Button leftIcon={<FiMail />} variant="outline" size="sm" mt={2}>
+                  Email Support
+                </Button>
+                <Button leftIcon={<FiHelpCircle />} variant="outline" size="sm" mt={2}>
+                  Report an Issue
+                </Button>
+              </Box>
+  
+              <Box p={4} shadow="sm" borderWidth="1px" borderRadius="lg">
+                <Text fontWeight="bold">FAQs</Text>
+                <Text fontSize="sm">Common questions and answers.</Text>
+                <Button mt={2} size="sm" variant="outline">
+                  View FAQs
+                </Button>
+              </Box>
+  
+              <Box p={4} shadow="sm" borderWidth="1px" borderRadius="lg">
+                <Text fontWeight="bold">Community Support</Text>
+                <Text fontSize="sm">Join discussions with other users.</Text>
+                <Button mt={2} leftIcon={<FiGithub />} size="sm" variant="outline">
+                  GitHub Discussions
+                </Button>
+              </Box>
+            </VStack>
+          </Box>
       </Flex>
     </Container>
   );
