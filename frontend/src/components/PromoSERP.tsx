@@ -107,6 +107,30 @@ const PromoSERP: React.FC = () => {
             ))}
           </Grid>
         </Box>
+                {/* Price Display */}
+                <Box minH="60px" display="flex" alignItems="center" justifyContent="center">
+                  <Text fontSize="2xl" fontWeight="bold">
+                    {plan.price === "Custom" ? "Contact Us" : plan.price}
+                  </Text>
+                  {plan.price !== "Custom" && (
+                    <Text as="span" fontSize="lg" color="gray.500">/mo</Text>
+                  )}
+                </Box>
+
+                {/* CTA Button */}
+                <Button w="full" colorScheme="blue" size="md" variant={plan.buttonVariant} onClick={() => navigate('/search-api/pricing')}>
+                  {plan.price === "Custom" ? "Contact Us" : `Choose ${plan.name}`}
+                </Button>
+              </Box>
+            </Box>
+          ))}
+        </Grid>
+
+        {/* Security Notice */}
+        <Alert status="success" borderRadius="md" mt={6}>
+          <AlertIcon />
+          <Text>All API requests are securely handled and optimized.</Text>
+        </Alert>
       </VStack>
     </Box>
   );
