@@ -2,7 +2,7 @@ import {
   Box, Container, Text, VStack, Button, Divider, Stack, Flex, Switch 
 } from "@chakra-ui/react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { FiSend, FiGithub } from "react-icons/fi";
+import { FiGithub,FiMail, FiHelpCircle} from "react-icons/fi";
 import { useState, useEffect } from "react";
 import useAuth from "../../hooks/useAuth";
 import { useQueryClient } from "@tanstack/react-query";
