@@ -314,7 +314,13 @@ function DatacenterProxy() {
     <Container maxW="full">
       {/* Top Bar */}
       <Flex align="center" justify="space-between" py={6} flexWrap="wrap" gap={4}>
-        <Heading size="lg">Datacenter Proxies</Heading>
+      <Box textAlign="left" flex="1">
+          <Text fontSize="xl" fontWeight="bold">
+            Hi, {currentUser?.full_name || currentUser?.email} 👋🏼
+          </Text>
+          <Text fontSize="sm">Welcome back, let’s get started!</Text>
+        </Box>
+
         <HStack spacing={6}>
           <HStack>
             <Text fontWeight="bold">Subscription:</Text>
@@ -345,13 +351,7 @@ function DatacenterProxy() {
         <Flex mt={6} gap={6} justify="space-between">
           {/* Main Content */}
           <Box flex="1">
-            <Box p={4}>
-              {/* Updated Greeting with currentUser information */}
-              <Text fontSize="2xl" fontWeight="bold">
-                Hi, {currentUser?.full_name || currentUser?.email} 👋🏼
-              </Text>
-              <Text>Manage your proxy settings with ease.</Text>
-            </Box>
+          
             <Divider my={4} />
             <Tabs variant="enclosed">
               <TabList>
