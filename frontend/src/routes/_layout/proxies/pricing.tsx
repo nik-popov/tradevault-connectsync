@@ -39,13 +39,12 @@ const pricingPlans = [
 function Pricing() {
   return (
     <Box maxW="100vw" minH="100vh" mx="auto" px={{ base: 6, md: 12 }} py={10} bg="gray.800">
-      <VStack spacing={6} align="stretch">
-        <Flex align="center" justify="space-between" py={6}>
-          <Box>
-            <Heading as="h1" size="xl" fontWeight="bold" color="white">Pricing Plans</Heading>
-            <Text fontSize="md" color="gray.300">Choose the right plan for your needs, including flexible API, storage, and hosting solutions.</Text>
-          </Box>
-        </Flex>
+      <Flex align="center" justify="space-between" py={6} flexWrap="wrap" gap={4}>
+        <Box textAlign="left" flex="1">
+          <Text fontSize="xl" fontWeight="bold">Pricing Details</Text>
+          <Text fontSize="sm">Manage your proxy settings and subscriptions.</Text>
+        </Box>
+      </Flex>
         <Divider my={4} />
         
         <Alert status="info" borderRadius="md" bg="gray.700" color="gray.300">
