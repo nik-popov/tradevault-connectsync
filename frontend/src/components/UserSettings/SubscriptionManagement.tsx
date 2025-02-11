@@ -2,27 +2,34 @@ import { Box, Heading, Text, VStack, HStack, Switch, Button } from "@chakra-ui/r
 import { useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 
+// Define the shape of the subscription settings
+type SubscriptionSettings = {
+  hasSubscription: boolean;
+  isTrial: boolean;
+  isDeactivated: boolean;
+};
+
 const SubscriptionManagement = () => {
   const queryClient = useQueryClient();
 
-  // Load previous state if available
-  const initialSubscriptionState = queryClient.getQueryData("subscriptionSettings") || {
+  // Load initial state from React Query, providing default values
+  const initialSubscriptionState = queryClient.getQueryData<SubscriptionSettings>(["subscriptionSettings"]) || {
     hasSubscription: false,
     isTrial: false,
     isDeactivated: false,
   };
 
-  const [subscriptionSettings, setSubscriptionSettings] = useState(initialSubscriptionState);
+  const [subscriptionSettings, setSubscriptionSettings] = useState<SubscriptionSettings>(initialSubscriptionState);
 
-  // Update global state when toggles are changed
-  const toggleSetting = (key: keyof typeof subscriptionSettings) => {
+  // Toggle function with properly typed keys
+  const toggleSetting = (key: keyof SubscriptionSettings) => {
     const updatedSettings = {
       ...subscriptionSettings,
       [key]: !subscriptionSettings[key],
     };
 
     setSubscriptionSettings(updatedSettings);
-    queryClient.setQueryData("subscriptionSettings", updatedSettings);
+    queryClient.setQueryData(["subscriptionSettings"], updatedSettings);
   };
 
   return (
