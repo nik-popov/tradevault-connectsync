@@ -72,14 +72,14 @@ const categoryPricing = {
 
 function Pricing() {
   return (
-    <Container maxW="100vw" minH="100vh" bg="gray.800" color="white" py={10}>
-      {/* Legacy Title & Subtitle */}
-      <VStack spacing={2} textAlign="center" mb={8}>
-        <Text fontSize="4xl" fontWeight="bold" color="white">Cloud Pricing</Text>
-        <Text fontSize="lg" color="gray.400">Compare pricing for Compute, Storage, Traffic, AI, and Security.</Text>
-      </VStack>
-
-      <Divider my={6} borderColor="gray.600" />
+    <Container maxW="full">
+      <Flex align="center" justify="space-between" py={6} flexWrap="wrap" gap={4}>
+        <Box textAlign="left" flex="1">
+          <Text fontSize="xl" fontWeight="bold">Pricing Recap</Text>
+          <Text fontSize="sm">Manage your proxy settings and subscriptions.</Text>
+        </Box>
+      </Flex>
+      <Divider my={4} />
 
       {/* Clean Tab Selector */}
       <Tabs variant="unstyled">
