@@ -61,9 +61,9 @@ function Pricing() {
       <Divider my={4} />
 
       <Tabs variant="enclosed" colorScheme="gray">
-        <TabList bg="gray.800" borderRadius="md">
+        <TabList bg="gray.700" borderRadius="md">
           {pricingPlans.map((plan, index) => (
-            <Tab key={index} _selected={{ bg: "gray.700", color: "white", fontWeight: "bold" }}>
+            <Tab key={index} _selected={{ bg: "gray.600", color: "white", fontWeight: "bold" }}>
               <Icon as={plan.icon} mr={2} /> {plan.name}
             </Tab>
           ))}
@@ -71,7 +71,7 @@ function Pricing() {
         <TabPanels bg="gray.700" borderRadius="md">
           {pricingPlans.map((plan, index) => (
             <TabPanel key={index}>
-              <Box p={6} border="2px solid" borderColor={plan.borderColor} borderRadius="lg" bg="gray.700">
+              <Box p={6} border="2px solid" borderColor={plan.borderColor} borderRadius="lg" bg="gray.600">
                 {plan.badge && (
                   <Badge bg="blue.600" color="white" px={3} py={1} position="absolute" top="-12px" left="10px">
                     {plan.badge}
@@ -102,7 +102,7 @@ function Pricing() {
       <Heading fontSize="xl" color="white" mb={4}>Additional Services</Heading>
       <Grid templateColumns={{ base: "1fr", md: "repeat(3, 1fr)" }} gap={6}>
         {additionalServices.map((service, index) => (
-          <Box key={index} p={6} borderRadius="lg" bg="gray.700" textAlign="center">
+          <Box key={index} p={6} borderRadius="lg" bg="gray.600" textAlign="center">
             <Icon as={service.icon} boxSize={8} color="blue.400" mb={3} />
             <Text fontSize="lg" fontWeight="bold" color="white">{service.name}</Text>
             <Text fontSize="md" color="gray.300" mb={3}>{service.price}</Text>
