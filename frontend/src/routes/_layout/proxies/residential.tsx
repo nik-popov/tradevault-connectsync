@@ -134,21 +134,71 @@ const Logs = () => {
 
 // Improved Key Management Component
 const KeyManagement = () => {
-  const [keys, setKeys] = useState([
-    { id: 1, value: "abc123" },
-    { id: 2, value: "def456" },
-  ]);
-  const [newKey, setNewKey] = useState("");
+  type KeyItem = {
+    id: number;
+    value: string;
+    isHidden: boolean;
+    copied: boolean;
+  };
+
+  const [keys, setKeys] = useState<KeyItem[]>([]);
+
+  // Generate a random alphanumeric secret of a given length.
+  const generateSecret = (length = 16) => {
+    const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    let secret = "";
+    for (let i = 0; i < length; i++) {
+      secret += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    return secret;
+  };
 
   const addKey = () => {
-    if (!newKey.trim()) return; // Avoid adding empty keys
     const nextId = keys.length ? Math.max(...keys.map((k) => k.id)) + 1 : 1;
-    setKeys([...keys, { id: nextId, value: newKey }]);
-    setNewKey("");
+    const newKey: KeyItem = {
+      id: nextId,
+      value: generateSecret(),
+      isHidden: false, // show the secret by default
+      copied: false,
+    };
+    setKeys([...keys, newKey]);
   };
 
   const deleteKey = (id: number) => {
     setKeys(keys.filter((key) => key.id !== id));
+  };
+
+  const toggleVisibility = (id: number) => {
+    setKeys(
+      keys.map((key) =>
+        key.id === id ? { ...key, isHidden: !key.isHidden } : key
+      )
+    );
+  };
+
+  const copyKey = (id: number) => {
+    const keyToCopy = keys.find((key) => key.id === id);
+    if (keyToCopy) {
+      navigator.clipboard
+        .writeText(keyToCopy.value)
+        .then(() => {
+          setKeys(
+            keys.map((key) =>
+              key.id === id ? { ...key, copied: true } : key
+            )
+          );
+          setTimeout(() => {
+            setKeys((currentKeys) =>
+              currentKeys.map((key) =>
+                key.id === id ? { ...key, copied: false } : key
+              )
+            );
+          }, 2000);
+        })
+        .catch((err) => {
+          console.error("Failed to copy key", err);
+        });
+    }
   };
 
   return (
@@ -165,9 +215,18 @@ const KeyManagement = () => {
               borderWidth="1px"
               borderRadius="md"
             >
-              <Text>{key.value}</Text>
+              <Text fontFamily="monospace" flex="1">
+                {key.isHidden ? "********" : key.value}
+              </Text>
+              <Button size="xs" ml={2} onClick={() => toggleVisibility(key.id)}>
+                {key.isHidden ? "Show" : "Hide"}
+              </Button>
+              <Button size="xs" ml={2} onClick={() => copyKey(key.id)}>
+                {key.copied ? "Copied" : "Copy"}
+              </Button>
               <Button
                 size="xs"
+                ml={2}
                 colorScheme="red"
                 onClick={() => deleteKey(key.id)}
               >
@@ -178,16 +237,9 @@ const KeyManagement = () => {
         ) : (
           <Text>No keys available.</Text>
         )}
-        <HStack>
-          <Input
-            placeholder="Enter new key"
-            value={newKey}
-            onChange={(e) => setNewKey(e.target.value)}
-          />
-          <Button colorScheme="blue" onClick={addKey}>
-            Add Key
-          </Button>
-        </HStack>
+        <Button mt={2} colorScheme="blue" onClick={addKey}>
+          Add Key
+        </Button>
       </VStack>
     </Box>
   );
@@ -291,7 +343,7 @@ function ResidentialProxy() {
           <Box flex="1">
             <Box p={4}>
               <Text fontSize="2xl" fontWeight="bold">
-              Hi, {currentUser?.full_name || currentUser?.email} 👋🏼
+                Hi, Welcome Back 👋🏼
               </Text>
               <Text>Manage your proxy settings with ease.</Text>
             </Box>
