@@ -18,7 +18,7 @@ import {
   Table,
   Thead,
   TabPanel,
-  Badge,
+  useColorModeValue,
 } from "@chakra-ui/react";
 import { useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
@@ -46,6 +46,8 @@ const proxyPricing = {
 
 const PricingPage = () => {
   const [selectedProduct, setSelectedProduct] = useState("Residential");
+  const tabBg = useColorModeValue("gray.100", "gray.700");
+  const tabColor = useColorModeValue("black", "white");
 
   return (
     <Container maxW="full" py={10}>
@@ -70,10 +72,12 @@ const PricingPage = () => {
           <Text fontSize="sm">Custom pricing is available for high-volume clients with special requirements. Contact our sales team for exclusive offers.</Text>
         </Box>
       </VStack>
-      <Tabs variant="enclosed" onChange={(index) => setSelectedProduct(Object.keys(proxyPricing)[index])}>
+      <Tabs variant="soft-rounded" colorScheme="blue" onChange={(index) => setSelectedProduct(Object.keys(proxyPricing)[index])}>
         <TabList>
           {Object.keys(proxyPricing).map((product) => (
-            <Tab key={product}>{product}</Tab>
+            <Tab key={product} bg={tabBg} color={tabColor} px={4} py={2} borderRadius="md" _selected={{ bg: "blue.500", color: "white" }}>
+              {product.replace(" ", " \u2022 ")}
+            </Tab>
           ))}
         </TabList>
         <TabPanels>
