@@ -33,6 +33,7 @@ import {
     component: Subscriptions,
   });
   
+  // ✅ Subscription Table Component
   function SubscriptionTable({ product, state, toggleState }) {
     return (
       <TableContainer>
@@ -71,6 +72,7 @@ import {
     );
   }
   
+  // ✅ Main Subscription Management Component
   function Subscriptions() {
     const [subscriptions, setSubscriptions] = useState(initialSubscriptions);
   
