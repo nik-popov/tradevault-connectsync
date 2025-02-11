@@ -1,5 +1,4 @@
 import { useQueryClient } from "@tanstack/react-query";
-
 import {
   Container,
   Heading,
@@ -16,6 +15,12 @@ import {
   Divider,
   Flex,
   Switch,
+  Table,
+  Thead,
+  Tbody,
+  Tr,
+  Th,
+  Td
 } from "@chakra-ui/react";
 import { useState, useEffect } from "react";
 import { createFileRoute } from "@tanstack/react-router";
