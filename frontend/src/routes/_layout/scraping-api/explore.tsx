@@ -8,15 +8,15 @@ import {
   Divider,
   Flex,
   Switch,
-  List,
-  ListItem,
-  Select,
-  Alert,
-  AlertIcon,
   HStack,
   Input,
   Heading,
   Collapse,
+  Alert,
+  AlertIcon,
+  List,
+  ListItem,
+  Select,
 } from "@chakra-ui/react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useQueryClient } from "@tanstack/react-query";
@@ -58,7 +58,6 @@ function Explore() {
   const [searchQuery, setSearchQuery] = useState("");
   const [activeFilter, setActiveFilter] = useState("all");
   const [sortOption, setSortOption] = useState("name");
-  const [hoveredApi, setHoveredApi] = useState(null);
 
   // 🛠️ Mock API Data
   const proxyProducts = [
@@ -83,15 +82,13 @@ function Explore() {
       const matchesSearch = product.name.toLowerCase().includes(searchQuery.toLowerCase());
       return matchesFilter && matchesSearch;
     });
-  }, [searchQuery, activeFilter]);
+  }, [searchQuery, activeFilter, proxyProducts]);
 
   return (
     <Container maxW="full">
       {/* 🔄 Title & Debugging Toggles */}
       <Flex justify="space-between" align="center" my={4} flexWrap="wrap">
         <Heading size="lg">Explore APIs</Heading>
-
-        {/* Debugging Toggles */}
         <HStack spacing={6}>
           <HStack>
             <Text fontWeight="bold">Subscription:</Text>
@@ -155,21 +152,13 @@ function Explore() {
             </Flex>
 
             <VStack spacing={4} mt={6} align="stretch">
-              <List spacing={4}>
-                {filteredProducts.map((api) => (
-                  <ListItem key={api.id} p={4} borderWidth="1px" borderRadius="lg">
-                    <Flex justify="space-between" align="center">
-                      <Box>
-                        <Text fontWeight="bold">{api.name}</Text>
-                        <Text fontSize="sm" color="gray.600">{api.description}</Text>
-                      </Box>
-                      <Button size="sm" colorScheme="blue" rightIcon={<FiExternalLink />} onClick={() => navigate(`/scraping-api/${api.id}`)}>Manage</Button>
-                    </Flex>
-                  </ListItem>
-                ))}
-              </List>
+              {/* Instead of a List, we map over filteredProducts using a custom component */}
+              {filteredProducts.map((api) => (
+                <ApiListItem key={api.id} api={api} navigate={navigate} isTrial={isTrial} />
+              ))}
             </VStack>
           </Box>
+
           {/* ✅ Sidebar */}
           <Box w="250px" p={4} borderLeft="1px solid #E2E8F0">
             <VStack spacing={4} align="stretch">
@@ -188,5 +177,42 @@ function Explore() {
     </Container>
   );
 }
+
+// Component for individual API list items
+const ApiListItem = ({ api, navigate, isTrial }) => {
+  const [isExpanded, setIsExpanded] = useState(false);
+
+  return (
+    <Box p={4} borderWidth="1px" borderRadius="lg">
+      <Flex justify="space-between" align="center">
+        <Box>
+          <Text fontWeight="bold">{api.name}</Text>
+          <Text fontSize="sm" color="gray.600">{api.description}</Text>
+        </Box>
+        <HStack spacing={2}>
+          <Button size="sm" colorScheme="blue" onClick={() => setIsExpanded(!isExpanded)}>
+            {isExpanded ? "Less" : "More"}
+          </Button>
+          <Button
+            size="sm"
+            colorScheme="blue"
+            rightIcon={<FiExternalLink />}
+            onClick={() => navigate(`/scraping-api/${api.id}`)}
+            disabled={isTrial}
+          >
+            {isTrial ? "Locked" : "Manage"}
+          </Button>
+        </HStack>
+      </Flex>
+      <Collapse in={isExpanded} animateOpacity>
+        <Box mt={4} p={2} borderWidth="1px" borderRadius="md">
+          <Text fontSize="sm">
+            Additional details about {api.name} and integration instructions can be placed here.
+          </Text>
+        </Box>
+      </Collapse>
+    </Box>
+  );
+};
 
 export default Explore;
