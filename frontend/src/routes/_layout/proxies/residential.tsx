@@ -29,7 +29,6 @@ import PromoContent from "../../../components/PromoContent";
 import ProxyStarted from "../../../components/ProxyStarted";
 import ProxySettings from "../../../components/ProxySettings";
 import ProxyUsage from "../../../components/ProxyUsage";
-import SubscriptionManagement from "../../../components/UserSettings/SubscriptionManagement";
 /* 
   Expanded Inline Proxy Components 
   Replace dummy data and logic with your actual API calls or state management as needed.
@@ -309,7 +308,6 @@ function ResidentialProxy() {
           <Text fontSize="xl" fontWeight="bold">Residential Proxy</Text>
           <Text fontSize="sm">Manage your proxy settings and subscriptions.</Text>
         </Box>
-        <SubscriptionManagement product={PRODUCT} />
       </Flex>
 
       {isLocked ? (
