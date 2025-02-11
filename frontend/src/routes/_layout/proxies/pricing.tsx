@@ -15,6 +15,10 @@ import {
   Tbody,
   Th,
   Td,
+  SimpleGrid,
+  Card,
+  CardBody,
+  Heading,
 } from "@chakra-ui/react";
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
@@ -42,10 +46,20 @@ const pricingData = {
   ],
 };
 
+const PricingCard = ({ title, price, features }) => (
+  <Card bg="gray.700" borderRadius="md" p={4}>
+    <CardBody>
+      <Heading size="md" color="white">{title}</Heading>
+      <Text fontSize="lg" color="gray.300" mt={2}>{price}</Text>
+      <Text fontSize="sm" color="gray.400" mt={2}>{features}</Text>
+    </CardBody>
+  </Card>
+);
+
 const PricingChart = ({ plan }) => (
   <Box p={4} borderWidth="1px" borderRadius="md" bg="gray.800">
     <Table variant="simple">
-      <Thead bg="gray.800" position="sticky" top={0} zIndex={1}>
+      <Thead bg="gray.700" position="sticky" top={0} zIndex={1}>
         <Tr>
           <Th color="gray.300">Data</Th>
           <Th color="gray.300">Price</Th>
@@ -99,30 +113,37 @@ function Pricing() {
           <Text color="white">Your subscription has expired. Please renew to access all features.</Text>
         </Box>
       ) : (
-        <Flex mt={6} gap={6}>
-          <Box flex="1">
-            <Tabs variant="enclosed" colorScheme="gray" bg="gray.800" borderRadius="md" p={4}>
-              <TabList bg="gray.800" borderRadius="md">
-                {tabsConfig.map((tab, index) => (
-                  <Tab
-                    key={index}
-                    isDisabled={restrictedTabs.includes(tab.title)}
-                    color="gray.300"
-                    _selected={{ bg: "gray.700", color: "white", fontWeight: "bold" }}
-                    _hover={{ bg: "gray.600", color: "white" }}
-                  >
-                    {tab.title}
-                  </Tab>
-                ))}
-              </TabList>
-              <TabPanels bg="gray.700" borderRadius="md" p={4}>
-                {tabsConfig.map((tab, index) => (
-                  <TabPanel key={index}>{tab.component}</TabPanel>
-                ))}
-              </TabPanels>
-            </Tabs>
-          </Box>
-        </Flex>
+        <>
+          <SimpleGrid columns={{ base: 1, md: 3 }} spacing={6} mb={6}>
+            {pricingData.basic.map((entry, index) => (
+              <PricingCard key={index} title={entry.data} price={entry.price} features={entry.features} />
+            ))}
+          </SimpleGrid>
+          <Flex mt={6} gap={6}>
+            <Box flex="1">
+              <Tabs variant="enclosed" colorScheme="gray" bg="gray.800" borderRadius="md" p={4}>
+                <TabList bg="gray.800" borderRadius="md">
+                  {tabsConfig.map((tab, index) => (
+                    <Tab
+                      key={index}
+                      isDisabled={restrictedTabs.includes(tab.title)}
+                      color="gray.300"
+                      _selected={{ bg: "gray.700", color: "white", fontWeight: "bold" }}
+                      _hover={{ bg: "gray.800", color: "white" }}
+                    >
+                      {tab.title}
+                    </Tab>
+                  ))}
+                </TabList>
+                <TabPanels bg="gray.700" borderRadius="md" p={4}>
+                  {tabsConfig.map((tab, index) => (
+                    <TabPanel key={index}>{tab.component}</TabPanel>
+                  ))}
+                </TabPanels>
+              </Tabs>
+            </Box>
+          </Flex>
+        </>
       )}
     </Container>
   );
