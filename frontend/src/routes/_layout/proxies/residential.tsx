@@ -7,7 +7,6 @@ import {
   TabPanels,
   Tabs,
   HStack,
-  Divider,
   Flex,
   Switch,
   Box,
@@ -18,7 +17,6 @@ import {
   AlertIcon,
   Spinner
 } from "@chakra-ui/react";
-import { useEffect, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import { FiSend, FiGithub } from "react-icons/fi";
