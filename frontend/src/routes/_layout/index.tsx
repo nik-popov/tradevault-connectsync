@@ -10,7 +10,6 @@ import {
   Switch,
 } from "@chakra-ui/react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { FiGithub, FiMail, FiHelpCircle } from "react-icons/fi";
 import { useQuery } from "@tanstack/react-query";
 
 export const Route = createFileRoute("/_layout/")({
