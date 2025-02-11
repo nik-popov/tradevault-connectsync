@@ -47,21 +47,23 @@ const PricingChart = ({ plan }) => {
 
   return (
     <Box p={4} borderWidth="1px" borderRadius="md" bg="gray.700">
-      <Text fontSize="xl" mb={4}>{plan.charAt(0).toUpperCase() + plan.slice(1)} Plan Pricing</Text>
+      <Text fontSize="xl" mb={4} color="white">
+        {plan.charAt(0).toUpperCase() + plan.slice(1)} Plan Pricing
+      </Text>
       <Table variant="simple">
         <Thead>
           <Tr>
-            <Th>Data</Th>
-            <Th>Price</Th>
-            <Th>Features</Th>
+            <Th color="white">Data</Th>
+            <Th color="white">Price</Th>
+            <Th color="white">Features</Th>
           </Tr>
         </Thead>
         <Tbody>
           {pricingData[plan].map((entry, index) => (
             <Tr key={index}>
-              <Td>{entry.data}</Td>
-              <Td>{entry.price}</Td>
-              <Td>{entry.features}</Td>
+              <Td color="white">{entry.data}</Td>
+              <Td color="white">{entry.price}</Td>
+              <Td color="white">{entry.features}</Td>
             </Tr>
           ))}
         </Tbody>
@@ -100,8 +102,12 @@ function Pricing() {
     <Container maxW="full">
       <Flex align="center" justify="space-between" py={6} flexWrap="wrap" gap={4}>
         <Box textAlign="left" flex="1">
-          <Text fontSize="xl" fontWeight="bold">Pricing Breakdown</Text>
-          <Text fontSize="sm">Understand your proxy billing and subscriptions.</Text>
+          <Text fontSize="xl" fontWeight="bold" color="white">
+            Pricing Breakdown
+          </Text>
+          <Text fontSize="sm" color="gray.300">
+            Understand your proxy billing and subscriptions.
+          </Text>
         </Box>
       </Flex>
       <Divider my={4} />
@@ -110,24 +116,26 @@ function Pricing() {
         <PromoContent />
       ) : isDeactivated ? (
         <Box mt={6}>
-          <Text>Your subscription has expired. Please renew to access all features.</Text>
+          <Text color="white">
+            Your subscription has expired. Please renew to access all features.
+          </Text>
         </Box>
       ) : (
         <Flex mt={6} gap={6} justify="space-between">
           <Box flex="1">
-            <Tabs variant="enclosed">
-              <TabList>
+            <Tabs variant="enclosed" bg="gray.700" borderRadius="md" p={4}>
+              <TabList bg="gray.800" borderRadius="md">
                 {tabsConfig.map((tab, index) => (
-                  <Tab key={index} isDisabled={restrictedTabs.includes(tab.title)}>
+                  <Tab key={index} isDisabled={restrictedTabs.includes(tab.title)} color="white">
                     {tab.title}
                   </Tab>
                 ))}
               </TabList>
-              <TabPanels>
+              <TabPanels bg="gray.700" borderRadius="md">
                 {tabsConfig.map((tab, index) => (
                   <TabPanel key={index}>
                     {restrictedTabs.includes(tab.title) ? (
-                      <Text>Feature locked during trial.</Text>
+                      <Text color="gray.400">Feature locked during trial.</Text>
                     ) : (
                       tab.component
                     )}
