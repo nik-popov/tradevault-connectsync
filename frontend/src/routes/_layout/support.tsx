@@ -25,7 +25,7 @@ import {
   useToast,
 } from "@chakra-ui/react";
 import { createFileRoute } from "@tanstack/react-router";
-import { FiSend, FiMail, FiHelpCircle, FiGithub } from "react-icons/fi";
+import { FiSend, FiHelpCircle, FiGithub } from "react-icons/fi";
 
 // Route Setup
 export const Route = createFileRoute("/_layout/support")({
@@ -129,13 +129,44 @@ function Support() {
 }
 
 // FAQs Section
-const FAQSection = () => (
-  <Box>
-    <Text fontSize="xl" fontWeight="bold">Frequently Asked Questions</Text>
-    <Text mt={2}>Check our common support questions and answers.</Text>
-    <Button as="a" href="/faqs" mt={4} variant="outline">View FAQs</Button>
-  </Box>
-);
+const FAQSection = () => {
+  const faqs = [
+    {
+      question: "How do I set up my proxy?",
+      answer: "Follow our quick start guide in the documentation to configure your proxy settings.",
+    },
+    {
+      question: "What should I do if my proxy isn’t working?",
+      answer: "Check your authentication credentials, ensure your IP is whitelisted, and review our status page.",
+    },
+    {
+      question: "Can I use multiple devices with my proxy?",
+      answer: "Yes, but you may need additional authentication methods depending on your plan.",
+    },
+    {
+      question: "Where can I get billing support?",
+      answer: "Contact our billing team at billing@cobaltdata.net for assistance.",
+    },
+  ];
+
+  return (
+    <VStack align="stretch" spacing={6}>
+      {faqs.map((faq, index) => (
+        <Box key={index} p={4} borderWidth="1px" borderRadius="md">
+          <Text fontSize="lg" fontWeight="bold">{faq.question}</Text>
+          <Text mt={2}>{faq.answer}</Text>
+        </Box>
+      ))}
+
+      <Box textAlign="center" mt={6}>
+        <Text fontSize="sm">Need more help?</Text>
+        <Button as="a" href="mailto:support@cobaltdata.net" leftIcon={<FiHelpCircle />} mt={2} variant="outline">
+          Contact Support
+        </Button>
+      </Box>
+    </VStack>
+  );
+};
 
 // Community Section
 const CommunitySection = () => (
