@@ -11,21 +11,11 @@ import {
   Flex,
   Alert,
   AlertIcon,
-  Divider,
-  Spinner
+  Divider
 } from "@chakra-ui/react";
 import { FiCheckCircle, FiCopy, FiGlobe, FiCode, FiSettings, FiServer } from "react-icons/fi";
-import { useQuery } from "@tanstack/react-query"; 
-import axios from 'axios';
 
-const fetchAuthDetails = async () => {
-  const { data } = await axios.get('/api/proxy/auth');
-  return data;
-};
-
-const ProxyStarted = () => {
-  const { data: authData, isLoading, isError } = useQuery(['authDetails'], fetchAuthDetails);
-
+const GetStarted = () => {
   const steps = [
     {
       title: "Configure Your Endpoint",
@@ -33,7 +23,7 @@ const ProxyStarted = () => {
       description: "Use the provided endpoint to connect to our proxy network.",
       content: (
         <Code p={3} borderRadius="md" fontSize="sm" bg="gray.50">
-          {authData ? authData.endpoint : 'Loading...'}
+          https://api.thedataproxy.com/api/v1/proxy/
         </Code>
       )
     },
@@ -43,21 +33,13 @@ const ProxyStarted = () => {
       description: "Use your credentials to authenticate requests.",
       content: (
         <Box bg="gray.50" p={3} borderRadius="md">
-          {isLoading ? (
-            <Spinner />
-          ) : isError ? (
-            <Text color="red.500">Failed to load credentials</Text>
-          ) : (
-            <>
-              <Code display="block" mb={2}>
-                Username: {authData.username}<br/>
-                Password: {authData.password}
-              </Code>
-              <Button leftIcon={<FiCopy />} variant="link" size="sm" colorScheme="blue">
-                Copy credentials
-              </Button>
-            </>
-          )}
+          <Code display="block" mb={2}>
+            Username: your_username<br/>
+            Password: your_password
+          </Code>
+          <Button leftIcon={<FiCopy />} variant="link" size="sm" colorScheme="blue">
+            Copy credentials
+          </Button>
         </Box>
       )
     },
@@ -77,7 +59,7 @@ const ProxyStarted = () => {
       description: "Use the correct proxy format in your code to start making requests.",
       content: (
         <Code p={3} borderRadius="md" fontSize="sm" bg="gray.50">
-          {`curl --proxy-user ${authData?.username || 'username'}:${authData?.password || 'password'} -x ${authData?.endpoint || 'proxy.yourdomain.com:12345'} https://api.mywebsite.com`}
+          {`curl --proxy-user username:password -x api.thedataproxy.com/api/v1/proxy/ https://api.mywebsite.com`}
         </Code>
       )
     }
@@ -130,4 +112,4 @@ const ProxyStarted = () => {
   );
 };
 
-export default ProxyStarted;
+export default GetStarted;
