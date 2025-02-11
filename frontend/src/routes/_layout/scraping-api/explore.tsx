@@ -59,9 +59,9 @@ function Explore() {
 
   // 🛠️ API Data
   const proxyProducts = [
-    { id: "google-serp-api", name: "Google Search API", type: "search", description: "Fetches real-time search results from Google." },
-    { id: "linkedin-api", name: "LinkedIn Scraping API", type: "social media", description: "Scrapes public LinkedIn profiles, job postings, and company data." },
-    { id: "amazon-product-api", name: "Amazon Product API", type: "ecommerce", description: "Fetches product details, reviews, and price history from Amazon." },
+    { id: "google-serp-api", name: "Google Search API", type: "search", description: "Fetches real-time search results from Google.", isLocked: false },
+    { id: "linkedin-api", name: "LinkedIn Scraping API", type: "social media", description: "Scrapes public LinkedIn profiles, job postings, and company data.", isLocked: true },
+    { id: "amazon-product-api", name: "Amazon Product API", type: "ecommerce", description: "Fetches product details, reviews, and price history from Amazon.", isLocked: true },
   ];
 
   const categories = ["all", ...new Set(proxyProducts.map((api) => api.type))];
@@ -145,20 +145,8 @@ function Explore() {
 
             <VStack spacing={4} mt={6} align="stretch">
               {filteredProducts.map((api) => (
-                <ApiListItem key={api.id} api={api} navigate={navigate} isTrial={isTrial} />
+                <ApiListItem key={api.id} api={api} navigate={navigate} hasSubscription={hasSubscription} isTrial={isTrial} />
               ))}
-            </VStack>
-          </Box>
-
-          {/* ✅ Sidebar */}
-          <Box w={{ base: "100%", md: "250px" }} p="4" borderLeft={{ md: "1px solid #E2E8F0" }}>
-            <VStack spacing="4" align="stretch">
-              <Box p="4" shadow="sm" borderWidth="1px" borderRadius="lg">
-                <Text fontWeight="bold">Quick Actions</Text>
-                <Button as="a" href="mailto:support@thedataproxy.com" leftIcon={<FiExternalLink />} variant="outline" size="sm" mt="2">
-                  Email Support
-                </Button>
-              </Box>
             </VStack>
           </Box>
         </Flex>
@@ -167,9 +155,11 @@ function Explore() {
   );
 }
 
-// ✅ API List Item Component with all buttons
-const ApiListItem = ({ api, navigate, isTrial }) => {
+// ✅ API List Item Component with Locked APIs
+const ApiListItem = ({ api, navigate, hasSubscription, isTrial }) => {
   const [isExpanded, setIsExpanded] = useState(false);
+
+  const isApiLocked = api.isLocked && (isTrial || !hasSubscription);
 
   return (
     <Box p={4} borderWidth="1px" borderRadius="lg">
@@ -182,16 +172,7 @@ const ApiListItem = ({ api, navigate, isTrial }) => {
           <Button size="sm" colorScheme="blue" onClick={() => setIsExpanded(!isExpanded)}>
             {isExpanded ? "Less" : "More"}
           </Button>
-          <Button
-            size="sm"
-            variant="solid"
-            colorScheme="green"
-            leftIcon={<FiSend />}
-            onClick={() => navigate(`/scraping-api/${api.id}`)}
-          >
-            View
-          </Button>
-          {isTrial && (
+          {isApiLocked ? (
             <Button
               size="sm"
               variant="outline"
@@ -207,6 +188,16 @@ const ApiListItem = ({ api, navigate, isTrial }) => {
               }}
             >
               Locked
+            </Button>
+          ) : (
+            <Button
+              size="sm"
+              variant="solid"
+              colorScheme="green"
+              leftIcon={<FiSend />}
+              onClick={() => navigate(`/scraping-api/${api.id}`)}
+            >
+              View
             </Button>
           )}
         </HStack>
