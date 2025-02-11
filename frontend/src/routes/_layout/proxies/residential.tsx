@@ -11,6 +11,7 @@ import {
   Tr,
   Tbody,
   Th,
+  Td,
   TabList,
   TabPanels,
   Tab,
