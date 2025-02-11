@@ -214,13 +214,14 @@ const PromoSERP: React.FC = () => {
 </Box>
 
 
+      </Box>
+
         {/* Security Notice */}
         <Alert status="success" borderRadius="md" mb={6}>
           <AlertIcon />
           <Text>All API requests are securely handled and optimized.</Text>
         </Alert>
         
-      </Box>
     </Box>
   );
 };
