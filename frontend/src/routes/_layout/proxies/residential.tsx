@@ -327,12 +327,13 @@ function ResidentialProxy() {
       {/* Top Bar */}
       <Flex align="center" justify="space-between" py={6} flexWrap="wrap" gap={4}>
        
-      <Box p={4}>
-              <Text fontSize="2xl" fontWeight="bold">
-                Hi, {currentUser?.full_name || currentUser?.email || "User"} 👋🏼
-              </Text>
-              <Text>Manage your proxy settings with ease.</Text>
-            </Box>
+      <Box textAlign="left" flex="1">
+          <Text fontSize="xl" fontWeight="bold">
+            Hi, {currentUser?.full_name || currentUser?.email} 👋🏼
+          </Text>
+          <Text fontSize="sm">Welcome back, let’s get started!</Text>
+        </Box>
+
 
         <HStack spacing={6}>
           <HStack>
