@@ -25,17 +25,12 @@ import {
 import { useState, useEffect } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
-import { FiSend, FiGithub } from "react-icons/fi";
+import { FiSend, FiGithub, FiMail, FiHelpCircle } from "react-icons/fi";
 
 import PromoSERP from "../../../components/PromoSERP";
 import GoogleSerpStarted from "../../../components/GoogleSerpStarted";
 import ProxySettings from "../../../components/ProxySettings";
 import ProxyUsage from "../../../components/ProxyUsage";
-
-/* 
-  Expanded Inline Proxy Components 
-  Replace dummy data and logic with your actual API calls or state management as needed.
-*/
 
 // Top-Ups Component
 const TopUps = () => {
@@ -314,7 +309,7 @@ function GoogleSerpApi() {
     <Container maxW="full">
       {/* Top Bar */}
       <Flex align="center" justify="space-between" py={6} flexWrap="wrap" gap={4}>
-        <Heading size="lg">Google Search Api</Heading>
+        <Heading size="lg">Google Search API</Heading>
         <HStack spacing={6}>
           <HStack>
             <Text fontWeight="bold">Subscription:</Text>
@@ -346,7 +341,6 @@ function GoogleSerpApi() {
           {/* Main Content */}
           <Box flex="1">
             <Box p={4}>
-              {/* Updated Greeting with currentUser information */}
               <Text fontSize="2xl" fontWeight="bold">
                 Hi, {currentUser?.full_name || currentUser?.email} 👋🏼
               </Text>
@@ -380,56 +374,63 @@ function GoogleSerpApi() {
 
           {/* Sidebar Section */}
           <Box w="250px" p="4" borderLeft="1px solid #E2E8F0">
-          <VStack spacing="4" align="stretch">
-            <Box p="4" shadow="sm" borderWidth="1px" borderRadius="lg">
-              <Text fontWeight="bold">Quick Actions</Text>
-              <Button
-                as="a"
-                href="mailto:support@thedataproxy.com"
-                leftIcon={<FiMail />}
-                variant="outline"
-                size="sm"
-                mt="2"
-              >
-                Email Support
-              </Button>
-              <Button
-                as="a"
-                href="https://dashboard.thedataproxy.com"
-                leftIcon={<FiHelpCircle />}
-                variant="outline"
-                size="sm"
-                mt="2"
-              >
-                Report an Issue
-              </Button>
-            </Box>
+            <VStack spacing="4" align="stretch">
+              <Box p="4" shadow="sm" borderWidth="1px" borderRadius="lg">
+                <Text fontWeight="bold">Quick Actions</Text>
+                <Button
+                  as="a"
+                  href="mailto:support@thedataproxy.com"
+                  leftIcon={<FiMail />}
+                  variant="outline"
+                  size="sm"
+                  mt="2"
+                >
+                  Email Support
+                </Button>
+                <Button
+                  as="a"
+                  href="https://thedataproxy.com/report-issue"
+                  leftIcon={<FiHelpCircle />}
+                  variant="outline"
+                  size="sm"
+                  mt="2"
+                >
+                  Report an Issue
+                </Button>
+              </Box>
 
-            <Box p="4" shadow="sm" borderWidth="1px" borderRadius="lg">
-              <Text fontWeight="bold">FAQs</Text>
-              <Text fontSize="sm">Common questions and answers.</Text>
-              <Button as="a" href="/faqs" mt="2" size="sm" variant="outline">
-                View FAQs
-              </Button>
-            </Box>
+              <Box p="4" shadow="sm" borderWidth="1px" borderRadius="lg">
+                <Text fontWeight="bold">FAQs</Text>
+                <Text fontSize="sm">Common questions and answers.</Text>
+                <Button
+                  as="a"
+                  href="https://thedataproxy.com/faqs"
+                  mt="2"
+                  size="sm"
+                  variant="outline"
+                >
+                  View FAQs
+                </Button>
+              </Box>
 
-            <Box p="4" shadow="sm" borderWidth="1px" borderRadius="lg">
-              <Text fontWeight="bold">Community Support</Text>
-              <Text fontSize="sm">Join discussions with other users.</Text>
-              <Button
-                as="a"
-                href="https://github.com/CobaltDataNet"
-                mt="2"
-                leftIcon={<FiGithub />}
-                size="sm"
-                variant="outline"
-              >
-                GitHub Discussions
-              </Button>
-            </Box>
-          </VStack>
-        </Box>
+              <Box p="4" shadow="sm" borderWidth="1px" borderRadius="lg">
+                <Text fontWeight="bold">Community Support</Text>
+                <Text fontSize="sm">Join discussions with other users.</Text>
+                <Button
+                  as="a"
+                  href="https://github.com/thedataproxy/thedataproxy/discussions"
+                  mt="2"
+                  leftIcon={<FiGithub />}
+                  size="sm"
+                  variant="outline"
+                >
+                  GitHub Discussions
+                </Button>
+              </Box>
+            </VStack>
+          </Box>
         </Flex>
+      )}
     </Container>
   );
 }
