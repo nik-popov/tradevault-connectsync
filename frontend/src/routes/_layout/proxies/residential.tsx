@@ -24,17 +24,24 @@ import ProxyStarted from "../../../components/ProxyStarted";
 import ProxySettings from "../../../components/ProxySettings";
 import ProxyUsage from "../../../components/ProxyUsage";
 
-const TopUps = () => <Box><Text>Top-Ups Component</Text></Box>;
-const Connections = () => <Box><Text>Connections Component</Text></Box>;
-const Logs = () => <Box><Text>Logs Component</Text></Box>;
-const KeyManagement = () => <Box><Text>Key Management Component</Text></Box>;
-const ReactivationOptions = () => <Box><Text>Reactivation Options Component</Text></Box>;
+// Import proxy components from ProxyComponents.tsx
+import {
+  TopUps,
+  Connections,
+  Logs,
+  KeyManagement,
+  ReactivationOptions,
+} from "./ProxyComponents";
 
-// ✅ Route Export
+// Optional: Import the Route export if needed
+import { Route as ProxyComponentsRoute } from "./ProxyComponents";
+
+// ✅ Route Export for Residential Proxy
 export const Route = createFileRoute("/_layout/proxies/residential")({
   component: ResidentialProxy,
 });
 
+// Tab configuration: Each tab renders a component
 const tabsConfig = [
   { title: "Get Started", component: <ProxyStarted /> },
   { title: "Endpoints", component: <ProxySettings /> },
@@ -53,7 +60,7 @@ function ResidentialProxy() {
     isDeactivated: false,
   });
 
-  // Load subscription settings from localStorage and React Query
+  // Load subscription settings from localStorage or React Query cache
   useEffect(() => {
     const storedSettings = localStorage.getItem("subscriptionSettings");
     if (storedSettings) {
@@ -123,7 +130,9 @@ function ResidentialProxy() {
               <TabPanels>
                 {tabsConfig.map((tab, index) => (
                   <TabPanel key={index}>
-                    {restrictedTabs.includes(tab.title) ? <Text>Feature locked during trial.</Text> : tab.component}
+                    {restrictedTabs.includes(tab.title)
+                      ? <Text>Feature locked during trial.</Text>
+                      : tab.component}
                   </TabPanel>
                 ))}
               </TabPanels>
