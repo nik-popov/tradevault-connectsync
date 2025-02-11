@@ -177,18 +177,18 @@ function Explore() {
           <VStack spacing={4} align="stretch">
             <Box p={4} shadow="sm" borderWidth="1px" borderRadius="lg">
               <Text fontWeight="bold">Pick by Your Target</Text>
-              <Text fontSize="sm">Not sure which product to choose?</Text>
               <Button mt={2} leftIcon={<FiSend />} size="sm" variant="outline">
                 Send Test Request
               </Button>
             </Box>
             <Box p={4} shadow="sm" borderWidth="1px" borderRadius="lg">
               <Text fontWeight="bold">GitHub</Text>
-              <Text fontSize="sm">Explore integration guides and open-source projects.</Text>
               <Button mt={2} leftIcon={<FiGithub />} size="sm" variant="outline">
                 Join GitHub
               </Button>
             </Box>
+
+
             <Box w="250px" p={4} borderLeft="1px solid #E2E8F0">
               <Text fontWeight="bold">Account Overview</Text>
               <Text fontSize="sm" color="gray.600">You have full access to all APIs.</Text>
