@@ -18,7 +18,6 @@ import {
   Table,
   Thead,
   TabPanel,
-  Badge,
   useColorModeValue,
 } from "@chakra-ui/react";
 import { useState } from "react";
