@@ -170,8 +170,9 @@ const PromoSERP: React.FC = () => {
           <Text>All API requests are securely handled and optimized.</Text>
         </Alert>
 
-      </Box>
-    </Box>
+     
+         </VStack>
+       </Box>
   );
 };
 
