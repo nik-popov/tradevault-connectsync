@@ -308,7 +308,13 @@ function GoogleSerpApi() {
     <Container maxW="100vw" overflowX="hidden">
       {/* Top Bar */}
       <Flex align="center" justify="space-between" py={6} flexWrap="wrap" gap={4}>
-        <Heading size="lg">Google Search API</Heading>
+      <Box textAlign="left" flex="1">
+          <Text fontSize="xl" fontWeight="bold">
+            Hi, {currentUser?.full_name || currentUser?.email} 👋🏼
+          </Text>
+          <Text fontSize="sm">Welcome back, let’s get started!</Text>
+        </Box>
+
         <HStack spacing={6}>
           <HStack>
             <Text fontWeight="bold">Subscription:</Text>
@@ -339,12 +345,6 @@ function GoogleSerpApi() {
         <Flex mt={6} gap={6} justify="space-between" align="stretch" wrap="wrap">
           {/* Main Content */}
           <Box flex="1" minW={{ base: "100%", md: "65%" }}>
-            <Box p={4}>
-              <Text fontSize="2xl" fontWeight="bold">
-                Hi, {currentUser?.full_name || currentUser?.email} 👋🏼
-              </Text>
-              <Text>Manage your proxy settings with ease.</Text>
-            </Box>
             <Divider my={4} />
             <Tabs variant="enclosed">
               <TabList>
