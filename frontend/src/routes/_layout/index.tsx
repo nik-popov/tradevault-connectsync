@@ -15,7 +15,7 @@ function Dashboard() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
-  // ✅ Load Subscription State from LocalStorage & React Query
+  // ✅ Default Subscription State
   const [subscriptionSettings, setSubscriptionSettings] = useState({
     hasSubscription: false,
     isTrial: false,
@@ -24,17 +24,15 @@ function Dashboard() {
 
   useEffect(() => {
     const storedSettings = localStorage.getItem("subscriptionSettings");
-  
+
     if (storedSettings) {
       setSubscriptionSettings(JSON.parse(storedSettings));
     } else {
       const querySettings = queryClient.getQueryData(["subscriptionSettings"]);
       
-      // ✅ Ensure querySettings is valid before setting state
       if (querySettings && typeof querySettings === "object") {
         setSubscriptionSettings(querySettings);
       } else {
-        // ✅ Provide a proper default structure instead of an empty object
         setSubscriptionSettings({
           hasSubscription: false,
           isTrial: false,
@@ -43,7 +41,7 @@ function Dashboard() {
       }
     }
   }, [queryClient]);
-  
+
   const { hasSubscription, isTrial } = subscriptionSettings;
   const isLocked = !hasSubscription && !isTrial;
 
