@@ -90,13 +90,6 @@ const PromoDatasets: React.FC = () => {
             </GridItem>
           ))}
         </Grid>
-
-        {/* Security & Performance Notice */}
-        <Alert status="success" borderRadius="md" mb={6}>
-          <AlertIcon />
-          <Text>All datasets are optimized for high-speed querying and secure data access.</Text>
-        </Alert>
-
 {/* Pricing Plans Section */}
 <Heading as="h2" size="lg" fontWeight="bold" mb={4}>DataSet Pricing Plans</Heading>
 <Grid templateColumns={{ base: "1fr", md: "repeat(4, 1fr)" }} gap={6}>
@@ -156,6 +149,12 @@ const PromoDatasets: React.FC = () => {
         </Button>
       </Box>
     </Box>
+            {/* Security & Performance Notice */}
+            <Alert status="success" borderRadius="md" mb={6}>
+            <AlertIcon />
+            <Text>All datasets are optimized for high-speed querying and secure data access.</Text>
+          </Alert>
+  
   ))}
 </Grid>
 

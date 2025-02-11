@@ -93,11 +93,6 @@ const PromoSERP: React.FC = () => {
           ))}
         </Grid>
 
-        {/* Security Notice */}
-        <Alert status="success" borderRadius="md" mb={6}>
-          <AlertIcon />
-          <Text>All API requests are securely handled and optimized.</Text>
-        </Alert>
 {/* Pricing Plans Section */}
 <Heading as="h2" size="lg" fontWeight="bold" mb={4}>API Pricing Plans</Heading>
 <Grid templateColumns={{ base: "1fr", md: "repeat(3, 1fr)" }} gap={6}>
@@ -214,11 +209,17 @@ const PromoSERP: React.FC = () => {
     {/* CTA Button */}
     <Button w="full" colorScheme="blue" variant={pricingPlans[3].buttonVariant} onClick={() => navigate('/search-api/pricing')}>
       {pricingPlans[3].price === "Custom" ? "Contact Us" : `Choose ${pricingPlans[3].name}`}
-    </Button>
+    </Button>''
   </Box>
 </Box>
 
 
+        {/* Security Notice */}
+        <Alert status="success" borderRadius="md" mb={6}>
+          <AlertIcon />
+          <Text>All API requests are securely handled and optimized.</Text>
+        </Alert>
+        
       </Box>
     </Box>
   );
