@@ -12,65 +12,30 @@ import {
   TabPanels,
   Tab,
   TabPanel,
-  Table,
-  Thead,
-  Tr,
-  Tbody,
-  Th,
-  Td,
-  SimpleGrid,
-  Card,
-  CardBody,
+  Grid,
+  GridItem,
+  Icon,
+  Badge,
+  List,
+  ListItem,
+  ListIcon,
+  Alert,
+  AlertIcon,
   Heading,
 } from "@chakra-ui/react";
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
-
-import PromoContent from "../../../components/PromoContent";
+import { FiCheckCircle, FiDollarSign, FiPackage, FiTrendingUp, FiSettings } from 'react-icons/fi';
 
 const STORAGE_KEY = "subscriptionSettings";
 const PRODUCT = "proxy";
 
-const pricingData = {
-  basic: {
-    title: "Basic Plan",
-    description: "Ideal for individual use with minimal needs.",
-    options: [
-      { data: "1GB", price: "$1", features: "Basic Support, 1 Endpoint" },
-      { data: "10GB", price: "$9", features: "Standard Support, 2 Endpoints" },
-      { data: "50GB", price: "$40", features: "Priority Support, 5 Endpoints" },
-    ],
-  },
-  pro: {
-    title: "Pro Plan",
-    description: "Perfect for businesses needing extra resources.",
-    options: [
-      { data: "1GB", price: "$2", features: "Faster Speed, API Access" },
-      { data: "10GB", price: "$18", features: "Dedicated Support, Custom Endpoints" },
-      { data: "50GB", price: "$80", features: "Enterprise Features, Unlimited Endpoints" },
-    ],
-  },
-  enterprise: {
-    title: "Enterprise Plan",
-    description: "Advanced needs for scaling and performance.",
-    options: [
-      { data: "1GB", price: "$3", features: "24/7 Support, Dedicated API" },
-      { data: "10GB", price: "$25", features: "SLA-backed, Custom Infrastructure" },
-      { data: "50GB", price: "$120", features: "Fully Managed, On-Demand Scaling" },
-    ],
-  },
-};
-
-const PricingCard = ({ title, price, features }) => (
-  <Card bg="gray.700" borderRadius="md" p={6} _hover={{ bg: "gray.600" }} transition="0.3s">
-    <CardBody>
-      <Heading size="md" color="white">{title}</Heading>
-      <Text fontSize="lg" color="gray.300" mt={2} fontWeight="bold">{price}</Text>
-      <Text fontSize="sm" color="gray.400" mt={2}>{features}</Text>
-      <Button mt={4} colorScheme="blue" width="full">Select Plan</Button>
-    </CardBody>
-  </Card>
-);
+const pricingPlans = [
+  { name: "Dev", price: "$100", features: ["100 requests/month", "Basic API access", "Email support"], borderColor: "blue.700", icon: FiPackage },
+  { name: "SaaS", price: "$500", features: ["1,000 requests/month", "Faster response times", "Priority support"], borderColor: "blue.600", badge: "MOST POPULAR", icon: FiTrendingUp },
+  { name: "Pro", price: "$2,000", features: ["1,000,000 requests/month", "Enterprise-grade performance", "Dedicated support"], borderColor: "blue.500", icon: FiSettings },
+  { name: "Enterprise", price: "Custom", features: ["Unlimited requests", "Dedicated account manager", "Custom integrations"], borderColor: "blue.400", icon: FiDollarSign },
+];
 
 function Pricing() {
   const { data: subscriptionSettings } = useQuery({
@@ -79,45 +44,53 @@ function Pricing() {
     staleTime: Infinity,
   });
 
-  const settings = subscriptionSettings?.[PRODUCT] || {
-    hasSubscription: false,
-    isTrial: false,
-    isDeactivated: false,
-  };
-
-  const isLocked = !settings.hasSubscription && !settings.isTrial;
-
   return (
-    <Container maxW="full">
+    <Container maxW="100%" mx="auto" px={6} py={10} bg="gray.800">
       <Flex align="center" justify="space-between" py={6}>
         <Box>
-          <Text fontSize="2xl" fontWeight="bold" color="white">Pricing Plans</Text>
-          <Text fontSize="md" color="gray.300">Choose the best plan that fits your needs.</Text>
+          <Text fontSize="2xl" fontWeight="bold" color="white">Flexible Pricing Plans</Text>
+          <Text fontSize="md" color="gray.300">Select a plan that scales with your needs.</Text>
         </Box>
       </Flex>
       <Divider my={4} />
 
-      {isLocked ? (
-        <PromoContent />
-      ) : settings.isDeactivated ? (
-        <Box mt={6}>
-          <Text color="white">Your subscription has expired. Please renew to access all features.</Text>
-        </Box>
-      ) : (
-        <VStack spacing={10} align="stretch">
-          {Object.values(pricingData).map((plan, planIndex) => (
-            <Box key={planIndex}>
-              <Text fontSize="xl" fontWeight="bold" color="white" mb={2}>{plan.title}</Text>
-              <Text fontSize="md" color="gray.300" mb={4}>{plan.description}</Text>
-              <SimpleGrid columns={{ base: 1, md: 3 }} spacing={6}>
-                {plan.options.map((entry, index) => (
-                  <PricingCard key={index} title={entry.data} price={entry.price} features={entry.features} />
-                ))}
-              </SimpleGrid>
-            </Box>
+      <Tabs variant="enclosed" colorScheme="gray">
+        <TabList>
+          {pricingPlans.map((plan, index) => (
+            <Tab key={index} _selected={{ bg: "gray.700", color: "white" }}>
+              <Icon as={plan.icon} mr={2} /> {plan.name}
+            </Tab>
           ))}
-        </VStack>
-      )}
+        </TabList>
+        <TabPanels>
+          {pricingPlans.map((plan, index) => (
+            <TabPanel key={index}>
+              <Box p={6} border="2px solid" borderColor={plan.borderColor} borderRadius="lg" bg="gray.700">
+                {plan.badge && (
+                  <Badge bg="blue.600" color="white" px={3} py={1} position="absolute" top="-12px" left="10px">
+                    {plan.badge}
+                  </Badge>
+                )}
+                <Heading as="h3" size="md" fontWeight="bold" mb={2} color="gray.200">
+                  {plan.name}
+                </Heading>
+                <Text fontSize="lg" fontWeight="bold" color="white">{plan.price}</Text>
+                <List spacing={2} mb={6} mt={2}>
+                  {plan.features.map((feature, idx) => (
+                    <ListItem key={idx} display="flex" alignItems="center">
+                      <ListIcon as={FiCheckCircle} color="blue.500" boxSize={5} />
+                      <Text fontSize="sm" color="gray.300">{feature}</Text>
+                    </ListItem>
+                  ))}
+                </List>
+                <Button w="full" bg="blue.600" color="white" _hover={{ bg: "blue.500" }}>
+                  {plan.price === "Custom" ? "Contact Us" : `Choose ${plan.name}`}
+                </Button>
+              </Box>
+            </TabPanel>
+          ))}
+        </TabPanels>
+      </Tabs>
     </Container>
   );
 }
