@@ -17,7 +17,11 @@ function Dashboard() {
   const queryClient = useQueryClient();
 
   // ✅ Load Subscription Settings from LocalStorage & React Query
-  const [subscriptionSettings, setSubscriptionSettings] = useState({
+  const [subscriptionSettings, setSubscriptionSettings] = useState<{
+    hasSubscription: boolean;
+    isTrial: boolean;
+    isDeactivated: boolean;
+  }>({
     hasSubscription: false,
     isTrial: false,
     isDeactivated: false,
@@ -28,7 +32,11 @@ function Dashboard() {
     if (storedSettings) {
       setSubscriptionSettings(JSON.parse(storedSettings));
     } else {
-      const querySettings = queryClient.getQueryData("subscriptionSettings");
+      const querySettings = queryClient.getQueryData<{ 
+        hasSubscription: boolean; 
+        isTrial: boolean; 
+        isDeactivated: boolean;
+      }>(["subscriptionSettings"]);
       if (querySettings) {
         setSubscriptionSettings(querySettings);
       }
@@ -37,6 +45,8 @@ function Dashboard() {
 
   const { hasSubscription, isTrial, isDeactivated } = subscriptionSettings;
   const isLocked = !hasSubscription && !isTrial;
+  
+  // Only display when the subscription is deactivated
   const isFullyDeactivated = isDeactivated && !hasSubscription;
 
   const [ownedOnly, setOwnedOnly] = useState(false);
@@ -70,7 +80,7 @@ function Dashboard() {
           colorScheme={isLocked ? "red" : "blue"} 
           size="sm" 
           mt={2} 
-          onClick={() => navigate({ to: "/proxies/pricing" })}
+          onClick={() => navigate("/proxies/pricing")}
         >
           {isLocked ? "View Subscription Plans" : "Try now"}
         </Button>
@@ -142,31 +152,13 @@ function Dashboard() {
                     size="sm" 
                     colorScheme="blue" 
                     borderRadius="full"
-                    onClick={() => navigate({ to: product.path })}
+                    onClick={() => navigate(product.path)}
                   >
                     Manage
                   </Button>
                 </Box>
               ))
             )}
-          </VStack>
-        </Box>
-  
-        {/* Sidebar */}
-        <Box w="250px" p={4} borderLeft="1px solid #E2E8F0">
-          <VStack spacing={4} align="stretch">
-            <Box p={4} shadow="sm" borderWidth="1px" borderRadius="lg">
-              <Text fontWeight="bold">Pick by Your Target</Text>
-              <Button mt={2} leftIcon={<FiSend />} size="sm" variant="outline">
-                Send Test Request
-              </Button>
-            </Box>
-            <Box p={4} shadow="sm" borderWidth="1px" borderRadius="lg">
-              <Text fontWeight="bold">GitHub</Text>
-              <Button mt={2} leftIcon={<FiGithub />} size="sm" variant="outline">
-                Join GitHub
-              </Button>
-            </Box>
           </VStack>
         </Box>
       </Flex>
