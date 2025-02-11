@@ -53,7 +53,7 @@ const sidebarStructure: SidebarItem[] = [
     icon: FiDatabase,
   },
   { title: "Settings", icon: FiSettings, path: "/settings" },
-  { title: "Billing", icon: FiBriefcase, path: "/items" },
+  { title: "Billing", icon: FiBriefcase, path: "/subscriptions" },
   { title: "Help & Support", icon: FiTool, path: "/help-support" },
 ];
 
