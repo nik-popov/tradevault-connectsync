@@ -7,6 +7,7 @@ import {
   Switch,
   Button,
   Divider,
+  Stack,
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import { useQueryClient, useQuery } from "@tanstack/react-query";
@@ -24,7 +25,7 @@ type ProductType = (typeof PRODUCTS)[number];
 
 const STORAGE_KEY = "subscriptionSettings"; // Key for localStorage
 
-const SubscriptionManagement = ({ product }: { product: ProductType }) => {
+const SubscriptionManagement = () => {
   const queryClient = useQueryClient();
 
   // Load subscription settings with React Query
@@ -37,63 +38,96 @@ const SubscriptionManagement = ({ product }: { product: ProductType }) => {
     staleTime: Infinity,
   });
 
-  // Ensure the selected product has a default state
-  const [settings, setSettings] = useState<SubscriptionSettings>({
-    hasSubscription: false,
-    isTrial: false,
-    isDeactivated: false,
-  });
+  // Store subscription settings locally for UI updates
+  const [settings, setSettings] = useState<Record<ProductType, SubscriptionSettings>>(() =>
+    PRODUCTS.reduce((acc, product) => {
+      acc[product] = subscriptionSettings?.[product] || {
+        hasSubscription: false,
+        isTrial: false,
+        isDeactivated: false,
+      };
+      return acc;
+    }, {} as Record<ProductType, SubscriptionSettings>)
+  );
 
+  // Sync React Query Data into State
   useEffect(() => {
-    if (subscriptionSettings?.[product]) {
-      setSettings(subscriptionSettings[product]);
-    }
-  }, [subscriptionSettings, product]);
+    setSettings((prevSettings) =>
+      PRODUCTS.reduce((acc, product) => {
+        acc[product] = subscriptionSettings?.[product] || prevSettings[product];
+        return acc;
+      }, {} as Record<ProductType, SubscriptionSettings>)
+    );
+  }, [subscriptionSettings]);
 
-  // Sync state with localStorage and React Query
-  const updateSettings = (newSettings: SubscriptionSettings) => {
+  // Update settings locally and sync with localStorage & React Query
+  const updateSettings = (product: ProductType, newSettings: SubscriptionSettings) => {
     const updatedSettings = { ...subscriptionSettings, [product]: newSettings };
     localStorage.setItem(STORAGE_KEY, JSON.stringify(updatedSettings));
     queryClient.setQueryData(["subscriptionSettings"], updatedSettings);
-    refetch(); // Ensure updates propagate
+    refetch(); // Ensure UI updates reflect instantly
   };
 
   return (
-    <Box>
-      <Heading size="md">{product} Subscription</Heading>
-      <Divider my={3} />
+    <Box borderWidth="1px" borderRadius="lg" p={5} w="100%">
+      <Heading size="md" mb={4}>
+        Subscription Management
+      </Heading>
+      <VStack align="stretch" spacing={6}>
+        {PRODUCTS.map((product, index) => (
+          <Box key={product} p={4} borderWidth="1px" borderRadius="md">
+            <Heading size="sm" mb={2}>
+              {product} Subscription
+            </Heading>
+            <Divider my={2} />
 
-      <VStack align="stretch" spacing={3}>
-        <HStack justify="space-between">
-          <Text fontWeight="bold">Subscription Active</Text>
-          <Switch
-            isChecked={settings.hasSubscription}
-            onChange={() =>
-              updateSettings({ ...settings, hasSubscription: !settings.hasSubscription })
-            }
-          />
-        </HStack>
+            <VStack align="stretch" spacing={3}>
+              <HStack justify="space-between">
+                <Text fontWeight="bold">Subscription Active</Text>
+                <Switch
+                  isChecked={settings[product].hasSubscription}
+                  onChange={() =>
+                    updateSettings(product, {
+                      ...settings[product],
+                      hasSubscription: !settings[product].hasSubscription,
+                    })
+                  }
+                />
+              </HStack>
 
-        <HStack justify="space-between">
-          <Text fontWeight="bold">Trial Mode</Text>
-          <Switch
-            isChecked={settings.isTrial}
-            onChange={() => updateSettings({ ...settings, isTrial: !settings.isTrial })}
-          />
-        </HStack>
+              <HStack justify="space-between">
+                <Text fontWeight="bold">Trial Mode</Text>
+                <Switch
+                  isChecked={settings[product].isTrial}
+                  onChange={() =>
+                    updateSettings(product, {
+                      ...settings[product],
+                      isTrial: !settings[product].isTrial,
+                    })
+                  }
+                />
+              </HStack>
 
-        <HStack justify="space-between">
-          <Text fontWeight="bold">Deactivated</Text>
-          <Switch
-            isChecked={settings.isDeactivated}
-            onChange={() =>
-              updateSettings({ ...settings, isDeactivated: !settings.isDeactivated })
-            }
-          />
-        </HStack>
+              <HStack justify="space-between">
+                <Text fontWeight="bold">Deactivated</Text>
+                <Switch
+                  isChecked={settings[product].isDeactivated}
+                  onChange={() =>
+                    updateSettings(product, {
+                      ...settings[product],
+                      isDeactivated: !settings[product].isDeactivated,
+                    })
+                  }
+                />
+              </HStack>
+            </VStack>
+
+            {index !== PRODUCTS.length - 1 && <Divider my={4} />}
+          </Box>
+        ))}
       </VStack>
 
-      <Button mt={6} colorScheme="blue" onClick={() => console.log("Updated Settings:", settings)}>
+      <Button mt={6} colorScheme="blue" w="full" onClick={() => console.log("Updated Settings:", settings)}>
         Save Changes
       </Button>
     </Box>
