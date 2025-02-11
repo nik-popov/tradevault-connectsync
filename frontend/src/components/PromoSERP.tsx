@@ -65,8 +65,8 @@ const PromoSERP: React.FC = () => {
   ];
 
   return (
-    <Box w="full" px={{ base: 4, md: 8 }} py={8}>
-      <Box maxW="5xl" mx="auto" textAlign="center">
+    <Box maxW="100%" mx="auto" px={{ base: 6, md: 12 }} py={12}>
+      <VStack spacing={8} align="stretch">
        <Heading as="h1" size="xl" fontWeight="bold" mb={4}>
           Unlock Search API
         </Heading>
