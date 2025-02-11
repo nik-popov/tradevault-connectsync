@@ -377,21 +377,13 @@ function ResidentialProxy() {
               </TabPanels>
             </Tabs>
           </Box>
-          {/* Sidebar Section */}
-          <Box w="250px" p={4} borderLeft="1px solid #E2E8F0">
-            <VStack spacing={4} align="stretch">
-              <Box p={4} shadow="sm" borderWidth="1px" borderRadius="lg">
-                <Text fontWeight="bold">Pick by Your Target</Text>
-                <Text fontSize="sm">Not sure which product to choose?</Text>
-                <Button mt={2} leftIcon={<FiSend />} size="sm" variant="outline">
-                  Send Test Request
-                </Button>
-              </Box>
-              <Box p={4} shadow="sm" borderWidth="1px" borderRadius="lg">
-                <Text fontWeight="bold">GitHub</Text>
-                <Text fontSize="sm">Explore integration guides and open-source projects.</Text>
-                <Button mt={2} leftIcon={<FiGithub />} size="sm" variant="outline">
-                  Join GitHub
+   {/* ✅ Sidebar */}
+   <Box w={{ base: "100%", md: "250px" }} p="4" borderLeft={{ md: "1px solid #E2E8F0" }}>
+            <VStack spacing="4" align="stretch">
+              <Box p="4" shadow="sm" borderWidth="1px" borderRadius="lg">
+                <Text fontWeight="bold">Quick Actions</Text>
+                <Button as="a" href="mailto:support@thedataproxy.com" leftIcon={<FiExternalLink />} variant="outline" size="sm" mt="2">
+                  Email Support
                 </Button>
               </Box>
             </VStack>
@@ -401,6 +393,7 @@ function ResidentialProxy() {
     </Container>
   );
 }
+
 
 // Export Route AFTER the component definition
 export const Route = createFileRoute("/_layout/proxies/residential")({

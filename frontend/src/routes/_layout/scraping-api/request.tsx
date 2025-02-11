@@ -190,22 +190,61 @@ function Request() {
           </Box>
 
           {/* ✅ Sidebar */}
-          <Box w="250px" p={4} borderLeft="1px solid #E2E8F0">
-            <VStack spacing={4} align="stretch">
-              <Box p={4} shadow="sm" borderWidth="1px" borderRadius="lg">
-                <Text fontWeight="bold">How It Works</Text>
-                <Text fontSize="sm">Submit your API request, and we’ll review it.</Text>
-              </Box>
-              <Box p={4} shadow="sm" borderWidth="1px" borderRadius="lg">
-                <Text fontWeight="bold">Need Help?</Text>
-                <Text fontSize="sm">Contact support for assistance.</Text>
-              </Box>
-            </VStack>
-          </Box>
+          <Box w="250px" p="4" borderLeft="1px solid #E2E8F0">
+          <VStack spacing="4" align="stretch">
+            <Box p="4" shadow="sm" borderWidth="1px" borderRadius="lg">
+              <Text fontWeight="bold">Quick Actions</Text>
+              <Button
+                as="a"
+                href="mailto:support@thedataproxy.com"
+                leftIcon={<FiMail />}
+                variant="outline"
+                size="sm"
+                mt="2"
+              >
+                Email Support
+              </Button>
+              <Button
+                as="a"
+                href="https://dashboard.thedataproxy.com"
+                leftIcon={<FiHelpCircle />}
+                variant="outline"
+                size="sm"
+                mt="2"
+              >
+                Report an Issue
+              </Button>
+            </Box>
+
+            <Box p="4" shadow="sm" borderWidth="1px" borderRadius="lg">
+              <Text fontWeight="bold">FAQs</Text>
+              <Text fontSize="sm">Common questions and answers.</Text>
+              <Button as="a" href="/faqs" mt="2" size="sm" variant="outline">
+                View FAQs
+              </Button>
+            </Box>
+
+            <Box p="4" shadow="sm" borderWidth="1px" borderRadius="lg">
+              <Text fontWeight="bold">Community Support</Text>
+              <Text fontSize="sm">Join discussions with other users.</Text>
+              <Button
+                as="a"
+                href="https://github.com/CobaltDataNet"
+                mt="2"
+                leftIcon={<FiGithub />}
+                size="sm"
+                variant="outline"
+              >
+                GitHub Discussions
+              </Button>
+            </Box>
+          </VStack>
+        </Box>
         </Flex>
       )}
     </Container>
   );
 }
+
 
 export default Request;
