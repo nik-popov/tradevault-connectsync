@@ -17,25 +17,26 @@ import {
   VStack
 } from "@chakra-ui/react";
 import { useNavigate } from '@tanstack/react-router';
-import { FiCheckCircle, FiGlobe, FiZap, FiShield } from 'react-icons/fi';
+import { FiCheckCircle, FiGlobe, FiZap, FiShield, FiServer } from 'react-icons/fi';
 
 const proxyFeatures = [
   { name: "Global Coverage", icon: FiGlobe, description: "Access to residential IPs from 195+ locations worldwide." },
   { name: "Lightning Fast", icon: FiZap, description: "Industry-leading connection speeds with 99.9% uptime." },
-  { name: "Secure & Private", icon: FiShield, description: "Enterprise-grade security with IP rotation and authentication." }
+  { name: "Secure & Private", icon: FiShield, description: "Enterprise-grade security with IP rotation and authentication." },
+  { name: "Scalable Infrastructure", icon: FiServer, description: "Easily scale your proxy usage with flexible plans and resources." }
 ];
 
 const proxyPlans = [
   {
     name: "Starter",
-    price: "$99",
+    price: "$99/mo",
     features: ["100GB/month", "1 concurrent connection", "Basic support", "Shared IP pool"],
     borderColor: "blue.700",
     buttonVariant: "outline",
   },
   {
     name: "Business",
-    price: "$499",
+    price: "$499/mo",
     features: ["1TB/month", "10 concurrent connections", "Priority support", "Dedicated IP options"],
     borderColor: "blue.600",
     buttonVariant: "solid",
@@ -43,14 +44,14 @@ const proxyPlans = [
   },
   {
     name: "Business Plus+",
-    price: "$2,999",
+    price: "$2,999/mo",
     features: ["Unlimited", "Unlimited concurrent connections", "Dedicated support", "Custom IP pools", "24/7 SLA"],
     borderColor: "blue.500",
     buttonVariant: "solid",
   },
   {
     name: "Ultra Enterprise",
-    price: "Custom",
+    price: "Custom Pricing",
     features: ["Unlimited + Dedicated Resources", "Dedicated proxies", "Custom traffic limits", "Private network setup"],
     borderColor: "blue.400",
     buttonVariant: "outline",
@@ -127,7 +128,7 @@ const PromoContent: React.FC = () => {
                     ))}
                   </List>
                   <Button w="full" bg="blue.600" color="white" _hover={{ bg: "blue.500" }} variant={plan.buttonVariant} onClick={() => navigate('/proxies/pricing')} size="sm">
-                    {plan.price === "Custom" ? "Contact Us" : `Choose ${plan.name}`}
+                    {plan.price === "Custom Pricing" ? "Contact Us" : `Choose ${plan.name}`}
                   </Button>
                 </Box>
               </Box>
