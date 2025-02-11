@@ -19,6 +19,7 @@ import {
   Thead,
   TabPanel,
   Progress,
+  Badge,
 } from "@chakra-ui/react";
 import { useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
