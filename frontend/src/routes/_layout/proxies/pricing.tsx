@@ -34,7 +34,7 @@ import {
   FiSettings,
 } from "react-icons/fi";
 
-// Pricing Categories as Tabs
+// Pricing Categories
 const pricingCategories = [
   { name: "Compute", icon: FiCpu },
   { name: "Traffic", icon: FiGlobe },
@@ -72,18 +72,18 @@ const categoryPricing = {
 
 function Pricing() {
   return (
-    <Container maxW="full">
-      <Flex align="center" justify="space-between" py={6} flexWrap="wrap" gap={4}>
-        <Box textAlign="left" flex="1">
-          <Text fontSize="xl" fontWeight="bold">Pricing Recap</Text>
-          <Text fontSize="sm">Manage your proxy settings and subscriptions.</Text>
-        </Box>
-      </Flex>
-      <Divider my={4} />
+    <Container maxW="100vw" minH="100vh" bg="gray.800" color="white" py={10} px={8}>
+      {/* Left-Aligned Title & Subtitle */}
+      <Box textAlign="left" mb={8}>
+        <Text fontSize="4xl" fontWeight="bold" color="white">Pricing Recap</Text>
+        <Text fontSize="lg" color="gray.400">Compare pricing for Compute, Storage, Traffic, AI, and Security.</Text>
+      </Box>
+
+      <Divider my={6} borderColor="gray.600" />
 
       {/* Clean Tab Selector */}
       <Tabs variant="unstyled">
-        <TabList display="flex" justifyContent="center" bg="gray.700" borderRadius="lg" p={2} gap={2}>
+        <TabList bg="gray.700" borderRadius="lg" p={3} display="flex" gap={2} width="fit-content">
           {pricingCategories.map((category, index) => (
             <Tab 
               key={index} 
@@ -101,7 +101,7 @@ function Pricing() {
           {pricingCategories.map((category, index) => (
             <TabPanel key={index}>
               {/* Section Title */}
-              <Box mb={6} textAlign="center">
+              <Box mb={6} textAlign="left">
                 <Text fontSize="3xl" fontWeight="bold" color="gray.200">{category.name} Pricing</Text>
                 <Text fontSize="md" color="gray.400">Detailed cost breakdown for {category.name.toLowerCase()} services.</Text>
               </Box>
@@ -116,7 +116,7 @@ function Pricing() {
                     border="2px solid" 
                     borderColor={plan.color} 
                     borderRadius="lg"
-                    textAlign="center"
+                    textAlign="left"
                   >
                     <Text fontSize="xl" fontWeight="bold" color={plan.color}>{plan.name}</Text>
                     <Text fontSize="sm" color="gray.300">{plan.description}</Text>
@@ -130,21 +130,21 @@ function Pricing() {
                 <Table size="md" variant="unstyled">
                   <Thead bg="gray.700">
                     <Tr>
-                      <Th color="gray.300">Service</Th>
-                      <Th color="gray.300">On-Demand</Th>
-                      <Th color="gray.300">Reserved</Th>
-                      <Th color="gray.300">Spot</Th>
-                      <Th color="gray.300">Enterprise</Th>
+                      <Th color="gray.300" textAlign="left">Service</Th>
+                      <Th color="gray.300" textAlign="center">On-Demand</Th>
+                      <Th color="gray.300" textAlign="center">Reserved</Th>
+                      <Th color="gray.300" textAlign="center">Spot</Th>
+                      <Th color="gray.300" textAlign="center">Enterprise</Th>
                     </Tr>
                   </Thead>
                   <Tbody>
                     {categoryPricing[category.name]?.map((item, idy) => (
                       <Tr key={idy} bg="gray.700" borderBottom="2px solid" borderColor="gray.600">
                         <Td color="gray.300">{item.service}</Td>
-                        <Td><Badge colorScheme="blue" px={3} py={1} borderRadius="md">{item.OnDemand}</Badge></Td>
-                        <Td><Badge colorScheme="green" px={3} py={1} borderRadius="md">{item.Reserved}</Badge></Td>
-                        <Td><Badge colorScheme="purple" px={3} py={1} borderRadius="md">{item.Spot}</Badge></Td>
-                        <Td><Badge colorScheme="orange" px={3} py={1} borderRadius="md">{item.Enterprise}</Badge></Td>
+                        <Td textAlign="center"><Badge colorScheme="blue" px={3} py={1} borderRadius="md">{item.OnDemand}</Badge></Td>
+                        <Td textAlign="center"><Badge colorScheme="green" px={3} py={1} borderRadius="md">{item.Reserved}</Badge></Td>
+                        <Td textAlign="center"><Badge colorScheme="purple" px={3} py={1} borderRadius="md">{item.Spot}</Badge></Td>
+                        <Td textAlign="center"><Badge colorScheme="orange" px={3} py={1} borderRadius="md">{item.Enterprise}</Badge></Td>
                       </Tr>
                     ))}
                   </Tbody>
