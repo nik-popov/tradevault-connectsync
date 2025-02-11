@@ -28,7 +28,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { FiSend, FiGithub } from "react-icons/fi";
 
 import PromoContent from "../../../components/PromoContent";
-import MobileResidentialApiStartGuide from "../../../components/MobileStarted";
+import GetStarted from "../../../components/GetStarted";
 import ProxySettings from "../../../components/ProxySettings";
 import ProxyUsage from "../../../components/ProxyUsage";
 
@@ -313,7 +313,7 @@ function ResidentialProxy() {
 
   // Define tabs configuration
   const tabsConfig = [
-    { title: "Get Started", component: <MobileResidentialApiStartGuide /> },
+    { title: "Get Started", component: <GetStarted /> },
     { title: "Endpoints", component: <ProxySettings /> },
     { title: "Usage", component: <ProxyUsage /> },
     { title: "Top-Ups", component: <TopUps /> },
