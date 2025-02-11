@@ -21,7 +21,7 @@ import {
   import { useState, useEffect } from "react";
   import Navbar from "../../components/Common/Navbar";
   
-  // ✅ Mock Subscription Data (Later will be from Backend)
+  // ✅ Mock Data for Subscription Management (Replace with API later)
   const mockUsers = [
     { id: "1", name: "Alice", email: "alice@example.com", subscription: "Business", isTrial: false, isDeactivated: false },
     { id: "2", name: "Bob", email: "bob@example.com", subscription: "Starter", isTrial: true, isDeactivated: false },
@@ -30,11 +30,11 @@ import {
   
   const subscriptionTiers = ["Starter", "Business", "Business Plus+", "Enterprise"];
   
-  // ✅ Component to Manage Subscriptions Per User
+  // ✅ Subscription Management Table
   function SubscriptionTable() {
     const [users, setUsers] = useState(mockUsers);
   
-    // ✅ Toggle Subscription Tier (Later to be API call)
+    // ✅ Assign Subscription to a User (Manual until API integration)
     const changeSubscription = (id, newSubscription) => {
       setUsers((prev) =>
         prev.map((user) =>
@@ -108,7 +108,7 @@ import {
     );
   }
   
-  // ✅ Main Subscriptions Component
+  // ✅ Main Subscription Management Page
   function Subscriptions() {
     return (
       <Container maxW="full">
@@ -124,12 +124,12 @@ import {
     );
   }
   
-  // ✅ Fix: Export Route Correctly
-import { createFileRoute } from "@tanstack/react-router";
+  // ✅ Correctly Export Route for TanStack Router
+  import { createFileRoute } from "@tanstack/react-router";
   
-export const Route = createFileRoute("/_layout/subscriptions")({
+  export const Route = createFileRoute("/_layout/subscriptions")({
     component: Subscriptions,
   });
   
-export default Subscriptions;
+  export default Subscriptions;
   
