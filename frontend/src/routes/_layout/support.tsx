@@ -1,11 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import {
   Container,
   Box,
   Text,
   Button,
   VStack,
-  HStack,
   Divider,
   Flex,
   Tabs,
@@ -17,8 +16,6 @@ import {
   FormLabel,
   Input,
   Textarea,
-  Alert,
-  AlertIcon,
   Table,
   Thead,
   Tr,
@@ -28,42 +25,15 @@ import {
   useToast,
 } from "@chakra-ui/react";
 import { createFileRoute } from "@tanstack/react-router";
-import { useQueryClient, useQuery } from "@tanstack/react-query";
 import { FiSend, FiMail, FiHelpCircle, FiGithub } from "react-icons/fi";
 
-import PromoContent from "../../../src/components/PromoContent";
-
-// Subscription Settings Key
-const STORAGE_KEY = "subscriptionSettings";
-const PRODUCT = "support"; 
-
+// Route Setup
 export const Route = createFileRoute("/_layout/support")({
   component: Support,
 });
 
 function Support() {
-  const queryClient = useQueryClient();
   const toast = useToast();
-
-  // Fetch subscription settings
-  const { data: subscriptionSettings } = useQuery({
-    queryKey: ["subscriptionSettings"],
-    queryFn: () => {
-      const storedSettings = localStorage.getItem(STORAGE_KEY);
-      return storedSettings ? JSON.parse(storedSettings) : {};
-    },
-    staleTime: Infinity,
-  });
-
-  const settings = subscriptionSettings?.[PRODUCT] || {
-    hasSubscription: false,
-    isTrial: false,
-    isDeactivated: false,
-  };
-
-  const { hasSubscription, isTrial, isDeactivated } = settings;
-  const isLocked = !hasSubscription && !isTrial;
-  const restrictedTabs = isTrial ? ["Support Tickets", "Submit Request"] : [];
 
   // Form State
   const [name, setName] = useState("");
@@ -136,35 +106,24 @@ function Support() {
         </Box>
       </Flex>
 
-      {isLocked ? (
-        <PromoContent />
-      ) : isDeactivated ? (
-        <Box mt={6}>
-          <Text>Your subscription has expired. Please renew to access support features.</Text>
+      <Divider my={4} />
+
+      <Flex mt={6} gap={6} justify="space-between">
+        <Box flex="1">
+          <Tabs variant="enclosed">
+            <TabList>
+              {tabsConfig.map((tab, index) => (
+                <Tab key={index}>{tab.title}</Tab>
+              ))}
+            </TabList>
+            <TabPanels>
+              {tabsConfig.map((tab, index) => (
+                <TabPanel key={index}>{tab.component}</TabPanel>
+              ))}
+            </TabPanels>
+          </Tabs>
         </Box>
-      ) : (
-        <Flex mt={6} gap={6} justify="space-between">
-          <Box flex="1">
-            <Divider my={4} />
-            <Tabs variant="enclosed">
-              <TabList>
-                {tabsConfig.map((tab, index) => (
-                  <Tab key={index} isDisabled={restrictedTabs.includes(tab.title)}>
-                    {tab.title}
-                  </Tab>
-                ))}
-              </TabList>
-              <TabPanels>
-                {tabsConfig.map((tab, index) => (
-                  <TabPanel key={index}>
-                    {restrictedTabs.includes(tab.title) ? <Text>Feature locked during trial.</Text> : tab.component}
-                  </TabPanel>
-                ))}
-              </TabPanels>
-            </Tabs>
-          </Box>
-        </Flex>
-      )}
+      </Flex>
     </Container>
   );
 }
