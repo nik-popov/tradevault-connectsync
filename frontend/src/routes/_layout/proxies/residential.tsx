@@ -303,7 +303,29 @@ function ResidentialProxy() {
   // Load current user data from localStorage (or replace with your own user logic)
   const currentUser = JSON.parse(localStorage.getItem("currentUser") || "null");
 
-  const { hasSubscription, isTrial, isDeactivated } = subscriptionSettings;
+  import { useQuery } from "@tanstack/react-query";
+
+  const STORAGE_KEY = "subscriptionSettings";
+  const PRODUCT_NAME = "Residential"; // ✅ Define specific product
+  
+  const { data: subscriptionSettings, refetch } = useQuery({
+    queryKey: ["subscriptionSettings"],
+    queryFn: () => {
+      const storedSettings = localStorage.getItem(STORAGE_KEY);
+      return storedSettings ? JSON.parse(storedSettings) : {};
+    },
+    staleTime: Infinity,
+  });
+  
+  // ✅ Only extract settings for Residential
+  const productSubscription = subscriptionSettings?.[PRODUCT_NAME] || {
+    hasSubscription: false,
+    isTrial: false,
+    isDeactivated: false,
+  };
+  
+  const { hasSubscription, isTrial, isDeactivated } = productSubscription;
+  
   const isLocked = !hasSubscription && !isTrial;
 
   // Define restricted tabs when in trial mode
