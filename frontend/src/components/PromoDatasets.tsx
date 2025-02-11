@@ -95,7 +95,7 @@ const PromoDatasets: React.FC = () => {
               <Text fontSize="sm" my={2} color="gray.200">
                 Get full access to our datasets with a 7-day free trial. No credit card required!
               </Text>
-              <Button colorScheme="whiteAlpha" variant="solid" onClick={() => navigate('/signup')} mt={2}>
+              <Button colorScheme="whiteAlpha" variant="solid" onClick={() => navigate('https://dashboard.thedataproxy.com/signup')} mt={2}>
                 Sign Up for Free
               </Button>
             </Box>
