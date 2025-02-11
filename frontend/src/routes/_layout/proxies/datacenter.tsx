@@ -378,57 +378,19 @@ function DatacenterProxy() {
             </Tabs>
           </Box>
 
-   {/* Sidebar Section */}
-   <Box w={{ base: "100%", md: "250px" }} p="4" borderLeft={{ md: "1px solid #E2E8F0" }}>
+
+          {/* ✅ Sidebar */}
+          <Box w={{ base: "100%", md: "250px" }} p="4" borderLeft={{ md: "1px solid #E2E8F0" }}>
             <VStack spacing="4" align="stretch">
               <Box p="4" shadow="sm" borderWidth="1px" borderRadius="lg">
                 <Text fontWeight="bold">Quick Actions</Text>
                 <Button
                   as="a"
-                  href="mailto:support@thedataproxy.com"
-                  leftIcon={<FiMail />}
-                  variant="outline"
-                  size="sm"
-                  mt="2"
-                >
-                  Email Support
-                </Button>
-                <Button
-                  as="a"
-                  href="https://thedataproxy.com/report-issue"
-                  leftIcon={<FiHelpCircle />}
-                  variant="outline"
-                  size="sm"
-                  mt="2"
-                >
-                  Report an Issue
-                </Button>
-              </Box>
-
-              <Box p="4" shadow="sm" borderWidth="1px" borderRadius="lg">
-                <Text fontWeight="bold">FAQs</Text>
-                <Text fontSize="sm">Common questions and answers.</Text>
-                <Button
-                  as="a"
-                  href="https://thedataproxy.com/faqs"
-                  mt="2"
-                  size="sm"
-                  variant="outline"
-                >
-                  View FAQs
-                </Button>
-              </Box>
-
-              <Box p="4" shadow="sm" borderWidth="1px" borderRadius="lg">
-                <Text fontWeight="bold">Community Support</Text>
-                <Text fontSize="sm">Join discussions with other users.</Text>
-                <Button
-                  as="a"
-                  href="https://github.com/thedataproxy/thedataproxy/discussions"
-                  mt="2"
+                  href="https://github.com/CobaltDataNet"
                   leftIcon={<FiGithub />}
-                  size="sm"
                   variant="outline"
+                  size="sm"
+                  mt="2"
                 >
                   GitHub Discussions
                 </Button>
