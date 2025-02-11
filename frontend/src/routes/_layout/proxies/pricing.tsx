@@ -56,29 +56,6 @@ const PricingCard = ({ title, price, features }) => (
   </Card>
 );
 
-const PricingChart = ({ plan }) => (
-  <Box p={4} borderWidth="1px" borderRadius="md" bg="gray.800">
-    <Table variant="simple">
-      <Thead bg="gray.700" position="sticky" top={0} zIndex={1}>
-        <Tr>
-          <Th color="gray.300">Data</Th>
-          <Th color="gray.300">Price</Th>
-          <Th color="gray.300">Features</Th>
-        </Tr>
-      </Thead>
-      <Tbody>
-        {pricingData[plan].map((entry, index) => (
-          <Tr key={index} bg={index % 2 === 0 ? "gray.600" : "gray.700"}>
-            <Td color="gray.200">{entry.data}</Td>
-            <Td color="gray.200">{entry.price}</Td>
-            <Td color="gray.200">{entry.features}</Td>
-          </Tr>
-        ))}
-      </Tbody>
-    </Table>
-  </Box>
-);
-
 function Pricing() {
   const { data: subscriptionSettings } = useQuery({
     queryKey: ["subscriptionSettings"],
@@ -92,15 +69,7 @@ function Pricing() {
     isDeactivated: false,
   };
 
-  const { hasSubscription, isTrial, isDeactivated } = settings;
-  const isLocked = !hasSubscription && !isTrial;
-  const restrictedTabs = isTrial ? ["Pro Plan", "Enterprise Plan"] : [];
-
-  const tabsConfig = [
-    { title: "Basic Plan", component: <PricingChart plan="basic" /> },
-    { title: "Pro Plan", component: <PricingChart plan="pro" /> },
-    { title: "Enterprise Plan", component: <PricingChart plan="enterprise" /> },
-  ];
+  const isLocked = !settings.hasSubscription && !settings.isTrial;
 
   return (
     <Container maxW="full">
@@ -108,41 +77,19 @@ function Pricing() {
 
       {isLocked ? (
         <PromoContent />
-      ) : isDeactivated ? (
+      ) : settings.isDeactivated ? (
         <Box mt={6}>
           <Text color="white">Your subscription has expired. Please renew to access all features.</Text>
         </Box>
       ) : (
         <>
           <SimpleGrid columns={{ base: 1, md: 3 }} spacing={6} mb={6}>
-            {pricingData.basic.map((entry, index) => (
-              <PricingCard key={index} title={entry.data} price={entry.price} features={entry.features} />
-            ))}
+            {Object.entries(pricingData).flatMap(([plan, entries]) =>
+              entries.map((entry, index) => (
+                <PricingCard key={`${plan}-${index}`} title={entry.data} price={entry.price} features={entry.features} />
+              ))
+            )}
           </SimpleGrid>
-          <Flex mt={6} gap={6}>
-            <Box flex="1">
-              <Tabs variant="enclosed" colorScheme="gray" bg="gray.800" borderRadius="md" p={4}>
-                <TabList bg="gray.800" borderRadius="md">
-                  {tabsConfig.map((tab, index) => (
-                    <Tab
-                      key={index}
-                      isDisabled={restrictedTabs.includes(tab.title)}
-                      color="gray.300"
-                      _selected={{ bg: "gray.700", color: "white", fontWeight: "bold" }}
-                      _hover={{ bg: "gray.800", color: "white" }}
-                    >
-                      {tab.title}
-                    </Tab>
-                  ))}
-                </TabList>
-                <TabPanels bg="gray.700" borderRadius="md" p={4}>
-                  {tabsConfig.map((tab, index) => (
-                    <TabPanel key={index}>{tab.component}</TabPanel>
-                  ))}
-                </TabPanels>
-              </Tabs>
-            </Box>
-          </Flex>
         </>
       )}
     </Container>
