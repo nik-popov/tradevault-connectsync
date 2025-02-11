@@ -19,7 +19,7 @@ import {
 } from "@chakra-ui/react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useQueryClient } from "@tanstack/react-query";
-import { FiExternalLink, FiX } from "react-icons/fi";
+import { FiExternalLink, FiX, FiGithub } from "react-icons/fi";
 import PromoDatasets from "../../../components/PromoDatasets";
 
 export const Route = createFileRoute("/_layout/datasets/explore")({
@@ -89,46 +89,6 @@ function Explore() {
         example: `GET /datasets/covid-statistics?country=USA`,
       },
     },
-    {
-      id: "carbon-emissions",
-      name: "Carbon Emissions",
-      category: "environment",
-      description: "Global carbon emission data.",
-      details: {
-        endpoint: "/datasets/carbon-emissions",
-        example: `GET /datasets/carbon-emissions?sector=industry`,
-      },
-    },
-    {
-      id: "stock-market",
-      name: "Stock Market Data",
-      category: "finance",
-      description: "Real-time stock market information.",
-      details: {
-        endpoint: "/datasets/stock-market",
-        example: `GET /datasets/stock-market?symbol=AAPL`,
-      },
-    },
-    {
-      id: "flight-data",
-      name: "Flight Statistics",
-      category: "transportation",
-      description: "Global flight statistics.",
-      details: {
-        endpoint: "/datasets/flight-data",
-        example: `GET /datasets/flight-data?airline=Delta`,
-      },
-    },
-    {
-      id: "streaming-trends",
-      name: "Streaming Content Trends",
-      category: "entertainment",
-      description: "Popular content trends.",
-      details: {
-        endpoint: "/datasets/streaming-trends",
-        example: `GET /datasets/streaming-trends?platform=Netflix`,
-      },
-    },
   ];
 
   const categories = ["all", "owned", ...new Set(datasets.map((ds) => ds.category))];
@@ -145,7 +105,7 @@ function Explore() {
   }, [searchQuery, activeFilter, datasets]);
 
   return (
-    <Container maxW="full">
+    <Container maxW="full" overflowX="hidden">
       <Flex justify="space-between" align="center" my={4} flexWrap="wrap">
         <Heading size="lg">Explore Datasets</Heading>
         <HStack spacing={6}>
@@ -181,8 +141,8 @@ function Explore() {
           </Flex>
         </Alert>
       ) : (
-        <Flex gap={6}>
-          <Box flex="1">
+        <Flex gap={6} justify="space-between" align="stretch" wrap="wrap">
+          <Box flex="1" minW={{ base: "100%", md: "65%" }}>
             <Flex gap={4} justify="space-between" align="center" flexWrap="wrap">
               <Input
                 placeholder="Search Datasets..."
@@ -219,8 +179,8 @@ function Explore() {
             </VStack>
           </Box>
 
-   {/* ✅ Sidebar */}
-   <Box w={{ base: "100%", md: "250px" }} p="4" borderLeft={{ md: "1px solid #E2E8F0" }}>
+          {/* ✅ Sidebar */}
+          <Box w={{ base: "100%", md: "250px" }} p="4" borderLeft={{ md: "1px solid #E2E8F0" }}>
             <VStack spacing="4" align="stretch">
               <Box p="4" shadow="sm" borderWidth="1px" borderRadius="lg">
                 <Text fontWeight="bold">Quick Actions</Text>
@@ -243,10 +203,8 @@ function Explore() {
   );
 }
 
-
-
-// Dataset list item component with an expand/collapse toggle and locked "View" button when in trial mode.
-const DatasetListItem = ({ dataset, navigate, isTrial }) => {
+// ✅ Dataset list item component with expand/collapse toggle
+const DatasetListItem = ({ dataset, isTrial }) => {
   const [isExpanded, setIsExpanded] = useState(false);
 
   return (
@@ -259,50 +217,25 @@ const DatasetListItem = ({ dataset, navigate, isTrial }) => {
           </Text>
         </Box>
         <HStack spacing={2}>
-          <Button
-            size="sm"
-            colorScheme="blue"
-            onClick={() => setIsExpanded(!isExpanded)}
-          >
+          <Button size="sm" colorScheme="blue" onClick={() => setIsExpanded(!isExpanded)}>
             {isExpanded ? "Less" : "More"}
           </Button>
-          {isTrial ? (
-            <Button
-              size="sm"
-              variant="outline"
-              colorScheme="gray"
-              disabled
-              leftIcon={<FiX />}
-              _hover={{ bg: "gray.200", cursor: "not-allowed" }}
-              _disabled={{
-                bg: "gray.200",
-                borderColor: "gray.200",
-                color: "gray.500",
-                cursor: "not-allowed",
-                _hover: { bg: "gray.200" },
-              }}
-            >
-              Locked
-            </Button>
-          ) : (
-            <Button
-              size="sm"
-              variant="outline"
-              colorScheme="gray"
-              disabled
-              leftIcon={<FiX />}
-              _hover={{ bg: "gray.200", cursor: "not-allowed" }}
-              _disabled={{
-                bg: "gray.200",
-                borderColor: "gray.200",
-                color: "gray.500",
-                cursor: "not-allowed",
-                _hover: { bg: "gray.200" },
-              }}
-            >
-              Locked
-            </Button>
-          )}
+          <Button
+            size="sm"
+            variant="outline"
+            colorScheme="gray"
+            disabled
+            leftIcon={<FiX />}
+            _hover={{ bg: "gray.200", cursor: "not-allowed" }}
+            _disabled={{
+              bg: "gray.200",
+              borderColor: "gray.200",
+              color: "gray.500",
+              cursor: "not-allowed",
+            }}
+          >
+            Locked
+          </Button>
         </HStack>
       </Flex>
       <Collapse in={isExpanded} animateOpacity>
