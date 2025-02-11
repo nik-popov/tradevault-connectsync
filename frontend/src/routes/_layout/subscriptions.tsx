@@ -1,81 +1,59 @@
 import {
     Box,
     Container,
-    Heading,
-    Table,
-    TableContainer,
-    Tbody,
-    Td,
-    Th,
-    Thead,
-    Tr,
+    Text,
+    VStack,
+    Button,
+    Divider,
+    Stack,
+    Flex,
     Switch,
     Tab,
     Tabs,
     TabList,
     TabPanel,
     TabPanels,
-    Badge,
-    VStack,
-    Flex,
+    Heading,
   } from "@chakra-ui/react";
+  import { createFileRoute, useNavigate } from "@tanstack/react-router";
   import { useState } from "react";
-  import { createFileRoute } from "@tanstack/react-router";
-  import Navbar from "../../components/Common/Navbar";
   import useAuth from "../../hooks/useAuth";
+  import Navbar from "../../components/Common/Navbar";
   
-  // ✅ Define Route Properly
   export const Route = createFileRoute("/_layout/subscriptions")({
     component: Subscriptions,
   });
   
-  // ✅ Mock Subscription State for Each Product
+  // ✅ Mock Subscription State
   const initialSubscriptions = {
     proxy: { hasSubscription: false, isTrial: false, isDeactivated: false },
     scrapingAPI: { hasSubscription: false, isTrial: false, isDeactivated: false },
     dataset: { hasSubscription: false, isTrial: false, isDeactivated: false },
   };
   
-  function SubscriptionTable({ product, state, toggleState }) {
+  function SubscriptionToggle({ product, state, toggleState }) {
     return (
-      <TableContainer>
-        <Table size="md">
-          <Thead>
-            <Tr>
-              <Th>Product</Th>
-              <Th>Subscription</Th>
-              <Th>Trial</Th>
-              <Th>Deactivated</Th>
-            </Tr>
-          </Thead>
-          <Tbody>
-            <Tr>
-              <Td>
-                {product}{" "}
-                {state.hasSubscription && (
-                  <Badge ml={2} colorScheme="blue">
-                    Active
-                  </Badge>
-                )}
-              </Td>
-              <Td>
-                <Switch isChecked={state.hasSubscription} onChange={() => toggleState(product, "hasSubscription")} />
-              </Td>
-              <Td>
-                <Switch isChecked={state.isTrial} onChange={() => toggleState(product, "isTrial")} />
-              </Td>
-              <Td>
-                <Switch isChecked={state.isDeactivated} onChange={() => toggleState(product, "isDeactivated")} />
-              </Td>
-            </Tr>
-          </Tbody>
-        </Table>
-      </TableContainer>
+      <Box p={5} shadow="md" borderWidth="1px" borderRadius="lg" bg="gray.50">
+        <Text fontSize="lg" fontWeight="bold">{product}</Text>
+        <Flex justify="space-between" mt={3}>
+          <Text>Active Subscription</Text>
+          <Switch isChecked={state.hasSubscription} onChange={() => toggleState(product, "hasSubscription")} />
+        </Flex>
+        <Flex justify="space-between" mt={3}>
+          <Text>Trial Mode</Text>
+          <Switch isChecked={state.isTrial} onChange={() => toggleState(product, "isTrial")} />
+        </Flex>
+        <Flex justify="space-between" mt={3}>
+          <Text>Deactivated</Text>
+          <Switch isChecked={state.isDeactivated} onChange={() => toggleState(product, "isDeactivated")} />
+        </Flex>
+      </Box>
     );
   }
   
   function Subscriptions() {
     const { user: currentUser } = useAuth();
+    const navigate = useNavigate();
     const [subscriptions, setSubscriptions] = useState(initialSubscriptions);
   
     // ✅ Prevent Invalid State Updates
@@ -90,23 +68,23 @@ import {
       <Container maxW="full">
         {/* ✅ Header Section */}
         <Box bg="blue.100" p={4} textAlign="center" borderRadius="md">
-          <Heading size="md">🚀 Manage Your Subscriptions</Heading>
+          <Text fontWeight="bold" fontSize="lg">🚀 Manage Your Subscriptions</Text>
         </Box>
   
         {/* ✅ Navbar */}
         <Navbar type="Subscription" />
   
-        {/* ✅ Top Bar: User Info */}
-        <Flex mt={6} justify="space-between" align="center">
+        {/* ✅ User Welcome Section */}
+        <Flex mt={6} gap={4} justify="space-between" align="center">
           <Box textAlign="left">
-            <Heading size="lg">
+            <Text fontSize="xl" fontWeight="bold">
               Hi, {currentUser?.full_name || currentUser?.email} 👋🏼
-            </Heading>
-            <Box fontSize="sm">Manage your subscriptions below.</Box>
+            </Text>
+            <Text fontSize="sm">Manage your subscriptions below.</Text>
           </Box>
         </Flex>
   
-        {/* ✅ Tabs for Different Products */}
+        {/* ✅ Tabs for Different Subscriptions */}
         <Tabs variant="enclosed" mt={6}>
           <TabList>
             <Tab>Proxy</Tab>
@@ -116,16 +94,42 @@ import {
   
           <TabPanels>
             <TabPanel>
-              <SubscriptionTable product="Proxy" state={subscriptions.proxy} toggleState={toggleState} />
+              <SubscriptionToggle product="Proxy" state={subscriptions.proxy} toggleState={toggleState} />
             </TabPanel>
             <TabPanel>
-              <SubscriptionTable product="Scraping API" state={subscriptions.scrapingAPI} toggleState={toggleState} />
+              <SubscriptionToggle product="Scraping API" state={subscriptions.scrapingAPI} toggleState={toggleState} />
             </TabPanel>
             <TabPanel>
-              <SubscriptionTable product="Dataset" state={subscriptions.dataset} toggleState={toggleState} />
+              <SubscriptionToggle product="Dataset" state={subscriptions.dataset} toggleState={toggleState} />
             </TabPanel>
           </TabPanels>
         </Tabs>
+  
+        {/* ✅ Sidebar with Actions */}
+        <Flex mt={6} gap={6} justify="space-between">
+          {/* Sidebar */}
+          <Box w="250px" p={4} borderLeft="1px solid #E2E8F0">
+            <VStack spacing={4} align="stretch">
+              {/* Test Request */}
+              <Box p={4} shadow="sm" borderWidth="1px" borderRadius="lg">
+                <Text fontWeight="bold">Pick by Your Target</Text>
+                <Text fontSize="sm">Not sure which product to choose?</Text>
+                <Button mt={2} size="sm" variant="outline" onClick={() => navigate({ to: "/test-request" })}>
+                  Send Test Request
+                </Button>
+              </Box>
+  
+              {/* GitHub */}
+              <Box p={4} shadow="sm" borderWidth="1px" borderRadius="lg">
+                <Text fontWeight="bold">GitHub</Text>
+                <Text fontSize="sm">Explore integration guides and open-source projects.</Text>
+                <Button mt={2} size="sm" variant="outline" onClick={() => window.open("https://github.com/CobaltDataNet", "_blank")}>
+                  Join GitHub
+                </Button>
+              </Box>
+            </VStack>
+          </Box>
+        </Flex>
       </Container>
     );
   }
