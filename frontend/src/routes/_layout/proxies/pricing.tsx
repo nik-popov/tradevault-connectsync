@@ -2,38 +2,70 @@ import {
   Container,
   Box,
   Text,
+  Button,
+  VStack,
+  HStack,
   Divider,
   Flex,
   Tabs,
+  Tr,
+  Tbody,
+  Th,
+  Td,
   TabList,
   TabPanels,
   Tab,
+  Table,
+  Thead,
   TabPanel,
 } from "@chakra-ui/react";
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 
 import PromoContent from "../../../components/PromoContent";
+import ProxySettings from "../../../components/ProxySettings";
+import ProxyUsage from "../../../components/ProxyUsage";
 
 const PricingChart = ({ plan }) => {
   const pricingData = {
-    Basic: { price: "$10/month", features: ["10GB Bandwidth", "1 Endpoint"] },
-    Pro: { price: "$30/month", features: ["50GB Bandwidth", "5 Endpoints"] },
-    Enterprise: { price: "$100/month", features: ["Unlimited Bandwidth", "20 Endpoints"] },
+    basic: [
+      { data: "1GB", price: "$1", features: "Basic Support, 1 Endpoint" },
+      { data: "10GB", price: "$9", features: "Standard Support, 2 Endpoints" },
+      { data: "50GB", price: "$40", features: "Priority Support, 5 Endpoints" },
+    ],
+    pro: [
+      { data: "1GB", price: "$2", features: "Faster Speed, API Access" },
+      { data: "10GB", price: "$18", features: "Dedicated Support, Custom Endpoints" },
+      { data: "50GB", price: "$80", features: "Enterprise Features, Unlimited Endpoints" },
+    ],
+    enterprise: [
+      { data: "1GB", price: "$3", features: "24/7 Support, Dedicated API" },
+      { data: "10GB", price: "$25", features: "SLA-backed, Custom Infrastructure" },
+      { data: "50GB", price: "$120", features: "Fully Managed, On-Demand Scaling" },
+    ],
   };
-
-  const data = pricingData[plan];
 
   return (
     <Box p={4} borderWidth="1px" borderRadius="md">
-      <Text fontSize="xl" mb={4}>{plan} Plan</Text>
-      <Text fontSize="lg" fontWeight="bold">{data.price}</Text>
-      <Text mt={2}>Features:</Text>
-      <ul>
-        {data.features.map((feature, index) => (
-          <li key={index}>{feature}</li>
-        ))}
-      </ul>
+      <Text fontSize="xl" mb={4}>{plan.charAt(0).toUpperCase() + plan.slice(1)} Plan Pricing</Text>
+      <Table variant="simple">
+        <Thead>
+          <Tr>
+            <Th>Data</Th>
+            <Th>Price</Th>
+            <Th>Features</Th>
+          </Tr>
+        </Thead>
+        <Tbody>
+          {pricingData[plan].map((entry, index) => (
+            <Tr key={index}>
+              <Td>{entry.data}</Td>
+              <Td>{entry.price}</Td>
+              <Td>{entry.features}</Td>
+            </Tr>
+          ))}
+        </Tbody>
+      </Table>
     </Box>
   );
 };
@@ -59,6 +91,13 @@ function Pricing() {
 
   const { hasSubscription, isTrial, isDeactivated } = settings;
   const isLocked = !hasSubscription && !isTrial;
+  const restrictedTabs = isTrial ? ["Pro Plan", "Enterprise Plan"] : [];
+
+  const tabsConfig = [
+    { title: "Basic Plan", component: <PricingChart plan="basic" /> },
+    { title: "Pro Plan", component: <PricingChart plan="pro" /> },
+    { title: "Enterprise Plan", component: <PricingChart plan="enterprise" /> },
+  ];
 
   return (
     <Container maxW="full">
@@ -80,14 +119,16 @@ function Pricing() {
           <Box flex="1">
             <Tabs variant="enclosed">
               <TabList>
-                {Object.keys({ Basic: {}, Pro: {}, Enterprise: {} }).map((plan, index) => (
-                  <Tab key={index}>{plan}</Tab>
+                {tabsConfig.map((tab, index) => (
+                  <Tab key={index} isDisabled={restrictedTabs.includes(tab.title)}>
+                    {tab.title}
+                  </Tab>
                 ))}
               </TabList>
               <TabPanels>
-                {Object.keys({ Basic: {}, Pro: {}, Enterprise: {} }).map((plan, index) => (
+                {tabsConfig.map((tab, index) => (
                   <TabPanel key={index}>
-                    <PricingChart plan={plan} />
+                    {restrictedTabs.includes(tab.title) ? <Text>Feature locked during trial.</Text> : tab.component}
                   </TabPanel>
                 ))}
               </TabPanels>
