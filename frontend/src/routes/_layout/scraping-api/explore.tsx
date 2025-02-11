@@ -20,7 +20,7 @@ import {
 } from "@chakra-ui/react";
 import { createFileRoute } from "@tanstack/react-router";
 import { useQueryClient } from "@tanstack/react-query";
-import PromoSERP from "../../../components/PromoSERP";
+import { FiSend, FiGithub } from "react-icons/fi";
 
 export const Route = createFileRoute("/_layout/scraping-api/explore")({
   component: Explore,
@@ -98,91 +98,104 @@ function Explore() {
         </HStack>
       </Flex>
 
-      {/* ✅ Display Greeting if Subscription is Active */}
-      {hasSubscription && (
-        <Box mb={4} p={4} bg="blue.50" borderRadius="md">
-          <Text fontSize="xl" fontWeight="bold">
-            Welcome, {currentUser?.full_name || currentUser?.email}! 🚀
-          </Text>
-          <Text>You have full access to all APIs. Enjoy your subscription!</Text>
-        </Box>
-      )}
-
       <Divider my={4} />
 
-      {/* 🚨 Show PromoSERP When No Subscription */}
-      {isLocked ? (
-        <PromoSERP />
-      ) : isDeactivated ? (
-        // 🚨 Show Reactivation Message When Deactivated
-        <Alert status="error" borderRadius="md">
-          <AlertIcon />
-          <Flex justify="space-between" align="center" w="full">
-            <Text>Your subscription has been deactivated. Please renew to continue using the API services.</Text>
-            <Button colorScheme="red" onClick={() => setHasSubscription(true)}>Reactivate Now</Button>
-          </Flex>
-        </Alert>
-      ) : (
-        <Flex gap={6} mt={6}>
-          <Box flex="1">
-            {/* 🛠 API Explorer - Trial Mode: Greyed Out Except Search */}
-            <Flex gap={4} justify="space-between" align="center" flexWrap="wrap">
-              <Input placeholder="Search APIs..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} w={{ base: "100%", md: "300px" }} />
-              
-              <Select value={sortOption} onChange={(e) => setSortOption(e.target.value)} w="200px" isDisabled={isTrialMode}>
-                <option value="name">Sort by Name</option>
-                <option value="price">Sort by Price</option>
-                <option value="rating">Sort by Rating</option>
-              </Select>
-            </Flex>
-
-            <Stack direction="row" spacing={3} mt={4}>
-              {industries.map((type) => (
-                <Button 
-                  key={type} 
-                  size="md" 
-                  fontWeight="bold" 
-                  borderRadius="full" 
-                  colorScheme={activeFilter === type.toLowerCase() ? "blue" : "gray"} 
-                  variant={activeFilter === type.toLowerCase() ? "solid" : "outline"} 
-                  onClick={() => setActiveFilter(type.toLowerCase())} 
-                  isDisabled={isTrialMode}
-                >
-                  {type}
+      <Flex gap={6} mt={6}>
+        <Box flex="1">
+          {/* 🚨 Show Locked Message */}
+          {isLocked ? (
+            <Alert status="warning" borderRadius="md">
+              <AlertIcon />
+              <Text>You need a subscription or trial to explore APIs.</Text>
+            </Alert>
+          ) : isDeactivated ? (
+            <Alert status="error" borderRadius="md">
+              <AlertIcon />
+              <Flex justify="space-between" align="center" w="full">
+                <Text>Your subscription has been deactivated. Please renew to continue using the API services.</Text>
+                <Button colorScheme="red" onClick={() => setHasSubscription(true)}>
+                  Reactivate Now
                 </Button>
-              ))}
-            </Stack>
+              </Flex>
+            </Alert>
+          ) : (
+            <>
+              {/* ✅ API Explorer */}
+              <Flex gap={4} justify="space-between" align="center" flexWrap="wrap">
+                <Input placeholder="Search APIs..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} w={{ base: "100%", md: "300px" }} />
+                
+                <Select value={sortOption} onChange={(e) => setSortOption(e.target.value)} w="200px" isDisabled={isTrialMode}>
+                  <option value="name">Sort by Name</option>
+                  <option value="price">Sort by Price</option>
+                  <option value="rating">Sort by Rating</option>
+                </Select>
+              </Flex>
 
-            <Divider my={4} />
+              <Stack direction="row" spacing={3} mt={4}>
+                {industries.map((type) => (
+                  <Button 
+                    key={type} 
+                    size="md" 
+                    fontWeight="bold" 
+                    borderRadius="full" 
+                    colorScheme={activeFilter === type.toLowerCase() ? "blue" : "gray"} 
+                    variant={activeFilter === type.toLowerCase() ? "solid" : "outline"} 
+                    onClick={() => setActiveFilter(type.toLowerCase())} 
+                    isDisabled={isTrialMode}
+                  >
+                    {type}
+                  </Button>
+                ))}
+              </Stack>
 
-            <VStack spacing={6} mt={6} align="stretch">
-              {filteredProducts.length === 0 ? (
-                <Text textAlign="center" fontSize="lg" color="gray.500">No APIs match this filter.</Text>
-              ) : (
-                <List spacing={4}>
-                  {filteredProducts.map((api) => (
-                    <ListItem key={api.id}>
-                      <Text fontWeight="bold">{api.name}</Text>
-                      <Text fontSize="sm" color="gray.600">{api.description}</Text>
-                    </ListItem>
-                  ))}
-                </List>
-              )}
-            </VStack>
-          </Box>
+              <Divider my={4} />
 
-          {/* ✅ Subscription Sidebar */}
-          {hasSubscription && (
+              <VStack spacing={6} mt={6} align="stretch">
+                {filteredProducts.length === 0 ? (
+                  <Text textAlign="center" fontSize="lg" color="gray.500">No APIs match this filter.</Text>
+                ) : (
+                  <List spacing={4}>
+                    {filteredProducts.map((api) => (
+                      <ListItem key={api.id}>
+                        <Text fontWeight="bold">{api.name}</Text>
+                        <Text fontSize="sm" color="gray.600">{api.description}</Text>
+                      </ListItem>
+                    ))}
+                  </List>
+                )}
+              </VStack>
+            </>
+          )}
+        </Box>
+
+        {/* ✅ Sidebar */}
+        <Box w="250px" p={4} borderLeft="1px solid #E2E8F0">
+          <VStack spacing={4} align="stretch">
+            <Box p={4} shadow="sm" borderWidth="1px" borderRadius="lg">
+              <Text fontWeight="bold">Pick by Your Target</Text>
+              <Text fontSize="sm">Not sure which product to choose?</Text>
+              <Button mt={2} leftIcon={<FiSend />} size="sm" variant="outline">
+                Send Test Request
+              </Button>
+            </Box>
+            <Box p={4} shadow="sm" borderWidth="1px" borderRadius="lg">
+              <Text fontWeight="bold">GitHub</Text>
+              <Text fontSize="sm">Explore integration guides and open-source projects.</Text>
+              <Button mt={2} leftIcon={<FiGithub />} size="sm" variant="outline">
+                Join GitHub
+              </Button>
+            </Box>
             <Box w="250px" p={4} borderLeft="1px solid #E2E8F0">
               <Text fontWeight="bold">Account Overview</Text>
               <Text fontSize="sm" color="gray.600">You have full access to all APIs.</Text>
               <Button mt={3} colorScheme="blue">Manage Subscription</Button>
             </Box>
-          )}
-        </Flex>
-      )}
+          </VStack>
+        </Box>
+      </Flex>
     </Container>
   );
 }
 
 export default Explore;
+
