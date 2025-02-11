@@ -40,7 +40,7 @@ const pricingPlans = [
     name: "Archiver",
     price: "$100",
     features: ["Extended dataset history", "1,000 API requests/month", "Priority support"],
-    borderColor: "blue.700",
+    borderColor: "blue.600",
     buttonVariant: "solid",
     badge: "MOST POPULAR",
   },
@@ -79,8 +79,8 @@ const PromoDatasets: React.FC = () => {
 
             {/* Right: Free Trial Section */}
             <Box
-              bg="blue.700"
-              color="white"
+              bg="blue.600"
+              color="gray.100"
               borderRadius="lg"
               p={6}
               boxShadow="lg"
@@ -89,8 +89,8 @@ const PromoDatasets: React.FC = () => {
               flexDirection="column"
               justifyContent="center"
             >
-              <Heading as="h2" size="lg" fontWeight="extrabold" textShadow="1px 1px 4px rgba(0,0,0,0.2)">
-                🚀 Start Your Free Trial Today!
+              <Heading as="h2" size="lg" fontWeight="light">
+                Start Your Free Trial Today!
               </Heading>
               <Text fontSize="sm" my={2} color="gray.200">
                 Get full access to our datasets with a 7-day free trial. No credit card required!
@@ -102,18 +102,18 @@ const PromoDatasets: React.FC = () => {
           </Grid>
         </Box>
 
-        {/* Light Gray Background for Separation */}
-        <Box bg="gray.50" py={10} px={6} borderRadius="lg">
-          <Text fontSize="lg" color="gray.600">
+        {/* Full Background Separation for Main Content */}
+        <Box bg="gray.100" py={12} px={6} borderRadius="lg">
+          <Text fontSize="lg" color="gray.700">
             Need specific datasets? Customize and filter data to fit your exact requirements. Our flexible API delivers structured data, empowering you to make informed decisions.
           </Text>
 
           {/* Dataset Categories Section */}
           <Grid templateColumns={{ base: "1fr", md: "repeat(2, 1fr)" }} gap={6} mt={6}>
             {datasetCategories.map((dataset, index) => (
-              <GridItem key={index} p={6} border="1px solid" borderColor="gray.200" borderRadius="lg" boxShadow="sm" _hover={{ boxShadow: "md" }}>
+              <GridItem key={index} p={6} border="1px solid" borderColor="gray.300" borderRadius="lg" boxShadow="sm" _hover={{ boxShadow: "md" }} bg="white">
                 <Flex align="center" mb={4}>
-                  <Icon as={dataset.icon} boxSize={8} color="blue.700" mr={3} />
+                  <Icon as={dataset.icon} boxSize={8} color="blue.600" mr={3} />
                   <Text fontSize="lg" fontWeight="semibold">{dataset.name}</Text>
                 </Flex>
                 <Text fontSize="sm" color="gray.600">{dataset.description}</Text>
@@ -137,7 +137,7 @@ const PromoDatasets: React.FC = () => {
                   <List spacing={3} mb={6}>
                     {plan.features.map((feature, idx) => (
                       <ListItem key={idx} display="flex" alignItems="center">
-                        <ListIcon as={FiCheckCircle} color="blue.700" boxSize={5} />
+                        <ListIcon as={FiCheckCircle} color="blue.600" boxSize={5} />
                         {feature}
                       </ListItem>
                     ))}
