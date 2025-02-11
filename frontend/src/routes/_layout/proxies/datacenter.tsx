@@ -267,7 +267,7 @@ const ReactivationOptions = () => {
 
 
 const STORAGE_KEY = "subscriptionSettings";
-const PRODUCT = "Proxies"; // Define product-specific subscription management
+const PRODUCT = "proxy-datacenter"; // Define product-specific subscription management
 
 function DatacenterProxy() {
   const queryClient = useQueryClient();
