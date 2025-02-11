@@ -50,13 +50,13 @@ function Request() {
   const isFullyDeactivated = isDeactivated && !hasSubscription;
 
   // ✅ Form State
-  const [apiName, setApiName] = useState("");
-  const [apiDescription, setApiDescription] = useState("");
-  const [apiUrl, setApiUrl] = useState("");
+  const [datasetName, setDatasetName] = useState("");
+  const [datasetDescription, setDatasetDescription] = useState("");
+  const [datasetUrl, setDatasetUrl] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleSubmit = async () => {
-    if (!apiName || !apiDescription || !apiUrl) {
+    if (!datasetName || !datasetDescription || !datasetUrl) {
       toast({
         title: "Error",
         description: "Please fill in all fields before submitting.",
@@ -75,16 +75,16 @@ function Request() {
 
       toast({
         title: "Request Submitted",
-        description: "Your Data Set request has been submitted successfully.",
+        description: "Your dataset request has been submitted successfully.",
         status: "success",
         duration: 3000,
         isClosable: true,
       });
 
       // Reset form
-      setApiName("");
-      setApiDescription("");
-      setApiUrl("");
+      setDatasetName("");
+      setDatasetDescription("");
+      setDatasetUrl("");
     } catch (error) {
       toast({
         title: "Submission Failed",
@@ -132,49 +132,93 @@ function Request() {
                 <AlertIcon />
                 <Text>You need a subscription or trial to submit requests.</Text>
               </Alert>
+
+              {/* 🚀 Promo Section */}
+              <Box
+                bg="blue.500"
+                color="white"
+                borderRadius="md"
+                p={6}
+                mt={4}
+                textAlign="center"
+                boxShadow="md"
+              >
+                <Heading as="h3" size="md" fontWeight="bold" mb={2}>
+                  Unlock Dataset Requests with a Subscription!
+                </Heading>
+                <Text fontSize="sm" mb={4}>
+                  Get access to premium datasets and faster processing.
+                </Text>
+                <Button colorScheme="whiteAlpha" variant="solid" onClick={() => navigate('/pricing')}>
+                  View Plans
+                </Button>
+              </Box>
             </>
           ) : isFullyDeactivated ? (
-            <Alert status="error" borderRadius="md">
-              <AlertIcon />
-              <Flex justify="space-between" align="center" w="full">
-                <Text>Your subscription has been deactivated. Please renew to submit requests.</Text>
-                <Button colorScheme="red" onClick={() => setHasSubscription(true)}>
-                  Reactivate Now
+            <>
+              <Alert status="error" borderRadius="md">
+                <AlertIcon />
+                <Flex justify="space-between" align="center" w="full">
+                  <Text>Your subscription has been deactivated. Please renew to submit requests.</Text>
+                  <Button colorScheme="red" onClick={() => setHasSubscription(true)}>
+                    Reactivate Now
+                  </Button>
+                </Flex>
+              </Alert>
+
+              {/* 🚀 Promo Section */}
+              <Box
+                bg="blue.500"
+                color="white"
+                borderRadius="md"
+                p={6}
+                mt={4}
+                textAlign="center"
+                boxShadow="md"
+              >
+                <Heading as="h3" size="md" fontWeight="bold" mb={2}>
+                  Reactivate Your Subscription
+                </Heading>
+                <Text fontSize="sm" mb={4}>
+                  Restore access to dataset requests and continue using our services.
+                </Text>
+                <Button colorScheme="whiteAlpha" variant="solid" onClick={() => navigate('/billing')}>
+                  Renew Now
                 </Button>
-              </Flex>
-            </Alert>
+              </Box>
+            </>
           ) : (
             <>
-              {/* ✅ Request API Form */}
+              {/* ✅ Request Dataset Form */}
               <Box p={6} border="1px solid" borderColor="gray.200" borderRadius="md" boxShadow="sm">
                 <Text fontSize="xl" fontWeight="bold" mb={4}>
-                  Request a New Data Set
+                  Request a New Dataset
                 </Text>
 
                 <FormControl mb={4}>
-                  <FormLabel>Data Set Name</FormLabel>
+                  <FormLabel>Dataset Name</FormLabel>
                   <Input
-                    placeholder="Enter Data Set name"
-                    value={apiName}
-                    onChange={(e) => setApiName(e.target.value)}
+                    placeholder="Enter dataset name"
+                    value={datasetName}
+                    onChange={(e) => setDatasetName(e.target.value)}
                   />
                 </FormControl>
 
                 <FormControl mb={4}>
-                  <FormLabel>Data Set Description</FormLabel>
+                  <FormLabel>Dataset Description</FormLabel>
                   <Textarea
-                    placeholder="Describe the Data Set and its purpose"
-                    value={apiDescription}
-                    onChange={(e) => setApiDescription(e.target.value)}
+                    placeholder="Describe the dataset and its purpose"
+                    value={datasetDescription}
+                    onChange={(e) => setDatasetDescription(e.target.value)}
                   />
                 </FormControl>
 
                 <FormControl mb={4}>
-                  <FormLabel>Data Set Website URL</FormLabel>
+                  <FormLabel>Dataset Website URL</FormLabel>
                   <Input
-                    placeholder="https://example.com/api"
-                    value={apiUrl}
-                    onChange={(e) => setApiUrl(e.target.value)}
+                    placeholder="https://example.com/dataset"
+                    value={datasetUrl}
+                    onChange={(e) => setDatasetUrl(e.target.value)}
                   />
                 </FormControl>
 
@@ -197,7 +241,7 @@ function Request() {
           <VStack spacing={4} align="stretch">
             <Box p={4} shadow="sm" borderWidth="1px" borderRadius="lg">
               <Text fontWeight="bold">How It Works</Text>
-              <Text fontSize="sm">Submit your Data Set request, and we’ll review it.</Text>
+              <Text fontSize="sm">Submit your dataset request, and we’ll review it.</Text>
             </Box>
             <Box p={4} shadow="sm" borderWidth="1px" borderRadius="lg">
               <Text fontWeight="bold">Need Help?</Text>
