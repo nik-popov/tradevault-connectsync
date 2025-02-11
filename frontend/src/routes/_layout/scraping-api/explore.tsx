@@ -45,8 +45,9 @@ function Explore() {
 
   const ownedApis = currentUser?.ownedApis || [];
   const isLocked = !hasSubscription && !isTrial;
-  const isTrialMode = isTrial && !hasSubscription;
+  const isTrialMode = isTrial && hasSubscription;
   const isFullyDeactivated = isDeactivated && !hasSubscription;
+
 
   // 🔍 Mock API Data
   const proxyProducts = [
@@ -272,9 +273,7 @@ function Explore() {
     },
   ];
 
-  
-
-  
+    // 🔍 Mock API Data
     const industries = ["all", "owned", ...new Set(proxyProducts.map((api) => api.type))];
   
     // 🔄 Filtered API List
@@ -336,29 +335,30 @@ function Explore() {
                   w={{ base: "100%", md: "250px" }}
                 />
   
-                {/* Filter Buttons */}
-                <HStack spacing={2}>
-                  {industries.map((type) => (
-                    <Button
-                      key={type}
-                      size="sm"
-                      fontWeight="bold"
-                      borderRadius="full"
-                      colorScheme={activeFilter === type ? "blue" : "gray"}
-                      variant={activeFilter === type ? "solid" : "outline"}
-                      textTransform="lowercase"
-                      onClick={() => setActiveFilter(type)}
-                    >
-                      {type}
-                    </Button>
-                  ))}
-                </HStack>
-  
-                {/* Sorting Dropdown */}
+                {/* Show Filters & Sorting Only for Full Subscription */}
                 {!isTrialMode && (
-                  <Select value={sortOption} onChange={(e) => setSortOption(e.target.value)} w="200px">
-                    <option value="name">Sort by Name</option>
-                  </Select>
+                  <>
+                    <HStack spacing={2}>
+                      {industries.map((type) => (
+                        <Button
+                          key={type}
+                          size="sm"
+                          fontWeight="bold"
+                          borderRadius="full"
+                          colorScheme={activeFilter === type ? "blue" : "gray"}
+                          variant={activeFilter === type ? "solid" : "outline"}
+                          textTransform="lowercase"
+                          onClick={() => setActiveFilter(type)}
+                        >
+                          {type}
+                        </Button>
+                      ))}
+                    </HStack>
+  
+                    <Select value={sortOption} onChange={(e) => setSortOption(e.target.value)} w="200px">
+                      <option value="name">Sort by Name</option>
+                    </Select>
+                  </>
                 )}
               </Flex>
   
