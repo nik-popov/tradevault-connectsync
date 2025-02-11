@@ -32,18 +32,19 @@ const tabsConfig = [
 export const Route = createFileRoute("/_layout/settings")({
   component: UserSettings,
 });
-
 function UserSettings() {
   const queryClient = useQueryClient();
   const currentUser = queryClient.getQueryData<UserPublic>(["currentUser"]);
+  
   if (!currentUser) {
     return <p>Loading user data...</p>;
   }
   
   const finalTabs = currentUser?.is_superuser
-  ? [...tabsConfig.slice(0, 3), tabsConfig[4]] // Ensures Subscription tab is included for superusers
-  : tabsConfig;
- (
+    ? [...tabsConfig.slice(0, 3), tabsConfig[4]] // Ensures Subscription tab is included for superusers
+    : tabsConfig;
+
+  return ( // ✅ Add 'return' here
     <Container maxW="full">
       <Heading size="lg" textAlign={{ base: "center", md: "left" }} py={12}>
         User Settings
@@ -56,10 +57,9 @@ function UserSettings() {
         </TabList>
         <TabPanels>
           {finalTabs.map((tab, index) => (
-   <TabPanel key={index}>
-   {React.createElement(tab.component)}
- </TabPanel>
- 
+            <TabPanel key={index}>
+              {React.createElement(tab.component)}
+            </TabPanel>
           ))}
         </TabPanels>
       </Tabs>
