@@ -16,7 +16,7 @@ import {
   AlertIcon,
 } from "@chakra-ui/react";
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
-import { FiCheckCircle, FiDatabase, FiTrendingUp, FiDollarSign } from 'react-icons/fi';
+import { FiCheckCircle, FiDatabase, FiTrendingUp, FiDollarSign,FiShoppingCart, FiCloud} from 'react-icons/fi';
 
 // Define dataset categories
 const datasetCategories = [
