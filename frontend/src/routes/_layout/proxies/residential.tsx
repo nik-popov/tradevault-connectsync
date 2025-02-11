@@ -25,7 +25,8 @@ import PromoContent from "../../../components/PromoContent";
 import ProxyStarted from "../../../components/ProxyStarted";
 import ProxySettings from "../../../components/ProxySettings";
 import ProxyUsage from "../../../components/ProxyUsage";
-import SubscriptionManagement from "./path/to/SubscriptionManagement";
+import SubscriptionManagement from "../../../components/SubscriptionManagement";
+
 
 
 
@@ -350,7 +351,6 @@ const ReactivationOptions = () => {
         </HStack>
       </Flex>
 
-      {/* Conditional Rendering Based on Subscription State */}
       {isLocked ? (
         <PromoContent />
       ) : isDeactivated ? (
