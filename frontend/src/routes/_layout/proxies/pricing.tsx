@@ -46,7 +46,7 @@ const pricingCategories = [
   { name: "Enterprise", icon: FiTrendingUp },
 ];
 
-// Pricing Plans for Side-by-Side Comparison
+// Pricing Plans
 const pricingPlans = [
   { name: "On-Demand", description: "Pay-as-you-go pricing.", price: "Per Usage", color: "blue.400" },
   { name: "Reserved", description: "Commit to 1-3 years for savings.", price: "Up to 40% Off", color: "green.400" },
@@ -54,7 +54,7 @@ const pricingPlans = [
   { name: "Enterprise", description: "Custom pricing & dedicated support.", price: "Custom Pricing", color: "orange.400" },
 ];
 
-// Pricing Breakdown for Each Category
+// Pricing Breakdown
 const categoryPricing = {
   Compute: [
     { service: "vCPU (per hour)", OnDemand: "$0.05", Reserved: "$0.03", Spot: "$0.015", Enterprise: "Custom Pricing" },
@@ -72,22 +72,26 @@ const categoryPricing = {
 
 function Pricing() {
   return (
-    <Container maxW="100vw" minH="100vh" bg="gray.800" color="white" py={8}>
-      {/* Page Header */}
-      <Box textAlign="center" mb={8}>
-        <Text fontSize="3xl" fontWeight="bold" color="gray.200">Cloud Pricing</Text>
-        <Text fontSize="md" color="gray.400">
-          Transparent pricing for Compute, Storage, Traffic, AI, and Security.
-        </Text>
-      </Box>
+    <Container maxW="100vw" minH="100vh" bg="gray.800" color="white" py={10}>
+      {/* Legacy Title & Subtitle */}
+      <VStack spacing={2} textAlign="center" mb={8}>
+        <Text fontSize="4xl" fontWeight="bold" color="white">Cloud Pricing</Text>
+        <Text fontSize="lg" color="gray.400">Compare pricing for Compute, Storage, Traffic, AI, and Security.</Text>
+      </VStack>
 
-      <Divider my={4} borderColor="gray.600" />
+      <Divider my={6} borderColor="gray.600" />
 
-      {/* Tabs for Pricing Categories */}
-      <Tabs variant="enclosed" colorScheme="blue">
-        <TabList bg="gray.700" borderRadius="lg" p={2}>
+      {/* Clean Tab Selector */}
+      <Tabs variant="unstyled">
+        <TabList display="flex" justifyContent="center" bg="gray.700" borderRadius="lg" p={2} gap={2}>
           {pricingCategories.map((category, index) => (
-            <Tab key={index} _selected={{ bg: "gray.600", color: "white", fontWeight: "bold" }}>
+            <Tab 
+              key={index} 
+              _selected={{ bg: "gray.600", color: "white", fontWeight: "bold" }} 
+              borderRadius="md"
+              px={4} 
+              py={2}
+            >
               <Icon as={category.icon} boxSize={4} mr={2} /> {category.name}
             </Tab>
           ))}
@@ -97,11 +101,9 @@ function Pricing() {
           {pricingCategories.map((category, index) => (
             <TabPanel key={index}>
               {/* Section Title */}
-              <Box mb={6}>
-                <Text fontSize="2xl" fontWeight="bold" color="gray.200">{category.name} Pricing</Text>
-                <Text fontSize="md" color="gray.400">
-                  Cost breakdown for {category.name.toLowerCase()} services.
-                </Text>
+              <Box mb={6} textAlign="center">
+                <Text fontSize="3xl" fontWeight="bold" color="gray.200">{category.name} Pricing</Text>
+                <Text fontSize="md" color="gray.400">Detailed cost breakdown for {category.name.toLowerCase()} services.</Text>
               </Box>
 
               {/* Side-by-Side Plan Comparison - Outlined Cards */}
@@ -114,10 +116,11 @@ function Pricing() {
                     border="2px solid" 
                     borderColor={plan.color} 
                     borderRadius="lg"
+                    textAlign="center"
                   >
                     <Text fontSize="xl" fontWeight="bold" color={plan.color}>{plan.name}</Text>
                     <Text fontSize="sm" color="gray.300">{plan.description}</Text>
-                    <Badge colorScheme="blackAlpha" mt={2} px={3}>{plan.price}</Badge>
+                    <Badge colorScheme="blackAlpha" mt={3} px={3} py={1} borderRadius="md">{plan.price}</Badge>
                   </GridItem>
                 ))}
               </Grid>
@@ -138,10 +141,10 @@ function Pricing() {
                     {categoryPricing[category.name]?.map((item, idy) => (
                       <Tr key={idy} bg="gray.700" borderBottom="2px solid" borderColor="gray.600">
                         <Td color="gray.300">{item.service}</Td>
-                        <Td><Badge colorScheme="blue" px={2}>{item.OnDemand}</Badge></Td>
-                        <Td><Badge colorScheme="green" px={2}>{item.Reserved}</Badge></Td>
-                        <Td><Badge colorScheme="purple" px={2}>{item.Spot}</Badge></Td>
-                        <Td><Badge colorScheme="orange" px={2}>{item.Enterprise}</Badge></Td>
+                        <Td><Badge colorScheme="blue" px={3} py={1} borderRadius="md">{item.OnDemand}</Badge></Td>
+                        <Td><Badge colorScheme="green" px={3} py={1} borderRadius="md">{item.Reserved}</Badge></Td>
+                        <Td><Badge colorScheme="purple" px={3} py={1} borderRadius="md">{item.Spot}</Badge></Td>
+                        <Td><Badge colorScheme="orange" px={3} py={1} borderRadius="md">{item.Enterprise}</Badge></Td>
                       </Tr>
                     ))}
                   </Tbody>
