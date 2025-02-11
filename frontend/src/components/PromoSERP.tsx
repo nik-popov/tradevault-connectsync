@@ -59,13 +59,6 @@ const PromoSERP = () => {
   return (
     <Box w="full" px={{ base: 4, md: 8 }} py={8}>
       <Box maxW="4xl" mx="auto" textAlign="center">
-        <Heading as="h1" size="xl" fontWeight="bold" mb={4}>
-          Google Search API
-        </Heading>
-        <Text fontSize="lg" color="gray.600" mb={12}>
-          Fetch Search results using our premium API
-        </Text>
-
         {/* Features Section */}
         <Grid templateColumns={{ base: "1fr", md: "repeat(2, 1fr)" }} gap={6} mb={12}>
           {features.map((feature, index) => (
