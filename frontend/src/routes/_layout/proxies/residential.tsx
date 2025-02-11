@@ -25,16 +25,16 @@ import {
 import { useState, useEffect } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
-import { FiGithub } from "react-icons/fi";
+import { FiSend, FiGithub } from "react-icons/fi";
 
 import PromoContent from "../../../components/PromoContent";
+import MobileResidentialApiStartGuide from "../../../components/MobileStarted";
 import ProxySettings from "../../../components/ProxySettings";
 import ProxyUsage from "../../../components/ProxyUsage";
 
-/* 
-  Expanded Inline Proxy Components 
-  Replace dummy data and logic with your actual API calls or state management as needed.
-*/
+/* ====================================================
+   Inline Proxy Components (Mobile Template)
+   ==================================================== */
 
 // Top-Ups Component
 const TopUps = () => {
@@ -64,7 +64,9 @@ const TopUps = () => {
           ))}
         </Tbody>
       </Table>
-      <Button mt={4} colorScheme="blue">Add Top-Up</Button>
+      <Button mt={4} colorScheme="blue">
+        Add Top-Up
+      </Button>
     </Box>
   );
 };
@@ -203,7 +205,9 @@ const KeyManagement = () => {
 
   return (
     <Box p={4} borderWidth="1px" borderRadius="md">
-      <Text fontSize="xl" mb={4}>Key Management</Text>
+      <Text fontSize="xl" mb={4}>
+        Key Management
+      </Text>
       <VStack align="stretch" spacing={3}>
         {keys.length > 0 ? (
           keys.map((key) => (
@@ -218,7 +222,11 @@ const KeyManagement = () => {
               <Text fontFamily="monospace" flex="1">
                 {key.isHidden ? "********" : key.value}
               </Text>
-              <Button size="xs" ml={2} onClick={() => toggleVisibility(key.id)}>
+              <Button
+                size="xs"
+                ml={2}
+                onClick={() => toggleVisibility(key.id)}
+              >
                 {key.isHidden ? "Show" : "Hide"}
               </Button>
               <Button size="xs" ml={2} onClick={() => copyKey(key.id)}>
@@ -254,7 +262,9 @@ const ReactivationOptions = () => {
 
   return (
     <Box p={4} borderWidth="1px" borderRadius="md">
-      <Text fontSize="xl" mb={4}>Reactivation Options</Text>
+      <Text fontSize="xl" mb={4}>
+        Reactivation Options
+      </Text>
       <VStack align="stretch">
         {dummyOptions.map((option) => (
           <Button key={option.id} colorScheme="blue">
@@ -266,6 +276,9 @@ const ReactivationOptions = () => {
   );
 };
 
+/* ====================================================
+   ResidentialProxy Component using Mobile Template
+   ==================================================== */
 function ResidentialProxy() {
   const queryClient = useQueryClient();
   const [subscriptionSettings, setSubscriptionSettings] = useState({
@@ -287,20 +300,20 @@ function ResidentialProxy() {
     }
   }, [queryClient]);
 
-  // Load current user data from localStorage (or replace with your own user fetch logic)
+  // Load current user data from localStorage (or replace with your own user logic)
   const currentUser = JSON.parse(localStorage.getItem("currentUser") || "null");
 
   const { hasSubscription, isTrial, isDeactivated } = subscriptionSettings;
+  const isLocked = !hasSubscription && !isTrial;
 
-  // Define restricted tabs based on subscription state
+  // Define restricted tabs when in trial mode
   const restrictedTabs = isTrial
     ? ["Key Management", "Logs", "Top-Ups", "Connections"]
     : [];
-  const isLocked = !hasSubscription && !isTrial;
 
-  // Define tabs configuration with inline components
+  // Define tabs configuration
   const tabsConfig = [
-    { title: "Get Started", component: <PromoContent /> },
+    { title: "Get Started", component: <MobileResidentialApiStartGuide /> },
     { title: "Endpoints", component: <ProxySettings /> },
     { title: "Usage", component: <ProxyUsage /> },
     { title: "Top-Ups", component: <TopUps /> },
@@ -313,11 +326,7 @@ function ResidentialProxy() {
     <Container maxW="full">
       {/* Top Bar */}
       <Flex align="center" justify="space-between" py={6} flexWrap="wrap" gap={4}>
-     
-
-
-
-     
+        <Heading size="lg">Residential Proxies</Heading>
         <HStack spacing={6}>
           <HStack>
             <Text fontWeight="bold">Subscription:</Text>
@@ -334,7 +343,7 @@ function ResidentialProxy() {
         </HStack>
       </Flex>
 
-      {/* Main Content or Alternate Views */}
+      {/* Conditional Rendering Based on Subscription State */}
       {isLocked ? (
         <PromoContent />
       ) : isDeactivated ? (
@@ -346,12 +355,11 @@ function ResidentialProxy() {
         </Box>
       ) : (
         <Flex mt={6} gap={6} justify="space-between">
-          {/* Main Content */}
+          {/* Main Content Area */}
           <Box flex="1">
             <Box p={4}>
-              {/* Updated Greeting with currentUser information */}
               <Text fontSize="2xl" fontWeight="bold">
-                Hi, {currentUser?.full_name || currentUser?.email} 👋🏼
+                Hi, {currentUser?.full_name || currentUser?.email || "User"} 👋🏼
               </Text>
               <Text>Manage your proxy settings with ease.</Text>
             </Box>
@@ -381,8 +389,12 @@ function ResidentialProxy() {
             </Tabs>
           </Box>
 
-          {/* ✅ Sidebar */}
-          <Box w={{ base: "100%", md: "250px" }} p="4" borderLeft={{ md: "1px solid #E2E8F0" }}>
+          {/* Sidebar with Quick Actions */}
+          <Box
+            w={{ base: "100%", md: "250px" }}
+            p="4"
+            borderLeft={{ md: "1px solid #E2E8F0" }}
+          >
             <VStack spacing="4" align="stretch">
               <Box p="4" shadow="sm" borderWidth="1px" borderRadius="lg">
                 <Text fontWeight="bold">Quick Actions</Text>
@@ -404,7 +416,7 @@ function ResidentialProxy() {
     </Container>
   );
 }
-// Export Route AFTER the component definition
+
 export const Route = createFileRoute("/_layout/proxies/residential")({
   component: ResidentialProxy,
 });
