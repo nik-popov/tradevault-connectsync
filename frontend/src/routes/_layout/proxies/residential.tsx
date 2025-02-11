@@ -291,7 +291,7 @@ function ResidentialProxy() {
           <Box flex="1">
             <Box p={4}>
               <Text fontSize="2xl" fontWeight="bold">
-                Hi, Welcome Back 👋🏼
+              Hi, {currentUser?.full_name || currentUser?.email} 👋🏼
               </Text>
               <Text>Manage your proxy settings with ease.</Text>
             </Box>
