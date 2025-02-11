@@ -14,7 +14,9 @@ import {
   ListIcon,
   Alert,
   AlertIcon,
-  VStack
+  VStack,
+  HStack,
+  Spacer
 } from "@chakra-ui/react";
 import { useNavigate } from '@tanstack/react-router';
 import { FiCheckCircle, FiDatabase, FiTrendingUp, FiShoppingCart, FiCloud } from 'react-icons/fi';
@@ -66,24 +68,27 @@ const PromoDatasets: React.FC = () => {
   return (
     <Box maxW="100%" mx="auto" px={{ base: 6, md: 12 }} py={12}>
       <VStack spacing={8} align="stretch">
-        <Heading as="h1" size="xl" fontWeight="bold">
-          Unlock Datasets
-        </Heading>
+        {/* Title and Free Trial Section */}
+        <Flex align="center" justify="space-between" flexWrap="wrap">
+          <Heading as="h1" size="xl" fontWeight="bold">
+            Unlock Datasets
+          </Heading>
+          <Box bg="blue.500" color="white" borderRadius="lg" py={4} px={6} boxShadow="md" textAlign="left" maxW="sm">
+            <Heading as="h2" size="md" fontWeight="bold">
+              Start Your Free Trial Today!
+            </Heading>
+            <Text fontSize="sm" my={2}>
+              Get full access to our datasets with a 7-day free trial. No credit card required!
+            </Text>
+            <Button colorScheme="whiteAlpha" variant="solid" onClick={() => navigate('/signup')}>
+              Sign Up for Free
+            </Button>
+          </Box>
+        </Flex>
+
         <Text fontSize="lg" color="gray.600">
           Need specific datasets? Customize and filter data to fit your exact requirements. Our flexible API delivers structured data, empowering you to make informed decisions.
         </Text>
-        {/* FREE TRIAL BANNER */}
-        <Box bg="blue.500" color="white" borderRadius="lg" py={4} px={6} boxShadow="md">
-          <Heading as="h2" size="lg" fontWeight="bold">
-            Start Your Free Trial Today!
-          </Heading>
-          <Text fontSize="md" my={3}>
-            Get full access to our datasets with a 7-day free trial. No credit card required!
-          </Text>
-          <Button colorScheme="whiteAlpha" variant="solid" onClick={() => navigate('/signup')}>
-            Sign Up for Free
-          </Button>
-        </Box>
 
         {/* Dataset Categories Section */}
         <Grid templateColumns={{ base: "1fr", md: "repeat(2, 1fr)" }} gap={6}>
