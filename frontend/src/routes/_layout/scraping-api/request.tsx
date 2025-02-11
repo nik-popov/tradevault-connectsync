@@ -240,9 +240,10 @@ function Request() {
             </Box>
           </VStack>
         </Box>
-        </Flex>
+      </Flex>
     </Container>
   );
 }
+
 
 export default Request;
