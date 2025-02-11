@@ -1,8 +1,6 @@
 import {
     Badge,
-    Box,
     Container,
-    Flex,
     Heading,
     SkeletonText,
     Table,
@@ -29,12 +27,19 @@ import {
   import Navbar from "../../components/Common/Navbar";
   import { PaginationFooter } from "../../components/Common/PaginationFooter.tsx";
   
+  // ✅ Extend `UserPublic` Type to Include Subscription Fields
+  type UserWithSubscription = UserPublic & {
+    hasSubscription: boolean;
+    isTrial: boolean;
+    isDeactivated: boolean;
+  };
+  
   // ✅ Subscription Schema for User Query
   const usersSearchSchema = z.object({
     page: z.number().catch(1),
   });
   
-  // ✅ Route Definition for TanStack Router
+  // ✅ Correct Route Export
   export const Route = createFileRoute("/_layout/subscriptions")({
     component: Subscriptions,
     validateSearch: (search) => usersSearchSchema.parse(search),
@@ -45,8 +50,11 @@ import {
   // ✅ Fetch User Subscriptions API Call
   function getUsersQueryOptions({ page }: { page: number }) {
     return {
-      queryFn: () =>
-        UsersService.readUsers({ skip: (page - 1) * PER_PAGE, limit: PER_PAGE }),
+      queryFn: async () =>
+        UsersService.readUsers({
+          skip: (page - 1) * PER_PAGE,
+          limit: PER_PAGE,
+        }) as Promise<{ data: UserWithSubscription[] }>,
       queryKey: ["users", { page }],
     };
   }
@@ -54,12 +62,16 @@ import {
   // ✅ Subscription Table for Users
   function SubscriptionTable() {
     const queryClient = useQueryClient();
-    const currentUser = queryClient.getQueryData<UserPublic>(["currentUser"]);
+    const currentUser = queryClient.getQueryData<UserWithSubscription>([
+      "currentUser",
+    ]);
     const { page } = Route.useSearch();
     const navigate = useNavigate({ from: Route.fullPath });
   
     const setPage = (page: number) =>
-      navigate({ search: (prev) => ({ ...prev, page }) });
+      navigate({
+        search: (prev: Record<string, any>) => ({ ...prev, page }),
+      });
   
     const { data: users, isPending, isPlaceholderData } = useQuery({
       ...getUsersQueryOptions({ page }),
@@ -75,17 +87,32 @@ import {
       }
     }, [page, queryClient, hasNextPage]);
   
-    // ✅ Fix: Correct `useMutation` usage
+    // ✅ Fix: Correct `useMutation` usage with TypeScript
     const mutation = useMutation({
-      mutationFn: async ({ userId, key, value }) => {
+      mutationFn: async ({
+        userId,
+        key,
+        value,
+      }: {
+        userId: string;
+        key: keyof UserWithSubscription;
+        value: boolean;
+      }) => {
         return UsersService.updateUserSubscription(userId, { [key]: value });
       },
       onSuccess: () => {
         queryClient.invalidateQueries(["users"]);
       },
+      onError: (error) => {
+        console.error("Subscription update failed:", error);
+      },
     });
   
-    const toggleSubscriptionState = (userId, key, value) => {
+    const toggleSubscriptionState = (
+      userId: string,
+      key: keyof UserWithSubscription,
+      value: boolean
+    ) => {
       mutation.mutate({ userId, key, value });
     };
   
@@ -129,23 +156,41 @@ import {
                     <Td>
                       <Switch
                         isChecked={user.hasSubscription}
-                        onChange={() => toggleSubscriptionState(user.id, "hasSubscription", !user.hasSubscription)}
+                        onChange={() =>
+                          toggleSubscriptionState(
+                            user.id,
+                            "hasSubscription",
+                            !user.hasSubscription
+                          )
+                        }
                       />
                     </Td>
                     <Td>
                       <Switch
                         isChecked={user.isTrial}
-                        onChange={() => toggleSubscriptionState(user.id, "isTrial", !user.isTrial)}
+                        onChange={() =>
+                          toggleSubscriptionState(user.id, "isTrial", !user.isTrial)
+                        }
                       />
                     </Td>
                     <Td>
                       <Switch
                         isChecked={user.isDeactivated}
-                        onChange={() => toggleSubscriptionState(user.id, "isDeactivated", !user.isDeactivated)}
+                        onChange={() =>
+                          toggleSubscriptionState(
+                            user.id,
+                            "isDeactivated",
+                            !user.isDeactivated
+                          )
+                        }
                       />
                     </Td>
                     <Td>
-                      <ActionsMenu type="User" value={user} disabled={currentUser?.id === user.id} />
+                      <ActionsMenu
+                        type="User"
+                        value={user}
+                        disabled={currentUser?.id === user.id}
+                      />
                     </Td>
                   </Tr>
                 ))}
@@ -171,7 +216,7 @@ import {
           Subscription Management
         </Heading>
   
-        <Navbar type={"Subscription"} />
+        <Navbar type={"Subscription"} addModalAs={null} />
   
         {/* ✅ Tabs for Different Product Memberships */}
         <Tabs variant="enclosed">
