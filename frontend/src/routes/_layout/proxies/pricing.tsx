@@ -128,7 +128,6 @@ function Pricing() {
                     _selected={{ bg: "gray.600", color: "white", fontWeight: "bold" }}
                     _hover={{ bg: "gray.600", color: "white" }}
                   >
-                    {tab.title}
                   </Tab>
                 ))}
               </TabList>
