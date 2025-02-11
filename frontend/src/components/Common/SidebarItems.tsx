@@ -52,7 +52,7 @@ const sidebarStructure: SidebarItem[] = [
     icon: FiDatabase,
   },
   { title: "Settings", icon: FiSettings, path: "/settings" },
-  { title: "Help & Support", icon: FiTool, path: "/help-support" },
+  { title: "Help & Support", icon: FiTool, path: "/support" },
 ];
 
 interface SidebarItemsProps {
