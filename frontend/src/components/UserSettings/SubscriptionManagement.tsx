@@ -32,13 +32,16 @@ const SubscriptionManagement = () => {
 
   // Load initial state from localStorage (fallback to React Query)
   const storedSettings = localStorage.getItem(STORAGE_KEY);
-  const initialSubscriptionState: SubscriptionData = storedSettings
+  let initialSubscriptionState: SubscriptionData = storedSettings
     ? JSON.parse(storedSettings)
-    : queryClient.getQueryData<SubscriptionData>(["subscriptionSettings"]) ||
-      PRODUCTS.reduce((acc, product) => {
-        acc[product] = { hasSubscription: false, isTrial: false, isDeactivated: false };
-        return acc;
-      }, {} as SubscriptionData);
+    : queryClient.getQueryData<SubscriptionData>(["subscriptionSettings"]) || {};
+
+  // ✅ Ensure all products have a default state (Fix for undefined issue)
+  PRODUCTS.forEach((product) => {
+    if (!initialSubscriptionState[product]) {
+      initialSubscriptionState[product] = { hasSubscription: false, isTrial: false, isDeactivated: false };
+    }
+  });
 
   const [subscriptionSettings, setSubscriptionSettings] = useState<SubscriptionData>(initialSubscriptionState);
 
@@ -73,7 +76,7 @@ const SubscriptionManagement = () => {
             <HStack justify="space-between">
               <Text fontWeight="bold">Subscription Active</Text>
               <Switch 
-                isChecked={subscriptionSettings[product].hasSubscription} 
+                isChecked={subscriptionSettings[product]?.hasSubscription} 
                 onChange={() => toggleSetting(product, "hasSubscription")} 
               />
             </HStack>
@@ -81,7 +84,7 @@ const SubscriptionManagement = () => {
             <HStack justify="space-between">
               <Text fontWeight="bold">Trial Mode</Text>
               <Switch 
-                isChecked={subscriptionSettings[product].isTrial} 
+                isChecked={subscriptionSettings[product]?.isTrial} 
                 onChange={() => toggleSetting(product, "isTrial")} 
               />
             </HStack>
@@ -89,7 +92,7 @@ const SubscriptionManagement = () => {
             <HStack justify="space-between">
               <Text fontWeight="bold">Deactivated</Text>
               <Switch 
-                isChecked={subscriptionSettings[product].isDeactivated} 
+                isChecked={subscriptionSettings[product]?.isDeactivated} 
                 onChange={() => toggleSetting(product, "isDeactivated")} 
               />
             </HStack>
