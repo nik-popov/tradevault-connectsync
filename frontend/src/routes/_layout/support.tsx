@@ -201,7 +201,7 @@ function Support() {
               <Text fontWeight="bold">Quick Actions</Text>
               <Button
                 as="a"
-                href="mailto:support@example.com"
+                href="mailto:support@thedataproxy.com"
                 leftIcon={<FiMail />}
                 variant="outline"
                 size="sm"
@@ -211,7 +211,7 @@ function Support() {
               </Button>
               <Button
                 as="a"
-                href="https://example.com/report-issue"
+                href="https://dashboard.thedataproxy.com"
                 leftIcon={<FiHelpCircle />}
                 variant="outline"
                 size="sm"
@@ -234,7 +234,7 @@ function Support() {
               <Text fontSize="sm">Join discussions with other users.</Text>
               <Button
                 as="a"
-                href="https://github.com/your-org/your-repo/discussions"
+                href="https://github.com/CobaltDataNet"
                 mt="2"
                 leftIcon={<FiGithub />}
                 size="sm"
