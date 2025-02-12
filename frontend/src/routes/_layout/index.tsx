@@ -74,7 +74,7 @@ function Dashboard() {
       {isLocked && (
         <Box bg="red.700" p={4} textAlign="center" borderRadius="md">
           <Text fontWeight="bold" fontSize="lg">
-            ⚠️ Access Limited - Get a Subscription!
+            ⚠️ Limited Features - Subscribe for Full Access !
           </Text>
           <Button colorScheme="red" size="sm" mt={2} onClick={() => navigate({ to: "/proxies/pricing" })}>
             View Subscription Plans
