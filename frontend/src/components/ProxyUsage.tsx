@@ -40,7 +40,7 @@ const ProxyUsage = () => {
   });
 
   return (
-    <Box maxW="100%" mx="auto" px={{ base: 6, md: 12 }} py={12}>
+   <Box p={4} borderWidth="1px" borderRadius="md">
       <VStack spacing={8} align="stretch">
 
         {/* Overview Statistics */}
