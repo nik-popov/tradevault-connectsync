@@ -18,21 +18,7 @@ export const Route = createFileRoute("/_layout/")({
 
 function Dashboard() {
   const navigate = useNavigate();
-  
-  // ✅ Load Subscription State using useQuery
-  const { data: subscriptionSettings } = useQuery({
-    queryKey: ["subscriptionSettings"],
-    queryFn: () => {
-      const storedSettings = localStorage.getItem("subscriptionSettings");
-      return storedSettings ? JSON.parse(storedSettings) : {};
-    },
-    staleTime: Infinity,
-  });
-
-  // ✅ Ensure subscription settings exist
-  const hasSubscription = subscriptionSettings?.Proxies?.hasSubscription || false;
-  const isTrial = subscriptionSettings?.Proxies?.isTrial || false;
-  const isLocked = !hasSubscription && !isTrial;
+  \
 
   // ✅ Default to owned products
   const [ownedOnly, setOwnedOnly] = useState(true);
