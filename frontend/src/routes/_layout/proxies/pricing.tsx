@@ -123,7 +123,7 @@ function PricingPage() {
             <TabPanel key={index}>
               {/* Section Title */}
               <Box mb={6} textAlign="left">
-                <Text fontSize="3xl" fontWeight="bold" color="gray.200">{category.name} Pricing</Text>
+                <Text fontSize="2xl" fontWeight="bold" color="gray.200">{category.name} Pricing</Text>
                 <Text fontSize="md" color="gray.400">Transparent costs for {category.name.toLowerCase()} services.</Text>
               </Box>
 
