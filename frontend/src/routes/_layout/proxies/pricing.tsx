@@ -28,19 +28,6 @@ import {
   FiZap,
   FiSettings,
 } from "react-icons/fi";
-
-// Pricing Categories
-const pricingCategories = [
-  { name: "Compute", icon: FiCpu },
-  { name: "Traffic", icon: FiGlobe },
-  { name: "Storage", icon: FiHardDrive },
-  { name: "Databases", icon: FiDatabase },
-  { name: "Intelligence", icon: FiZap },
-  { name: "Security", icon: FiSettings },
-  { name: "Support", icon: FiHeadphones },
-  { name: "Enterprise", icon: FiTrendingUp },
-];
-
 // Pricing Categories
 const pricingCategories = [
   { name: "Compute", icon: FiCpu },
