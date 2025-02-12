@@ -120,7 +120,7 @@ function Dashboard() {
               filteredProducts.map((product) => (
                 <Box key={product.id} p={5} shadow="md" borderWidth="1px" borderRadius="lg" bg="gray.700">
                   <Text fontWeight="bold" fontSize="lg">{product.name}</Text>
-                  <Text fontSize="sm" color="gray.300">{product.description}</Text>
+                  <Text fontSize="sm" color="gray.200">{product.description}</Text>
                   <Button mt={3} size="sm" colorScheme="blue" borderRadius="full" onClick={() => navigate({ to: product.path })}>
                     Manage
                   </Button>
