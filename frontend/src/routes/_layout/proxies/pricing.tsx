@@ -137,16 +137,7 @@ const fullPricingCategories = {
   };
   function PricingPage() {
     return (
-      <Container maxW="full">
-        {/* Professional Page Header */}
-        <Flex align="center" justify="space-between" py={6} flexWrap="wrap" gap={4}>
-          <Box textAlign="left" flex="1">
-            <Text fontSize="xl" fontWeight="bold">Cloud Pricing Overview</Text>
-            <Text fontSize="sm">Compare pricing for Compute, Storage, Traffic, AI, Security, and more.</Text>
-          </Box>
-        </Flex>
-        <Divider my={4} />
-  
+
         <Container maxW="full">
   {/* Title & Toggle in the Same Row */}
   <Flex align="center" justify="space-between" py={6} flexWrap="wrap">
