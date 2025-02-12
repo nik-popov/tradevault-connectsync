@@ -135,16 +135,17 @@ const fullPricingCategories = {
       { service: "Enterprise Governance Tools", OnDemand: "$2.00", Reserved: "$1.50", Spot: "$1.00", Enterprise: "Included" },
     ],
   };
-function PricingPage() {
+  function PricingPage() {
     return (
-      <Container maxW="100vw" minH="100vh" bg="gray.800" color="white" py={10} px={8}>
-        {/* Page Header */}
-        <Box textAlign="left" mb={8}>
-          <Text fontSize="4xl" fontWeight="bold" color="white">Pricing Overview</Text>
-          <Text fontSize="lg" color="gray.400">Compare costs across all cloud services.</Text>
-        </Box>
-  
-        <Divider my={6} borderColor="gray.600" />
+      <Container maxW="full">
+        {/* Professional Page Header */}
+        <Flex align="center" justify="space-between" py={6} flexWrap="wrap" gap={4}>
+          <Box textAlign="left" flex="1">
+            <Text fontSize="xl" fontWeight="bold">Cloud Pricing Overview</Text>
+            <Text fontSize="sm">Compare pricing for Compute, Storage, Traffic, AI, Security, and more.</Text>
+          </Box>
+        </Flex>
+        <Divider my={4} />
   
         {/* Clean Tab Selector */}
         <Tabs variant="unstyled">
@@ -167,8 +168,8 @@ function PricingPage() {
               <TabPanel key={index}>
                 {/* Section Title */}
                 <Box mb={6} textAlign="left">
-                  <Text fontSize="3xl" fontWeight="bold" color="gray.200">{category.name} Pricing</Text>
-                  <Text fontSize="md" color="gray.400">Transparent costs for {category.name.toLowerCase()} services.</Text>
+                  <Text fontSize="xl" fontWeight="bold" color="gray.200">{category.name} Pricing</Text>
+                  <Text fontSize="sm" color="gray.400">Transparent costs for {category.name.toLowerCase()} services.</Text>
                 </Box>
   
                 {/* Side-by-Side Plan Comparison - Full Width */}
