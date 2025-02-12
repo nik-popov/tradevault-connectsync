@@ -16,7 +16,7 @@ import {
   AlertIcon,
   VStack
 } from "@chakra-ui/react";
-import { useNavigate } from '@tanstack/react-router';
+import { Link, useNavigate } from '@tanstack/react-router';
 import { FiCheckCircle, FiDatabase, FiTrendingUp, FiShoppingCart, FiCloud } from 'react-icons/fi';
 
 const datasetCategories = [
@@ -102,9 +102,11 @@ const PromoDatasets: React.FC = () => {
               <Text fontSize="xs" my={2} color="gray.300">
                 Get full access to our datasets with a 7-day free trial. No credit card required!
               </Text>
-              <Button bg="blue.600" color="gray.100" _hover={{ bg: "blue.500" }} variant="solid" onClick={() => navigate('/signup')} size="sm">
+                   <Link to="/proxies/pricing">
+              <Button bg="blue.600" color="gray.100" _hover={{ bg: "blue.500" }} variant="solid">
                 Sign Up for Free
               </Button>
+              </Link>
             </Box>
           </Grid>
         </Box>
@@ -146,9 +148,11 @@ const PromoDatasets: React.FC = () => {
                       </ListItem>
                     ))}
                   </List>
+                     <Link to="/proxies/pricing" style={{ width: "100%" }}>
                   <Button w="full" bg="blue.600" color="white" _hover={{ bg: "blue.500" }} variant={plan.buttonVariant} onClick={() => navigate('/datasets/pricing')} size="sm">
                     {plan.price === "Custom" ? "Contact Us" : `Choose ${plan.name}`}
                   </Button>
+                  </Link>
                 </Box>
               </Box>
             ))}

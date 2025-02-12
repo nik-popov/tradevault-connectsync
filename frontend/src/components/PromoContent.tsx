@@ -30,14 +30,14 @@ const proxyFeatures = [
 
 const proxyPlans = [
   {
-    name: "Starter",
+    name: "On-Demand",
     price: "$99/mo",
     features: ["100GB/month", "1 concurrent connection", "Basic support", "Shared IP pool"],
     borderColor: "blue.700",
     buttonVariant: "outline",
   },
   {
-    name: "Business",
+    name: "Reserved",
     price: "$499/mo",
     features: ["1TB/month", "10 concurrent connections", "Priority support", "Dedicated IP options"],
     borderColor: "blue.600",
@@ -45,14 +45,14 @@ const proxyPlans = [
     badge: "MOST POPULAR",
   },
   {
-    name: "Business Plus+",
+    name: "Spot",
     price: "$2,999/mo",
     features: ["Unlimited", "Unlimited concurrent connections", "Custom IP pools", "24/7 SLA"],
     borderColor: "blue.500",
     buttonVariant: "solid",
   },
   {
-    name: "Ultra Enterprise",
+    name: "Enterprise",
     price: "Custom Pricing",
     features: ["Unlimited + Dedicated Resources", "Dedicated proxies", "Custom traffic limits", "Private network setup"],
     borderColor: "blue.400",

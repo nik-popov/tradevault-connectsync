@@ -28,14 +28,14 @@ const features = [
 
 const pricingPlans = [
   {
-    name: "Dev",
+    name: "On-Demand",
     price: "$100",
     features: ["100 requests/month", "Basic API access", "Email support"],
     borderColor: "blue.700",
     buttonVariant: "outline",
   },
   {
-    name: "SaaS",
+    name: "Reserved",
     price: "$500",
     features: ["1,000 requests/month", "Faster response times", "Priority support"],
     borderColor: "blue.600",
@@ -43,7 +43,7 @@ const pricingPlans = [
     badge: "MOST POPULAR",
   },
   {
-    name: "Pro",
+    name: "Spot",
     price: "$2,000",
     features: ["1,000,000 requests/month", "Enterprise-grade performance", "Dedicated support"],
     borderColor: "blue.500",
