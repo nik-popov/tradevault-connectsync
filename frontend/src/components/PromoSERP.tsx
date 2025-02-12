@@ -87,7 +87,7 @@ const PromoSERP: React.FC = () => {
                 Get full access to our Search API with a 7-day free trial. No credit card required!
               </Text>
                             <Link to="/proxies/pricing">
-              <Button bg="blue.600" color="gray.100" _hover={{ bg: "blue.500" }} variant="solid" size="sm">
+              <Button bg="blue.600" color="gray.100" _hover={{ bg: "blue.500" }} variant="solid">
                 Sign Up for Free
               </Button></Link>
             </Box>
@@ -126,9 +126,11 @@ const PromoSERP: React.FC = () => {
                       </ListItem>
                     ))}
                   </List>
-                  <Button w="full" bg="blue.600" color="white" _hover={{ bg: "blue.500" }} variant={plan.buttonVariant} onClick={() => navigate('/search-api/pricing')} size="sm">
+                  <Link to="/proxies/pricing" style={{ width: "100%" }}>
+                  <Button w="full" bg="blue.600" color="white" _hover={{ bg: "blue.500" }} variant={plan.buttonVariant} size="sm">
                     {plan.price === "Custom" ? "Contact Us" : `Choose ${plan.name}`}
                   </Button>
+                  </Link>
                 </Box>
               </Box>
             ))}
