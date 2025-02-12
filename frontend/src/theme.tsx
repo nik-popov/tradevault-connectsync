@@ -38,13 +38,16 @@ const theme = extendTheme({
     },
     Text: {
       baseStyle: (props) => ({
-        color: props.colorMode === "dark" ? "gray.300" : "gray.700",
+        color: props.colorMode === "dark" ? "gray.400" : "gray.600", // Lighter subtext
       }),
     },
     Code: {
       baseStyle: (props) => ({
-        bg: props.colorMode === "dark" ? "gray.800" : "gray.50",
-        color: props.colorMode === "dark" ? "gray.200" : "gray.900",
+        bg: props.colorMode === "dark" ? "gray.700" : "gray.50", // Grey background
+        color: props.colorMode === "dark" ? "gray.100" : "gray.900", // Dark text in dark mode
+        fontSize: "sm",
+        p: 3,
+        borderRadius: "md",
       }),
     },
     Button: {
