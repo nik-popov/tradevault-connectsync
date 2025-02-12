@@ -135,7 +135,7 @@ const fullPricingCategories = {
       { service: "Enterprise Governance Tools", OnDemand: "$2.00", Reserved: "$1.50", Spot: "$1.00", Enterprise: "Included" },
     ],
   };
-  function PricingPage() {
+function PricingPage() {
     return (
       <Container maxW="100vw" minH="100vh" bg="gray.800" color="white" py={10} px={8}>
         {/* Page Header */}
@@ -228,3 +228,4 @@ const fullPricingCategories = {
   });
   
   export default PricingPage;
+  
