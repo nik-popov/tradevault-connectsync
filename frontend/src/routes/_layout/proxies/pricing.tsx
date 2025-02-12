@@ -71,6 +71,24 @@ const pricingDetails = {
     { service: "Block Storage (per GB-month)", OnDemand: "$0.10", Reserved: "$0.08", Spot: "$0.05", Enterprise: "Custom Pricing" },
     { service: "Object Storage (per GB-month)", OnDemand: "$0.02", Reserved: "$0.015", Spot: "$0.01", Enterprise: "Custom Pricing" },
     { service: "Snapshot Storage (per GB-month)", OnDemand: "$0.05", Reserved: "$0.04", Spot: "$0.03", Enterprise: "Custom Pricing" },
+  ], 
+   "AI & ML": [
+    { service: "Inference (per 1M calls)", OnDemand: "$1.00", Reserved: "$0.80", Spot: "$0.50", Enterprise: "Custom Pricing" },
+    { service: "Training (per GPU-hour)", OnDemand: "$3.50", Reserved: "$2.80", Spot: "$1.50", Enterprise: "Custom Pricing" },
+    { service: "AI API Calls (per 1000 reqs)", OnDemand: "$0.50", Reserved: "$0.40", Spot: "$0.25", Enterprise: "Custom Pricing" },
+    { service: "Custom Model Deployment (per hour)", OnDemand: "$5.00", Reserved: "$4.00", Spot: "$2.50", Enterprise: "Custom Pricing" },
+  ],
+  Security: [
+    { service: "DDoS Protection (per GB)", OnDemand: "$0.05", Reserved: "$0.03", Spot: "$0.02", Enterprise: "Custom Pricing" },
+    { service: "Firewall Rules (per rule)", OnDemand: "$0.01", Reserved: "$0.007", Spot: "$0.005", Enterprise: "Custom Pricing" },
+    { service: "SSL Certificates (per year)", OnDemand: "$50", Reserved: "$40", Spot: "$30", Enterprise: "Custom Pricing" },
+    { service: "Security Audits (per request)", OnDemand: "$200", Reserved: "$150", Spot: "$100", Enterprise: "Custom Pricing" },
+  ],
+  Support: [
+    { service: "Basic Support", OnDemand: "Free", Reserved: "Free", Spot: "Free", Enterprise: "Included" },
+    { service: "Standard Support", OnDemand: "$99/month", Reserved: "$89/month", Spot: "$79/month", Enterprise: "Custom Pricing" },
+    { service: "Enterprise Support", OnDemand: "Custom Pricing", Reserved: "Custom Pricing", Spot: "Custom Pricing", Enterprise: "Included" },
+    { service: "24/7 Dedicated Support", OnDemand: "$499/month", Reserved: "$449/month", Spot: "$399/month", Enterprise: "Included" },
   ],
 };
 
