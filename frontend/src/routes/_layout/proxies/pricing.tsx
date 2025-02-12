@@ -164,7 +164,7 @@ return (
 
   <Divider my={4} />
 
-  {/* Tabs and Panels */}
+  {/* Tabs component wrapping TabList and TabPanels */}
   <Tabs variant="unstyled">
     <TabList bg="gray.700" borderRadius="lg" p={3} display="flex" gap={2} width="fit-content">
       {pricingCategories.map((category, index) => (
@@ -180,7 +180,6 @@ return (
       ))}
     </TabList>
 
-    {/* Tabs & Panels */}
     <TabPanels>
       {pricingCategories.map((category, index) => (
         <TabPanel key={index}>
@@ -213,6 +212,7 @@ return (
     </TabPanels>
   </Tabs>
 </Container>
+
 
   );
 }
