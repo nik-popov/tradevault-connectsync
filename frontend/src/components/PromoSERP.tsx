@@ -16,7 +16,7 @@ import {
   AlertIcon,
   VStack
 } from "@chakra-ui/react";
-import { useNavigate } from '@tanstack/react-router';
+import { Link, useNavigate } from '@tanstack/react-router';
 import { FiCheckCircle, FiSearch, FiCode, FiFilter, FiClock } from 'react-icons/fi';
 
 const features = [
@@ -86,9 +86,10 @@ const PromoSERP: React.FC = () => {
               <Text fontSize="xs" my={2} color="gray.300">
                 Get full access to our Search API with a 7-day free trial. No credit card required!
               </Text>
-              <Button bg="blue.600" color="gray.100" _hover={{ bg: "blue.500" }} variant="solid" onClick={() => navigate('/signup')} size="sm">
+                            <Link to="/proxies/pricing">
+              <Button bg="blue.600" color="gray.100" _hover={{ bg: "blue.500" }} variant="solid" size="sm">
                 Sign Up for Free
-              </Button>
+              </Button></Link>
             </Box>
           </Grid>
         </Box>
