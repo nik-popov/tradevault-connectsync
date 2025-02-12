@@ -25,7 +25,6 @@ import { createFileRoute } from "@tanstack/react-router";
 import {
   FiCpu,
   FiDatabase,
-  FiCloud,
   FiGlobe,
   FiHardDrive,
   FiHeadphones,
@@ -54,8 +53,8 @@ const pricingPlans = [
   { name: "Enterprise", description: "Custom pricing & dedicated support.", price: "Custom Pricing", color: "orange.400" },
 ];
 
-// Pricing Breakdown
-const categoryPricing = {
+// Full Pricing Breakdown
+const pricingDetails = {
   Compute: [
     { service: "vCPU (per hour)", OnDemand: "$0.05", Reserved: "$0.03", Spot: "$0.015", Enterprise: "Custom Pricing" },
     { service: "Memory (per GB-hour)", OnDemand: "$0.01", Reserved: "$0.007", Spot: "$0.004", Enterprise: "Custom Pricing" },
@@ -68,15 +67,20 @@ const categoryPricing = {
     { service: "Private Network Traffic (per GB)", OnDemand: "$0.02", Reserved: "$0.015", Spot: "$0.01", Enterprise: "Custom Pricing" },
     { service: "CDN Bandwidth (per GB)", OnDemand: "$0.05", Reserved: "$0.03", Spot: "$0.02", Enterprise: "Custom Pricing" },
   ],
+  Storage: [
+    { service: "Block Storage (per GB-month)", OnDemand: "$0.10", Reserved: "$0.08", Spot: "$0.05", Enterprise: "Custom Pricing" },
+    { service: "Object Storage (per GB-month)", OnDemand: "$0.02", Reserved: "$0.015", Spot: "$0.01", Enterprise: "Custom Pricing" },
+    { service: "Snapshot Storage (per GB-month)", OnDemand: "$0.05", Reserved: "$0.04", Spot: "$0.03", Enterprise: "Custom Pricing" },
+  ],
 };
 
-function Pricing() {
+function PricingPage() {
   return (
     <Container maxW="100vw" minH="100vh" bg="gray.800" color="white" py={10} px={8}>
-      {/* Left-Aligned Title & Subtitle */}
+      {/* Title & Subtitle */}
       <Box textAlign="left" mb={8}>
-        <Text fontSize="4xl" fontWeight="bold" color="white">Pricing Recap</Text>
-        <Text fontSize="lg" color="gray.400">Compare pricing for Compute, Storage, Traffic, AI, and Security.</Text>
+        <Text fontSize="4xl" fontWeight="bold" color="white">Full Pricing</Text>
+        <Text fontSize="lg" color="gray.400">Compare costs across all cloud services.</Text>
       </Box>
 
       <Divider my={6} borderColor="gray.600" />
@@ -103,10 +107,10 @@ function Pricing() {
               {/* Section Title */}
               <Box mb={6} textAlign="left">
                 <Text fontSize="3xl" fontWeight="bold" color="gray.200">{category.name} Pricing</Text>
-                <Text fontSize="md" color="gray.400">Detailed cost breakdown for {category.name.toLowerCase()} services.</Text>
+                <Text fontSize="md" color="gray.400">Transparent costs for {category.name.toLowerCase()} services.</Text>
               </Box>
 
-              {/* Side-by-Side Plan Comparison - Outlined Cards */}
+              {/* Side-by-Side Plan Comparison - Full Width */}
               <Grid templateColumns={{ base: "1fr", md: "repeat(4, 1fr)" }} gap={6}>
                 {pricingPlans.map((plan, idx) => (
                   <GridItem 
@@ -125,7 +129,7 @@ function Pricing() {
                 ))}
               </Grid>
 
-              {/* Full-Length Pricing Table - Outlined Rows */}
+              {/* Full-Length Pricing Table */}
               <Box mt={8} overflowX="auto">
                 <Table size="md" variant="unstyled">
                   <Thead bg="gray.700">
@@ -138,7 +142,7 @@ function Pricing() {
                     </Tr>
                   </Thead>
                   <Tbody>
-                    {categoryPricing[category.name]?.map((item, idy) => (
+                    {pricingDetails[category.name]?.map((item, idy) => (
                       <Tr key={idy} bg="gray.700" borderBottom="2px solid" borderColor="gray.600">
                         <Td color="gray.300">{item.service}</Td>
                         <Td textAlign="center"><Badge colorScheme="blue" px={3} py={1} borderRadius="md">{item.OnDemand}</Badge></Td>
@@ -158,8 +162,8 @@ function Pricing() {
   );
 }
 
-export const Route = createFileRoute("/_layout/pricing")({
-  component: Pricing,
+export const Route = createFileRoute("/_layout/pricing/full")({
+  component: PricingPage,
 });
 
-export default Pricing;
+export default PricingPage;
