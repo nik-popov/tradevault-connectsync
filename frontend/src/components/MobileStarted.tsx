@@ -112,7 +112,7 @@ const MobileResidentialApiStartGuide = () => {
       <Heading size="xl" fontWeight="bold" mb={2}>
         Residential Mobile Proxy Quick Start Guide
       </Heading>
-      <Text fontSize="lg" color="gray.600">
+      <Text fontSize="lg" color="gray.300">
         Follow these simple steps to integrate our residential proxy into your applications.
       </Text>
     </Box>
@@ -131,7 +131,7 @@ const MobileResidentialApiStartGuide = () => {
                 <Heading size="md" fontWeight="semibold" mb={1}>
                   {step.title}
                 </Heading>
-                <Text color="gray.600" mb={2}>
+                <Text color="gray.300" mb={2}>
                   {step.description}
                 </Text>
                 {step.content}
