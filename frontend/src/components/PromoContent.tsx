@@ -132,9 +132,13 @@ const PromoContent: React.FC = () => {
                       </ListItem>
                     ))}
                   </List>
-                  <Button w="full" bg="blue.600" color="white" _hover={{ bg: "blue.500" }} variant={plan.buttonVariant} onClick={() => navigate('/proxies/pricing')} size="sm">
-                    {plan.price === "Custom Pricing" ? "Contact Us" : `Choose ${plan.name}`}
-                  </Button>
+
+<Link to="/proxies/pricing" style={{ width: "100%" }}>
+  <Button w="full" bg="blue.600" color="white" _hover={{ bg: "blue.500" }} variant={plan.buttonVariant} size="sm">
+    {plan.price === "Custom Pricing" ? "Contact Us" : `Choose ${plan.name}`}
+  </Button>
+</Link>
+
                 </Box>
               </Box>
             ))}
