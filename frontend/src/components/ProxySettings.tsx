@@ -40,8 +40,6 @@ const ProxySettings = () => {
   return (
     <Box maxW="100%" mx="auto" px={{ base: 6, md: 12 }} py={12}>
       <VStack spacing={8} align="stretch">
-        <Heading size="lg" textAlign="center">Advanced Proxy Configuration</Heading>
-        <Divider />
         
         <Box>
           <Text fontWeight="bold" mb={1}>Select Proxy Region:</Text>
