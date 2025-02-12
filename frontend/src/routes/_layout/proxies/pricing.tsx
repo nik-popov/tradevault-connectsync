@@ -138,66 +138,82 @@ const fullPricingCategories = {
 
 function PricingPage() {
 return (
-  <Container maxW="full">
-      {/* Title & Toggle in the Same Row */}
-      <Flex align="center" justify="space-between" py={6} flexWrap="wrap">
-        <Box textAlign="left">
-          <Text fontSize="xl" fontWeight="bold">Cloud Pricing Overview</Text>
-        </Box>
+<Container maxW="full">
+  {/* Title & Toggle in the Same Row */}
+  <Flex align="center" justify="space-between" py={6} flexWrap="wrap">
+    {/* Title */}
+    <Box textAlign="left" flex="1">
+      <Text fontSize="xl" fontWeight="bold">Cloud Pricing Overview</Text>
+    </Box>
 
-        {/* Toggle Buttons in TabList */}
-        <Tabs variant="unstyled">
-          <TabList bg="gray.700" borderRadius="lg" p={3} display="flex" gap={2} width="fit-content">
-            {pricingCategories.map((category, index) => (
-              <Tab 
-                key={index} 
-                _selected={{ bg: "gray.600", color: "white", fontWeight: "bold" }} 
-                borderRadius="md"
-                px={4} 
-                py={2}
-              >
-                <Icon as={category.icon} boxSize={4} mr={2} /> {category.name}
-              </Tab>
-            ))}
-          </TabList>
+    {/* Toggle Buttons (Right Side) */}
+    <Flex gap={2} justify="flex-end">
+      {pricingCategories.map((category, index) => (
+        <Tab 
+          key={index} 
+          _selected={{ bg: "gray.600", color: "white", fontWeight: "bold" }} 
+          borderRadius="md"
+          px={4} 
+          py={2}
+        >
+          <Icon as={category.icon} boxSize={4} mr={2} /> {category.name}
+        </Tab>
+      ))}
+    </Flex>
+  </Flex>
 
-          {/* Tabs & Panels */}
-          <TabPanels>
-            {pricingCategories.map((category, index) => (
-              <TabPanel key={index}>
-                {/* Full-Length Pricing Table */}
-                <Box mt={6} overflowX="auto">
-                  <Table size="md" variant="unstyled">
-                    <Thead bg="gray.700">
-                      <Tr>
-                        <Th color="gray.300" textAlign="left">Service</Th>
-                        <Th color="gray.300" textAlign="center">On-Demand</Th>
-                        <Th color="gray.300" textAlign="center">Reserved</Th>
-                        <Th color="gray.300" textAlign="center">Spot</Th>
-                        <Th color="gray.300" textAlign="center">Enterprise</Th>
-                      </Tr>
-                    </Thead>
-                    <Tbody>
-                      {fullPricingCategories[category.name]?.map((item, idy) => (
-                        <Tr key={idy} bg="gray.700" borderBottom="2px solid" borderColor="gray.600">
-                          <Td color="gray.300">{item.service}</Td>
-                          <Td textAlign="center"><Badge colorScheme="blue" px={3} py={1} borderRadius="md">{item.OnDemand}</Badge></Td>
-                          <Td textAlign="center"><Badge colorScheme="green" px={3} py={1} borderRadius="md">{item.Reserved}</Badge></Td>
-                          <Td textAlign="center"><Badge colorScheme="purple" px={3} py={1} borderRadius="md">{item.Spot}</Badge></Td>
-                          <Td textAlign="center"><Badge colorScheme="orange" px={3} py={1} borderRadius="md">{item.Enterprise}</Badge></Td>
-                        </Tr>
-                      ))}
-                    </Tbody>
-                  </Table>
-                </Box>
-              </TabPanel>
-            ))}
-          </TabPanels>
-        </Tabs>
-      </Flex>
+  <Divider my={4} />
 
-      <Divider my={4} />
-    </Container>
+  {/* Tabs and Panels */}
+  <Tabs variant="unstyled">
+    <TabList bg="gray.700" borderRadius="lg" p={3} display="flex" gap={2} width="fit-content">
+      {pricingCategories.map((category, index) => (
+        <Tab 
+          key={index} 
+          _selected={{ bg: "gray.600", color: "white", fontWeight: "bold" }} 
+          borderRadius="md"
+          px={4} 
+          py={2}
+        >
+          <Icon as={category.icon} boxSize={4} mr={2} /> {category.name}
+        </Tab>
+      ))}
+    </TabList>
+
+    {/* Tabs & Panels */}
+    <TabPanels>
+      {pricingCategories.map((category, index) => (
+        <TabPanel key={index}>
+          <Box mt={6} overflowX="auto">
+            <Table size="md" variant="unstyled">
+              <Thead bg="gray.700">
+                <Tr>
+                  <Th color="gray.300" textAlign="left">Service</Th>
+                  <Th color="gray.300" textAlign="center">On-Demand</Th>
+                  <Th color="gray.300" textAlign="center">Reserved</Th>
+                  <Th color="gray.300" textAlign="center">Spot</Th>
+                  <Th color="gray.300" textAlign="center">Enterprise</Th>
+                </Tr>
+              </Thead>
+              <Tbody>
+                {fullPricingCategories[category.name]?.map((item, idy) => (
+                  <Tr key={idy} bg="gray.700" borderBottom="2px solid" borderColor="gray.600">
+                    <Td color="gray.300">{item.service}</Td>
+                    <Td textAlign="center"><Badge colorScheme="blue" px={3} py={1} borderRadius="md">{item.OnDemand}</Badge></Td>
+                    <Td textAlign="center"><Badge colorScheme="green" px={3} py={1} borderRadius="md">{item.Reserved}</Badge></Td>
+                    <Td textAlign="center"><Badge colorScheme="purple" px={3} py={1} borderRadius="md">{item.Spot}</Badge></Td>
+                    <Td textAlign="center"><Badge colorScheme="orange" px={3} py={1} borderRadius="md">{item.Enterprise}</Badge></Td>
+                  </Tr>
+                ))}
+              </Tbody>
+            </Table>
+          </Box>
+        </TabPanel>
+      ))}
+    </TabPanels>
+  </Tabs>
+</Container>
+
   );
 }
 
