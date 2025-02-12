@@ -135,33 +135,6 @@ const fullPricingCategories = {
       { service: "Enterprise Governance Tools", OnDemand: "$2.00", Reserved: "$1.50", Spot: "$1.00", Enterprise: "Included" },
     ],
   };
-  function PricingPage() {
-    return (
-
-        <Container maxW="full">
-  {/* Title & Toggle in the Same Row */}
-  <Flex align="center" justify="space-between" py={6} flexWrap="wrap">
-    <Box textAlign="left">
-      <Text fontSize="xl" fontWeight="bold">Cloud Pricing Overview</Text>
-    </Box>
-
-    {/* Toggle Buttons (Right Side) */}
-    <Flex gap={2}>
-      {pricingCategories.map((category, index) => (
-        <Tab 
-          key={index} 
-          _selected={{ bg: "gray.600", color: "white", fontWeight: "bold" }} 
-          borderRadius="md"
-          px={4} 
-          py={2}
-        >
-          <Icon as={category.icon} boxSize={4} mr={2} /> {category.name}
-        </Tab>
-      ))}
-    </Flex>
-  </Flex>
-
-  <Divider my={4} />
 
 function PricingPage() {
 return (
