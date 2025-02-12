@@ -16,8 +16,10 @@ import {
   AlertIcon,
   VStack
 } from "@chakra-ui/react";
-import { useNavigate } from '@tanstack/react-router';
+import { Link, useNavigate } from '@tanstack/react-router';
+
 import { FiCheckCircle, FiGlobe, FiZap, FiShield, FiServer } from 'react-icons/fi';
+
 
 const proxyFeatures = [
   { name: "Global Coverage", icon: FiGlobe, description: "Access to residential IPs from 195+ locations worldwide." },
@@ -87,9 +89,12 @@ const PromoContent: React.FC = () => {
               <Text fontSize="xs" my={2} color="gray.300">
                 Get full access to our proxies with a 7-day free trial. No credit card required!
               </Text>
-              <Button bg="blue.600" color="gray.100" _hover={{ bg: "blue.500" }} variant="solid" onClick={() => navigate('/proxies/pricing')} size="sm">
-                Sign Up for Free
-              </Button>
+              <Link to="/proxies/pricing">
+  <Button bg="blue.600" color="gray.100" _hover={{ bg: "blue.500" }} variant="solid" size="sm">
+    Sign Up for Free
+  </Button>
+</Link>
+
             </Box>
           </Grid>
         </Box>
