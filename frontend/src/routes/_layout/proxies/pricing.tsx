@@ -179,7 +179,7 @@ function PricingPage() {
   );
 }
 
-export const Route = createFileRoute("/_layout/pricing/full")({
+export const Route = createFileRoute("/_layout/pricing")({
   component: PricingPage,
 });
 
