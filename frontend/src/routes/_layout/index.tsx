@@ -72,7 +72,7 @@ function Dashboard() {
     <Container maxW="full">
       {/* 🚀 Promo Banner */}
       {isLocked && (
-        <Box bg="red.100" p={4} textAlign="center" borderRadius="md">
+        <Box bg="red.700" p={4} textAlign="center" borderRadius="md">
           <Text fontWeight="bold" fontSize="lg">
             ⚠️ Access Limited - Get a Subscription!
           </Text>
@@ -86,7 +86,7 @@ function Dashboard() {
       <Flex mt={6} gap={4} justify="space-between" align="center" flexWrap="wrap">
         {/* Owned Filter Toggle */}
         <Flex align="center">
-          <Text fontWeight="bold" mr={2}>Owned Only</Text>
+          <Text fontWeight="bold" mr={2}>My Products</Text>
           <Switch isChecked={ownedOnly} onChange={() => setOwnedOnly((prev) => !prev)} colorScheme="blue" mr={4} />
         </Flex>
 
