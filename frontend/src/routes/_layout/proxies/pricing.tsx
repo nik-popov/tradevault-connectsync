@@ -147,7 +147,41 @@ const fullPricingCategories = {
         </Flex>
         <Divider my={4} />
   
-        {/* Clean Tab Selector */}
+        <Container maxW="full">
+  {/* Title & Toggle in the Same Row */}
+  <Flex align="center" justify="space-between" py={6} flexWrap="wrap">
+    <Box textAlign="left">
+      <Text fontSize="xl" fontWeight="bold">Cloud Pricing Overview</Text>
+    </Box>
+
+    {/* Toggle Buttons (Right Side) */}
+    <Flex gap={2}>
+      {pricingCategories.map((category, index) => (
+        <Tab 
+          key={index} 
+          _selected={{ bg: "gray.600", color: "white", fontWeight: "bold" }} 
+          borderRadius="md"
+          px={4} 
+          py={2}
+        >
+          <Icon as={category.icon} boxSize={4} mr={2} /> {category.name}
+        </Tab>
+      ))}
+    </Flex>
+  </Flex>
+
+  <Divider my={4} />
+
+function PricingPage() {
+  return (
+    <Container maxW="full">
+      {/* Title & Toggle in the Same Row */}
+      <Flex align="center" justify="space-between" py={6} flexWrap="wrap">
+        <Box textAlign="left">
+          <Text fontSize="xl" fontWeight="bold">Cloud Pricing Overview</Text>
+        </Box>
+
+        {/* Toggle Buttons in TabList */}
         <Tabs variant="unstyled">
           <TabList bg="gray.700" borderRadius="lg" p={3} display="flex" gap={2} width="fit-content">
             {pricingCategories.map((category, index) => (
@@ -162,37 +196,13 @@ const fullPricingCategories = {
               </Tab>
             ))}
           </TabList>
-  
+
+          {/* Tabs & Panels */}
           <TabPanels>
             {pricingCategories.map((category, index) => (
               <TabPanel key={index}>
-                {/* Section Title */}
-                <Box mb={6} textAlign="left">
-                  <Text fontSize="xl" fontWeight="bold" color="gray.200">{category.name} Pricing</Text>
-                  <Text fontSize="sm" color="gray.400">Transparent costs for {category.name.toLowerCase()} services.</Text>
-                </Box>
-  
-                {/* Side-by-Side Plan Comparison - Full Width */}
-                <Grid templateColumns={{ base: "1fr", md: "repeat(4, 1fr)" }} gap={6}>
-                  {pricingPlans.map((plan, idx) => (
-                    <GridItem 
-                      key={idx} 
-                      p={6} 
-                      bg="gray.700" 
-                      border="2px solid" 
-                      borderColor={plan.color} 
-                      borderRadius="lg"
-                      textAlign="left"
-                    >
-                      <Text fontSize="xl" fontWeight="bold" color={plan.color}>{plan.name}</Text>
-                      <Text fontSize="sm" color="gray.300">{plan.description}</Text>
-                      <Badge colorScheme="blackAlpha" mt={3} px={3} py={1} borderRadius="md">{plan.price}</Badge>
-                    </GridItem>
-                  ))}
-                </Grid>
-  
                 {/* Full-Length Pricing Table */}
-                <Box mt={8} overflowX="auto">
+                <Box mt={6} overflowX="auto">
                   <Table size="md" variant="unstyled">
                     <Thead bg="gray.700">
                       <Tr>
@@ -220,13 +230,15 @@ const fullPricingCategories = {
             ))}
           </TabPanels>
         </Tabs>
-      </Container>
-    );
-  }
-  
-  export const Route = createFileRoute("/_layout/pricing")({
-    component: PricingPage,
-  });
-  
-  export default PricingPage;
-  
+      </Flex>
+
+      <Divider my={4} />
+    </Container>
+  );
+}
+
+export const Route = createFileRoute("/_layout/pricing")({
+  component: PricingPage,
+});
+
+export default PricingPage;
