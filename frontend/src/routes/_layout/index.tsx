@@ -71,16 +71,6 @@ function Dashboard() {
   return (
     <Container maxW="full">
       {/* 🚀 Promo Banner */}
-      {isLocked && (
-        <Box bg="red.700" p={4} textAlign="center" borderRadius="md">
-          <Text fontWeight="bold" fontSize="lg">
-            ⚠️ Limited Features - Subscribe for Full Access !
-          </Text>
-          <Button colorScheme="red" size="sm" mt={2} onClick={() => navigate({ to: "/proxies/pricing" })}>
-            View Subscription Plans
-          </Button>
-        </Box>
-      )}
 
       {/* Filters & Toggle */}
       <Flex mt={6} gap={4} justify="space-between" align="center" flexWrap="wrap">
