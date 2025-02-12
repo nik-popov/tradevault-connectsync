@@ -43,7 +43,7 @@ const theme = extendTheme({
     },
     Code: {
       baseStyle: (props) => ({
-        bg: props.colorMode === "dark" ? "gray.700" : "gray.50", // Grey background
+        bg: props.colorMode === "dark" ? "gray.700" : "gray.700", // Grey background
         color: props.colorMode === "dark" ? "gray.100" : "gray.900", // Dark text in dark mode
         fontSize: "sm",
         p: 3,
