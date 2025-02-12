@@ -90,14 +90,14 @@ const ProxySettings = () => {
         
         <Box>
           <Text fontWeight="bold" mb={1}>Proxy Endpoint:</Text>
-          <Code p={3} borderRadius="md" bg="gray.50" fontSize="sm">
+          <Code p={3} borderRadius="md" bg="gray.700" fontSize="sm">
             {`${protocol.toLowerCase()}://${region}${city ? `-${city}` : ""}.proxy.yourdomain.com:${proxyPort}`}
           </Code>
         </Box>
         
         <Box>
           <Text fontWeight="bold" mb={1}>Connection Settings:</Text>
-          <Code p={3} borderRadius="md" bg="gray.50" fontSize="sm">
+          <Code p={3} borderRadius="md" bg="gray.700" fontSize="sm">
             {`headers = {'User-Agent': 'YourApp/1.0'}`}
           </Code>
         </Box>
