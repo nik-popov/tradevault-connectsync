@@ -141,7 +141,7 @@ const fullPricingCategories = {
         <Flex align="center" justify="space-between" py={6} flexWrap="wrap">
           {/* Title */}
           <Box textAlign="left" flex="1">
-            <Text fontSize="xl" fontWeight="bold">Cloud Pricing Overview</Text>
+            <Text fontSize="xl" fontWeight="bold">Pricing Overview</Text>
           </Box>
         </Flex>
   
