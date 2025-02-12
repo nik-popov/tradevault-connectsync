@@ -90,7 +90,7 @@ const PromoContent: React.FC = () => {
                 Get full access to our proxies with a 7-day free trial. No credit card required!
               </Text>
               <Link to="/proxies/pricing">
-  <Button bg="blue.600" color="gray.100" _hover={{ bg: "blue.500" }} variant="solid" size="sm">
+  <Button bg="blue.600" color="gray.100" _hover={{ bg: "blue.500" }} variant="solid">
     Sign Up for Free
   </Button>
 </Link>
