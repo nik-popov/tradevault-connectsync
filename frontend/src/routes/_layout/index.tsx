@@ -110,7 +110,7 @@ function Dashboard() {
 
       <Divider my={4} />
 
-      <Flex mt={6} gap={6} justify="space-between">
+      <Flex mt={6} gap={6} justify="space-between" color="gray.700">
         {/* Main Content */}
         <Box flex="1">
           <VStack spacing={6} mt={6} align="stretch">
