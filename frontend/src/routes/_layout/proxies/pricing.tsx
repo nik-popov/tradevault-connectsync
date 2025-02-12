@@ -38,7 +38,7 @@ const pricingCategories = [
   { name: "Traffic", icon: FiGlobe },
   { name: "Storage", icon: FiHardDrive },
   { name: "Databases", icon: FiDatabase },
-  { name: "AI & ML", icon: FiZap },
+  { name: "Intelligence", icon: FiZap },
   { name: "Security", icon: FiSettings },
   { name: "Support", icon: FiHeadphones },
   { name: "Enterprise", icon: FiTrendingUp },
@@ -94,7 +94,7 @@ const fullPricingCategories = {
     { service: "Database Backup (per GB)", OnDemand: "$0.02", Reserved: "$0.015", Spot: "$0.01", Enterprise: "Custom Pricing" },
     { service: "High-Availability Database (per hour)", OnDemand: "$0.30", Reserved: "$0.25", Spot: "$0.20", Enterprise: "Custom Pricing" },
   ],
-  AI_ML: [
+  Intelligence: [
     { service: "Inference (per 1M calls)", OnDemand: "$1.00", Reserved: "$0.80", Spot: "$0.50", Enterprise: "Custom Pricing" },
     { service: "Training (per GPU-hour)", OnDemand: "$3.50", Reserved: "$2.80", Spot: "$1.50", Enterprise: "Custom Pricing" },
     { service: "AI API Calls (per 1000 reqs)", OnDemand: "$0.50", Reserved: "$0.40", Spot: "$0.25", Enterprise: "Custom Pricing" },
