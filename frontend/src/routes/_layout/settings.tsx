@@ -1,12 +1,15 @@
 import React from "react";
 import {
   Container,
-  Heading,
+  Flex,
   Tab,
   TabList,
   TabPanel,
   TabPanels,
   Tabs,
+  Text,
+  Box,
+  Divider
 } from "@chakra-ui/react";
 
 import { useQueryClient } from "@tanstack/react-query";
@@ -48,9 +51,15 @@ function UserSettings() {
 
   return (
     <Container maxW="full">
-      <Heading size="lg" textAlign={{ base: "center", md: "left" }} py={12}>
-        User Settings
-      </Heading>
+      <Flex align="center" justify="space-between" py={6} flexWrap="wrap" gap={4}>
+        <Box textAlign="left" flex="1">
+          <Text fontSize="xl" fontWeight="bold">Support & Help Center</Text>
+          <Text fontSize="sm">Find help, open tickets, or contact support.</Text>
+        </Box>
+      </Flex>
+
+      <Divider my={4} />
+
       <Tabs variant="enclosed">
         <TabList>
           {finalTabs.map((tab, index) => (
