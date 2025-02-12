@@ -94,15 +94,14 @@ const pricingDetails = {
 
 function PricingPage() {
   return (
-    <Container maxW="100vw" minH="100vh" bg="gray.800" color="white" py={10} px={8}>
-      {/* Title & Subtitle */}
-      <Box textAlign="left" mb={8}>
-        <Text fontSize="4xl" fontWeight="bold" color="white">Full Pricing</Text>
-        <Text fontSize="lg" color="gray.400">Compare costs across all cloud services.</Text>
-      </Box>
-
-      <Divider my={6} borderColor="gray.600" />
-
+    <Container maxW="full">
+      <Flex align="center" justify="space-between" py={6} flexWrap="wrap" gap={4}>
+        <Box textAlign="left" flex="1">
+          <Text fontSize="xl" fontWeight="bold">Pricing Overview</Text>
+          <Text fontSize="sm">Manage your billing settings and subscriptions.</Text>
+        </Box>
+      </Flex>
+      <Divider my={4} />
       {/* Clean Tab Selector */}
       <Tabs variant="unstyled">
         <TabList bg="gray.700" borderRadius="lg" p={3} display="flex" gap={2} width="fit-content">
