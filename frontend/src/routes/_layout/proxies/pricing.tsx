@@ -164,8 +164,8 @@ const fullPricingCategories = {
   <Divider my={4} />
 
 function PricingPage() {
-  return (
-    <Container maxW="full">
+return (
+  <Container maxW="full">
       {/* Title & Toggle in the Same Row */}
       <Flex align="center" justify="space-between" py={6} flexWrap="wrap">
         <Box textAlign="left">
