@@ -18,7 +18,7 @@ import ChangePassword from "../../components/UserSettings/ChangePassword";
 import DeleteAccount from "../../components/UserSettings/DeleteAccount";
 import UserInformation from "../../components/UserSettings/UserInformation";
 import Billing from "../../components/UserSettings/Billing";
-import SubscriptionManagement from "../../components/UserSettings/SubscriptionManagement"; // ✅ Corrected Import
+import SubscriptionManagement from "../../components/UserSettings/SubscriptionManagement"; // ✅ Corrected Importsub
 
 const tabsConfig = [
   { title: "My profile", component: UserInformation },
