@@ -51,7 +51,7 @@ const ProxyStarted = () => {
       icon: FiCode,
       description: "Use your credentials to authenticate requests.",
       content: (
-        <Box bg="gray.600" p={3} borderRadius="md">
+        <Box bg="gray.300" p={3} borderRadius="md">
           <Code display="block" mb={2}>
             Username: your_username<br/>
             Password: your_password
@@ -112,7 +112,7 @@ const ProxyStarted = () => {
         <Heading size="xl" fontWeight="bold" mb={2}>
           Residential Proxy Quick Start Guide
         </Heading>
-        <Text fontSize="lg" color="gray.600">
+        <Text fontSize="lg" color="gray.300">
           Follow these simple steps to integrate our residential proxy into your applications.
         </Text>
       </Box>
@@ -128,7 +128,7 @@ const ProxyStarted = () => {
               </Flex>
               <Box flex={1}>
                 <Heading size="md" fontWeight="semibold" mb={1}>{step.title}</Heading>
-                <Text color="gray.600" mb={2}>{step.description}</Text>
+                <Text color="gray.300" mb={2}>{step.description}</Text>
                 {step.content}
               </Box>
             </Flex>
