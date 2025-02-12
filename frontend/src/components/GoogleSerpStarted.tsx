@@ -29,7 +29,7 @@ const GoogleSerpGetStarted = () => {
       icon: FiList,
       description: "Retrieve all available Google SERP endpoints.",
       content: (
-        <Code p={3} borderRadius="md" fontSize="sm" bg="gray.50">
+        <Code p={3} borderRadius="md" fontSize="sm" bg="gray.700">
           {`curl -X GET "https://api.thedataproxy.com/api/v1/endpoints?type=google-serp"`}
         </Code>
       ),
@@ -39,7 +39,7 @@ const GoogleSerpGetStarted = () => {
       icon: FiGlobe,
       description: "Retrieve a list of supported locations for Google SERP proxies.",
       content: (
-        <Code p={3} borderRadius="md" fontSize="sm" bg="gray.50">
+        <Code p={3} borderRadius="md" fontSize="sm" bg="gray.700">
           {`curl -X GET "https://api.thedataproxy.com/api/v1/locations?type=google-serp"`}
         </Code>
       ),
@@ -49,7 +49,7 @@ const GoogleSerpGetStarted = () => {
       icon: FiGlobe,
       description: "Connect to our Google SERP API using this endpoint.",
       content: (
-        <Code p={3} borderRadius="md" fontSize="sm" bg="gray.50">
+        <Code p={3} borderRadius="md" fontSize="sm" bg="gray.700">
           https://api.thedataproxy.com/api/v1/proxy/google-serp/
         </Code>
       ),
@@ -75,7 +75,7 @@ const GoogleSerpGetStarted = () => {
       icon: FiCode,
       description: "Check your authentication details and status.",
       content: (
-        <Code p={3} borderRadius="md" fontSize="sm" bg="gray.50">
+        <Code p={3} borderRadius="md" fontSize="sm" bg="gray.700">
           {`curl -X GET "https://api.thedataproxy.com/api/v1/auth/google-serp"`}
         </Code>
       ),
@@ -85,7 +85,7 @@ const GoogleSerpGetStarted = () => {
       icon: FiSettings,
       description: "Adjust request headers and connection settings for optimal performance.",
       content: (
-        <Code p={3} borderRadius="md" fontSize="sm" bg="gray.50">
+        <Code p={3} borderRadius="md" fontSize="sm" bg="gray.700">
           {`headers = {'User-Agent': 'YourApp/1.0', 'X-Proxy-Type': 'google-serp'}`}
         </Code>
       ),
@@ -95,7 +95,7 @@ const GoogleSerpGetStarted = () => {
       icon: FiServer,
       description: "Test your connection using the proper proxy format.",
       content: (
-        <Code p={3} borderRadius="md" fontSize="sm" bg="gray.50">
+        <Code p={3} borderRadius="md" fontSize="sm" bg="gray.700">
           {`curl --proxy-user username:password -x api.thedataproxy.com/api/v1/proxy/google-serp/ "https://www.google.com/search?q=example"`}
         </Code>
       ),
@@ -105,7 +105,7 @@ const GoogleSerpGetStarted = () => {
       icon: FiSettings,
       description: "Track your usage and scale your API calls as needed.",
       content: (
-        <Code p={3} borderRadius="md" fontSize="sm" bg="gray.50">
+        <Code p={3} borderRadius="md" fontSize="sm" bg="gray.700">
           {`curl -X GET "https://api.thedataproxy.com/api/v1/usage/google-serp/"`}
         </Code>
       ),
