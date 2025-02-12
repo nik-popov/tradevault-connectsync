@@ -60,17 +60,24 @@ const theme = extendTheme({
         variant: "primary",
       },
     },
-    Tabs: {
-      variants: {
-        enclosed: {
-          tab: {
-            _selected: {
-              color: "ui.main",
+        Tabs: {
+          variants: {
+            enclosed: {
+              tab: {
+                color: "ui.dim", // Default text color in dark mode
+                _selected: {
+                  color: "ui.light", // White when active
+                  fontWeight: "bold",
+                  borderBottomColor: "ui.main", // Highlight the active tab
+                  borderBottomWidth: "2px",
+                },
+                _hover: {
+                  color: "ui.secondary",
+                },
+              },
             },
           },
         },
-      },
-    },
     Badge: {
       defaultProps: {
         colorScheme: "blue",
