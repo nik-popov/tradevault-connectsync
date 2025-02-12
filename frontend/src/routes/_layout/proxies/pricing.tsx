@@ -28,6 +28,7 @@ import {
   FiZap,
   FiSettings,
 } from "react-icons/fi";
+import { createFileRoute } from "@tanstack/react-router";
 // Pricing Categories
 const pricingCategories = [
   { name: "Compute", icon: FiCpu },
@@ -217,6 +218,9 @@ const fullPricingCategories = {
       </Container>
     );
   }
-  
+  // Export Route
+  export const Route = createFileRoute("/_layout/proxies/pricing")({
+    component: PricingPage,
+  });
   export default PricingPage;
   
