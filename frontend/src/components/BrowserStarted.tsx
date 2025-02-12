@@ -117,15 +117,7 @@ const CenterStarted = () => {
         <Box maxW="100%" mx="auto" px={{ base: 6, md: 12 }} py={12}>
           <VStack spacing={8} align="stretch">
             {/* Quick Start Guide Header */}
-            <Box textAlign="left"> {/* Changed from center to left */}
-              <Heading size="xl" fontWeight="bold" mb={2}>
-                Browser Proxy Quick Start Guide
-              </Heading>
-              <Text fontSize="lg" color="gray.600">
-                Follow these simple steps to integrate our residential proxy into your applications.
-              </Text>
-            </Box>
-        <Divider />
+
 
         {/* Step-by-Step Guide */}
         <VStack spacing={6} align="stretch">
