@@ -38,7 +38,6 @@ const pricingCategories = [
   { name: "Intelligence", icon: FiZap },
   { name: "Security", icon: FiSettings },
   { name: "Support", icon: FiHeadphones },
-  { name: "Enterprise", icon: FiTrendingUp },
 ];
 
 // Pricing Plans
@@ -120,16 +119,6 @@ const fullPricingCategories = {
       { service: "Dedicated Technical Account Manager", OnDemand: "$999/month", Reserved: "$899/month", Spot: "$799/month", Enterprise: "Included" },
       { service: "Priority Ticket Response (per ticket)", OnDemand: "$50", Reserved: "$40", Spot: "$30", Enterprise: "Custom Pricing" },
       { service: "Custom SLAs (per contract)", OnDemand: "Custom Pricing", Reserved: "Custom Pricing", Spot: "Custom Pricing", Enterprise: "Included" },
-    ],
-    Enterprise: [
-      { service: "Dedicated Account Manager", OnDemand: "Custom Pricing", Reserved: "Custom Pricing", Spot: "Custom Pricing", Enterprise: "Included" },
-      { service: "Custom Cloud Deployments", OnDemand: "Custom Pricing", Reserved: "Custom Pricing", Spot: "Custom Pricing", Enterprise: "Included" },
-      { service: "On-Prem Cloud Integration", OnDemand: "Custom Pricing", Reserved: "Custom Pricing", Spot: "Custom Pricing", Enterprise: "Included" },
-      { service: "99.99% SLA Guarantee", OnDemand: "Custom Pricing", Reserved: "Custom Pricing", Spot: "Custom Pricing", Enterprise: "Included" },
-      { service: "Private Cloud Access (per instance)", OnDemand: "$5.00", Reserved: "$4.00", Spot: "$3.00", Enterprise: "Custom Pricing" },
-      { service: "Advanced Networking (per region)", OnDemand: "$10.00", Reserved: "$8.00", Spot: "$6.00", Enterprise: "Custom Pricing" },
-      { service: "Compliance Certification Support", OnDemand: "Custom Pricing", Reserved: "Custom Pricing", Spot: "Custom Pricing", Enterprise: "Included" },
-      { service: "Enterprise Governance Tools", OnDemand: "$2.00", Reserved: "$1.50", Spot: "$1.00", Enterprise: "Included" },
     ],
   };
 
