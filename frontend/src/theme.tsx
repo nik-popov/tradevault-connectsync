@@ -38,7 +38,7 @@ const theme = extendTheme({
     },
     Text: {
       baseStyle: (props) => ({
-        color: props.colorMode === "dark" ? "gray.400" : "gray.600", // Lighter subtext
+        color: props.colorMode === "dark" ? "gray.200" : "gray.200", // Lighter subtext
       }),
     },
     Code: {
