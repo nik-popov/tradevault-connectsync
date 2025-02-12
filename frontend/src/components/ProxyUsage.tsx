@@ -42,11 +42,6 @@ const ProxyUsage = () => {
   return (
     <Box maxW="100%" mx="auto" px={{ base: 6, md: 12 }} py={12}>
       <VStack spacing={8} align="stretch">
-        <Heading size="2xl" textAlign="center">Proxy Usage Dashboard</Heading>
-        <Text fontSize="lg" textAlign="center" color="gray.600">
-          Monitor your proxy usage, analyze traffic trends, and optimize performance.
-        </Text>
-        <Divider />
 
         {/* Overview Statistics */}
         <Heading size="lg">Usage Statistics</Heading>
