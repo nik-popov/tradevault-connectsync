@@ -53,8 +53,8 @@ function UserSettings() {
     <Container maxW="full">
       <Flex align="center" justify="space-between" py={6} flexWrap="wrap" gap={4}>
         <Box textAlign="left" flex="1">
-          <Text fontSize="xl" fontWeight="bold">Support & Help Center</Text>
-          <Text fontSize="sm">Find help, open tickets, or contact support.</Text>
+          <Text fontSize="xl" fontWeight="bold">Settings</Text>
+          <Text fontSize="sm">Manage system & user settings</Text>
         </Box>
       </Flex>
 
