@@ -10,7 +10,6 @@ import {
   Switch,
 } from "@chakra-ui/react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useQuery } from "@tanstack/react-query";
 
 export const Route = createFileRoute("/_layout/")({
   component: Dashboard,
@@ -18,8 +17,7 @@ export const Route = createFileRoute("/_layout/")({
 
 function Dashboard() {
   const navigate = useNavigate();
-  \
-
+  
   // ✅ Default to owned products
   const [ownedOnly, setOwnedOnly] = useState(true);
   const [activeFilter, setActiveFilter] = useState("all");
