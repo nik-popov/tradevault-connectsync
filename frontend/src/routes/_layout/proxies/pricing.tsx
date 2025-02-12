@@ -2,7 +2,6 @@ import {
   Container,
   Box,
   Text,
-  VStack,
   Divider,
   Flex,
   Icon,
@@ -136,96 +135,96 @@ const fullPricingCategories = {
       { service: "Enterprise Governance Tools", OnDemand: "$2.00", Reserved: "$1.50", Spot: "$1.00", Enterprise: "Included" },
     ],
   };
-  
-function PricingPage() {
-  return (
-    <Container maxW="full">
-      <Flex align="center" justify="space-between" py={6} flexWrap="wrap" gap={4}>
-        <Box textAlign="left" flex="1">
-          <Text fontSize="xl" fontWeight="bold">Pricing Overview</Text>
-          <Text fontSize="sm">Manage your billing settings and subscriptions.</Text>
+  function PricingPage() {
+    return (
+      <Container maxW="100vw" minH="100vh" bg="gray.800" color="white" py={10} px={8}>
+        {/* Page Header */}
+        <Box textAlign="left" mb={8}>
+          <Text fontSize="4xl" fontWeight="bold" color="white">Pricing Overview</Text>
+          <Text fontSize="lg" color="gray.400">Compare costs across all cloud services.</Text>
         </Box>
-      </Flex>
-      <Divider my={4} />
-      {/* Clean Tab Selector */}
-      <Tabs variant="unstyled">
-        <TabList bg="gray.700" borderRadius="lg" p={3} display="flex" gap={2} width="fit-content">
-          {pricingCategories.map((category, index) => (
-            <Tab 
-              key={index} 
-              _selected={{ bg: "gray.600", color: "white", fontWeight: "bold" }} 
-              borderRadius="md"
-              px={4} 
-              py={2}
-            >
-              <Icon as={category.icon} boxSize={4} mr={2} /> {category.name}
-            </Tab>
-          ))}
-        </TabList>
-
-        <TabPanels>
-          {pricingCategories.map((category, index) => (
-            <TabPanel key={index}>
-              {/* Section Title */}
-              <Box mb={6} textAlign="left">
-                <Text fontSize="xl" fontWeight="bold" color="gray.200">{category.name} Pricing</Text>
-                <Text fontSize="md" color="gray.400">Transparent costs for {category.name.toLowerCase()} services.</Text>
-              </Box>
-
-              {/* Side-by-Side Plan Comparison - Full Width */}
-              <Grid templateColumns={{ base: "1fr", md: "repeat(4, 1fr)" }} gap={6}>
-                {pricingPlans.map((plan, idx) => (
-                  <GridItem 
-                    key={idx} 
-                    p={6} 
-                    bg="gray.700" 
-                    border="2px solid" 
-                    borderColor={plan.color} 
-                    borderRadius="lg"
-                    textAlign="left"
-                  >
-                    <Text fontSize="xl" fontWeight="bold" color={plan.color}>{plan.name}</Text>
-                    <Text fontSize="sm" color="gray.300">{plan.description}</Text>
-                    <Badge colorScheme="blackAlpha" mt={3} px={3} py={1} borderRadius="md">{plan.price}</Badge>
-                  </GridItem>
-                ))}
-              </Grid>
-
-              {/* Full-Length Pricing Table */}
-              <Box mt={8} overflowX="auto">
-                <Table size="md" variant="unstyled">
-                  <Thead bg="gray.700">
-                    <Tr>
-                      <Th color="gray.300" textAlign="left">Service</Th>
-                      <Th color="gray.300" textAlign="center">On-Demand</Th>
-                      <Th color="gray.300" textAlign="center">Reserved</Th>
-                      <Th color="gray.300" textAlign="center">Spot</Th>
-                      <Th color="gray.300" textAlign="center">Enterprise</Th>
-                    </Tr>
-                  </Thead>
-                  <Tbody>
-                    {pricingDetails[category.name]?.map((item, idy) => (
-                      <Tr key={idy} bg="gray.700" borderBottom="2px solid" borderColor="gray.600">
-                        <Td color="gray.300">{item.service}</Td>
-                        <Td textAlign="center"><Badge colorScheme="blue" px={3} py={1} borderRadius="md">{item.OnDemand}</Badge></Td>
-                        <Td textAlign="center"><Badge colorScheme="green" px={3} py={1} borderRadius="md">{item.Reserved}</Badge></Td>
-                        <Td textAlign="center"><Badge colorScheme="purple" px={3} py={1} borderRadius="md">{item.Spot}</Badge></Td>
-                        <Td textAlign="center"><Badge colorScheme="orange" px={3} py={1} borderRadius="md">{item.Enterprise}</Badge></Td>
+  
+        <Divider my={6} borderColor="gray.600" />
+  
+        {/* Clean Tab Selector */}
+        <Tabs variant="unstyled">
+          <TabList bg="gray.700" borderRadius="lg" p={3} display="flex" gap={2} width="fit-content">
+            {pricingCategories.map((category, index) => (
+              <Tab 
+                key={index} 
+                _selected={{ bg: "gray.600", color: "white", fontWeight: "bold" }} 
+                borderRadius="md"
+                px={4} 
+                py={2}
+              >
+                <Icon as={category.icon} boxSize={4} mr={2} /> {category.name}
+              </Tab>
+            ))}
+          </TabList>
+  
+          <TabPanels>
+            {pricingCategories.map((category, index) => (
+              <TabPanel key={index}>
+                {/* Section Title */}
+                <Box mb={6} textAlign="left">
+                  <Text fontSize="3xl" fontWeight="bold" color="gray.200">{category.name} Pricing</Text>
+                  <Text fontSize="md" color="gray.400">Transparent costs for {category.name.toLowerCase()} services.</Text>
+                </Box>
+  
+                {/* Side-by-Side Plan Comparison - Full Width */}
+                <Grid templateColumns={{ base: "1fr", md: "repeat(4, 1fr)" }} gap={6}>
+                  {pricingPlans.map((plan, idx) => (
+                    <GridItem 
+                      key={idx} 
+                      p={6} 
+                      bg="gray.700" 
+                      border="2px solid" 
+                      borderColor={plan.color} 
+                      borderRadius="lg"
+                      textAlign="left"
+                    >
+                      <Text fontSize="xl" fontWeight="bold" color={plan.color}>{plan.name}</Text>
+                      <Text fontSize="sm" color="gray.300">{plan.description}</Text>
+                      <Badge colorScheme="blackAlpha" mt={3} px={3} py={1} borderRadius="md">{plan.price}</Badge>
+                    </GridItem>
+                  ))}
+                </Grid>
+  
+                {/* Full-Length Pricing Table */}
+                <Box mt={8} overflowX="auto">
+                  <Table size="md" variant="unstyled">
+                    <Thead bg="gray.700">
+                      <Tr>
+                        <Th color="gray.300" textAlign="left">Service</Th>
+                        <Th color="gray.300" textAlign="center">On-Demand</Th>
+                        <Th color="gray.300" textAlign="center">Reserved</Th>
+                        <Th color="gray.300" textAlign="center">Spot</Th>
+                        <Th color="gray.300" textAlign="center">Enterprise</Th>
                       </Tr>
-                    ))}
-                  </Tbody>
-                </Table>
-              </Box>
-            </TabPanel>
-          ))}
-        </TabPanels>
-      </Tabs>
-    </Container>
-  );
-}
-
-export const Route = createFileRoute("/_layout/pricing")({
-  component: PricingPage,
-});
-
-export default PricingPage;
+                    </Thead>
+                    <Tbody>
+                      {fullPricingCategories[category.name]?.map((item, idy) => (
+                        <Tr key={idy} bg="gray.700" borderBottom="2px solid" borderColor="gray.600">
+                          <Td color="gray.300">{item.service}</Td>
+                          <Td textAlign="center"><Badge colorScheme="blue" px={3} py={1} borderRadius="md">{item.OnDemand}</Badge></Td>
+                          <Td textAlign="center"><Badge colorScheme="green" px={3} py={1} borderRadius="md">{item.Reserved}</Badge></Td>
+                          <Td textAlign="center"><Badge colorScheme="purple" px={3} py={1} borderRadius="md">{item.Spot}</Badge></Td>
+                          <Td textAlign="center"><Badge colorScheme="orange" px={3} py={1} borderRadius="md">{item.Enterprise}</Badge></Td>
+                        </Tr>
+                      ))}
+                    </Tbody>
+                  </Table>
+                </Box>
+              </TabPanel>
+            ))}
+          </TabPanels>
+        </Tabs>
+      </Container>
+    );
+  }
+  
+  export const Route = createFileRoute("/_layout/pricing")({
+    component: PricingPage,
+  });
+  
+  export default PricingPage;
