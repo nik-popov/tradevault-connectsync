@@ -59,7 +59,7 @@ const GoogleSerpGetStarted = () => {
       icon: FiCode,
       description: "Use your credentials to authenticate your API requests.",
       content: (
-        <Box bg="gray.50" p={3} borderRadius="md">
+        <Box bg="gray.700" p={3} borderRadius="md">
           <Code display="block" mb={2}>
             Username: your_username<br />
             Password: your_password

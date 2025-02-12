@@ -30,7 +30,7 @@ const CenterStarted = () => {
       icon: FiList,
       description: "Retrieve all available Browser proxy endpoints.",
       content: (
-        <Code p={3} borderRadius="md" fontSize="sm" bg="gray.50">
+        <Code p={3} borderRadius="md" fontSize="sm" bg="gray.700">
           {`curl -X GET https://api.thedataproxy.com/api/v1/endpoints?type=Browser`}
         </Code>
       ),
@@ -40,7 +40,7 @@ const CenterStarted = () => {
       icon: FiGlobe,
       description: "Retrieve a list of supported locations for Browser proxies.",
       content: (
-        <Code p={3} borderRadius="md" fontSize="sm" bg="gray.50">
+        <Code p={3} borderRadius="md" fontSize="sm" bg="gray.700">
           {`curl -X GET https://api.thedataproxy.com/api/v1/locations?type=Browser`}
         </Code>
       ),
@@ -50,7 +50,7 @@ const CenterStarted = () => {
       icon: FiGlobe,
       description: "Connect to our Browser proxy network using this endpoint.",
       content: (
-        <Code p={3} borderRadius="md" fontSize="sm" bg="gray.50">
+        <Code p={3} borderRadius="md" fontSize="sm" bg="gray.700">
           https://api.thedataproxy.com/api/v1/proxy/browser/
         </Code>
       ),
@@ -60,7 +60,7 @@ const CenterStarted = () => {
       icon: FiCode,
       description: "Use your credentials to authenticate requests.",
       content: (
-        <Box bg="gray.50" p={3} borderRadius="md">
+        <Box bg="gray.700" p={3} borderRadius="md">
           <Code display="block" mb={2}>
             Username: your_username<br />
             Password: your_password
@@ -76,7 +76,7 @@ const CenterStarted = () => {
       icon: FiCode,
       description: "Check your authentication details and status.",
       content: (
-        <Code p={3} borderRadius="md" fontSize="sm" bg="gray.50">
+        <Code p={3} borderRadius="md" fontSize="sm" bg="gray.700">
           {`curl -X GET https://api.thedataproxy.com/api/v1/auth/browser`}
         </Code>
       ),
@@ -86,7 +86,7 @@ const CenterStarted = () => {
       icon: FiSettings,
       description: "Adjust request headers and connection settings for better performance and security.",
       content: (
-        <Code p={3} borderRadius="md" fontSize="sm" bg="gray.50">
+        <Code p={3} borderRadius="md" fontSize="sm" bg="gray.700">
           {`headers = {'User-Agent': 'YourApp/1.0', 'X-Proxy-Type': 'Browser'}`}
         </Code>
       ),
@@ -96,7 +96,7 @@ const CenterStarted = () => {
       icon: FiServer,
       description: "Use the correct proxy format in your code to start making requests.",
       content: (
-        <Code p={3} borderRadius="md" fontSize="sm" bg="gray.50">
+        <Code p={3} borderRadius="md" fontSize="sm" bg="gray.700">
           {`curl --proxy-user username:password -x api.thedataproxy.com/api/v1/proxy/browser/ https://api.mywebsite.com`}
         </Code>
       ),
@@ -106,7 +106,7 @@ const CenterStarted = () => {
       icon: FiSettings,
       description: "Track usage statistics and scale your requests based on your needs.",
       content: (
-        <Code p={3} borderRadius="md" fontSize="sm" bg="gray.50">
+        <Code p={3} borderRadius="md" fontSize="sm" bg="gray.700">
           {`curl -X GET https://api.thedataproxy.com/api/v1/usage/browser/`}
         </Code>
       ),

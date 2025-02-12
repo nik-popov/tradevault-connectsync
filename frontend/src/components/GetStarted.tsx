@@ -21,7 +21,7 @@ const GetStarted = () => {
       icon: FiGlobe,
       description: "Use the provided endpoint to connect to our proxy network.",
       content: (
-        <Code p={3} borderRadius="md" fontSize="sm" bg="gray.50">
+        <Code p={3} borderRadius="md" fontSize="sm" bg="gray.700">
           https://proxy.yourdomain.com:12345
         </Code>
       )
@@ -31,7 +31,7 @@ const GetStarted = () => {
       icon: FiCode,
       description: "Use your credentials to authenticate requests.",
       content: (
-        <Box bg="gray.50" p={3} borderRadius="md">
+        <Box bg="gray.700" p={3} borderRadius="md">
           <Code display="block" mb={2}>
             Username: your_username<br/>
             Password: your_password
@@ -47,7 +47,7 @@ const GetStarted = () => {
       icon: FiSettings,
       description: "Adjust request headers and connection settings for better performance.",
       content: (
-        <Code p={3} borderRadius="md" fontSize="sm" bg="gray.50">
+        <Code p={3} borderRadius="md" fontSize="sm" bg="gray.700">
           {`headers = {'User-Agent': 'YourApp/1.0'}`}
         </Code>
       )
@@ -57,7 +57,7 @@ const GetStarted = () => {
       icon: FiServer,
       description: "Use the correct proxy format in your code to start making requests.",
       content: (
-        <Code p={3} borderRadius="md" fontSize="sm" bg="gray.50">
+        <Code p={3} borderRadius="md" fontSize="sm" bg="gray.700">
           {`curl --proxy-user username:password -x proxy.yourdomain.com:12345 https://api.mywebsite.com`}
         </Code>
       )
