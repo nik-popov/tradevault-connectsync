@@ -110,7 +110,7 @@ function Dashboard() {
 
       <Divider my={4} />
 
-      <Flex mt={6} gap={6} justify="space-between" color="gray.700">
+      <Flex mt={6} gap={6} justify="space-between">
         {/* Main Content */}
         <Box flex="1">
           <VStack spacing={6} mt={6} align="stretch">
@@ -118,7 +118,7 @@ function Dashboard() {
               <Text textAlign="center" fontSize="lg" color="gray.500">No products match this filter.</Text>
             ) : (
               filteredProducts.map((product) => (
-                <Box key={product.id} p={5} shadow="md" borderWidth="1px" borderRadius="lg" bg="gray.50">
+                <Box key={product.id} p={5} shadow="md" borderWidth="1px" borderRadius="lg" bg="gray.700">
                   <Text fontWeight="bold" fontSize="lg">{product.name}</Text>
                   <Text fontSize="sm" color="gray.600">{product.description}</Text>
                   <Button mt={3} size="sm" colorScheme="blue" borderRadius="full" onClick={() => navigate({ to: product.path })}>
