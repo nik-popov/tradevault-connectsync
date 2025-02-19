@@ -9,13 +9,36 @@ from app.models import Item, ItemCreate, User, UserCreate, UserUpdate
 from app.models import UserAgent, UserAgentCreate, UserAgentUpdate
 
 
-def create_user_agent(*, session: Session, user_agent_create: UserAgentCreate) -> UserAgent:
-    """Creates a new UserAgent entry in the database."""
-    db_obj = UserAgent.model_validate(user_agent_create)
-    session.add(db_obj)
-    session.commit()
-    session.refresh(db_obj)
-    return db_obj
+from sqlalchemy.exc import IntegrityError
+from sqlmodel import select
+from app.models import UserAgent
+
+def create_user_agent(session: Session, user_agent_create: UserAgentCreate):
+    # Check if the user agent already exists
+    existing_ua = session.exec(
+        select(UserAgent).where(UserAgent.user_agent == user_agent_create.user_agent)
+    ).first()
+    
+    if existing_ua:
+        # If the user agent already exists, update its values instead of inserting a duplicate
+        existing_ua.device = user_agent_create.device
+        existing_ua.browser = user_agent_create.browser
+        existing_ua.os = user_agent_create.os
+        existing_ua.percentage = user_agent_create.percentage
+        session.add(existing_ua)
+    else:
+        # If it does not exist, insert a new record
+        db_user_agent = UserAgent.model_validate(user_agent_create)
+        session.add(db_user_agent)
+
+    try:
+        session.commit()
+        session.refresh(existing_ua if existing_ua else db_user_agent)
+    except IntegrityError:
+        session.rollback()
+        return {"error": "Duplicate user agent entry"}
+    
+    return existing_ua if existing_ua else db_user_agent
 
 
 def get_user_agent_by_id(*, session: Session, user_agent_id: uuid.UUID) -> Optional[UserAgent]:
