@@ -3,6 +3,42 @@ import uuid
 from pydantic import EmailStr
 from sqlmodel import Field, Relationship, SQLModel
 
+# Shared properties
+class UserAgentBase(SQLModel):
+    user_agent: str = Field(unique=True, index=True, max_length=512)
+    device: str = Field(default="desktop", max_length=50)  # e.g., desktop, mobile, tablet
+    browser: str | None = Field(default=None, max_length=100)
+    os: str | None = Field(default=None, max_length=100)
+    percentage: float | None = Field(default=None)  # Percentage usage if applicable
+
+
+# Properties to receive via API on creation
+class UserAgentCreate(UserAgentBase):
+    pass
+
+
+# Properties to receive via API on update
+class UserAgentUpdate(SQLModel):
+    user_agent: str | None = Field(default=None, max_length=512)
+    device: str | None = Field(default=None, max_length=50)
+    browser: str | None = Field(default=None, max_length=100)
+    os: str | None = Field(default=None, max_length=100)
+    percentage: float | None = Field(default=None)
+
+
+# Database model, table inferred from class name
+class UserAgent(UserAgentBase, table=True):
+    id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
+
+
+# Properties to return via API
+class UserAgentPublic(UserAgentBase):
+    id: uuid.UUID
+
+
+class UserAgentsPublic(SQLModel):
+    data: list[UserAgentPublic]
+    count: int
 
 # Shared properties
 class UserBase(SQLModel):
