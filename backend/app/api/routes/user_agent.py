@@ -46,16 +46,20 @@ def get_user_agent_endpoint(user_agent_id: uuid.UUID, db: Session = Depends(get_
     return user_agent
 
 
-# ✅ Ensure correct pagination & total count
 @router.get("/", response_model=UserAgentsPublic)
 def get_all_user_agents_endpoint(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
     """
     Get all user agents with pagination.
     """
-    total_count = db.exec(select(UserAgent)).count()  # Get total count
+
+    # ✅ Get total count of all user agents
+    total_count = db.exec(select(func.count()).select_from(UserAgent)).one()
+
+    # ✅ Fetch paginated user agents
     user_agents = get_all_user_agents(session=db, skip=skip, limit=limit)
 
     return UserAgentsPublic(data=user_agents, count=total_count)
+
 
 
 # ✅ Update an existing user agent
