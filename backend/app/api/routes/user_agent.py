@@ -1,6 +1,6 @@
 import uuid
 from typing import List
-
+from sqlalchemy.sql import func 
 from fastapi import APIRouter, Depends, HTTPException
 from sqlmodel import Session, select
 from app.api.deps import get_db
