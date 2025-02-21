@@ -6,7 +6,7 @@ import {
   FiUsers,
   FiLayers,
 } from "react-icons/fi";
-import { FiMessageSquare, FiCalendar, FiFileText, FiSettings, FiTool, FiDatabase, FiGlobe, FiShield, FiCloud, FiMonitor, FiHelpCircle } from "react-icons/fi";
+import { FiMessageSquare,FiCpu, FiCalendar, FiFileText, FiSettings, FiTool, FiDatabase, FiGlobe, FiShield, FiCloud, FiMonitor, FiHelpCircle } from "react-icons/fi";
 
 import type { UserPublic } from "../../client";
 
@@ -37,6 +37,8 @@ const sidebarStructure: SidebarItem[] = [
     ],
     icon: FiDatabase,
   },
+  { title: "IconGpt", icon: FiCpu, path: "/ai/icongpt" },
+
     { title: "Messaging", icon: FiMessageSquare, path: "/messaging" },
     { title: "CMS Events", icon: FiCalendar, path: "/events" },
     { title: "Calendar", icon: FiCalendar, path: "/calendar" },
