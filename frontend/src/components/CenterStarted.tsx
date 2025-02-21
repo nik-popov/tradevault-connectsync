@@ -31,7 +31,7 @@ const CenterStarted = () => {
       description: "Retrieve all available datacenter proxy endpoints.",
       content: (
         <Code p={3} borderRadius="md" fontSize="sm" bg="gray.700">
-          {`curl -X GET https://api.thedataproxy.com/api/v1/endpoints?type=datacenter`}
+          {`curl -X GET https://api.iconluxury.group/api/v1/endpoints?type=datacenter`}
         </Code>
       ),
     },
@@ -41,7 +41,7 @@ const CenterStarted = () => {
       description: "Retrieve a list of supported locations for datacenter proxies.",
       content: (
         <Code p={3} borderRadius="md" fontSize="sm" bg="gray.700">
-          {`curl -X GET https://api.thedataproxy.com/api/v1/locations?type=datacenter`}
+          {`curl -X GET https://api.iconluxury.group/api/v1/locations?type=datacenter`}
         </Code>
       ),
     },
@@ -51,7 +51,7 @@ const CenterStarted = () => {
       description: "Connect to our datacenter proxy network using this endpoint.",
       content: (
         <Code p={3} borderRadius="md" fontSize="sm" bg="gray.700">
-          https://api.thedataproxy.com/api/v1/proxy/datacenter/
+          https://api.iconluxury.group/api/v1/proxy/datacenter/
         </Code>
       ),
     },
@@ -77,7 +77,7 @@ const CenterStarted = () => {
       description: "Check your authentication details and status.",
       content: (
         <Code p={3} borderRadius="md" fontSize="sm" bg="gray.700">
-          {`curl -X GET https://api.thedataproxy.com/api/v1/auth/datacenter`}
+          {`curl -X GET https://api.iconluxury.group/api/v1/auth/datacenter`}
         </Code>
       ),
     },
@@ -97,7 +97,7 @@ const CenterStarted = () => {
       description: "Use the correct proxy format in your code to start making requests.",
       content: (
         <Code p={3} borderRadius="md" fontSize="sm" bg="gray.700">
-          {`curl --proxy-user username:password -x api.thedataproxy.com/api/v1/proxy/datacenter/ https://api.mywebsite.com`}
+          {`curl --proxy-user username:password -x api.iconluxury.group/api/v1/proxy/datacenter/ https://api.mywebsite.com`}
         </Code>
       ),
     },
@@ -107,7 +107,7 @@ const CenterStarted = () => {
       description: "Track usage statistics and scale your requests based on your needs.",
       content: (
         <Code p={3} borderRadius="md" fontSize="sm" bg="gray.700">
-          {`curl -X GET https://api.thedataproxy.com/api/v1/usage/datacenter/`}
+          {`curl -X GET https://api.iconluxury.group/api/v1/usage/datacenter/`}
         </Code>
       ),
     },

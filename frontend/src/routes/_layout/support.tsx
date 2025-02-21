@@ -145,7 +145,7 @@ const FAQSection = () => {
     },
     {
       question: "Where can I get billing support?",
-      answer: "Contact our billing team at billing@cobaltdata.net for assistance.",
+      answer: "Contact our billing team at billing@iconluxurygroup.net for assistance.",
     },
   ];
 
@@ -160,7 +160,7 @@ const FAQSection = () => {
 
       <Box textAlign="center" mt={6}>
         <Text fontSize="sm">Need more help?</Text>
-        <Button as="a" href="mailto:support@cobaltdata.net" leftIcon={<FiHelpCircle />} mt={2} variant="outline">
+        <Button as="a" href="mailto:support@iconluxurygroup.net" leftIcon={<FiHelpCircle />} mt={2} variant="outline">
           Contact Support
         </Button>
       </Box>
@@ -173,7 +173,7 @@ const CommunitySection = () => (
   <Box>
     <Text fontSize="xl" fontWeight="bold">Community Support</Text>
     <Text mt={2}>Join discussions with other users on GitHub.</Text>
-    <Button as="a" href="https://github.com/CobaltDataNet" leftIcon={<FiGithub />} mt={4} variant="outline">
+    <Button as="a" href="https://github.com/iconluxurygroupNet" leftIcon={<FiGithub />} mt={4} variant="outline">
       GitHub Discussions
     </Button>
   </Box>

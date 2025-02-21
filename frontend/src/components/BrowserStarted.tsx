@@ -31,7 +31,7 @@ const CenterStarted = () => {
       description: "Retrieve all available Browser proxy endpoints.",
       content: (
         <Code p={3} borderRadius="md" fontSize="sm" bg="gray.700">
-          {`curl -X GET https://api.thedataproxy.com/api/v1/endpoints?type=Browser`}
+          {`curl -X GET https://api.iconluxury.group/api/v1/endpoints?type=Browser`}
         </Code>
       ),
     },
@@ -41,7 +41,7 @@ const CenterStarted = () => {
       description: "Retrieve a list of supported locations for Browser proxies.",
       content: (
         <Code p={3} borderRadius="md" fontSize="sm" bg="gray.700">
-          {`curl -X GET https://api.thedataproxy.com/api/v1/locations?type=Browser`}
+          {`curl -X GET https://api.iconluxury.group/api/v1/locations?type=Browser`}
         </Code>
       ),
     },
@@ -51,7 +51,7 @@ const CenterStarted = () => {
       description: "Connect to our Browser proxy network using this endpoint.",
       content: (
         <Code p={3} borderRadius="md" fontSize="sm" bg="gray.700">
-          https://api.thedataproxy.com/api/v1/proxy/browser/
+          https://api.iconluxury.group/api/v1/proxy/browser/
         </Code>
       ),
     },
@@ -77,7 +77,7 @@ const CenterStarted = () => {
       description: "Check your authentication details and status.",
       content: (
         <Code p={3} borderRadius="md" fontSize="sm" bg="gray.700">
-          {`curl -X GET https://api.thedataproxy.com/api/v1/auth/browser`}
+          {`curl -X GET https://api.iconluxury.group/api/v1/auth/browser`}
         </Code>
       ),
     },
@@ -97,7 +97,7 @@ const CenterStarted = () => {
       description: "Use the correct proxy format in your code to start making requests.",
       content: (
         <Code p={3} borderRadius="md" fontSize="sm" bg="gray.700">
-          {`curl --proxy-user username:password -x api.thedataproxy.com/api/v1/proxy/browser/ https://api.mywebsite.com`}
+          {`curl --proxy-user username:password -x api.iconluxury.group/api/v1/proxy/browser/ https://api.mywebsite.com`}
         </Code>
       ),
     },
@@ -107,7 +107,7 @@ const CenterStarted = () => {
       description: "Track usage statistics and scale your requests based on your needs.",
       content: (
         <Code p={3} borderRadius="md" fontSize="sm" bg="gray.700">
-          {`curl -X GET https://api.thedataproxy.com/api/v1/usage/browser/`}
+          {`curl -X GET https://api.iconluxury.group/api/v1/usage/browser/`}
         </Code>
       ),
     },

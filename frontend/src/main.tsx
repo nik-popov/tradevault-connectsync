@@ -10,7 +10,7 @@ import theme from "./theme"
 import "./styles/global.css";  // Ensure global.css is inside src/styles/
 
 
-OpenAPI.BASE = "https://api.cobaltdata.net"
+OpenAPI.BASE = "https://api.iconluxurygroup.net"
 OpenAPI.TOKEN = async () => {
   return localStorage.getItem("access_token") || ""
 }

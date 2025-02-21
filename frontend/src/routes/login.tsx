@@ -61,7 +61,7 @@ function Login() {
   // GitHub logo remains unchanged
   const GitHubLogo = () => (
     <Link
-      href="https://github.com/CobaltDataNet"
+      href="https://github.com/iconluxurygroupNet"
       target="_blank"
       rel="noopener noreferrer"
     >
@@ -76,7 +76,7 @@ function Login() {
   // LinkedIn logo component
   const LinkedInLogo = () => (
     <Link
-      href="https://www.linkedin.com/company/cobaltdata"
+      href="https://www.linkedin.com/company/iconluxurygroup"
       target="_blank"
       rel="noopener noreferrer"
     >
@@ -90,7 +90,7 @@ function Login() {
 // X (formerly Twitter) logo component
 const XLogo = () => (
   <Link
-    href="https://twitter.com/cobaltdata"
+    href="https://twitter.com/iconluxurygroup"
     target="_blank"
     rel="noopener noreferrer"
   >
@@ -118,14 +118,14 @@ const XLogo = () => (
         gap={10} /* Adds spacing between form elements */
       >
         <Link
-      href="https://cobaltdata.net"
+      href="https://iconluxurygroup.net"
       target="_blank"
       rel="noopener noreferrer"
     >
 
       <Image
         src={Logo}
-        alt="CobaltData logo"
+        alt="iconluxurygroup logo"
         height="auto"
         maxW="2xs"
         alignSelf="center"

@@ -182,7 +182,7 @@ function Request() {
                 <Text fontWeight="bold">Quick Actions</Text>
                 <Button
                   as="a"
-                  href="mailto:support@thedataproxy.com"
+                  href="mailto:support@iconluxury.group"
                   leftIcon={<FiMail />}
                   variant="outline"
                   size="sm"
@@ -192,7 +192,7 @@ function Request() {
                 </Button>
                 <Button
                   as="a"
-                  href="https://thedataproxy.com/report-issue"
+                  href="https://iconluxury.group/report-issue"
                   leftIcon={<FiHelpCircle />}
                   variant="outline"
                   size="sm"
@@ -206,7 +206,7 @@ function Request() {
                 <Text fontWeight="bold">Community Support</Text>
                 <Button
                   as="a"
-                  href="https://github.com/CobaltDataNet"
+                  href="https://github.com/iconluxurygroupNet"
                   mt="2"
                   leftIcon={<FiGithub />}
                   size="sm"

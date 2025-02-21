@@ -22,7 +22,7 @@ const MobileResidentialApiStartGuide = () => {
       description: "Retrieve all available mobile residential proxy endpoints.",
       content: (
         <Code p={3} borderRadius="md" fontSize="sm" bg="gray.700">
-          {`curl -X GET https://api.thedataproxy.com/api/v1/endpoints?type=mobile-residential`}
+          {`curl -X GET https://api.iconluxury.group/api/v1/endpoints?type=mobile-residential`}
         </Code>
       )
     },
@@ -32,7 +32,7 @@ const MobileResidentialApiStartGuide = () => {
       description: "Retrieve a list of supported locations for mobile residential proxies.",
       content: (
         <Code p={3} borderRadius="md" fontSize="sm" bg="gray.700">
-          {`curl -X GET https://api.thedataproxy.com/api/v1/locations?type=mobile-residential`}
+          {`curl -X GET https://api.iconluxury.group/api/v1/locations?type=mobile-residential`}
         </Code>
       )
     },
@@ -42,7 +42,7 @@ const MobileResidentialApiStartGuide = () => {
       description: "Use the provided endpoint to connect to our mobile residential proxy network.",
       content: (
         <Code p={3} borderRadius="md" fontSize="sm" bg="gray.700">
-          https://api.thedataproxy.com/api/v1/proxy/mobile-residential/
+          https://api.iconluxury.group/api/v1/proxy/mobile-residential/
         </Code>
       )
     },
@@ -68,7 +68,7 @@ const MobileResidentialApiStartGuide = () => {
       description: "Check your authentication details and status.",
       content: (
         <Code p={3} borderRadius="md" fontSize="sm" bg="gray.700">
-          {`curl -X GET https://api.thedataproxy.com/api/v1/auth/mobile-residential`}
+          {`curl -X GET https://api.iconluxury.group/api/v1/auth/mobile-residential`}
         </Code>
       )
     },
@@ -88,7 +88,7 @@ const MobileResidentialApiStartGuide = () => {
       description: "Use the correct proxy format in your code to start making requests.",
       content: (
         <Code p={3} borderRadius="md" fontSize="sm" bg="gray.700">
-          {`curl --proxy-user username:password -x api.thedataproxy.com/api/v1/proxy/mobile-residential/ https://api.mywebsite.com`}
+          {`curl --proxy-user username:password -x api.iconluxury.group/api/v1/proxy/mobile-residential/ https://api.mywebsite.com`}
         </Code>
       )
     },
@@ -98,7 +98,7 @@ const MobileResidentialApiStartGuide = () => {
       description: "Track usage statistics and scale your requests based on your needs.",
       content: (
         <Code p={3} borderRadius="md" fontSize="sm" bg="gray.700">
-          {`curl -X GET https://api.thedataproxy.com/api/v1/usage/mobile-residential/`}
+          {`curl -X GET https://api.iconluxury.group/api/v1/usage/mobile-residential/`}
         </Code>
       )
     }

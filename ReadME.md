@@ -1,17 +1,17 @@
-# Cobalt Data Full-Stack-Template 🚀
+# Icon Luxury Group Full-Stack-Template 🚀
 
 ## Overview 🌐
-Cobalt Data is an integrated platform that combines a **Vite.JS** frontend with a **Python** backend. The backend is hosted at `api.scrapecompass.com`, and the frontend is available at [Cobalt Data Dashboard](https://dashboard.cobaltdata.net). The project is deployed using **Docker Compose** and **Traefik**, with a PostgreSQL database, email settings, and Sentry for error monitoring.
+Icon Luxury Group is an integrated platform that combines a **Vite.JS** frontend with a **Python** backend. The backend is hosted at `api.scrapecompass.com`, and the frontend is available at [Icon Luxury Group Dashboard](https://dashboard.iconluxurygroup.net). The project is deployed using **Docker Compose** and **Traefik**, with a PostgreSQL database, email settings, and Sentry for error monitoring.
 
 ---
 
 ## Documentation Sections 📚
 
 1. **[Release Notes](release-notes.md)** 📝  
-   Track recent updates, fixes, and new features in Cobalt Data.
+   Track recent updates, fixes, and new features in Icon Luxury Group.
 
 2. **[Deployment Guide](deployment.md)** 🚀  
-   Step-by-step instructions for deploying Cobalt Data using Docker Compose and Traefik.
+   Step-by-step instructions for deploying Icon Luxury Group using Docker Compose and Traefik.
 
 3. **[Development Guide](development.md)** 🛠️  
    Guidelines for setting up a development environment, including VS Code configurations and backend/frontend setup.
@@ -20,7 +20,7 @@ Cobalt Data is an integrated platform that combines a **Vite.JS** frontend with 
    Security best practices and the vulnerability reporting process.
 
 5. **[License](LICENSE)** 📄  
-   Details about the licensing of Cobalt Data.
+   Details about the licensing of Icon Luxury Group.
 
 6. **Configuration Files** 🗂️  
    - `.env`: Environment variables.
@@ -39,9 +39,9 @@ Below is a cleaned-up, enhanced version of our contribution guidelines with adde
 
 ---
 
-# Contributing to Cobalt Data 🚀
+# Contributing to Icon Luxury Group 🚀
 
-Thank you for your interest in contributing to our project! Your efforts help make Cobalt Data even better. Please follow the guidelines below to ensure smooth collaboration.
+Thank you for your interest in contributing to our project! Your efforts help make Icon Luxury Group even better. Please follow the guidelines below to ensure smooth collaboration.
 
 ## Table of Contents 📑
 - [Getting Started](#getting-started-️)
@@ -183,7 +183,7 @@ For more detailed instructions and troubleshooting, please refer to:
 
 ## Code of Conduct 📜
 
-By contributing to Cobalt Data, you agree to abide by our [Code of Conduct](CODE_OF_CONDUCT.md). Please take a moment to read it before contributing.
+By contributing to Icon Luxury Group, you agree to abide by our [Code of Conduct](CODE_OF_CONDUCT.md). Please take a moment to read it before contributing.
 
 ---
 

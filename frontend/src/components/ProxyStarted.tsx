@@ -22,7 +22,7 @@ const ProxyStarted = () => {
       description: "Retrieve all available proxy endpoints.",
       content: (
         <Code p={3} borderRadius="md" fontSize="sm" bg="gray.700">
-          {`curl -X GET https://api.thedataproxy.com/api/v1/endpoints`}
+          {`curl -X GET https://api.iconluxury.group/api/v1/endpoints`}
         </Code>
       )
     },
@@ -32,7 +32,7 @@ const ProxyStarted = () => {
       description: "Retrieve a list of supported proxy locations.",
       content: (
         <Code p={3} borderRadius="md" fontSize="sm" bg="gray.700">
-          {`curl -X GET https://api.thedataproxy.com/api/v1/locations`}
+          {`curl -X GET https://api.iconluxury.group/api/v1/locations`}
         </Code>
       )
     },
@@ -42,7 +42,7 @@ const ProxyStarted = () => {
       description: "Use the provided endpoint to connect to our residential proxy network.",
       content: (
         <Code p={3} borderRadius="md" fontSize="sm" bg="gray.700">
-          https://api.thedataproxy.com/api/v1/proxy/residential/
+          https://api.iconluxury.group/api/v1/proxy/residential/
         </Code>
       )
     },
@@ -68,7 +68,7 @@ const ProxyStarted = () => {
       description: "Check your authentication details and status.",
       content: (
         <Code p={3} borderRadius="md" fontSize="sm" bg="gray.700">
-          {`curl -X GET https://api.thedataproxy.com/api/v1/auth`}
+          {`curl -X GET https://api.iconluxury.group/api/v1/auth`}
         </Code>
       )
     },
@@ -88,7 +88,7 @@ const ProxyStarted = () => {
       description: "Use the correct proxy format in your code to start making requests.",
       content: (
         <Code p={3} borderRadius="md" fontSize="sm" bg="gray.700">
-          {`curl --proxy-user username:password -x api.thedataproxy.com/api/v1/proxy/residential/ https://api.mywebsite.com`}
+          {`curl --proxy-user username:password -x api.iconluxury.group/api/v1/proxy/residential/ https://api.mywebsite.com`}
         </Code>
       )
     },
@@ -98,7 +98,7 @@ const ProxyStarted = () => {
       description: "Track usage statistics and scale your requests based on your needs.",
       content: (
         <Code p={3} borderRadius="md" fontSize="sm" bg="gray.700">
-          {`https://api.thedataproxy.com/api/v1/usage/residential/`}
+          {`https://api.iconluxury.group/api/v1/usage/residential/`}
         </Code>
       )
     }

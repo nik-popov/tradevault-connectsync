@@ -68,7 +68,7 @@ cd backend
 fastapi dev app/main.py
 ```
 
-## Docker Compose in `localhost.cobaltdata.net`
+## Docker Compose in `localhost.iconluxurygroup.net`
 
 When you start the Docker Compose stack, it uses `localhost` by default, with different ports for each service (backend, frontend, adminer, etc).
 
@@ -79,14 +79,14 @@ In the guide about [deployment](deployment.md) you can read about Traefik, the c
 If you want to test that it's all working locally, you can edit the local `.env` file, and change:
 
 ```dotenv
-DOMAIN=localhost.cobaltdata.net
+DOMAIN=localhost.iconluxurygroup.net
 ```
 
 That will be used by the Docker Compose files to configure the base domain for the services.
 
-Traefik will use this to transmit traffic at `api.localhost.cobaltdata.net` to the backend, and traffic at `dashboard.localhost.cobaltdata.net` to the frontend.
+Traefik will use this to transmit traffic at `api.localhost.iconluxurygroup.net` to the backend, and traffic at `dashboard.localhost.iconluxurygroup.net` to the frontend.
 
-The domain `localhost.cobaltdata.net` is a special domain that is configured (with all its subdomains) to point to `127.0.0.1`. This way you can use that for your local development.
+The domain `localhost.iconluxurygroup.net` is a special domain that is configured (with all its subdomains) to point to `127.0.0.1`. This way you can use that for your local development.
 
 After you update it, run again:
 
@@ -94,7 +94,7 @@ After you update it, run again:
 docker compose watch
 ```
 
-When deploying, for example in production, the main Traefik is configured outside of the Docker Compose files. For local development, there's an included Traefik in `docker-compose.override.yml`, just to let you test that the domains work as expected, for example with `api.localhost.cobaltdata.net` and `dashboard.localhost.cobaltdata.net`.
+When deploying, for example in production, the main Traefik is configured outside of the Docker Compose files. For local development, there's an included Traefik in `docker-compose.override.yml`, just to let you test that the domains work as expected, for example with `api.localhost.iconluxurygroup.net` and `dashboard.localhost.iconluxurygroup.net`.
 
 ## Docker Compose files and env vars
 
@@ -188,20 +188,20 @@ Traefik UI: http://localhost:8090
 
 MailCatcher: http://localhost:1080
 
-### Development URLs with `localhost.cobaltdata.net` Configured
+### Development URLs with `localhost.iconluxurygroup.net` Configured
 
 Development URLs, for local development.
 
-Frontend: http://dashboard.localhost.cobaltdata.net
+Frontend: http://dashboard.localhost.iconluxurygroup.net
 
-Backend: http://api.localhost.cobaltdata.net
+Backend: http://api.localhost.iconluxurygroup.net
 
-Automatic Interactive Docs (Swagger UI): http://api.localhost.cobaltdata.net/docs
+Automatic Interactive Docs (Swagger UI): http://api.localhost.iconluxurygroup.net/docs
 
-Automatic Alternative Docs (ReDoc): http://api.localhost.cobaltdata.net/redoc
+Automatic Alternative Docs (ReDoc): http://api.localhost.iconluxurygroup.net/redoc
 
-Adminer: http://localhost.cobaltdata.net:8080
+Adminer: http://localhost.iconluxurygroup.net:8080
 
-Traefik UI: http://localhost.cobaltdata.net:8090
+Traefik UI: http://localhost.iconluxurygroup.net:8090
 
-MailCatcher: http://localhost.cobaltdata.net:1080
+MailCatcher: http://localhost.iconluxurygroup.net:1080

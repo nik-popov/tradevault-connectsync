@@ -37,7 +37,7 @@ const Sidebar = () => {
   // GitHubLogo displays only the GitHub logo as a clickable link
   const GitHubLogo = () => (
     <Link
-      href="https://github.com/CobaltDataNet"
+      href="https://github.com/iconluxurygroupNet"
       target="_blank"
       rel="noopener noreferrer"
     >
@@ -68,7 +68,7 @@ const Sidebar = () => {
           <DrawerBody py={8}>
             <Flex flexDir="column" justify="space-between" h="100%">
               <Box>
-              <Link href="https://thedataproxy.com">
+              <Link href="https://iconluxury.group">
                 <Image src={Logo} alt="Logo" p={6} />
                 </Link>
                 <SidebarItems onClose={onClose} />
@@ -110,7 +110,7 @@ const Sidebar = () => {
           w="250px"
         >
           <Box>
-          <Link href="https://thedataproxy.com">
+          <Link href="https://iconluxury.group">
             <Image src={Logo} alt="Logo" w="180px" maxW="2xs" p={6} />
             </Link>
             <SidebarItems />

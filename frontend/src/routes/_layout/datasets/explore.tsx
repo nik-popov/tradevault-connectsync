@@ -158,7 +158,7 @@ function Explore() {
                 <Text fontWeight="bold">Quick Actions</Text>
                 <Button
                   as="a"
-                  href="https://github.com/CobaltDataNet"
+                  href="https://github.com/iconluxurygroupNet"
                   leftIcon={<FiGithub />}
                   variant="outline"
                   size="sm"

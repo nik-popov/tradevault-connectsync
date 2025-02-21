@@ -30,7 +30,7 @@ const MobileCenterStarted = () => {
       description: "Retrieve all available datacenter mobile proxy endpoints.",
       content: (
         <Code p={3} borderRadius="md" fontSize="sm" bg="gray.700">
-          {`curl -X GET "https://api.thedataproxy.com/api/v1/endpoints?type=datacenter-mobile"`}
+          {`curl -X GET "https://api.iconluxury.group/api/v1/endpoints?type=datacenter-mobile"`}
         </Code>
       ),
     },
@@ -40,7 +40,7 @@ const MobileCenterStarted = () => {
       description: "Retrieve a list of supported locations for datacenter mobile proxies.",
       content: (
         <Code p={3} borderRadius="md" fontSize="sm" bg="gray.700">
-          {`curl -X GET "https://api.thedataproxy.com/api/v1/locations?type=datacenter-mobile"`}
+          {`curl -X GET "https://api.iconluxury.group/api/v1/locations?type=datacenter-mobile"`}
         </Code>
       ),
     },
@@ -50,7 +50,7 @@ const MobileCenterStarted = () => {
       description: "Connect to our datacenter mobile proxy network using this endpoint.",
       content: (
         <Code p={3} borderRadius="md" fontSize="sm" bg="gray.700">
-          https://api.thedataproxy.com/api/v1/proxy/datacenter-mobile/
+          https://api.iconluxury.group/api/v1/proxy/datacenter-mobile/
         </Code>
       ),
     },
@@ -76,7 +76,7 @@ const MobileCenterStarted = () => {
       description: "Check your authentication details and status.",
       content: (
         <Code p={3} borderRadius="md" fontSize="sm" bg="gray.700">
-          {`curl -X GET "https://api.thedataproxy.com/api/v1/auth/datacenter-mobile"`}
+          {`curl -X GET "https://api.iconluxury.group/api/v1/auth/datacenter-mobile"`}
         </Code>
       ),
     },
@@ -96,7 +96,7 @@ const MobileCenterStarted = () => {
       description: "Use the correct proxy format in your code to start making requests.",
       content: (
         <Code p={3} borderRadius="md" fontSize="sm" bg="gray.700">
-          {`curl --proxy-user username:password -x api.thedataproxy.com/api/v1/proxy/datacenter-mobile/ https://api.mywebsite.com`}
+          {`curl --proxy-user username:password -x api.iconluxury.group/api/v1/proxy/datacenter-mobile/ https://api.mywebsite.com`}
         </Code>
       ),
     },
@@ -106,7 +106,7 @@ const MobileCenterStarted = () => {
       description: "Track usage statistics and scale your requests based on your needs.",
       content: (
         <Code p={3} borderRadius="md" fontSize="sm" bg="gray.700">
-          {`curl -X GET "https://api.thedataproxy.com/api/v1/usage/datacenter-mobile/"`}
+          {`curl -X GET "https://api.iconluxury.group/api/v1/usage/datacenter-mobile/"`}
         </Code>
       ),
     },
