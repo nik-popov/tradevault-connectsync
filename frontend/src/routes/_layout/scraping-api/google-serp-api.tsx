@@ -26,8 +26,7 @@ import { useQueryClient, useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 
 import PromoContent from "../../../components/PromoSERP";
-import ProxyStarted from "../../../components/GoogleSerpStarted";
-import ProxySettings from "../../../components/ProxySettings";
+import ProxySettings from "../../../components/EndpointSettings";
 import ProxyUsage from "../../../components/ProxyUsage";
 
 /* 
