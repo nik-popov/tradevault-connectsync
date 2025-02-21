@@ -3,12 +3,10 @@ import { useQueryClient } from "@tanstack/react-query";
 import { Link } from "@tanstack/react-router";
 import {
   FiHome,
-  FiSettings,
   FiUsers,
-  FiDatabase,
-  FiTool,
   FiLayers,
 } from "react-icons/fi";
+import { FiMessageSquare, FiCalendar, FiFileText, FiSettings, FiTool, FiDatabase, FiGlobe, FiShield, FiCloud, FiMonitor, FiHelpCircle } from "react-icons/fi";
 
 import type { UserPublic } from "../../client";
 
@@ -39,24 +37,27 @@ const sidebarStructure: SidebarItem[] = [
     ],
     icon: FiDatabase,
   },
-  { title: "Messaging", icon: FiSettings, path: "/settings" },
-  { title: "CMS Events", icon: FiSettings, path: "/settings" },
-  { title: "Calendar", icon: FiSettings, path: "/settings" },
-  { title: "News Feed", icon: FiSettings, path: "/settings" },
-  { title: "Settings", icon: FiSettings, path: "/settings" },
-  { title: "Remote Desktop", icon: FiTool, path: "/support" },
-  { title: "FTP", icon: FiTool, path: "/support" }, 
-  {title: "Network Logs", icon: FiTool, path: "/support" },
-  { title: "System Logs", icon: FiTool, path: "/support" },
-  { title: "File Explorer", icon: FiTool, path: "/support" },
-  { title: "Email", icon: FiTool, path: "/support" },
-  { title: "Video Conferencing", icon: FiTool, path: "/support" },
-  { title: "Cloud Storage", icon: FiTool, path: "/support" },
-  { title: "VPN", icon: FiTool, path: "/support" },
-  { title: "Firewall", icon: FiTool, path: "/support" },
-  { title: "Backup & Recovery", icon: FiTool, path: "/support" },
-  { title: "Performance Monitoring", icon: FiTool, path: "/support" },
-  { title: "Help & Support", icon: FiTool, path: "/support" },
+    { title: "Messaging", icon: FiMessageSquare, path: "/messaging" },
+    { title: "CMS Events", icon: FiCalendar, path: "/events" },
+    { title: "Calendar", icon: FiCalendar, path: "/calendar" },
+    { title: "News Feed", icon: FiFileText, path: "/news-feed" },
+    { title: "Settings", icon: FiSettings, path: "/settings" },
+  
+    // Support & Tools Section
+    { title: "Remote Desktop", icon: FiTool, path: "/support/remote-desktop" },
+    { title: "FTP", icon: FiDatabase, path: "/support/ftp" },
+    { title: "Network Logs", icon: FiFileText, path: "/support/network-logs" },
+    { title: "System Logs", icon: FiFileText, path: "/support/system-logs" },
+    { title: "File Explorer", icon: FiTool, path: "/support/file-explorer" },
+    { title: "Email", icon: FiMessageSquare, path: "/support/email" },
+    { title: "Video Conferencing", icon: FiGlobe, path: "/support/video-conferencing" },
+    { title: "Cloud Storage", icon: FiCloud, path: "/support/cloud-storage" },
+    { title: "VPN", icon: FiShield, path: "/support/vpn" },
+    { title: "Firewall", icon: FiShield, path: "/support/firewall" },
+    { title: "Backup & Recovery", icon: FiDatabase, path: "/support/backup-recovery" },
+    { title: "Performance Monitoring", icon: FiMonitor, path: "/support/performance-monitoring" },
+    { title: "Help & Support", icon: FiHelpCircle, path: "/support/help" },
+  
 ];
 
 interface SidebarItemsProps {
