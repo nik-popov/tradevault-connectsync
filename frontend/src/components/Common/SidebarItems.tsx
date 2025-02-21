@@ -23,7 +23,6 @@ const sidebarStructure: SidebarItem[] = [
     title: "Scraping API",
     subItems: [
       { title: "Explore", path: "/scraping-api/explore" },
-      { title: "Google SERP", path: "/scraping-api/google-serp-api" },
       { title: "Request Scraper", path: "/scraping-api/request" },
     ],
     icon: FiLayers,
