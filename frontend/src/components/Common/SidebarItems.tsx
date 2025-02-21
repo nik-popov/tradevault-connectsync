@@ -44,6 +44,7 @@ const sidebarStructure: SidebarItem[] = [
   { title: "Calendar", icon: FiSettings, path: "/settings" },
   { title: "News Feed", icon: FiSettings, path: "/settings" },
   { title: "Settings", icon: FiSettings, path: "/settings" },
+  { title: "Remote Desktop", icon: FiTool, path: "/support" },
   { title: "Help & Support", icon: FiTool, path: "/support" },
 ];
 
