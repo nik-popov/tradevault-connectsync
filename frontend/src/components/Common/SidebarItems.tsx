@@ -5,7 +5,6 @@ import {
   FiHome,
   FiSettings,
   FiUsers,
-  FiGlobe,
   FiDatabase,
   FiTool,
   FiLayers,
