@@ -118,7 +118,7 @@ const XLogo = () => (
         gap={10} /* Adds spacing between form elements */
       >
         <Link
-      href="https://iconluxurygroup.net"
+      href="https://iconluxury.group"
       target="_blank"
       rel="noopener noreferrer"
     >

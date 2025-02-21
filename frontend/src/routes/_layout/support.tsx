@@ -145,7 +145,7 @@ const FAQSection = () => {
     },
     {
       question: "Where can I get billing support?",
-      answer: "Contact our billing team at billing@iconluxurygroup.net for assistance.",
+      answer: "Contact our billing team at billing@iconluxury.group for assistance.",
     },
   ];
 
@@ -160,7 +160,7 @@ const FAQSection = () => {
 
       <Box textAlign="center" mt={6}>
         <Text fontSize="sm">Need more help?</Text>
-        <Button as="a" href="mailto:support@iconluxurygroup.net" leftIcon={<FiHelpCircle />} mt={2} variant="outline">
+        <Button as="a" href="mailto:support@iconluxury.group" leftIcon={<FiHelpCircle />} mt={2} variant="outline">
           Contact Support
         </Button>
       </Box>
