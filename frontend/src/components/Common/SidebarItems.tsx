@@ -45,6 +45,17 @@ const sidebarStructure: SidebarItem[] = [
   { title: "News Feed", icon: FiSettings, path: "/settings" },
   { title: "Settings", icon: FiSettings, path: "/settings" },
   { title: "Remote Desktop", icon: FiTool, path: "/support" },
+  { title: "FTP", icon: FiTool, path: "/support" }, 
+  {title: "Network Logs", icon: FiTool, path: "/support" },
+  { title: "System Logs", icon: FiTool, path: "/support" },
+  { title: "File Explorer", icon: FiTool, path: "/support" },
+  { title: "Email", icon: FiTool, path: "/support" },
+  { title: "Video Conferencing", icon: FiTool, path: "/support" },
+  { title: "Cloud Storage", icon: FiTool, path: "/support" },
+  { title: "VPN", icon: FiTool, path: "/support" },
+  { title: "Firewall", icon: FiTool, path: "/support" },
+  { title: "Backup & Recovery", icon: FiTool, path: "/support" },
+  { title: "Performance Monitoring", icon: FiTool, path: "/support" },
   { title: "Help & Support", icon: FiTool, path: "/support" },
 ];
 
