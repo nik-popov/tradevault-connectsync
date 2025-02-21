@@ -62,7 +62,7 @@ function Dashboard() {
 
         {/* Filter Buttons */}
         <Flex gap={2}>
-          {["All", "SERP", "Proxy", "Data"].map((type) => (
+          {["All", "SERP", "Data"].map((type) => (
             <Button
               key={type}
               size="md"
