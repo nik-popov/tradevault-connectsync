@@ -96,7 +96,7 @@ const Sidebar = () => {
       <Box
         bg={bgColor}
         p={3}
-        h="100vh"
+        h="100%"
         position="sticky"
         top="0"
         display={{ base: "none", md: "flex" }}
