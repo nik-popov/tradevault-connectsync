@@ -37,10 +37,10 @@ const ComingSoon: React.FC = () => {
 
         <Box w="100%" py={6} bg="gray.700" borderRadius="md" boxShadow="lg" px={6}>
           <Heading as="h1" size="lg" fontWeight="bold" color="gray.100">
-            🚀 Coming Soon: Next-Gen Proxy Features
+            🚀 Coming Soon
           </Heading>
           <Text fontSize="sm" color="gray.400" mt={1}>
-            We're actively developing cutting-edge proxy solutions to enhance your experience.
+            We're actively developing to enhance your experience.
           </Text>
         </Box>
 
