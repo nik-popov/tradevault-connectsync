@@ -6,7 +6,7 @@ import {
   FiUsers,
   FiLayers,
 } from "react-icons/fi";
-import { FiMessageSquare,FiCpu, FiCalendar, FiFileText, FiSettings, FiTool, FiDatabase, FiGlobe, FiShield, FiCloud, FiMonitor, FiHelpCircle } from "react-icons/fi";
+import { FiMessageSquare,FiCpu,FiMusic,FiWifi, FiCalendar, FiFileText, FiSettings, FiTool, FiDatabase, FiGlobe, FiShield, FiCloud, FiMonitor, FiHelpCircle } from "react-icons/fi";
 
 import type { UserPublic } from "../../client";
 
@@ -54,6 +54,8 @@ const sidebarStructure: SidebarItem[] = [
     { title: "Video Conferencing", icon: FiGlobe, path: "/support/video-conferencing" },
     { title: "Cloud Storage", icon: FiCloud, path: "/support/cloud-storage" },
     { title: "VPN", icon: FiShield, path: "/support/vpn" },
+    { title: "Hotspot", icon: FiWifi, path: "/hotspots" },
+    { title: "Sonos", icon: FiMusic, path: "/sonos" },
     { title: "Firewall", icon: FiShield, path: "/support/firewall" },
     { title: "Backup & Recovery", icon: FiDatabase, path: "/support/backup-recovery" },
     { title: "Performance Monitoring", icon: FiMonitor, path: "/support/performance-monitoring" },
