@@ -21,7 +21,7 @@ import { useState } from "react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { FiSend, FiGithub } from "react-icons/fi";
-import PromoSERP from "../../../components/PromoSERP";
+import PromoSERP from "../../../components/ComingSoon";
 
 // Storage and Product Key
 const STORAGE_KEY = "subscriptionSettings";
