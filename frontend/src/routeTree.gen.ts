@@ -17,9 +17,21 @@ import { Route as RecoverPasswordImport } from './routes/recover-password'
 import { Route as LoginImport } from './routes/login'
 import { Route as LayoutImport } from './routes/_layout'
 import { Route as LayoutIndexImport } from './routes/_layout/index'
+import { Route as LayoutSupportImport } from './routes/_layout/support'
 import { Route as LayoutSettingsImport } from './routes/_layout/settings'
 import { Route as LayoutItemsImport } from './routes/_layout/items'
 import { Route as LayoutAdminImport } from './routes/_layout/admin'
+import { Route as LayoutScrapingApiRequestImport } from './routes/_layout/scraping-api/request'
+import { Route as LayoutScrapingApiGoogleSerpApiImport } from './routes/_layout/scraping-api/google-serp-api'
+import { Route as LayoutScrapingApiExploreImport } from './routes/_layout/scraping-api/explore'
+import { Route as LayoutProxiesResidentialMobileImport } from './routes/_layout/proxies/residential-mobile'
+import { Route as LayoutProxiesResidentialImport } from './routes/_layout/proxies/residential'
+import { Route as LayoutProxiesPricingImport } from './routes/_layout/proxies/pricing'
+import { Route as LayoutProxiesDatacenterMobileImport } from './routes/_layout/proxies/datacenter-mobile'
+import { Route as LayoutProxiesDatacenterImport } from './routes/_layout/proxies/datacenter'
+import { Route as LayoutProxiesBrowserImport } from './routes/_layout/proxies/browser'
+import { Route as LayoutDatasetsRequestImport } from './routes/_layout/datasets/request'
+import { Route as LayoutDatasetsExploreImport } from './routes/_layout/datasets/explore'
 
 // Create/Update Routes
 
@@ -53,6 +65,11 @@ const LayoutIndexRoute = LayoutIndexImport.update({
   getParentRoute: () => LayoutRoute,
 } as any)
 
+const LayoutSupportRoute = LayoutSupportImport.update({
+  path: '/support',
+  getParentRoute: () => LayoutRoute,
+} as any)
+
 const LayoutSettingsRoute = LayoutSettingsImport.update({
   path: '/settings',
   getParentRoute: () => LayoutRoute,
@@ -65,6 +82,64 @@ const LayoutItemsRoute = LayoutItemsImport.update({
 
 const LayoutAdminRoute = LayoutAdminImport.update({
   path: '/admin',
+  getParentRoute: () => LayoutRoute,
+} as any)
+
+const LayoutScrapingApiRequestRoute = LayoutScrapingApiRequestImport.update({
+  path: '/scraping-api/request',
+  getParentRoute: () => LayoutRoute,
+} as any)
+
+const LayoutScrapingApiGoogleSerpApiRoute =
+  LayoutScrapingApiGoogleSerpApiImport.update({
+    path: '/scraping-api/google-serp-api',
+    getParentRoute: () => LayoutRoute,
+  } as any)
+
+const LayoutScrapingApiExploreRoute = LayoutScrapingApiExploreImport.update({
+  path: '/scraping-api/explore',
+  getParentRoute: () => LayoutRoute,
+} as any)
+
+const LayoutProxiesResidentialMobileRoute =
+  LayoutProxiesResidentialMobileImport.update({
+    path: '/proxies/residential-mobile',
+    getParentRoute: () => LayoutRoute,
+  } as any)
+
+const LayoutProxiesResidentialRoute = LayoutProxiesResidentialImport.update({
+  path: '/proxies/residential',
+  getParentRoute: () => LayoutRoute,
+} as any)
+
+const LayoutProxiesPricingRoute = LayoutProxiesPricingImport.update({
+  path: '/proxies/pricing',
+  getParentRoute: () => LayoutRoute,
+} as any)
+
+const LayoutProxiesDatacenterMobileRoute =
+  LayoutProxiesDatacenterMobileImport.update({
+    path: '/proxies/datacenter-mobile',
+    getParentRoute: () => LayoutRoute,
+  } as any)
+
+const LayoutProxiesDatacenterRoute = LayoutProxiesDatacenterImport.update({
+  path: '/proxies/datacenter',
+  getParentRoute: () => LayoutRoute,
+} as any)
+
+const LayoutProxiesBrowserRoute = LayoutProxiesBrowserImport.update({
+  path: '/proxies/browser',
+  getParentRoute: () => LayoutRoute,
+} as any)
+
+const LayoutDatasetsRequestRoute = LayoutDatasetsRequestImport.update({
+  path: '/datasets/request',
+  getParentRoute: () => LayoutRoute,
+} as any)
+
+const LayoutDatasetsExploreRoute = LayoutDatasetsExploreImport.update({
+  path: '/datasets/explore',
   getParentRoute: () => LayoutRoute,
 } as any)
 
@@ -104,8 +179,56 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LayoutSettingsImport
       parentRoute: typeof LayoutImport
     }
+    '/_layout/support': {
+      preLoaderRoute: typeof LayoutSupportImport
+      parentRoute: typeof LayoutImport
+    }
     '/_layout/': {
       preLoaderRoute: typeof LayoutIndexImport
+      parentRoute: typeof LayoutImport
+    }
+    '/_layout/datasets/explore': {
+      preLoaderRoute: typeof LayoutDatasetsExploreImport
+      parentRoute: typeof LayoutImport
+    }
+    '/_layout/datasets/request': {
+      preLoaderRoute: typeof LayoutDatasetsRequestImport
+      parentRoute: typeof LayoutImport
+    }
+    '/_layout/proxies/browser': {
+      preLoaderRoute: typeof LayoutProxiesBrowserImport
+      parentRoute: typeof LayoutImport
+    }
+    '/_layout/proxies/datacenter': {
+      preLoaderRoute: typeof LayoutProxiesDatacenterImport
+      parentRoute: typeof LayoutImport
+    }
+    '/_layout/proxies/datacenter-mobile': {
+      preLoaderRoute: typeof LayoutProxiesDatacenterMobileImport
+      parentRoute: typeof LayoutImport
+    }
+    '/_layout/proxies/pricing': {
+      preLoaderRoute: typeof LayoutProxiesPricingImport
+      parentRoute: typeof LayoutImport
+    }
+    '/_layout/proxies/residential': {
+      preLoaderRoute: typeof LayoutProxiesResidentialImport
+      parentRoute: typeof LayoutImport
+    }
+    '/_layout/proxies/residential-mobile': {
+      preLoaderRoute: typeof LayoutProxiesResidentialMobileImport
+      parentRoute: typeof LayoutImport
+    }
+    '/_layout/scraping-api/explore': {
+      preLoaderRoute: typeof LayoutScrapingApiExploreImport
+      parentRoute: typeof LayoutImport
+    }
+    '/_layout/scraping-api/google-serp-api': {
+      preLoaderRoute: typeof LayoutScrapingApiGoogleSerpApiImport
+      parentRoute: typeof LayoutImport
+    }
+    '/_layout/scraping-api/request': {
+      preLoaderRoute: typeof LayoutScrapingApiRequestImport
       parentRoute: typeof LayoutImport
     }
   }
@@ -118,7 +241,19 @@ export const routeTree = rootRoute.addChildren([
     LayoutAdminRoute,
     LayoutItemsRoute,
     LayoutSettingsRoute,
+    LayoutSupportRoute,
     LayoutIndexRoute,
+    LayoutDatasetsExploreRoute,
+    LayoutDatasetsRequestRoute,
+    LayoutProxiesBrowserRoute,
+    LayoutProxiesDatacenterRoute,
+    LayoutProxiesDatacenterMobileRoute,
+    LayoutProxiesPricingRoute,
+    LayoutProxiesResidentialRoute,
+    LayoutProxiesResidentialMobileRoute,
+    LayoutScrapingApiExploreRoute,
+    LayoutScrapingApiGoogleSerpApiRoute,
+    LayoutScrapingApiRequestRoute,
   ]),
   LoginRoute,
   RecoverPasswordRoute,

@@ -343,7 +343,7 @@ function GoogleSerpApi() {
   );
 }
 
-export const Route = createFileRoute("/_layout/proxies/residential")({
+export const Route = createFileRoute("/_layout/scraping-api/google-serp-api")({
   component: GoogleSerpApi,
 });
 

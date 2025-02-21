@@ -24,7 +24,7 @@ import PromoSERP from "../../../components/ComingSoon";
 const STORAGE_KEY = "subscriptionSettings";
 const PRODUCT = "serp"; // Define product-specific subscription management
 
-export const Route = createFileRoute("/_layout/scraper-api/explore")({
+export const Route = createFileRoute("/_layout/scraping-api/explore")({
   component: Explore,
 });
 
