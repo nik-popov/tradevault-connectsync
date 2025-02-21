@@ -17,7 +17,7 @@ import {
   VStack
 } from "@chakra-ui/react";
 import { Link } from '@tanstack/react-router';
-import { FiCheckCircle, FiTool, FiClock, FiTrendingUp, FiPackage } from 'react-icons/fi';
+import { FiTool, FiClock, FiTrendingUp, FiPackage } from 'react-icons/fi';
 
 const comingSoonFeatures = [
   { name: "Advanced Analytics", icon: FiTrendingUp, description: "Detailed insights and reporting on proxy usage." },
