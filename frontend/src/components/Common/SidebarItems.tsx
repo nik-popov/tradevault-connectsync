@@ -30,6 +30,7 @@ const sidebarStructure: SidebarItem[] = [
     ],
     icon: FiLayers,
   },
+  
   {
     title: "Datasets",
     subItems: [
@@ -38,6 +39,10 @@ const sidebarStructure: SidebarItem[] = [
     ],
     icon: FiDatabase,
   },
+  { title: "Messaging", icon: FiSettings, path: "/settings" },
+  { title: "CMS Events", icon: FiSettings, path: "/settings" },
+  { title: "Calendar", icon: FiSettings, path: "/settings" },
+  { title: "News Feed", icon: FiSettings, path: "/settings" },
   { title: "Settings", icon: FiSettings, path: "/settings" },
   { title: "Help & Support", icon: FiTool, path: "/support" },
 ];
