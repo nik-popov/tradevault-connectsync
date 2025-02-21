@@ -23,18 +23,6 @@ interface SidebarItem {
 const sidebarStructure: SidebarItem[] = [
   { title: "Dashboard", icon: FiHome, path: "/" },
   {
-    title: "Proxies",
-    subItems: [
-      { title: "Residential", path: "/proxies/residential" },
-      { title: "Residential Mobile", path: "/proxies/residential-mobile" },
-      { title: "Datacenter", path: "/proxies/datacenter" },
-      { title: "Datacenter Mobile", path: "/proxies/datacenter-mobile" },
-      { title: "Browser Proxy", path: "/proxies/browser" },
-      { title: "Pricing", path: "/proxies/pricing" },
-    ],
-    icon: FiGlobe,
-  },
-  {
     title: "Scraping API",
     subItems: [
       { title: "Explore", path: "/scraping-api/explore" },
