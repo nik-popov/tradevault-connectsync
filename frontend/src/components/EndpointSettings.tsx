@@ -16,9 +16,17 @@ import {
 } from "@chakra-ui/react";
 import { useState, useEffect } from "react";
 
+// Define the interface for an endpoint
+interface Endpoint {
+  id: number;
+  url: string;
+  status: boolean;
+  lastChecked: string;
+}
+
 const EndpointSettings = () => {
   const toast = useToast();
-  const [endpoints, setEndpoints] = useState([]);
+  const [endpoints, setEndpoints] = useState<Endpoint[]>([]);
   const fetchEndpoints = [
     "https://southamerica-west1-image-scraper-451516.cloudfunctions.net/main",
     "https://us-central1-image-scraper-451516.cloudfunctions.net/main",
@@ -27,8 +35,8 @@ const EndpointSettings = () => {
     "https://us-west1-image-scraper-451516.cloudfunctions.net/main",
   ];
 
-  // Check endpoint health (JavaScript equivalent of Python function)
-  const checkEndpointHealth = async (endpoint, timeout = 5000) => {
+  // Check endpoint health with proper typing
+  const checkEndpointHealth = async (endpoint: string, timeout: number = 5000): Promise<boolean> => {
     const healthUrl = `${endpoint}/health/google`;
     try {
       const controller = new AbortController();
@@ -49,7 +57,7 @@ const EndpointSettings = () => {
 
   // Initialize and update endpoint status
   const updateEndpointStatus = async () => {
-    const statusPromises = fetchEndpoints.map(async (url, index) => ({
+    const statusPromises = fetchEndpoints.map(async (url, index): Promise<Endpoint> => ({
       id: index + 1,
       url,
       status: await checkEndpointHealth(url),
@@ -63,10 +71,9 @@ const EndpointSettings = () => {
   // Initial fetch and set up periodic updates
   useEffect(() => {
     updateEndpointStatus();
-    // Check every 30 seconds
     const interval = setInterval(updateEndpointStatus, 30000);
     
-    return () => clearInterval(interval); // Cleanup on unmount
+    return () => clearInterval(interval);
   }, []);
 
   const handleRefresh = () => {
