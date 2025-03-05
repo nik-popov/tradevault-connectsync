@@ -24,8 +24,6 @@ import {
   FiGlobe,
   FiHardDrive,
   FiHeadphones,
-  FiTrendingUp,
-  FiZap,
   FiSettings,
 } from "react-icons/fi";
 import { createFileRoute } from "@tanstack/react-router";
