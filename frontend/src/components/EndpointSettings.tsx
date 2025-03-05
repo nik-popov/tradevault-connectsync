@@ -24,18 +24,17 @@ interface Endpoint {
   lastChecked: string;
 }
 
-const EndpointSettings = () => {
+const EndpointSettings = (): JSX.Element => {
   const toast = useToast();
   const [endpoints, setEndpoints] = useState<Endpoint[]>([]);
-  const fetchEndpoints = [
+  const fetchEndpoints: readonly string[] = [
     "https://southamerica-west1-image-scraper-451516.cloudfunctions.net/main",
     "https://us-central1-image-scraper-451516.cloudfunctions.net/main",
     "https://us-east1-image-scraper-451516.cloudfunctions.net/main",
     "https://us-east4-image-scraper-451516.cloudfunctions.net/main",
     "https://us-west1-image-scraper-451516.cloudfunctions.net/main",
-  ];
+  ] as const;
 
-  // Check endpoint health with proper typing
   const checkEndpointHealth = async (endpoint: string, timeout: number = 5000): Promise<boolean> => {
     const healthUrl = `${endpoint}/health/google`;
     try {
@@ -44,7 +43,7 @@ const EndpointSettings = () => {
 
       const response = await fetch(healthUrl, {
         signal: controller.signal,
-        mode: 'cors',
+        mode: "cors",
       });
       
       clearTimeout(timeoutId);
@@ -55,8 +54,7 @@ const EndpointSettings = () => {
     }
   };
 
-  // Initialize and update endpoint status
-  const updateEndpointStatus = async () => {
+  const updateEndpointStatus = async (): Promise<void> => {
     const statusPromises = fetchEndpoints.map(async (url, index): Promise<Endpoint> => ({
       id: index + 1,
       url,
@@ -68,20 +66,18 @@ const EndpointSettings = () => {
     setEndpoints(updatedEndpoints);
   };
 
-  // Initial fetch and set up periodic updates
   useEffect(() => {
     updateEndpointStatus();
     const interval = setInterval(updateEndpointStatus, 30000);
-    
     return () => clearInterval(interval);
   }, []);
 
-  const handleRefresh = () => {
+  const handleRefresh = (): void => {
     updateEndpointStatus();
     toast({
       title: "Status Updated",
       description: "Endpoint health status has been refreshed",
-      status: "info",
+      status: "info" as const,
       duration: 3000,
       isClosable: true,
     });
