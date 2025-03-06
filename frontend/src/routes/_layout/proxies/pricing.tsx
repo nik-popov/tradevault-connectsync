@@ -39,13 +39,6 @@ const pricingCategories = [
   { name: "Support", icon: FiHeadphones },
 ];
 
-// Pricing Plans
-const pricingPlans = [
-  { name: "On-Demand", description: "Pay-as-you-go pricing.", price: "Per Usage", color: "blue.400" },
-  { name: "Reserved", description: "Commit to 1-3 years for savings.", price: "Up to 40% Off", color: "green.400" },
-  { name: "Spot", description: "Get the best deals on unused capacity.", price: "Up to 70% Off", color: "purple.400" },
-  { name: "Enterprise", description: "Custom pricing & dedicated support.", price: "Custom Pricing", color: "orange.400" },
-];
 
 const fullPricingCategories = { 
 
