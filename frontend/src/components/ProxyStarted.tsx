@@ -1,8 +1,7 @@
 import React from 'react';
 import {
   Box,
-  Grid,
-  GridItem,
+  VStack,
   Heading,
   Text,
   Button,
@@ -11,186 +10,136 @@ import {
   Flex,
   Alert,
   AlertIcon,
-  Divider,
-  Stat,
-  StatLabel,
-  StatNumber,
-  StatHelpText,
-  useColorModeValue,
+  Divider
 } from "@chakra-ui/react";
 import { FiCheckCircle, FiCopy, FiGlobe, FiCode, FiSettings, FiServer, FiList } from "react-icons/fi";
-// Placeholder for chart component (you can replace with actual charting library)
-import { Bar } from 'react-chartjs-2'; // Example, install react-chartjs-2 and chart.js if using
 
 const ProxyStarted = () => {
-  const bgColor = useColorModeValue("gray.50", "gray.800");
-  const cardBg = useColorModeValue("white", "gray.700");
-  const borderColor = useColorModeValue("gray.200", "gray.600");
-
-  // Sample chart data (replace with real data from your API)
-  const usageChartData = {
-    labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
-    datasets: [{
-      label: 'Requests',
-      data: [120, 190, 300, 500, 200, 300, 450],
-      backgroundColor: 'rgba(66, 153, 225, 0.6)',
-      borderColor: 'rgba(66, 153, 225, 1)',
-      borderWidth: 1,
-    }],
-  };
-
   const steps = [
     {
-      title: "List Endpoints",
+      title: "List Available Endpoints",
       icon: FiList,
       description: "Retrieve all available proxy endpoints.",
       content: (
-        <Code p={2} fontSize="xs" bg="gray.600" borderRadius="md">
+        <Code p={3} borderRadius="md" fontSize="sm" bg="gray.700">
           {`curl -X GET https://api.iconluxury.group/api/v1/endpoints`}
         </Code>
-      ),
+      )
     },
     {
-      title: "Get Locations",
+      title: "Get Available Locations",
       icon: FiGlobe,
-      description: "List of supported proxy locations.",
+      description: "Retrieve a list of supported proxy locations.",
       content: (
-        <Code p={2} fontSize="xs" bg="gray.600" borderRadius="md">
+        <Code p={3} borderRadius="md" fontSize="sm" bg="gray.700">
           {`curl -X GET https://api.iconluxury.group/api/v1/locations`}
         </Code>
-      ),
+      )
     },
     {
-      title: "Configure Endpoint",
+      title: "Configure Your Endpoint",
       icon: FiGlobe,
-      description: "Connect to residential proxy network.",
+      description: "Use the provided endpoint to connect to our residential proxy network.",
       content: (
-        <Code p={2} fontSize="xs" bg="gray.600" borderRadius="md">
+        <Code p={3} borderRadius="md" fontSize="sm" bg="gray.700">
           https://api.iconluxury.group/api/v1/proxy/residential/
         </Code>
-      ),
+      )
     },
     {
-      title: "Set Authentication",
+      title: "Set Your Authentication",
       icon: FiCode,
-      description: "Authenticate with your credentials.",
+      description: "Use your credentials to authenticate requests.",
       content: (
-        <Box>
-          <Code fontSize="xs" bg="gray.600" p={2} borderRadius="md" display="block" mb={2}>
-            Username: your_username<br />
+        <Box bg="gray.700" p={3} borderRadius="md">
+          <Code display="block" mb={2}>
+            Username: your_username<br/>
             Password: your_password
           </Code>
-          <Button leftIcon={<FiCopy />} size="xs" colorScheme="blue" variant="outline">
-            Copy
+          <Button leftIcon={<FiCopy />} variant="link" size="sm" colorScheme="blue">
+            Copy credentials
           </Button>
         </Box>
-      ),
+      )
     },
     {
-      title: "Retrieve Auth Info",
+      title: "Retrieve Authentication Info",
       icon: FiCode,
-      description: "Check authentication status.",
+      description: "Check your authentication details and status.",
       content: (
-        <Code p={2} fontSize="xs" bg="gray.600" borderRadius="md">
+        <Code p={3} borderRadius="md" fontSize="sm" bg="gray.700">
           {`curl -X GET https://api.iconluxury.group/api/v1/auth`}
         </Code>
-      ),
+      )
     },
     {
-      title: "Optimize Settings",
+      title: "Optimize Your Settings",
       icon: FiSettings,
-      description: "Adjust headers for performance.",
+      description: "Adjust request headers and connection settings for better performance and security.",
       content: (
-        <Code p={2} fontSize="xs" bg="gray.600" borderRadius="md">
-          {`headers = {'User-Agent': 'YourApp/1.0'}`}
+        <Code p={3} borderRadius="md" fontSize="sm" bg="gray.700">
+          {`headers = {'User-Agent': 'YourApp/1.0', 'X-Proxy-Type': 'residential'}`}
         </Code>
-      ),
+      )
     },
     {
-      title: "Send Request",
+      title: "Send Your First Request",
       icon: FiServer,
-      description: "Start making proxy requests.",
+      description: "Use the correct proxy format in your code to start making requests.",
       content: (
-        <Code p={2} fontSize="xs" bg="gray.600" borderRadius="md">
+        <Code p={3} borderRadius="md" fontSize="sm" bg="gray.700">
           {`curl --proxy-user username:password -x api.iconluxury.group/api/v1/proxy/residential/ https://api.mywebsite.com`}
         </Code>
-      ),
+      )
     },
     {
-      title: "Monitor Usage",
+      title: "Monitor and Scale",
       icon: FiSettings,
-      description: "Track and scale your usage.",
+      description: "Track usage statistics and scale your requests based on your needs.",
       content: (
-        <Box>
-          <Bar data={usageChartData} options={{ responsive: true, maintainAspectRatio: false }} height={100} />
-        </Box>
-      ),
-    },
+        <Code p={3} borderRadius="md" fontSize="sm" bg="gray.700">
+          {`https://api.iconluxury.group/api/v1/usage/residential/`}
+        </Code>
+      )
+    }
   ];
 
   return (
-    <Box maxW="100%" mx="auto" px={{ base: 4, md: 8 }} py={10} bg={bgColor}>
-      <Heading textAlign="center" mb={8} fontSize={{ base: "2xl", md: "3xl" }}>
-        Get Started with Proxy
-      </Heading>
+  <Box maxW="100%" mx="auto" px={{ base: 6, md: 12 }} py={12}>
+    <VStack spacing={8} align="stretch">
+      {/* Quick Start Guide Header */}
+  
 
-      <Grid
-        templateColumns={{ base: "1fr", md: "repeat(4, 1fr)" }}
-        gap={6}
-        alignItems="stretch"
-      >
-        {steps.map((step, index) => (
-          <GridItem key={index}>
-            <Box
-              p={4}
-              bg={cardBg}
-              borderRadius="lg"
-              boxShadow="md"
-              border="1px"
-              borderColor={borderColor}
-              height="100%"
-              transition="all 0.2s"
-              _hover={{ boxShadow: "lg", transform: "translateY(-4px)" }}
-            >
-              <Flex align="center" mb={3}>
-                <Icon as={step.icon} boxSize={6} color="blue.500" mr={2} />
-                <Heading size="sm" fontWeight="semibold">{step.title}</Heading>
+        {/* Step-by-Step Guide */}
+        <VStack spacing={6} align="stretch">
+          {steps.map((step, index) => (
+            <Flex key={index} gap={4} align="flex-start">
+              <Flex align="center" justify="center" w="50px" h="50px" borderRadius="full" bg="blue.100">
+                <Icon as={step.icon} boxSize={6} color="blue.500" />
               </Flex>
-              <Text fontSize="sm" color="gray.500" mb={3}>{step.description}</Text>
-              {step.content}
-            </Box>
-          </GridItem>
-        ))}
-      </Grid>
+              <Box flex={1}>
+                <Heading size="md" fontWeight="semibold" mb={1}>{step.title}</Heading>
+                <Text color="gray.300" mb={2}>{step.description}</Text>
+                {step.content}
+              </Box>
+            </Flex>
+          ))}
+        </VStack>
 
-      <Divider my={8} />
+        <Divider />
 
-      {/* Stats and Verification */}
-      <Flex justify="space-between" flexWrap="wrap" gap={6}>
-        <Box flex="1" minW="200px">
-          <Stat>
-            <StatLabel>Requests Sent</StatLabel>
-            <StatNumber>1,234</StatNumber>
-            <StatHelpText>Last 24 hours</StatHelpText>
-          </Stat>
-        </Box>
-        <Box flex="1" minW="200px">
-          <Stat>
-            <StatLabel>Active Endpoints</StatLabel>
-            <StatNumber>56</StatNumber>
-            <StatHelpText>Currently Online</StatHelpText>
-          </Stat>
-        </Box>
-        <Alert status="success" borderRadius="md" flex="2" minW="200px">
+        {/* Verification & Support */}
+        <Alert status="success" borderRadius="md">
           <AlertIcon as={FiCheckCircle} boxSize={5} />
           <Box>
-            <Text fontWeight="bold">Setup Verified</Text>
+            <Text fontWeight="bold">Verify Your Setup</Text>
             <Text fontSize="sm">
-              Your proxy is working! Check the <Button variant="link" colorScheme="blue" size="sm">docs</Button> or contact support if needed.
+              Test your connection using the examples above. If your IP is masked and geolocation matches expectations, you're all set! 
+              Need help? Visit our <Button variant="link" colorScheme="blue" size="sm">troubleshooting guide</Button> or contact support.
             </Text>
           </Box>
         </Alert>
-      </Flex>
+      </VStack>
     </Box>
   );
 };
