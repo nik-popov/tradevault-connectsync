@@ -14,14 +14,7 @@
     "strict": false,
     "noUnusedLocals": false,
     "noUnusedParameters": true,
-    "noFallthroughCasesInSwitch": true,
-    "types": [
-      "node",
-      "react",
-      "react-dom",
-      "react-leaflet",
-      "react-chartjs-2"
-    ]
+    "noFallthroughCasesInSwitch": true
   },
   "include": ["src/**/*.ts", "tests/**/*.ts", "playwright.config.ts"],
   "references": [{ "path": "./tsconfig.node.json" }]
