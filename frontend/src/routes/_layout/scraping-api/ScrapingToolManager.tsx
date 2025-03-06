@@ -4,7 +4,6 @@ import {
   Text,
   Button,
   VStack,
-  HStack,
   Divider,
   Flex,
   Tabs,
@@ -19,17 +18,17 @@ import {
   Td,
   TabPanel,
 } from "@chakra-ui/react";
-import { useState, useEffect } from "react";
-import { useQueryClient, useQuery } from "@tanstack/react-query";
+import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { createFileRoute, useParams } from "@tanstack/react-router";
 
-import PromoContent from "../../../components/PromoSERP"; // Update this if needed for different tools
+import PromoContent from "../../../components/PromoSERP";
 import ProxySettings from "../../../components/EndpointSettings";
 import ProxyUsage from "../../../components/ProxyUsage";
-import ProxyStarted from "../../../components/ProxyStarted"; // Assuming this exists
+import ProxyStarted from "../../../components/ProxyStarted";
 
 // Define types for scraping tools
-type ScrapingTool = "google-serp" | "bing-serp" | "custom-scraper"; // Add more as needed
+type ScrapingTool = "google-serp" | "bing-serp" | "custom-scraper";
 
 // Subscription settings type
 interface SubscriptionSettings {
@@ -41,7 +40,7 @@ interface SubscriptionSettings {
 }
 
 // Top-Ups Component
-const TopUps = () => {
+const TopUps = (): JSX.Element => {
   const dummyTopUps = [
     { id: 1, amount: "$10", date: "2025-02-10" },
     { id: 2, amount: "$20", date: "2025-02-11" },
@@ -74,7 +73,7 @@ const TopUps = () => {
 };
 
 // Connections Component
-const Connections = () => {
+const Connections = (): JSX.Element => {
   const dummyConnections = [
     { id: 1, ip: "192.168.1.1", status: "Active", last_used: "2025-02-11" },
     { id: 2, ip: "192.168.1.2", status: "Inactive", last_used: "2025-02-10" },
@@ -106,7 +105,7 @@ const Connections = () => {
 };
 
 // Logs Component
-const Logs = () => {
+const Logs = (): JSX.Element => {
   const dummyLogs = [
     { id: 1, timestamp: "2025-02-11 10:00", message: "Connection established" },
     { id: 2, timestamp: "2025-02-11 10:05", message: "Connection lost" },
@@ -136,7 +135,7 @@ const Logs = () => {
 };
 
 // Key Management Component
-const KeyManagement = () => {
+const KeyManagement = (): JSX.Element => {
   interface KeyItem {
     id: number;
     value: string;
@@ -146,7 +145,7 @@ const KeyManagement = () => {
 
   const [keys, setKeys] = useState<KeyItem[]>([]);
 
-  const generateSecret = (length = 16): string => {
+  const generateSecret = (length: number = 16): string => {
     const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
     let secret = "";
     for (let i = 0; i < length; i++) {
@@ -232,7 +231,6 @@ const KeyManagement = () => {
 
 // Main Dynamic Scraping Tool Manager Component
 const ScrapingToolManager = (): JSX.Element => {
-  const queryClient = useQueryClient();
   const { toolId } = useParams<{ toolId: ScrapingTool }>(); // Dynamic tool ID from route
 
   const STORAGE_KEY = "subscriptionSettings";
