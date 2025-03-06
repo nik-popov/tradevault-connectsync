@@ -16,34 +16,26 @@ import {
 } from "@chakra-ui/react";
 import { useState, useEffect } from "react";
 
-// Define the interface for an endpoint with detailed health information
+// Define the interface for an endpoint
 interface Endpoint {
   id: number;
   url: string;
+  status: boolean;
   lastChecked: string;
-  health?: {
-    device_id: string;
-    public_ip: string;
-    status: string;
-  };
 }
 
 const EndpointSettings = (): JSX.Element => {
   const toast = useToast();
   const [endpoints, setEndpoints] = useState<Endpoint[]>([]);
   const fetchEndpoints: readonly string[] = [
-    "https://southamerica-west1-image-scraper-451516.cloudfunctions.net/main",
+    "https://southamerica-west1-image-scraper-451516.cloudfunctions.net/main/health/google",
     "https://us-central1-image-scraper-451516.cloudfunctions.net/main",
     "https://us-east1-image-scraper-451516.cloudfunctions.net/main",
     "https://us-east4-image-scraper-451516.cloudfunctions.net/main",
     "https://us-west1-image-scraper-451516.cloudfunctions.net/main",
   ] as const;
 
-  // Fetch detailed health data from an endpoint
-  const fetchEndpointHealth = async (
-    endpoint: string,
-    timeout: number = 5000
-  ): Promise<{ device_id: string; public_ip: string; status: string } | null> => {
+  const checkEndpointHealth = async (endpoint: string, timeout: number = 5000): Promise<boolean> => {
     const healthUrl = `${endpoint}/health/google`;
     try {
       const controller = new AbortController();
@@ -53,45 +45,33 @@ const EndpointSettings = (): JSX.Element => {
         signal: controller.signal,
         mode: "cors",
       });
-
+      
       clearTimeout(timeoutId);
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-      const data = await response.json();
-      return data;
+      return response.ok;
     } catch (error) {
       console.error(`Health check failed for ${endpoint}:`, error);
-      return null;
+      return false;
     }
   };
 
-  // Update the endpoints state with health information
   const updateEndpointStatus = async (): Promise<void> => {
-    const statusPromises = fetchEndpoints.map(
-      async (url, index): Promise<Endpoint> => {
-        const health = await fetchEndpointHealth(url);
-        return {
-          id: index + 1,
-          url,
-          lastChecked: new Date().toLocaleTimeString(),
-          health,
-        };
-      }
-    );
-
+    const statusPromises = fetchEndpoints.map(async (url, index): Promise<Endpoint> => ({
+      id: index + 1,
+      url,
+      status: await checkEndpointHealth(url),
+      lastChecked: new Date().toLocaleTimeString(),
+    }));
+    
     const updatedEndpoints = await Promise.all(statusPromises);
     setEndpoints(updatedEndpoints);
   };
 
-  // Fetch endpoint status on mount and every 30 seconds
   useEffect(() => {
     updateEndpointStatus();
     const interval = setInterval(updateEndpointStatus, 30000);
     return () => clearInterval(interval);
   }, []);
 
-  // Handle manual refresh
   const handleRefresh = (): void => {
     updateEndpointStatus();
     toast({
@@ -119,10 +99,7 @@ const EndpointSettings = (): JSX.Element => {
           <Tr>
             <Th>#</Th>
             <Th>Endpoint</Th>
-            <Th>Device ID</Th>
-            <Th>Public IP</Th>
             <Th>Status</Th>
-            <Th>Health</Th>
             <Th>Last Checked</Th>
           </Tr>
         </Thead>
@@ -131,21 +108,12 @@ const EndpointSettings = (): JSX.Element => {
             <Tr key={endpoint.id}>
               <Td>{endpoint.id}</Td>
               <Td>{endpoint.url}</Td>
-              <Td>{endpoint.health?.device_id || "N/A"}</Td>
-              <Td>{endpoint.health?.public_ip || "N/A"}</Td>
-              <Td>{endpoint.health?.status || "Fetch Failed"}</Td>
               <Td>
-                <Badge
-                  colorScheme={
-                    endpoint.health && endpoint.health.status.includes("reachable")
-                      ? "green"
-                      : "red"
-                  }
+                <Badge 
+                  colorScheme={endpoint.status ? "green" : "red"}
                   variant="solid"
                 >
-                  {endpoint.health && endpoint.health.status.includes("reachable")
-                    ? "Healthy"
-                    : "Unhealthy"}
+                  {endpoint.status ? "Healthy" : "Unhealthy"}
                 </Badge>
               </Td>
               <Td>{endpoint.lastChecked}</Td>
