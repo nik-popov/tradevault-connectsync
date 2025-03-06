@@ -263,16 +263,16 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LayoutScrapingApiRequestImport
       parentRoute: typeof LayoutImport
     }
-    '/_layout/scraping-api/user-agents': {
-      preLoaderRoute: typeof LayoutScrapingApiUserAgentsImport
-      parentRoute: typeof LayoutImport
-    }
     '/_layout/scraping-api/endpoints/$endpointId': {
       preLoaderRoute: typeof LayoutScrapingApiEndpointsEndpointIdImport
       parentRoute: typeof LayoutImport
     }
     '/_layout/scraping-api/endpoints/': {
       preLoaderRoute: typeof LayoutScrapingApiEndpointsIndexImport
+      parentRoute: typeof LayoutImport
+    }
+    '/_layout/scraping-api/user-agents': {
+      preLoaderRoute: typeof LayoutScrapingApiUserAgentsImport
       parentRoute: typeof LayoutImport
     }
   }
@@ -299,9 +299,9 @@ export const routeTree = rootRoute.addChildren([
     LayoutScrapingApiGoogleImageSerpRoute,
     LayoutScrapingApiGoogleSerpRoute,
     LayoutScrapingApiRequestRoute,
-    LayoutScrapingApiUserAgentsRoute,
     LayoutScrapingApiEndpointsEndpointIdRoute,
     LayoutScrapingApiEndpointsIndexRoute,
+    LayoutScrapingApiUserAgentsRoute,
   ]),
   LoginRoute,
   RecoverPasswordRoute,

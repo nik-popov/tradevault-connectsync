@@ -24,7 +24,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import ProxySettings from "../../../components/EndpointSettings";
 import ProxyUsage from "../../../components/ProxyUsage";
 import Overview from "../../../components/Overview";
-
+import Chart from "chart.js/auto"
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
 interface UserAgent {
