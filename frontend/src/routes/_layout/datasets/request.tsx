@@ -1,10 +1,8 @@
 import {
   Container,
-  Heading,
   Text,
   Button,
   VStack,
-  HStack,
   Divider,
   Flex,
   Alert,
