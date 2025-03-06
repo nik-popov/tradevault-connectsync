@@ -18,7 +18,16 @@
     "strict": false,
     "noUnusedLocals": false,
     "noUnusedParameters": true,
-    "noFallthroughCasesInSwitch": true
+    "noFallthroughCasesInSwitch": true,
+
+    /* Add types for external libraries */
+    "types": [
+      "node",
+      "react",
+      "react-dom",
+      "react叶leaflet",
+      "react-chartjs-2"
+    ]
   },
   "include": ["src/**/*.ts", "tests/**/*.ts", "playwright.config.ts"],
   "references": [{ "path": "./tsconfig.node.json" }]
