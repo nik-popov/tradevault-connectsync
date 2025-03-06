@@ -1,15 +1,10 @@
 import {
   Container,
-  Heading,
   Text,
   Button,
   VStack,
-  HStack,
   Divider,
   Flex,
-  Switch,
-  Alert,
-  AlertIcon,
   Box,
   Input,
   Textarea,
@@ -31,11 +26,11 @@ export const Route = createFileRoute("/_layout/scraping-api/request")({
   component: Request,
 });
 
-function Request() {
+function Request(): JSX.Element {
   const navigate = useNavigate();
   const toast = useToast();
 
-  // ✅ Load Subscription State using useQuery
+  // Load Subscription State using useQuery
   const { data: subscriptionSettings } = useQuery({
     queryKey: ["subscriptionSettings"],
     queryFn: () => {
@@ -55,13 +50,13 @@ function Request() {
   const isLocked = !hasSubscription && !isTrial;
   const isFullyDeactivated = isDeactivated && !hasSubscription;
 
-  // ✅ Form State
+  // Form State
   const [apiName, setApiName] = useState("");
   const [apiDescription, setApiDescription] = useState("");
   const [apiUrl, setApiUrl] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (): Promise<void> => {
     if (!apiName.trim() || !apiDescription.trim() || !apiUrl.trim()) {
       toast({
         title: "Error",
@@ -105,32 +100,32 @@ function Request() {
   };
 
   return (
-      <Container maxW="full">
+    <Container maxW="full">
       <Flex align="center" justify="space-between" py={6} flexWrap="wrap" gap={4}>
         <Box textAlign="left" flex="1">
           <Text fontSize="xl" fontWeight="bold">Request APIs</Text>
-          <Text fontSize="sm">Request a website to add to our available apis.</Text>
+          <Text fontSize="sm">Request a website to add to our available APIs.</Text>
         </Box>
       </Flex>
 
       <Divider my={4} />
 
-      {/* 🚨 No Subscription - Show Promo */}
+      {/* No Subscription - Show Promo */}
       {isLocked ? (
         <PromoSERP />
       ) : isFullyDeactivated ? (
-        <Alert status="error" borderRadius="md">
-          <AlertIcon />
-          <Flex justify="space-between" align="center" w="full">
-            <Text>Your subscription has been deactivated. Please renew to submit requests.</Text>
-            <Button colorScheme="red" onClick={() => navigate("/billing")}>
-              Reactivate Now
-            </Button>
-          </Flex>
-        </Alert>
+        <Flex justify="space-between" align="center" w="full" p={4} bg="red.50" borderRadius="md">
+          <Text>Your subscription has been deactivated. Please renew to submit requests.</Text>
+          <Button
+            colorScheme="red"
+            onClick={() => navigate({ to: "/billing" })} // Fixed TS2345
+          >
+            Reactivate Now
+          </Button>
+        </Flex>
       ) : (
         <Flex mt={6} gap={6} justify="space-between" align="stretch" wrap="wrap">
-          {/* ✅ Request API Form */}
+          {/* Request API Form */}
           <Box flex="1" minW={{ base: "100%", md: "65%" }}>
             <Box p={6} border="1px solid" borderColor="gray.200" borderRadius="md" boxShadow="sm">
               <Text fontSize="xl" fontWeight="bold" mb={4}>
@@ -176,7 +171,7 @@ function Request() {
             </Box>
           </Box>
 
-          {/* ✅ Sidebar */}
+          {/* Sidebar */}
           <Box w={{ base: "100%", md: "250px" }} p="4" borderLeft={{ md: "1px solid #E2E8F0" }}>
             <VStack spacing="4" align="stretch">
               <Box p="4" shadow="sm" borderWidth="1px" borderRadius="lg">
