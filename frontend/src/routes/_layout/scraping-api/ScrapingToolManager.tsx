@@ -6,7 +6,7 @@ import {
   Button,
 } from "@chakra-ui/react";
 import { useQuery } from "@tanstack/react-query";
-import { createFileRoute, useParams, useNavigate, useRouter } from "@tanstack/react-router";
+import { createFileRoute, useParams, useNavigate } from "@tanstack/react-router";
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import L from 'leaflet';
 import { Bar } from 'react-chartjs-2';
@@ -15,6 +15,7 @@ import 'leaflet/dist/leaflet.css';
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, ChartTooltip, Legend);
 
+// Fix Leaflet marker icons
 delete L.Icon.Default.prototype._getIconUrl;
 L.Icon.Default.mergeOptions({
   iconRetinaUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png',
@@ -22,6 +23,7 @@ L.Icon.Default.mergeOptions({
   shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
 });
 
+// Fetch IP Data
 const fetchIPData = async () => [
   { id: "1", region: "South America West", publicIp: "34.34.252.50", lat: -33.4489, lng: -70.6693, city: "Santiago", status: "Active" },
   { id: "2", region: "US Central", publicIp: "34.96.44.247", lat: 41.8781, lng: -93.0977, city: "Ames", status: "Active" },
@@ -76,7 +78,6 @@ const StartHere = () => (
 
 const IPPathTracer = ({ toolId }) => {
   const navigate = useNavigate();
-  const router = useRouter();
   const effectiveToolId = toolId || "google-serp";
   const { data, isLoading, error } = useQuery({
     queryKey: ['ipTraceRoute'],
@@ -98,11 +99,13 @@ const IPPathTracer = ({ toolId }) => {
   if (isLoading) return <Spinner />;
   if (error) return <Alert status="error"><AlertIcon />{error.message}</Alert>;
 
-  const handleNavigate = (ipId) => {
-    const currentPath = router.state.location.pathname;
-    console.log('Navigating from:', currentPath, 'to:', `/scraping-api/${effectiveToolId}/ip/${ipId}`);
+  const handleNavigate = (path) => {
+    if (!effectiveToolId) {
+      console.error('toolId is undefined, navigation aborted');
+      return;
+    }
     try {
-      navigate({ to: `/scraping-api/${effectiveToolId}/ip/${ipId}` });
+      navigate({ to: path, from: `/scraping-api/${effectiveToolId}` }); // Explicitly set 'from'
     } catch (err) {
       console.error('Navigation error:', err);
     }
@@ -126,7 +129,7 @@ const IPPathTracer = ({ toolId }) => {
               <Text><strong>Region:</strong> {trace.region}</Text>
               <Text><strong>City:</strong> {trace.city}</Text>
               <Text><strong>Status:</strong> {trace.status}</Text>
-              <Button size="sm" mt={2} onClick={() => handleNavigate(trace.publicIp)}>
+              <Button size="sm" mt={2} onClick={() => handleNavigate(`/scraping-api/${effectiveToolId}/ip/${trace.publicIp}`)}>
                 Full Details
               </Button>
             </Box>
@@ -161,18 +164,19 @@ const IPPathTracer = ({ toolId }) => {
 
 const IPMap = ({ toolId }) => {
   const navigate = useNavigate();
-  const router = useRouter();
   const effectiveToolId = toolId || "google-serp";
   const { data, isLoading, error } = useQuery({ queryKey: ['ipData'], queryFn: fetchIPData });
 
   if (isLoading) return <Spinner />;
   if (error) return <Alert status="error"><AlertIcon />{error.message}</Alert>;
 
-  const handleNavigate = (ipId) => {
-    const currentPath = router.state.location.pathname;
-    console.log('Navigating from:', currentPath, 'to:', `/scraping-api/${effectiveToolId}/ip/${ipId}`);
+  const handleNavigate = (path) => {
+    if (!effectiveToolId) {
+      console.error('toolId is undefined, navigation aborted');
+      return;
+    }
     try {
-      navigate({ to: `/scraping-api/${effectiveToolId}/ip/${ipId}` });
+      navigate({ to: path, from: `/scraping-api/${effectiveToolId}` }); // Explicitly set 'from'
     } catch (err) {
       console.error('Navigation error:', err);
     }
@@ -191,7 +195,7 @@ const IPMap = ({ toolId }) => {
                 </Tooltip>
                 <Text>IP: {ip.publicIp}</Text>
                 <Text>Status: {ip.status}</Text>
-                <Button size="sm" mt={2} onClick={() => handleNavigate(ip.publicIp)}>
+                <Button size="sm" mt={2} onClick={() => handleNavigate(`/scraping-api/${effectiveToolId}/ip/${ip.publicIp}`)}>
                   Full Details
                 </Button>
               </Box>
@@ -205,7 +209,6 @@ const IPMap = ({ toolId }) => {
 
 const UserAgents = () => {
   const navigate = useNavigate();
-  const router = useRouter();
   const { toolId } = useParams<{ toolId: string }>();
   const effectiveToolId = toolId || "google-serp";
   const { data, isLoading, error } = useQuery({
@@ -227,11 +230,13 @@ const UserAgents = () => {
   if (isLoading) return <Spinner />;
   if (error) return <Alert status="error"><AlertIcon />{error.message}</Alert>;
 
-  const handleNavigate = (agentId) => {
-    const currentPath = router.state.location.pathname;
-    console.log('Navigating from:', currentPath, 'to:', `/scraping-api/${effectiveToolId}/agent/${agentId}`);
+  const handleNavigate = (path) => {
+    if (!effectiveToolId) {
+      console.error('toolId is undefined, navigation aborted');
+      return;
+    }
     try {
-      navigate({ to: `/scraping-api/${effectiveToolId}/agent/${agentId}` });
+      navigate({ to: path, from: `/scraping-api/${effectiveToolId}` }); // Explicitly set 'from'
     } catch (err) {
       console.error('Navigation error:', err);
     }
@@ -256,7 +261,7 @@ const UserAgents = () => {
               <Text><strong>Browser:</strong> {agent.browser}</Text>
               <Text><strong>OS:</strong> {agent.os}</Text>
               <Text><strong>Usage:</strong> {agent.percentage}%</Text>
-              <Button size="sm" mt={2} onClick={() => handleNavigate(agent.id)}>
+              <Button size="sm" mt={2} onClick={() => handleNavigate(`/scraping-api/${effectiveToolId}/agent/${agent.id}`)}>
                 Full Details
               </Button>
             </Box>
@@ -273,9 +278,6 @@ const UserAgents = () => {
 const ScrapingToolManager = () => {
   const { toolId } = useParams<{ toolId: "google-serp" | "bing-serp" | "custom-scraper" }>();
   const PRODUCT = toolId || "google-serp";
-  const router = useRouter();
-
-  console.log('Current route:', router.state.location.pathname);
 
   if (!toolId) {
     console.warn('toolId is undefined, defaulting to "google-serp"');
