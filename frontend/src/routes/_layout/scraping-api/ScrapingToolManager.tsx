@@ -1,4 +1,3 @@
-// src/routes/ScrapingToolManager.tsx
 import React from 'react';
 import {
   Container, Box, Text, Flex, Tabs, TabList, TabPanels, Tab, TabPanel, Tooltip, Accordion, AccordionItem,
@@ -15,6 +14,7 @@ import 'leaflet/dist/leaflet.css';
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, ChartTooltip, Legend);
 
+// Fix Leaflet marker icons
 delete L.Icon.Default.prototype._getIconUrl;
 L.Icon.Default.mergeOptions({
   iconRetinaUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png',
@@ -22,7 +22,7 @@ L.Icon.Default.mergeOptions({
   shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
 });
 
-// Fetch IP Data
+// Fetch IP Data (Mocked; replace with real API)
 const fetchIPData = async () => [
   { id: "1", region: "South America West", publicIp: "34.34.252.50", lat: -33.4489, lng: -70.6693, city: "Santiago", status: "Active" },
   { id: "2", region: "US Central", publicIp: "34.96.44.247", lat: 41.8781, lng: -93.0977, city: "Ames", status: "Active" },
@@ -31,6 +31,7 @@ const fetchIPData = async () => [
   { id: "5", region: "US West", publicIp: "34.96.52.74", lat: 45.5152, lng: -122.6784, city: "Portland", status: "Active" },
 ];
 
+// Start Here Component
 const StartHere = () => (
   <Accordion allowToggle>
     <AccordionItem>
@@ -56,6 +57,7 @@ const StartHere = () => (
   </Accordion>
 );
 
+// IP Path Tracer Component
 const IPPathTracer = ({ toolId }) => {
   const navigate = useNavigate();
   const { data, isLoading, error } = useQuery({
@@ -84,7 +86,7 @@ const IPPathTracer = ({ toolId }) => {
         <AccordionItem key={trace.id}>
           <AccordionButton>
             <Box flex="1" textAlign="left">
-              <Tooltip label={`Path to ${trace.city}`}>
+              <Tooltip label={`Explore path to ${trace.city}`}>
                 <Text>{trace.city} ({trace.publicIp})</Text>
               </Tooltip>
             </Box>
@@ -129,6 +131,7 @@ const IPPathTracer = ({ toolId }) => {
   );
 };
 
+// IP Map Component
 const IPMap = ({ toolId }) => {
   const navigate = useNavigate();
   const { data, isLoading, error } = useQuery({ queryKey: ['ipData'], queryFn: fetchIPData });
@@ -161,9 +164,8 @@ const IPMap = ({ toolId }) => {
   );
 };
 
+// User Agents Component
 const UserAgents = () => {
-  const navigate = useNavigate();
-  const { toolId } = useParams<{ toolId: string }>();
   const { data, isLoading, error } = useQuery({
     queryKey: ['userAgents'],
     queryFn: async () => {
@@ -202,7 +204,7 @@ const UserAgents = () => {
               <Text><strong>Browser:</strong> {agent.browser}</Text>
               <Text><strong>OS:</strong> {agent.os}</Text>
               <Text><strong>Usage:</strong> {agent.percentage}%</Text>
-              <Button size="sm" mt={2} onClick={() => navigate({ to: `/scraping-api/${toolId}/agent/${agent.id}` })}>
+              <Button size="sm" mt={2} onClick={() => alert('Detail page for user agents TBD')}>
                 Full Details
               </Button>
             </Box>
@@ -216,6 +218,7 @@ const UserAgents = () => {
   );
 };
 
+// Main Component
 const ScrapingToolManager = () => {
   const { toolId } = useParams<{ toolId: "google-serp" | "bing-serp" | "custom-scraper" }>();
   const PRODUCT = toolId || "google-serp";
