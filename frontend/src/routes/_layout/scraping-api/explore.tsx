@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import  { useState, useMemo } from "react";
 import {
   Box,
   Container,
@@ -7,12 +7,10 @@ import {
   Button,
   Divider,
   Flex,
-  Switch,
   Alert,
   AlertIcon,
   HStack,
   Input,
-  Heading,
   Collapse,
 } from "@chakra-ui/react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
