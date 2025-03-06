@@ -8,31 +8,37 @@ import {
   Divider,
   Flex,
   Tabs,
-  Tr,
-  Tbody,
-  Th,
-  Td,
   TabList,
   TabPanels,
   Tab,
   Table,
   Thead,
-  
+  Tbody,
+  Tr,
+  Th,
+  Td,
   TabPanel,
 } from "@chakra-ui/react";
 import { useState, useEffect } from "react";
-
 import { useQueryClient, useQuery } from "@tanstack/react-query";
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useParams } from "@tanstack/react-router";
 
-import PromoContent from "../../../components/PromoSERP";
+import PromoContent from "../../../components/PromoSERP"; // Update this if needed for different tools
 import ProxySettings from "../../../components/EndpointSettings";
 import ProxyUsage from "../../../components/ProxyUsage";
+import ProxyStarted from "../../../components/ProxyStarted"; // Assuming this exists
 
-/* 
-  Expanded Inline Proxy Components 
-  Replace dummy data and logic with your actual API calls or state management as needed.
-*/
+// Define types for scraping tools
+type ScrapingTool = "google-serp" | "bing-serp" | "custom-scraper"; // Add more as needed
+
+// Subscription settings type
+interface SubscriptionSettings {
+  [key: string]: {
+    hasSubscription: boolean;
+    isTrial: boolean;
+    isDeactivated: boolean;
+  };
+}
 
 // Top-Ups Component
 const TopUps = () => {
@@ -129,21 +135,19 @@ const Logs = () => {
   );
 };
 
-// Improved Key Management Component
+// Key Management Component
 const KeyManagement = () => {
-  type KeyItem = {
+  interface KeyItem {
     id: number;
     value: string;
     isHidden: boolean;
     copied: boolean;
-  };
+  }
 
   const [keys, setKeys] = useState<KeyItem[]>([]);
 
-  // Generate a random alphanumeric secret of a given length.
-  const generateSecret = (length = 16) => {
-    const chars =
-      "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+  const generateSecret = (length = 16): string => {
+    const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
     let secret = "";
     for (let i = 0; i < length; i++) {
       secret += chars.charAt(Math.floor(Math.random() * chars.length));
@@ -151,51 +155,39 @@ const KeyManagement = () => {
     return secret;
   };
 
-  const addKey = () => {
+  const addKey = (): void => {
     const nextId = keys.length ? Math.max(...keys.map((k) => k.id)) + 1 : 1;
     const newKey: KeyItem = {
       id: nextId,
       value: generateSecret(),
-      isHidden: false, // show the secret by default
+      isHidden: false,
       copied: false,
     };
     setKeys([...keys, newKey]);
   };
 
-  const deleteKey = (id: number) => {
+  const deleteKey = (id: number): void => {
     setKeys(keys.filter((key) => key.id !== id));
   };
 
-  const toggleVisibility = (id: number) => {
-    setKeys(
-      keys.map((key) =>
-        key.id === id ? { ...key, isHidden: !key.isHidden } : key
-      )
-    );
+  const toggleVisibility = (id: number): void => {
+    setKeys(keys.map((key) => (key.id === id ? { ...key, isHidden: !key.isHidden } : key)));
   };
 
-  const copyKey = (id: number) => {
+  const copyKey = (id: number): void => {
     const keyToCopy = keys.find((key) => key.id === id);
     if (keyToCopy) {
       navigator.clipboard
         .writeText(keyToCopy.value)
         .then(() => {
-          setKeys(
-            keys.map((key) =>
-              key.id === id ? { ...key, copied: true } : key
-            )
-          );
+          setKeys(keys.map((key) => (key.id === id ? { ...key, copied: true } : key)));
           setTimeout(() => {
             setKeys((currentKeys) =>
-              currentKeys.map((key) =>
-                key.id === id ? { ...key, copied: false } : key
-              )
+              currentKeys.map((key) => (key.id === id ? { ...key, copied: false } : key))
             );
           }, 2000);
         })
-        .catch((err) => {
-          console.error("Failed to copy key", err);
-        });
+        .catch((err) => console.error("Failed to copy key", err));
     }
   };
 
@@ -222,12 +214,7 @@ const KeyManagement = () => {
               <Button size="xs" ml={2} onClick={() => copyKey(key.id)}>
                 {key.copied ? "Copied" : "Copy"}
               </Button>
-              <Button
-                size="xs"
-                ml={2}
-                colorScheme="red"
-                onClick={() => deleteKey(key.id)}
-              >
+              <Button size="xs" ml={2} colorScheme="red" onClick={() => deleteKey(key.id)}>
                 Delete
               </Button>
             </Flex>
@@ -243,37 +230,17 @@ const KeyManagement = () => {
   );
 };
 
-// Reactivation Options Component
-const ReactivationOptions = () => {
-  const dummyOptions = [
-    { id: 1, name: "Option A" },
-    { id: 2, name: "Option B" },
-  ];
-
-  return (
-    <Box p={4} borderWidth="1px" borderRadius="md">
-      <Text fontSize="xl" mb={4}>Reactivation Options</Text>
-      <VStack align="stretch">
-        {dummyOptions.map((option) => (
-          <Button key={option.id} colorScheme="blue">
-            {option.name}
-          </Button>
-        ))}
-      </VStack>
-    </Box>
-  );
-};
-
-
-const STORAGE_KEY = "subscriptionSettings";
-const PRODUCT = "serp"; // Define product-specific subscription management
-
-function GoogleSerpApi() {
+// Main Dynamic Scraping Tool Manager Component
+const ScrapingToolManager = (): JSX.Element => {
   const queryClient = useQueryClient();
+  const { toolId } = useParams<{ toolId: ScrapingTool }>(); // Dynamic tool ID from route
+
+  const STORAGE_KEY = "subscriptionSettings";
+  const PRODUCT = toolId || "google-serp"; // Fallback to google-serp if no toolId
 
   // Fetch subscription settings
-  const { data: subscriptionSettings } = useQuery({
-    queryKey: ["subscriptionSettings"],
+  const { data: subscriptionSettings } = useQuery<SubscriptionSettings>({
+    queryKey: ["subscriptionSettings", PRODUCT],
     queryFn: () => {
       const storedSettings = localStorage.getItem(STORAGE_KEY);
       return storedSettings ? JSON.parse(storedSettings) : {};
@@ -291,6 +258,7 @@ function GoogleSerpApi() {
   const isLocked = !hasSubscription && !isTrial;
   const restrictedTabs = isTrial ? ["Key Management", "Logs", "Top-Ups", "Connections"] : [];
 
+  // Dynamic tab configuration based on tool
   const tabsConfig = [
     { title: "Get Started", component: <ProxyStarted /> },
     { title: "Endpoints", component: <ProxySettings /> },
@@ -301,15 +269,20 @@ function GoogleSerpApi() {
     { title: "Key Management", component: <KeyManagement /> },
   ];
 
+  // Dynamic title based on tool
+  const toolDisplayName = PRODUCT.split("-")
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(" ");
+
   return (
     <Container maxW="full">
       <Flex align="center" justify="space-between" py={6} flexWrap="wrap" gap={4}>
         <Box textAlign="left" flex="1">
-          <Text fontSize="xl" fontWeight="bold">Search Apis</Text>
-          <Text fontSize="sm">Manage your proxy settings and subscriptions.</Text>
+          <Text fontSize="xl" fontWeight="bold">{toolDisplayName} API</Text>
+          <Text fontSize="sm">Manage your {toolDisplayName.toLowerCase()} settings and subscriptions.</Text>
         </Box>
       </Flex>
-        <Divider my={4} />
+      <Divider my={4} />
       {isLocked ? (
         <PromoContent />
       ) : isDeactivated ? (
@@ -330,7 +303,11 @@ function GoogleSerpApi() {
               <TabPanels>
                 {tabsConfig.map((tab, index) => (
                   <TabPanel key={index}>
-                    {restrictedTabs.includes(tab.title) ? <Text>Feature locked during trial.</Text> : tab.component}
+                    {restrictedTabs.includes(tab.title) ? (
+                      <Text>Feature locked during trial.</Text>
+                    ) : (
+                      tab.component
+                    )}
                   </TabPanel>
                 ))}
               </TabPanels>
@@ -340,10 +317,11 @@ function GoogleSerpApi() {
       )}
     </Container>
   );
-}
+};
 
-export const Route = createFileRoute("/_layout/scraping-api/google-serp-api")({
-  component: GoogleSerpApi,
+// Dynamic Route Creation
+export const Route = createFileRoute("/_layout/scraping-api/:toolId")({
+  component: ScrapingToolManager,
 });
 
-export default GoogleSerpApi;
+export default ScrapingToolManager;

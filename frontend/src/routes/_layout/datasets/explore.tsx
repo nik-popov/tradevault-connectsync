@@ -1,6 +1,6 @@
 // src/routes/_layout/datasets/explore.tsx
 import { Box, Button } from "@chakra-ui/react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "@tanstack/react-router"; // Adjust based on your router
 
 interface Dataset {
   id: string;
@@ -12,7 +12,7 @@ const Explore = (): JSX.Element => {
   const datasets: Dataset[] = [{ id: "1", name: "Dataset 1" }];
 
   const handleNavigation = (dataset: Dataset, isTrial: boolean): void => {
-    navigate(`/datasets/${dataset.id}`, { state: { isTrial } }); // Fixed TS2345
+    navigate({ to: `/datasets/${dataset.id}`, search: { isTrial } }); // TanStack Router syntax
   };
 
   return (

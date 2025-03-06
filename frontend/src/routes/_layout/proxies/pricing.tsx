@@ -27,6 +27,7 @@ import {
   FiSettings,
 } from "react-icons/fi";
 import { createFileRoute } from "@tanstack/react-router";
+import { FiZap } from "react-feather";
 // Pricing Categories
 const pricingCategories = [
   { name: "Compute", icon: FiCpu },
