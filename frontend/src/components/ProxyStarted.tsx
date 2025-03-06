@@ -51,6 +51,10 @@ const ProxyStatus = () => {
 
   return (
     <Box maxW="100%" mx="auto" px={{ base: 4, md: 8 }} py={10} bg={bgColor}>
+      <Heading textAlign="center" mb={8} fontSize={{ base: "2xl", md: "3xl" }}>
+        Proxy Status Dashboard
+      </Heading>
+
       <Grid
         templateColumns={{ base: "1fr", md: "repeat(1, 1fr)" }} // Single column for table
         gap={6}
