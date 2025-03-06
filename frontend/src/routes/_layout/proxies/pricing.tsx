@@ -27,14 +27,14 @@ import {
   FiSettings,
 } from "react-icons/fi";
 import { createFileRoute } from "@tanstack/react-router";
-import { FiZap } from "react-feather";
+import { Zap } from "react-feather";
 // Pricing Categories
 const pricingCategories = [
   { name: "Compute", icon: FiCpu },
   { name: "Traffic", icon: FiGlobe },
   { name: "Storage", icon: FiHardDrive },
   { name: "Databases", icon: FiDatabase },
-  { name: "Intelligence", icon: FiZap },
+  { name: "Intelligence", icon: Zap },
   { name: "Security", icon: FiSettings },
   { name: "Support", icon: FiHeadphones },
 ];
