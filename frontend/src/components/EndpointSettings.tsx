@@ -72,7 +72,7 @@ const EndpointSettings = (): JSX.Element => {
       async (url, index): Promise<Endpoint> => {
         const health = await fetchEndpointHealth(url);
         return {
-          id: index + 1, 
+          id: index + 1,
           url,
           lastChecked: new Date().toLocaleTimeString(),
           health,
