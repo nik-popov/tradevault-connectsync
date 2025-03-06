@@ -50,15 +50,11 @@ const UserAgentDashboard = () => {
       try {
         const response = await fetch(
           "https://api.thedataproxy.com/api/v1/user-agents/?skip=0&limit=100",
-          {
-            method: "GET",
-            headers: {
-              "accept": "application/json",
-            },
-          }
+          { method: "GET", headers: { accept: "application/json" } }
         );
         if (!response.ok) throw new Error("Failed to fetch user agents");
         const data = await response.json();
+        console.log("Fetched User Agents:", data.data);
         setUserAgents(data.data || []);
         setLoading(false);
       } catch (err) {
@@ -163,11 +159,6 @@ const UserAgentDashboard = () => {
     );
   }
 
-  const tabsConfig = [
-    { title: "Overview", component: () => overviewContent },
-    { title: "Endpoints", component: () => <ProxySettings /> },
-    { title: "Usage", component: () => <ProxyUsage /> },
-  ];
 
   return (
     <Container maxW="full">
@@ -177,16 +168,6 @@ const UserAgentDashboard = () => {
           <Text fontSize="sm">Manage your user agent settings.</Text>
         </Box>
       </Flex>
-      <Tabs variant="enclosed">
-        <TabList>
-          {tabsConfig.map((tab, index) => <Tab key={index}>{tab.title}</Tab>)}
-        </TabList>
-        <TabPanels>
-          {tabsConfig.map((tab, index) => (
-            <TabPanel key={index}>{tab.component()}</TabPanel>
-          ))}
-        </TabPanels>
-      </Tabs>
     </Container>
   );
 };

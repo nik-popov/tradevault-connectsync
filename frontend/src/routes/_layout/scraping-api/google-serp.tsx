@@ -3,6 +3,7 @@ import { Container, Flex, Text, Tabs, TabList, TabPanels, Tab, TabPanel } from "
 import EndpointSettings from "../../../components/EndpointSettings";
 import ProxyUsage from "../../../components/ProxyUsage";
 import Overview from "../../../components/Overview";
+import UserAgentDashboard from "./user-agents";
 
 // Define all Google SERP-specific endpoints
 const endpointData = {
@@ -24,6 +25,7 @@ const GoogleSerpPage = () => {
     { title: "Overview", component: () => <Overview toolId="google-serp" /> },
     { title: "Endpoint Status", component: () => <EndpointSettings endpoints={googleSerpEndpoints} /> },
     { title: "Usage", component: () => <ProxyUsage /> },
+    { title: "User Agents", component: () => <UserAgentDashboard /> },
   ];
 
   return (
