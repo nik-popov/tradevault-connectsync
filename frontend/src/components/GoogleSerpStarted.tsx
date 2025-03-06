@@ -73,7 +73,7 @@ const fetchToolData = async (toolId: string): Promise<any> => {
   };
 };
 
-const ScraperDashboard = () => {
+const GoogleSerpStarted = () => {
   const [selectedTool, setSelectedTool] = useState<string | null>(null);
 
   // Fetch available scraping tools
@@ -253,4 +253,4 @@ const ScraperDashboard = () => {
   );
 };
 
-export default ScraperDashboard;
+export default GoogleSerpStarted;
