@@ -3,6 +3,7 @@ import {
   Text,
   Button,
   Flex,
+  VStack,
   Box,
   Divider,
   Input,
