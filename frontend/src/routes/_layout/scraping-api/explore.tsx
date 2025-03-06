@@ -1,4 +1,3 @@
-import  { useState, useMemo } from "react";
 import {
   Box,
   Container,
@@ -7,12 +6,10 @@ import {
   Button,
   Divider,
   Flex,
-  Alert,
-  AlertIcon,
   HStack,
   Input,
-  Collapse,
 } from "@chakra-ui/react";
+import { useState, useMemo } from "react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { FiGithub, FiX } from "react-icons/fi";
@@ -26,10 +23,10 @@ export const Route = createFileRoute("/_layout/scraping-api/explore")({
   component: Explore,
 });
 
-function Explore() {
+function Explore(): JSX.Element {
   const navigate = useNavigate();
 
-  // ✅ Load Subscription State using useQuery
+  // Load Subscription State using useQuery
   const { data: subscriptionSettings } = useQuery({
     queryKey: ["subscriptionSettings"],
     queryFn: () => {
@@ -49,11 +46,11 @@ function Explore() {
   const isLocked = !hasSubscription && !isTrial;
   const isFullyDeactivated = isDeactivated && !hasSubscription;
 
-  // 🔍 Search & Filter State
+  // Search & Filter State
   const [searchQuery, setSearchQuery] = useState("");
   const [activeFilter, setActiveFilter] = useState("all");
 
-  // 🔍 Mock API Data
+  // Mock API Data
   const apis = [
     // SEARCH & DISCOVERY
     {
@@ -76,7 +73,6 @@ function Explore() {
         example: "GET /apis/bing?query=artificial+intelligence",
       },
     },
-  
     // LEAD GENERATION
     {
       id: "sales-leads-api",
@@ -108,7 +104,6 @@ function Explore() {
         example: "GET /apis/visitor-intel?domain=example.com",
       },
     },
-  
     // SOCIAL MEDIA
     {
       id: "linkedin-api",
@@ -130,7 +125,6 @@ function Explore() {
         example: "GET /apis/twitter?username=elonmusk",
       },
     },
-  
     // E-COMMERCE
     {
       id: "amazon-product-api",
@@ -152,7 +146,6 @@ function Explore() {
         example: "GET /apis/shopify?store=example-store&product_id=123",
       },
     },
-  
     // REAL ESTATE
     {
       id: "property-listings-api",
@@ -184,7 +177,6 @@ function Explore() {
         example: "GET /apis/mortgage?loan_type=30year_fixed",
       },
     },
-  
     // FINANCE & MARKETS
     {
       id: "crypto-api",
@@ -206,7 +198,6 @@ function Explore() {
         example: "GET /apis/stocks?symbol=AAPL",
       },
     },
-  
     // TRAVEL & HOSPITALITY
     {
       id: "flight-api",
@@ -228,7 +219,6 @@ function Explore() {
         example: "GET /apis/hotels?city=Paris",
       },
     },
-  
     // ENTERTAINMENT & MEDIA
     {
       id: "streaming-api",
@@ -250,7 +240,6 @@ function Explore() {
         example: "GET /apis/gaming?game=Fortnite",
       },
     },
-  
     // BUSINESS INTELLIGENCE
     {
       id: "company-data-api",
@@ -272,7 +261,6 @@ function Explore() {
         example: "GET /apis/market-research?industry=Technology",
       },
     },
-  
     // ANALYTICS & RESEARCH
     {
       id: "web-analytics-api",
@@ -293,146 +281,159 @@ function Explore() {
         endpoint: "/apis/competitive",
         example: "GET /apis/competitive?competitor=competitor.com",
       },
-    }
+    },
   ];
-  
-    const categories = ["all", ...new Set(apis.map((api) => api.category))];
-  
-    // 🔄 Filtered API List
-    const filteredAPIs = useMemo(() => {
-      return apis.filter((api) => {
-        const matchesFilter = activeFilter === "all" || api.category.toLowerCase() === activeFilter.toLowerCase();
-        const matchesSearch = api.name.toLowerCase().includes(searchQuery.toLowerCase());
-        return matchesFilter && matchesSearch;
-      });
-    }, [searchQuery, activeFilter, apis]);
-  
-    return (
-      <Container maxW="full">
+
+  const categories = ["all", ...new Set(apis.map((api) => api.category))];
+
+  // Filtered API List
+  const filteredAPIs = useMemo(() => {
+    return apis.filter((api) => {
+      const matchesFilter =
+        activeFilter === "all" || api.category.toLowerCase() === activeFilter.toLowerCase();
+      const matchesSearch = api.name.toLowerCase().includes(searchQuery.toLowerCase());
+      return matchesFilter && matchesSearch;
+    });
+  }, [searchQuery, activeFilter]);
+
+  return (
+    <Container maxW="full">
       <Flex align="center" justify="space-between" py={6} flexWrap="wrap" gap={4}>
         <Box textAlign="left" flex="1">
-          <Text fontSize="xl" fontWeight="bold">Explore APIS</Text>
-          <Text fontSize="sm">Manage your api settings and subscriptions.</Text>
+          <Text fontSize="xl" fontWeight="bold">Explore APIs</Text>
+          <Text fontSize="sm">Manage your API settings and subscriptions.</Text>
         </Box>
       </Flex>
-  
-        <Divider my={4} />
-  
-        {isLocked ? (
-          <PromoSERP />
-        ) : isFullyDeactivated ? (
-          <Alert status="error" borderRadius="md">
-            <AlertIcon />
-            <Flex justify="space-between" align="center" w="full">
-              <Text>Your subscription has been deactivated. Please renew to access APIs.</Text>
-              <Button colorScheme="red" onClick={() => navigate("/proxies/billing")}>
-                Reactivate Now
-              </Button>
-            </Flex>
-          </Alert>
-        ) : (
-          <Flex gap={6} justify="space-between" align="stretch" wrap="wrap">
-            <Box flex="1" minW={{ base: "100%", md: "65%" }}>
-              <Flex gap={4} justify="space-between" align="center" flexWrap="wrap">
-                <Input
-                  placeholder="Search APIs..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  w={{ base: "100%", md: "250px" }}
-                />
-                <HStack spacing={2}>
-                  {categories.map((type) => (
-                    <Button
-                      key={type}
-                      size="sm"
-                      fontWeight="bold"
-                      borderRadius="full"
-                      colorScheme={activeFilter === type ? "blue" : "gray"}
-                      variant={activeFilter === type ? "solid" : "outline"}
-                      onClick={() => setActiveFilter(type)}
-                    >
-                      {type}
-                    </Button>
-                  ))}
-                </HStack>
-              </Flex>
-  
-              <VStack spacing={4} mt={6} align="stretch">
-                {filteredAPIs.map((api) => (
-                  <APIListItem key={api.id} api={api} navigate={navigate} isTrial={isTrial} />
-                ))}
-              </VStack>
-            </Box>
-  
-            <Box w={{ base: "100%", md: "250px" }} p="4" borderLeft={{ md: "1px solid #E2E8F0" }}>
-              <VStack spacing="4" align="stretch">
-                <Box p="4" shadow="sm" borderWidth="1px" borderRadius="lg">
-                  <Text fontWeight="bold">Quick Actions</Text>
-                  <Button
-                    as="a"
-                    href="https://github.com/iconluxurygroupNet"
-                    leftIcon={<FiGithub />}
-                    variant="outline"
-                    size="sm"
-                    mt="2"
-                  >
-                    GitHub Discussions
-                  </Button>
-                </Box>
-              </VStack>
-            </Box>
-          </Flex>
-        )}
-      </Container>
-    );
-  }
-  
-  // ✅ API list item component with expand/collapse toggle
-  const APIListItem = ({ api, navigate, isTrial }) => {
-    const [isExpanded, setIsExpanded] = useState(false);
-  
-    return (
-      <Box p="4" borderWidth="1px" borderRadius="lg">
-        <Flex justify="space-between" align="center">
-          <Box>
-            <Text fontWeight="bold">{api.name}</Text> 
-            <Text fontSize="sm" color="gray.600">{api.description}</Text>
-          </Box>
-          <HStack spacing={2}>
-            <Button size="sm" colorScheme="blue" onClick={() => setIsExpanded(!isExpanded)}>
-              {isExpanded ? "Less" : "More"}
-            </Button>
-            <Button
-              size="sm"
-              variant="outline"
-              colorScheme="gray"
-              disabled={!isTrial}
-              leftIcon={<FiX />}
-              _hover={{ bg: "gray.200", cursor: isTrial ? "pointer" : "not-allowed" }}
-              _disabled={{
-                bg: "gray.200",
-                borderColor: "gray.200",
-                color: "gray.500",
-                cursor: "not-allowed",
-              }}
-            >
-              {isTrial ? "Try" : "Locked"}
-            </Button>
-          </HStack>
+
+      <Divider my={4} />
+
+      {isLocked ? (
+        <PromoSERP />
+      ) : isFullyDeactivated ? (
+        <Flex justify="space-between" align="center" w="full" p={4} bg="red.50" borderRadius="md">
+          <Text>Your subscription has been deactivated. Please renew to access APIs.</Text>
+          <Button colorScheme="red" onClick={() => navigate({ to: "/proxies/billing" })}>
+            Reactivate Now
+          </Button>
         </Flex>
-        <Collapse in={isExpanded} animateOpacity>
-          <Box mt="4" p="2" borderWidth="1px" borderRadius="md">
-            <Text fontSize="sm" color="gray.600">
-              <strong>Endpoint:</strong> {api.details.endpoint}
-            </Text>
-            <Text fontSize="sm" color="gray.600">
-              <strong>Example:</strong> {api.details.example}
-            </Text>
+      ) : (
+        <Flex gap={6} justify="space-between" align="stretch" wrap="wrap">
+          <Box flex="1" minW={{ base: "100%", md: "65%" }}>
+            <Flex gap={4} justify="space-between" align="center" flexWrap="wrap">
+              <Input
+                placeholder="Search APIs..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                w={{ base: "100%", md: "250px" }}
+              />
+              <HStack spacing={2}>
+                {categories.map((type) => (
+                  <Button
+                    key={type}
+                    size="sm"
+                    fontWeight="bold"
+                    borderRadius="full"
+                    colorScheme={activeFilter === type ? "blue" : "gray"}
+                    variant={activeFilter === type ? "solid" : "outline"}
+                    onClick={() => setActiveFilter(type)}
+                  >
+                    {type}
+                  </Button>
+                ))}
+              </HStack>
+            </Flex>
+
+            <VStack spacing={4} mt={6} align="stretch">
+              {filteredAPIs.map((api) => (
+                <APIListItem key={api.id} api={api} navigate={navigate} isTrial={isTrial} />
+              ))}
+            </VStack>
           </Box>
-        </Collapse>
-      </Box>
-    );
+
+          <Box w={{ base: "100%", md: "250px" }} p="4" borderLeft={{ md: "1px solid #E2E8F0" }}>
+            <VStack spacing="4" align="stretch">
+              <Box p="4" shadow="sm" borderWidth="1px" borderRadius="lg">
+                <Text fontWeight="bold">Quick Actions</Text>
+                <Button
+                  as="a"
+                  href="https://github.com/iconluxurygroupNet"
+                  leftIcon={<FiGithub />}
+                  variant="outline"
+                  size="sm"
+                  mt="2"
+                >
+                  GitHub Discussions
+                </Button>
+              </Box>
+            </VStack>
+          </Box>
+        </Flex>
+      )}
+    </Container>
+  );
+}
+
+// API list item component with expand/collapse toggle
+interface API {
+  id: string;
+  name: string;
+  category: string;
+  description: string;
+  details: {
+    endpoint: string;
+    example: string;
   };
-  
-  export default Explore;
-  
+}
+
+const APIListItem = ({ api, navigate, isTrial }: { api: API; navigate: ReturnType<typeof useNavigate>; isTrial: boolean }): JSX.Element => {
+  const [isExpanded, setIsExpanded] = useState(false);
+
+  const handleNavigate = () => {
+    navigate({ to: `/scraping-api/${api.id}` }); // Use navigate parameter
+  };
+
+  return (
+    <Box p="4" borderWidth="1px" borderRadius="lg">
+      <Flex justify="space-between" align="center">
+        <Box>
+          <Text fontWeight="bold">{api.name}</Text>
+          <Text fontSize="sm" color="gray.600">{api.description}</Text>
+        </Box>
+        <HStack spacing={2}>
+          <Button size="sm" colorScheme="blue" onClick={() => setIsExpanded(!isExpanded)}>
+            {isExpanded ? "Less" : "More"}
+          </Button>
+          <Button
+            size="sm"
+            variant="outline"
+            colorScheme="gray"
+            disabled={!isTrial}
+            leftIcon={<FiX />}
+            onClick={handleNavigate} // Use navigate here
+            _hover={{ bg: "gray.200", cursor: isTrial ? "pointer" : "not-allowed" }}
+            _disabled={{
+              bg: "gray.200",
+              borderColor: "gray.200",
+              color: "gray.500",
+              cursor: "not-allowed",
+            }}
+          >
+            {isTrial ? "Try" : "Locked"}
+          </Button>
+        </HStack>
+      </Flex>
+      {isExpanded && (
+        <Box mt="4" p="2" borderWidth="1px" borderRadius="md">
+          <Text fontSize="sm" color="gray.600">
+            <strong>Endpoint:</strong> {api.details.endpoint}
+          </Text>
+          <Text fontSize="sm" color="gray.600">
+            <strong>Example:</strong> {api.details.example}
+          </Text>
+        </Box>
+      )}
+    </Box>
+  );
+};
+
+export default Explore;
