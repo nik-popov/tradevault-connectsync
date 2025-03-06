@@ -40,6 +40,7 @@ const EndpointSettings = (): JSX.Element => {
     "https://us-east1-image-scraper-451516.cloudfunctions.net/main",
     "https://us-east4-image-scraper-451516.cloudfunctions.net/main",
     "https://us-west1-image-scraper-451516.cloudfunctions.net/main",
+    "https://europe-west4-image-scraper-451516.cloudfunctions.net/main",
   ] as const;
   const fetchEndpointHealth = async (
     endpoint: string,
