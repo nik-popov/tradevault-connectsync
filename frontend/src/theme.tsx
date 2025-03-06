@@ -102,6 +102,7 @@ const theme = extendTheme({
         container: {
           bg: props.colorMode === "dark" ? "gray.800" : "gray.50",
           color: props.colorMode === "dark" ? "gray.300" : "gray.700",
+        
         },
       }),
     },
