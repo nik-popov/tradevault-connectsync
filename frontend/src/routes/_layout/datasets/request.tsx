@@ -2,12 +2,9 @@ import {
   Container,
   Text,
   Button,
-  VStack,
-  Divider,
   Flex,
-  Alert,
-  AlertIcon,
   Box,
+  Divider,
   Input,
   Textarea,
   FormControl,
@@ -17,22 +14,22 @@ import {
 import { useState } from "react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import { FiSend, FiGithub, FiMail, FiHelpCircle } from "react-icons/fi";
-import PromoDatasets from "../../../components/ComingSoon";
+import { FiSend, FiGithub } from "react-icons/fi";
+import PromoSERP from "../../../components/ComingSoon"; // Assuming a similar promo component
 
 // Storage and Product Key
 const STORAGE_KEY = "subscriptionSettings";
-const PRODUCT = "data"; // Define product-specific subscription management
+const PRODUCT = "datasets"; // Adjusted for datasets
 
 export const Route = createFileRoute("/_layout/datasets/request")({
   component: Request,
 });
 
-function Request() {
+function Request(): JSX.Element {
   const navigate = useNavigate();
   const toast = useToast();
 
-  // ✅ Load Subscription State using useQuery
+  // Load Subscription State using useQuery
   const { data: subscriptionSettings } = useQuery({
     queryKey: ["subscriptionSettings"],
     queryFn: () => {
@@ -52,13 +49,13 @@ function Request() {
   const isLocked = !hasSubscription && !isTrial;
   const isFullyDeactivated = isDeactivated && !hasSubscription;
 
-  // ✅ Form State
+  // Form State (mirroring scraping-api/request.tsx)
   const [datasetName, setDatasetName] = useState("");
   const [datasetDescription, setDatasetDescription] = useState("");
   const [datasetUrl, setDatasetUrl] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (): Promise<void> => {
     if (!datasetName.trim() || !datasetDescription.trim() || !datasetUrl.trim()) {
       toast({
         title: "Error",
@@ -103,31 +100,31 @@ function Request() {
 
   return (
     <Container maxW="full">
-    <Flex align="center" justify="space-between" py={6} flexWrap="wrap" gap={4}>
-      <Box textAlign="left" flex="1">
-        <Text fontSize="xl" fontWeight="bold">Request Datasets</Text>
-        <Text fontSize="sm">Request a website to add to our available datasets.</Text>
-      </Box>
-    </Flex>
+      <Flex align="center" justify="space-between" py={6} flexWrap="wrap" gap={4}>
+        <Box textAlign="left" flex="1">
+          <Text fontSize="xl" fontWeight="bold">Request Datasets</Text>
+          <Text fontSize="sm">Request a dataset to add to our available datasets.</Text>
+        </Box>
+      </Flex>
 
       <Divider my={4} />
 
-      {/* 🚨 No Subscription - Show Promo */}
+      {/* No Subscription - Show Promo */}
       {isLocked ? (
-        <PromoDatasets />
+        <PromoSERP />
       ) : isFullyDeactivated ? (
-        <Alert status="error" borderRadius="md">
-          <AlertIcon />
-          <Flex justify="space-between" align="center" w="full">
-            <Text>Your subscription has been deactivated. Please renew to submit requests.</Text>
-            <Button colorScheme="red" onClick={() => navigate("/billing")}>
-              Reactivate Now
-            </Button>
-          </Flex>
-        </Alert>
+        <Flex justify="space-between" align="center" w="full" p={4} bg="red.50" borderRadius="md">
+          <Text>Your subscription has been deactivated. Please renew to submit requests.</Text>
+          <Button
+            colorScheme="red"
+            onClick={() => navigate({ to: "/billing" })} // Fixed TS2345 at line 125
+          >
+            Reactivate Now
+          </Button>
+        </Flex>
       ) : (
         <Flex mt={6} gap={6} justify="space-between" align="stretch" wrap="wrap">
-          {/* ✅ Request Dataset Form */}
+          {/* Request Dataset Form */}
           <Box flex="1" minW={{ base: "100%", md: "65%" }}>
             <Box p={6} border="1px solid" borderColor="gray.200" borderRadius="md" boxShadow="sm">
               <Text fontSize="xl" fontWeight="bold" mb={4}>
@@ -153,7 +150,7 @@ function Request() {
               </FormControl>
 
               <FormControl mb={4}>
-                <FormLabel>Dataset Website URL</FormLabel>
+                <FormLabel>Dataset Source URL</FormLabel>
                 <Input
                   placeholder="https://example.com/dataset"
                   value={datasetUrl}
@@ -173,44 +170,30 @@ function Request() {
             </Box>
           </Box>
 
-          {/* ✅ Sidebar */}
+          {/* Sidebar */}
           <Box w={{ base: "100%", md: "250px" }} p="4" borderLeft={{ md: "1px solid #E2E8F0" }}>
             <VStack spacing="4" align="stretch">
               <Box p="4" shadow="sm" borderWidth="1px" borderRadius="lg">
                 <Text fontWeight="bold">Quick Actions</Text>
                 <Button
                   as="a"
+                  href="https://github.com/iconluxurygroupNet"
+                  leftIcon={<FiGithub />}
+                  variant="outline"
+                  size="sm"
+                  mt="2"
+                >
+                  GitHub Discussions
+                </Button>
+                <Button
+                  as="a"
                   href="mailto:support@iconluxury.group"
-                  leftIcon={<FiMail />}
+                  leftIcon={<FiSend />}
                   variant="outline"
                   size="sm"
                   mt="2"
                 >
                   Email Support
-                </Button>
-                <Button
-                  as="a"
-                  href="https://iconluxury.group/report-issue"
-                  leftIcon={<FiHelpCircle />}
-                  variant="outline"
-                  size="sm"
-                  mt="2"
-                >
-                  Report an Issue
-                </Button>
-              </Box>
-
-              <Box p="4" shadow="sm" borderWidth="1px" borderRadius="lg">
-                <Text fontWeight="bold">Community Support</Text>
-                <Button
-                  as="a"
-                  href="https://github.com/iconluxurygroupNet"
-                  mt="2"
-                  leftIcon={<FiGithub />}
-                  size="sm"
-                  variant="outline"
-                >
-                  GitHub Discussions
                 </Button>
               </Box>
             </VStack>
