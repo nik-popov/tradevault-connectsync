@@ -28,7 +28,7 @@ const EndpointSettings = (): JSX.Element => {
   const toast = useToast();
   const [endpoints, setEndpoints] = useState<Endpoint[]>([]);
   const fetchEndpoints: readonly string[] = [
-    "https://southamerica-west1-image-scraper-451516.cloudfunctions.net/main",
+    "https://southamerica-west1-image-scraper-451516.cloudfunctions.net/main/health/",
     "https://us-central1-image-scraper-451516.cloudfunctions.net/main",
     "https://us-east1-image-scraper-451516.cloudfunctions.net/main",
     "https://us-east4-image-scraper-451516.cloudfunctions.net/main",
