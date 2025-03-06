@@ -18,14 +18,7 @@ import {
   Tab,
   TabPanel,
 } from "@chakra-ui/react";
-import { Bar } from "react-chartjs-2";
-import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from "chart.js";
 import { createFileRoute } from "@tanstack/react-router";
-import ProxySettings from "../../../components/EndpointSettings";
-import ProxyUsage from "../../../components/ProxyUsage";
-import Overview from "../../../components/Overview";
-import Chart from "chart.js/auto"
-ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
 interface UserAgent {
   id: string;
@@ -135,7 +128,7 @@ const UserAgentDashboard = () => {
         borderColor={borderColor}
         height="400px"
       >
-        <Bar data={chartData} options={chartOptions} />
+     
       </Box>
     </Box>
   );
