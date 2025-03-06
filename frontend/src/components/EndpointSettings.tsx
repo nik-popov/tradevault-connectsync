@@ -34,6 +34,8 @@ const EndpointSettings = (): JSX.Element => {
   const toast = useToast();
   const [endpoints, setEndpoints] = useState<Endpoint[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+
+  // List of endpoints to monitor
   const fetchEndpoints: readonly string[] = [
     "https://southamerica-west1-image-scraper-451516.cloudfunctions.net/main",
     "https://us-central1-image-scraper-451516.cloudfunctions.net/main",
