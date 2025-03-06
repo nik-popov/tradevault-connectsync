@@ -2,7 +2,7 @@ import { Container, Box, Text, Flex, Tabs, TabList, TabPanels, Tab, TabPanel } f
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute, useParams } from "@tanstack/react-router";
 import ProxySettings from "../../../components/EndpointSettings";
-import ProxyUsage from "../../../components/ProxyUsage";
+import UserAgentDashboard from "../../../components/UserAgentDashboard";
 import ProxyStarted from "../../../components/ProxyStarted";
 
 type ScrapingTool = "google-serp" | "bing-serp" | "custom-scraper";
@@ -29,7 +29,7 @@ const ScrapingToolManager = (): JSX.Element => {
   const tabsConfig = [
     { title: "Get Started", component: <ProxyStarted /> },
     { title: "Endpoints", component: <ProxySettings /> },
-    { title: "Usage", component: <ProxyUsage /> },
+    { title: "User Agent", component: <UserAgentDashboard /> },
   ];
 
   const toolDisplayName = PRODUCT.split("-").map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(" ");
