@@ -53,7 +53,7 @@ const EndpointSettings = (): JSX.Element => {
       const timeoutId = setTimeout(() => controller.abort(), timeout);
       const response = await fetch(healthUrl, {
         signal: controller.signal,
-        mode: "cors",
+        mode: "no-cors",
       });
       clearTimeout(timeoutId);
       if (!response.ok) {
