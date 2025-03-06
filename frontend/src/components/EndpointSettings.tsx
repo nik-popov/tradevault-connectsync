@@ -41,6 +41,8 @@ const EndpointSettings = (): JSX.Element => {
     "https://us-east4-image-scraper-451516.cloudfunctions.net/main",
     "https://us-west1-image-scraper-451516.cloudfunctions.net/main",
   ] as const;
+
+  // Fetch detailed health data from an endpoint with a configurable timeout
   const fetchEndpointHealth = async (
     endpoint: string,
     timeout: number = 5000
@@ -51,7 +53,7 @@ const EndpointSettings = (): JSX.Element => {
       const timeoutId = setTimeout(() => controller.abort(), timeout);
       const response = await fetch(healthUrl, {
         signal: controller.signal,
-        // Remove mode: "no-cors" to allow reading the response
+        mode: "no-cors",
       });
       clearTimeout(timeoutId);
       if (!response.ok) {
@@ -64,6 +66,7 @@ const EndpointSettings = (): JSX.Element => {
       return null;
     }
   };
+
   // Update the endpoints state with health information and error details
   const updateEndpointStatus = async (): Promise<void> => {
     setIsLoading(true);
