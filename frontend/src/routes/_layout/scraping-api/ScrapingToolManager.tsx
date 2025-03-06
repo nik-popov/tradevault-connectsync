@@ -317,8 +317,7 @@ const ScrapingToolManager = (): JSX.Element => {
   );
 };
 
-// Dynamic Route Creation
-export const Route = createFileRoute("/_layout/scraping-api/:toolId")({
+export const Route = createFileRoute("/scraping-api/:toolId")({ // Remove _layout prefix
   component: ScrapingToolManager,
 });
 
