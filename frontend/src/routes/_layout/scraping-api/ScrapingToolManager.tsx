@@ -25,7 +25,7 @@ import ProxySettings from "../../../components/EndpointSettings";
 import UserAgentDashboard from "../../../components/UserAgentDashboard";
 import ProxyStarted from "../../../components/ProxyStarted";
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
-import 'leaflet/dist/leaflet.css'; // Add this here or in your entry file
+
 // Sample IP data (replace with real data from previous table or API)
 const ipData = [
   { region: "G-CLOUD-SOUTHAMERICA-WEST1", publicIp: "34.34.252.50", lat: -33.4489, lng: -70.6693 }, // Santiago, Chile
