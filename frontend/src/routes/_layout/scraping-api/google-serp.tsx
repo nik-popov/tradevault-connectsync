@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Container, Flex, Text, Tabs, TabList, TabPanels, Tab, TabPanel } from "@chakra-ui/react";
 import EndpointSettings from "../../../components/EndpointSettings";
-import ProxyUsage from "../../../components/ProxyUsage";
+import ProxyUsage from "../../../components/Usage";
 import Overview from "../../../components/Overview";
 import UserAgentDashboard from "./user-agents";
 
@@ -22,7 +22,7 @@ const GoogleSerpPage = () => {
         url,
       }))
   const tabsConfig = [
-    { title: "Overview", component: () => <Overview toolId="google-serp" /> },
+    { title: "Overview", component: () => <Overview endpointId="google-serp" /> },
     { title: "Endpoint Status", component: () => <EndpointSettings endpoints={googleSerpEndpoints} /> },
     { title: "Usage", component: () => <ProxyUsage /> },
     { title: "User Agents", component: () => <UserAgentDashboard /> },

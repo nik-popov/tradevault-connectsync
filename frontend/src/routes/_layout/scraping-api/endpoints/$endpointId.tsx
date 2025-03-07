@@ -30,7 +30,7 @@ import {
   Td,
 } from "@chakra-ui/react";
 import EndpointSettings from "../../../../components/EndpointSettings";
-import EndpointUsage from "../../../../components/ProxyUsage";
+import Usage from "../../../../components/Usage";
 import Overview from "../../../../components/Overview";
 import { LoadScript, GoogleMap, Marker, Polyline } from "@react-google-maps/api";
 
@@ -447,8 +447,8 @@ const EndpointDetailPage = () => {
   }, [tracerouteData]);
 
   const tabsConfig = [
-    { title: "Overview", component: () => <Overview toolId={endpointId} /> },
-    { title: "Usage", component: () => <EndpointUsage /> },
+    { title: "Overview", component: () => <Overview endpointId={endpointId} /> },
+    { title: "Usage", component: () => <Usage toolId={endpointId} /> },
     {
       title: "Traceroute",
       component: () => (

@@ -28,7 +28,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import PromoContent from "../../../components/PromoContent";
 import ProxyStarted from "../../../components/ProxyStarted";
 import ProxySettings from "../../../components/ProxySettings";
-import ProxyUsage from "../../../components/ProxyUsage";
+import ProxyUsage from "../../../components/Usage";
 /* 
   Expanded Inline Proxy Components 
   Replace dummy data and logic with your actual API calls or state management as needed.

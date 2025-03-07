@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Container, Box, Text, Flex, Tabs, TabList, TabPanels, Tab, TabPanel } from "@chakra-ui/react";
 import ProxySettings from "../../../components/EndpointSettings";
-import ProxyUsage from "../../../components/ProxyUsage";
+import ProxyUsage from "../../../components/Usage";
 import Overview from "../../../components/Overview";
 
 const GoogleImageSerp = () => {

@@ -29,7 +29,7 @@ import { FiGithub } from "react-icons/fi";
 import PromoContent from "../../../components/PromoContent";
 import MobileResidentialApiStartGuide from "../../../components/MobileStarted";
 import ProxySettings from "../../../components/ProxySettings";
-import ProxyUsage from "../../../components/ProxyUsage";
+import ProxyUsage from "../../../components/Usage";
 
 
 // Top-Ups Component
