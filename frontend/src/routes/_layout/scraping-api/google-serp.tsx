@@ -22,7 +22,7 @@ const GoogleSerpPage = () => {
         url,
       }))
   const tabsConfig = [
-    { title: "Overview", component: () => <Overview endpointId="google-serp" /> },
+    { title: "Overview", component: () => <Overview endpointId="G-CLOUD-US-CENTRAL" /> },
     { title: "Endpoint Status", component: () => <EndpointSettings endpoints={googleSerpEndpoints} /> },
     { title: "Usage", component: () => <ProxyUsage /> },
     { title: "User Agents", component: () => <UserAgentDashboard /> },
