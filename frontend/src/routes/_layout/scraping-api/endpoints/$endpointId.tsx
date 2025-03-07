@@ -68,7 +68,7 @@ const staticTracerouteData: Record<string, TracerouteHop[][]> = {
     [
       { hop: 1, ip: "192.168.1.2", city: "Valparaíso, Chile", latitude: -33.0472, longitude: -71.6127, latency: 6 },
       { hop: 2, ip: "200.45.67.90", city: "Córdoba, Argentina", latitude: -31.4201, longitude: -64.1888, latency: 25 },
-      { hop: 3, ip: "34.34.252.51", city: "Rio de Janeiro, Brazil", latitude: -22.9068, longitude: -43.1729, latency: 50 },
+      { hop: 3, ip: "34.34.252.51", city: "Rio de Janeiro, Brazil", latitude: -22.9068, longitude: -43.1729, latency: 30 },
       { hop: 4, ip: "201.54.32.11", city: "Bogotá, Colombia", latitude: 4.7110, longitude: -74.0721, latency: 70 },
       { hop: 5, ip: "34.98.76.55", city: "Caracas, Venezuela", latitude: 10.4806, longitude: -66.9036, latency: 90 },
     ],
@@ -76,7 +76,7 @@ const staticTracerouteData: Record<string, TracerouteHop[][]> = {
     [
       { hop: 1, ip: "192.168.1.3", city: "Concepción, Chile", latitude: -36.8270, longitude: -73.0503, latency: 7 },
       { hop: 2, ip: "200.45.67.91", city: "Mendoza, Argentina", latitude: -32.8895, longitude: -68.8458, latency: 30 },
-      { hop: 3, ip: "34.34.252.52", city: "Brasília, Brazil", latitude: -15.8267, longitude: -47.9218, latency: 55 },
+      { hop: 3, ip: "34.34.252.52", city: "Brasília, Brazil", latitude: -15.8267, longitude: -47.9218, latency: 35 },
       { hop: 4, ip: "201.54.32.12", city: "Medellín, Colombia", latitude: 6.2442, longitude: -75.5812, latency: 75 },
       { hop: 5, ip: "34.98.76.56", city: "Guayaquil, Ecuador", latitude: -2.1894, longitude: -79.8891, latency: 95 },
     ],
@@ -108,16 +108,16 @@ const staticTracerouteData: Record<string, TracerouteHop[][]> = {
   "G-CLOUD-US-CENTRAL1": [
     // Dataset 1: From Los Angeles to Kansas City, MO
     [
-      { hop: 1, ip: "10.0.0.1", city: "Los Angeles, CA", latitude: 34.05, longitude: -118.25, latency: 5 },
-      { hop: 2, ip: "10.0.0.2", city: "Las Vegas, NV", latitude: 36.17, longitude: -115.14, latency: 20 },
+      { hop: 1, ip: "10.0.0.1", city: "Los Angeles, CA", latitude: 34.05, longitude: -118.25, latency: 3 },
+      { hop: 2, ip: "10.0.0.2", city: "Las Vegas, NV", latitude: 36.17, longitude: -115.14, latency: 13 },
       { hop: 3, ip: "10.0.0.3", city: "Salt Lake City, UT", latitude: 40.76, longitude: -111.89, latency: 35 },
-      { hop: 4, ip: "10.0.0.4", city: "Denver, CO", latitude: 39.74, longitude: -104.99, latency: 50 },
+      { hop: 4, ip: "10.0.0.4", city: "Denver, CO", latitude: 39.74, longitude: -104.99, latency: 30 },
       { hop: 5, ip: "10.0.0.5", city: "Kansas City, MO", latitude: 39.10, longitude: -94.58, latency: 65 },
     ],
     // Dataset 2: From New York to Kansas City, MO
     [
       { hop: 1, ip: "10.0.1.1", city: "New York, NY", latitude: 40.71, longitude: -74.01, latency: 5 },
-      { hop: 2, ip: "10.0.1.2", city: "Philadelphia, PA", latitude: 39.95, longitude: -75.17, latency: 20 },
+      { hop: 2, ip: "10.0.1.2", city: "Philadelphia, PA", latitude: 39.95, longitude: -75.17, latency: 13 },
       { hop: 3, ip: "10.0.1.3", city: "Pittsburgh, PA", latitude: 40.44, longitude: -80.00, latency: 35 },
       { hop: 4, ip: "10.0.1.4", city: "Columbus, OH", latitude: 39.96, longitude: -83.00, latency: 50 },
       { hop: 5, ip: "10.0.1.5", city: "Kansas City, MO", latitude: 39.10, longitude: -94.58, latency: 65 },
@@ -135,21 +135,21 @@ const staticTracerouteData: Record<string, TracerouteHop[][]> = {
       { hop: 1, ip: "10.0.3.1", city: "Seattle, WA", latitude: 47.61, longitude: -122.33, latency: 5 },
       { hop: 2, ip: "10.0.3.2", city: "Spokane, WA", latitude: 47.66, longitude: -117.43, latency: 20 },
       { hop: 3, ip: "10.0.3.3", city: "Billings, MT", latitude: 45.78, longitude: -108.50, latency: 35 },
-      { hop: 4, ip: "10.0.3.4", city: "Denver, CO", latitude: 39.74, longitude: -104.99, latency: 50 },
+      { hop: 4, ip: "10.0.3.4", city: "Denver, CO", latitude: 39.74, longitude: -104.99, latency: 30 },
       { hop: 5, ip: "10.0.3.5", city: "Kansas City, MO", latitude: 39.10, longitude: -94.58, latency: 65 },
     ],
     // Dataset 5: From Dallas to Kansas City, MO
     [
-      { hop: 1, ip: "10.0.4.1", city: "Dallas, TX", latitude: 32.78, longitude: -96.80, latency: 5 },
-      { hop: 2, ip: "10.0.4.2", city: "Oklahoma City, OK", latitude: 35.47, longitude: -97.52, latency: 20 },
+      { hop: 1, ip: "10.0.4.1", city: "Dallas, TX", latitude: 32.78, longitude: -96.80, latency: 3 },
+      { hop: 2, ip: "10.0.4.2", city: "Oklahoma City, OK", latitude: 35.47, longitude: -97.52, latency: 13 },
       { hop: 3, ip: "10.0.4.3", city: "Tulsa, OK", latitude: 36.15, longitude: -95.99, latency: 35 },
-      { hop: 4, ip: "10.0.4.4", city: "Wichita, KS", latitude: 37.69, longitude: -97.34, latency: 50 },
+      { hop: 4, ip: "10.0.4.4", city: "Wichita, KS", latitude: 37.69, longitude: -97.34, latency: 30 },
       { hop: 5, ip: "10.0.4.5", city: "Kansas City, MO", latitude: 39.10, longitude: -94.58, latency: 65 },
     ],
     // Dataset 6: From Minneapolis to Kansas City, MO
     [
       { hop: 1, ip: "10.0.5.1", city: "Minneapolis, MN", latitude: 44.98, longitude: -93.27, latency: 5 },
-      { hop: 2, ip: "10.0.5.2", city: "Rochester, MN", latitude: 44.02, longitude: -92.48, latency: 20 },
+      { hop: 2, ip: "10.0.5.2", city: "Rochester, MN", latitude: 44.02, longitude: -92.48, latency: 13 },
       { hop: 3, ip: "10.0.5.3", city: "Des Moines, IA", latitude: 41.59, longitude: -93.62, latency: 35 },
       { hop: 4, ip: "10.0.5.4", city: "Omaha, NE", latitude: 41.26, longitude: -96.00, latency: 50 },
       { hop: 5, ip: "10.0.5.5", city: "Kansas City, MO", latitude: 39.10, longitude: -94.58, latency: 65 },
@@ -158,24 +158,24 @@ const staticTracerouteData: Record<string, TracerouteHop[][]> = {
   "G-CLOUD-US-EAST1": [
     // Dataset 1: From Los Angeles to Charleston, SC
     [
-      { hop: 1, ip: "10.1.0.1", city: "Los Angeles, CA", latitude: 34.05, longitude: -118.25, latency: 5 },
-      { hop: 2, ip: "10.1.0.2", city: "Phoenix, AZ", latitude: 33.45, longitude: -112.07, latency: 20 },
+      { hop: 1, ip: "10.1.0.1", city: "Los Angeles, CA", latitude: 34.05, longitude: -118.25, latency: 3 },
+      { hop: 2, ip: "10.1.0.2", city: "Phoenix, AZ", latitude: 33.45, longitude: -112.07, latency: 13 },
       { hop: 3, ip: "10.1.0.3", city: "Albuquerque, NM", latitude: 35.08, longitude: -106.65, latency: 35 },
-      { hop: 4, ip: "10.1.0.4", city: "Dallas, TX", latitude: 32.78, longitude: -96.80, latency: 50 },
+      { hop: 4, ip: "10.1.0.4", city: "Dallas, TX", latitude: 32.78, longitude: -96.80, latency: 30 },
       { hop: 5, ip: "10.1.0.5", city: "Charleston, SC", latitude: 32.78, longitude: -79.93, latency: 65 },
     ],
     // Dataset 2: From Seattle to Charleston, SC
     [
-      { hop: 1, ip: "10.1.1.1", city: "Seattle, WA", latitude: 47.61, longitude: -122.33, latency: 5 },
-      { hop: 2, ip: "10.1.1.2", city: "Boise, ID", latitude: 43.62, longitude: -116.20, latency: 20 },
+      { hop: 1, ip: "10.1.1.1", city: "Seattle, WA", latitude: 47.61, longitude: -122.33, latency: 3 },
+      { hop: 2, ip: "10.1.1.2", city: "Boise, ID", latitude: 43.62, longitude: -116.20, latency: 13 },
       { hop: 3, ip: "10.1.1.3", city: "Salt Lake City, UT", latitude: 40.76, longitude: -111.89, latency: 35 },
-      { hop: 4, ip: "10.1.1.4", city: "Denver, CO", latitude: 39.74, longitude: -104.99, latency: 50 },
+      { hop: 4, ip: "10.1.1.4", city: "Denver, CO", latitude: 39.74, longitude: -104.99, latency: 30 },
       { hop: 5, ip: "10.1.1.5", city: "Charleston, SC", latitude: 32.78, longitude: -79.93, latency: 65 },
     ],
     // Dataset 3: From Chicago to Charleston, SC
     [
       { hop: 1, ip: "10.1.2.1", city: "Chicago, IL", latitude: 41.88, longitude: -87.63, latency: 5 },
-      { hop: 2, ip: "10.1.2.2", city: "Indianapolis, IN", latitude: 39.77, longitude: -86.16, latency: 20 },
+      { hop: 2, ip: "10.1.2.2", city: "Indianapolis, IN", latitude: 39.77, longitude: -86.16, latency: 13 },
       { hop: 3, ip: "10.1.2.3", city: "Louisville, KY", latitude: 38.25, longitude: -85.76, latency: 35 },
       { hop: 4, ip: "10.1.2.4", city: "Knoxville, TN", latitude: 35.96, longitude: -83.92, latency: 50 },
       { hop: 5, ip: "10.1.2.5", city: "Charleston, SC", latitude: 32.78, longitude: -79.93, latency: 65 },
@@ -183,7 +183,7 @@ const staticTracerouteData: Record<string, TracerouteHop[][]> = {
     // Dataset 4: From Dallas to Charleston, SC
     [
       { hop: 1, ip: "10.1.3.1", city: "Dallas, TX", latitude: 32.78, longitude: -96.80, latency: 5 },
-      { hop: 2, ip: "10.1.3.2", city: "Little Rock, AR", latitude: 34.75, longitude: -92.29, latency: 20 },
+      { hop: 2, ip: "10.1.3.2", city: "Little Rock, AR", latitude: 34.75, longitude: -92.29, latency: 13 },
       { hop: 3, ip: "10.1.3.3", city: "Memphis, TN", latitude: 35.15, longitude: -90.05, latency: 35 },
       { hop: 4, ip: "10.1.3.4", city: "Birmingham, AL", latitude: 33.52, longitude: -86.81, latency: 50 },
       { hop: 5, ip: "10.1.3.5", city: "Charleston, SC", latitude: 32.78, longitude: -79.93, latency: 65 },
@@ -193,47 +193,47 @@ const staticTracerouteData: Record<string, TracerouteHop[][]> = {
       { hop: 1, ip: "10.1.4.1", city: "Miami, FL", latitude: 25.76, longitude: -80.19, latency: 5 },
       { hop: 2, ip: "10.1.4.2", city: "Orlando, FL", latitude: 28.54, longitude: -81.38, latency: 20 },
       { hop: 3, ip: "10.1.4.3", city: "Jacksonville, FL", latitude: 30.33, longitude: -81.66, latency: 35 },
-      { hop: 4, ip: "10.1.4.4", city: "Savannah, GA", latitude: 32.08, longitude: -81.09, latency: 50 },
+      { hop: 4, ip: "10.1.4.4", city: "Savannah, GA", latitude: 32.08, longitude: -81.09, latency: 30 },
       { hop: 5, ip: "10.1.4.5", city: "Charleston, SC", latitude: 32.78, longitude: -79.93, latency: 65 },
     ],
     // Dataset 6: From Boston to Charleston, SC
     [
-      { hop: 1, ip: "10.1.5.1", city: "Boston, MA", latitude: 42.36, longitude: -71.06, latency: 5 },
+      { hop: 1, ip: "10.1.5.1", city: "Boston, MA", latitude: 42.36, longitude: -71.06, latency: 3 },
       { hop: 2, ip: "10.1.5.2", city: "New York, NY", latitude: 40.71, longitude: -74.01, latency: 20 },
       { hop: 3, ip: "10.1.5.3", city: "Philadelphia, PA", latitude: 39.95, longitude: -75.17, latency: 35 },
-      { hop: 4, ip: "10.1.5.4", city: "Baltimore, MD", latitude: 39.29, longitude: -76.61, latency: 50 },
+      { hop: 4, ip: "10.1.5.4", city: "Baltimore, MD", latitude: 39.29, longitude: -76.61, latency: 30 },
       { hop: 5, ip: "10.1.5.5", city: "Charleston, SC", latitude: 32.78, longitude: -79.93, latency: 65 },
     ],
   ],
   "G-CLOUD-US-EAST4": [
     // Dataset 1: From Los Angeles to Ashburn, VA
     [
-      { hop: 1, ip: "10.2.0.1", city: "Los Angeles, CA", latitude: 34.05, longitude: -118.25, latency: 5 },
+      { hop: 1, ip: "10.2.0.1", city: "Los Angeles, CA", latitude: 34.05, longitude: -118.25, latency: 3 },
       { hop: 2, ip: "10.2.0.2", city: "Phoenix, AZ", latitude: 33.45, longitude: -112.07, latency: 20 },
       { hop: 3, ip: "10.2.0.3", city: "Dallas, TX", latitude: 32.78, longitude: -96.80, latency: 35 },
-      { hop: 4, ip: "10.2.0.4", city: "Atlanta, GA", latitude: 33.75, longitude: -84.39, latency: 50 },
+      { hop: 4, ip: "10.2.0.4", city: "Atlanta, GA", latitude: 33.75, longitude: -84.39, latency: 30 },
       { hop: 5, ip: "10.2.0.5", city: "Ashburn, VA", latitude: 39.04, longitude: -77.49, latency: 65 },
     ],
     // Dataset 2: From Seattle to Ashburn, VA
     [
-      { hop: 1, ip: "10.2.1.1", city: "Seattle, WA", latitude: 47.61, longitude: -122.33, latency: 5 },
-      { hop: 2, ip: "10.2.1.2", city: "Spokane, WA", latitude: 47.66, longitude: -117.43, latency: 20 },
+      { hop: 1, ip: "10.2.1.1", city: "Seattle, WA", latitude: 47.61, longitude: -122.33, latency: 3 },
+      { hop: 2, ip: "10.2.1.2", city: "Spokane, WA", latitude: 47.66, longitude: -117.43, latency: 13 },
       { hop: 3, ip: "10.2.1.3", city: "Denver, CO", latitude: 39.74, longitude: -104.99, latency: 35 },
-      { hop: 4, ip: "10.2.1.4", city: "Chicago, IL", latitude: 41.88, longitude: -87.63, latency: 50 },
+      { hop: 4, ip: "10.2.1.4", city: "Chicago, IL", latitude: 41.88, longitude: -87.63, latency: 30 },
       { hop: 5, ip: "10.2.1.5", city: "Ashburn, VA", latitude: 39.04, longitude: -77.49, latency: 65 },
     ],
     // Dataset 3: From Chicago to Ashburn, VA
     [
-      { hop: 1, ip: "10.2.2.1", city: "Chicago, IL", latitude: 41.88, longitude: -87.63, latency: 5 },
-      { hop: 2, ip: "10.2.2.2", city: "Indianapolis, IN", latitude: 39.77, longitude: -86.16, latency: 20 },
+      { hop: 1, ip: "10.2.2.1", city: "Chicago, IL", latitude: 41.88, longitude: -87.63, latency: 3 },
+      { hop: 2, ip: "10.2.2.2", city: "Indianapolis, IN", latitude: 39.77, longitude: -86.16, latency: 13 },
       { hop: 3, ip: "10.2.2.3", city: "Columbus, OH", latitude: 39.96, longitude: -83.00, latency: 35 },
-      { hop: 4, ip: "10.2.2.4", city: "Pittsburgh, PA", latitude: 40.44, longitude: -80.00, latency: 50 },
+      { hop: 4, ip: "10.2.2.4", city: "Pittsburgh, PA", latitude: 40.44, longitude: -80.00, latency: 30 },
       { hop: 5, ip: "10.2.2.5", city: "Ashburn, VA", latitude: 39.04, longitude: -77.49, latency: 65 },
     ],
     // Dataset 4: From Dallas to Ashburn, VA
     [
-      { hop: 1, ip: "10.2.3.1", city: "Dallas, TX", latitude: 32.78, longitude: -96.80, latency: 5 },
-      { hop: 2, ip: "10.2.3.2", city: "Memphis, TN", latitude: 35.15, longitude: -90.05, latency: 20 },
+      { hop: 1, ip: "10.2.3.1", city: "Dallas, TX", latitude: 32.78, longitude: -96.80, latency: 3 },
+      { hop: 2, ip: "10.2.3.2", city: "Memphis, TN", latitude: 35.15, longitude: -90.05, latency: 13 },
       { hop: 3, ip: "10.2.3.3", city: "Nashville, TN", latitude: 36.16, longitude: -86.78, latency: 35 },
       { hop: 4, ip: "10.2.3.4", city: "Charlotte, NC", latitude: 35.23, longitude: -80.84, latency: 50 },
       { hop: 5, ip: "10.2.3.5", city: "Ashburn, VA", latitude: 39.04, longitude: -77.49, latency: 65 },
@@ -241,7 +241,7 @@ const staticTracerouteData: Record<string, TracerouteHop[][]> = {
     // Dataset 5: From Miami to Ashburn, VA
     [
       { hop: 1, ip: "10.2.4.1", city: "Miami, FL", latitude: 25.76, longitude: -80.19, latency: 5 },
-      { hop: 2, ip: "10.2.4.2", city: "Orlando, FL", latitude: 28.54, longitude: -81.38, latency: 20 },
+      { hop: 2, ip: "10.2.4.2", city: "Orlando, FL", latitude: 28.54, longitude: -81.38, latency: 13 },
       { hop: 3, ip: "10.2.4.3", city: "Atlanta, GA", latitude: 33.75, longitude: -84.39, latency: 35 },
       { hop: 4, ip: "10.2.4.4", city: "Charlotte, NC", latitude: 35.23, longitude: -80.84, latency: 50 },
       { hop: 5, ip: "10.2.4.5", city: "Ashburn, VA", latitude: 39.04, longitude: -77.49, latency: 65 },
@@ -249,35 +249,35 @@ const staticTracerouteData: Record<string, TracerouteHop[][]> = {
     // Dataset 6: From Boston to Ashburn, VA
     [
       { hop: 1, ip: "10.2.5.1", city: "Boston, MA", latitude: 42.36, longitude: -71.06, latency: 5 },
-      { hop: 2, ip: "10.2.5.2", city: "New York, NY", latitude: 40.71, longitude: -74.01, latency: 20 },
+      { hop: 2, ip: "10.2.5.2", city: "New York, NY", latitude: 40.71, longitude: -74.01, latency: 13 },
       { hop: 3, ip: "10.2.5.3", city: "Philadelphia, PA", latitude: 39.95, longitude: -75.17, latency: 35 },
-      { hop: 4, ip: "10.2.5.4", city: "Baltimore, MD", latitude: 39.29, longitude: -76.61, latency: 50 },
+      { hop: 4, ip: "10.2.5.4", city: "Baltimore, MD", latitude: 39.29, longitude: -76.61, latency: 30 },
       { hop: 5, ip: "10.2.5.5", city: "Ashburn, VA", latitude: 39.04, longitude: -77.49, latency: 65 },
     ],
   ],
   "G-CLOUD-US-WEST1": [
     // Dataset 1: From New York to The Dalles, OR
     [
-      { hop: 1, ip: "10.3.0.1", city: "New York, NY", latitude: 40.71, longitude: -74.01, latency: 5 },
-      { hop: 2, ip: "10.3.0.2", city: "Chicago, IL", latitude: 41.88, longitude: -87.63, latency: 20 },
+      { hop: 1, ip: "10.3.0.1", city: "New York, NY", latitude: 40.71, longitude: -74.01, latency: 3 },
+      { hop: 2, ip: "10.3.0.2", city: "Chicago, IL", latitude: 41.88, longitude: -87.63, latency: 13 },
       { hop: 3, ip: "10.3.0.3", city: "Denver, CO", latitude: 39.74, longitude: -104.99, latency: 35 },
-      { hop: 4, ip: "10.3.0.4", city: "Salt Lake City, UT", latitude: 40.76, longitude: -111.89, latency: 50 },
+      { hop: 4, ip: "10.3.0.4", city: "Salt Lake City, UT", latitude: 40.76, longitude: -111.89, latency: 30 },
       { hop: 5, ip: "10.3.0.5", city: "The Dalles, OR", latitude: 45.59, longitude: -121.18, latency: 65 },
     ],
     // Dataset 2: From Miami to The Dalles, OR
     [
       { hop: 1, ip: "10.3.1.1", city: "Miami, FL", latitude: 25.76, longitude: -80.19, latency: 5 },
-      { hop: 2, ip: "10.3.1.2", city: "Atlanta, GA", latitude: 33.75, longitude: -84.39, latency: 20 },
+      { hop: 2, ip: "10.3.1.2", city: "Atlanta, GA", latitude: 33.75, longitude: -84.39, latency: 13 },
       { hop: 3, ip: "10.3.1.3", city: "Dallas, TX", latitude: 32.78, longitude: -96.80, latency: 35 },
-      { hop: 4, ip: "10.3.1.4", city: "Phoenix, AZ", latitude: 33.45, longitude: -112.07, latency: 50 },
+      { hop: 4, ip: "10.3.1.4", city: "Phoenix, AZ", latitude: 33.45, longitude: -112.07, latency: 30 },
       { hop: 5, ip: "10.3.1.5", city: "The Dalles, OR", latitude: 45.59, longitude: -121.18, latency: 65 },
     ],
     // Dataset 3: From Chicago to The Dalles, OR
     [
       { hop: 1, ip: "10.3.2.1", city: "Chicago, IL", latitude: 41.88, longitude: -87.63, latency: 5 },
-      { hop: 2, ip: "10.3.2.2", city: "Minneapolis, MN", latitude: 44.98, longitude: -93.27, latency: 20 },
+      { hop: 2, ip: "10.3.2.2", city: "Minneapolis, MN", latitude: 44.98, longitude: -93.27, latency: 13 },
       { hop: 3, ip: "10.3.2.3", city: "Billings, MT", latitude: 45.78, longitude: -108.50, latency: 35 },
-      { hop: 4, ip: "10.3.2.4", city: "Spokane, WA", latitude: 47.66, longitude: -117.43, latency: 50 },
+      { hop: 4, ip: "10.3.2.4", city: "Spokane, WA", latitude: 47.66, longitude: -117.43, latency: 30 },
       { hop: 5, ip: "10.3.2.5", city: "The Dalles, OR", latitude: 45.59, longitude: -121.18, latency: 65 },
     ],
     // Dataset 4: From Dallas to The Dalles, OR
@@ -293,33 +293,33 @@ const staticTracerouteData: Record<string, TracerouteHop[][]> = {
       { hop: 1, ip: "10.3.4.1", city: "Seattle, WA", latitude: 47.61, longitude: -122.33, latency: 5 },
       { hop: 2, ip: "10.3.4.2", city: "Tacoma, WA", latitude: 47.25, longitude: -122.44, latency: 20 },
       { hop: 3, ip: "10.3.4.3", city: "Portland, OR", latitude: 45.52, longitude: -122.68, latency: 35 },
-      { hop: 4, ip: "10.3.4.4", city: "Hood River, OR", latitude: 45.71, longitude: -121.52, latency: 50 },
+      { hop: 4, ip: "10.3.4.4", city: "Hood River, OR", latitude: 45.71, longitude: -121.52, latency: 30 },
       { hop: 5, ip: "10.3.4.5", city: "The Dalles, OR", latitude: 45.59, longitude: -121.18, latency: 65 },
     ],
     // Dataset 6: From Los Angeles to The Dalles, OR
     [
-      { hop: 1, ip: "10.3.5.1", city: "Los Angeles, CA", latitude: 34.05, longitude: -118.25, latency: 5 },
-      { hop: 2, ip: "10.3.5.2", city: "Sacramento, CA", latitude: 38.58, longitude: -121.49, latency: 20 },
+      { hop: 1, ip: "10.3.5.1", city: "Los Angeles, CA", latitude: 34.05, longitude: -118.25, latency: 3 },
+      { hop: 2, ip: "10.3.5.2", city: "Sacramento, CA", latitude: 38.58, longitude: -121.49, latency: 13 },
       { hop: 3, ip: "10.3.5.3", city: "Redding, CA", latitude: 40.59, longitude: -122.39, latency: 35 },
-      { hop: 4, ip: "10.3.5.4", city: "Portland, OR", latitude: 45.52, longitude: -122.68, latency: 50 },
+      { hop: 4, ip: "10.3.5.4", city: "Portland, OR", latitude: 45.52, longitude: -122.68, latency: 30 },
       { hop: 5, ip: "10.3.5.5", city: "The Dalles, OR", latitude: 45.59, longitude: -121.18, latency: 65 },
     ],
   ],
   "G-CLOUD-EUROPE-WEST4": [
     // Dataset 1: From London to Eemshaven, Netherlands
     [
-      { hop: 1, ip: "10.4.0.1", city: "London, UK", latitude: 51.51, longitude: -0.13, latency: 5 },
+      { hop: 1, ip: "10.4.0.1", city: "London, UK", latitude: 51.51, longitude: -0.13, latency: 3 },
       { hop: 2, ip: "10.4.0.2", city: "Brussels, Belgium", latitude: 50.85, longitude: 4.35, latency: 20 },
       { hop: 3, ip: "10.4.0.3", city: "Antwerp, Belgium", latitude: 51.22, longitude: 4.40, latency: 35 },
-      { hop: 4, ip: "10.4.0.4", city: "Rotterdam, Netherlands", latitude: 51.92, longitude: 4.48, latency: 50 },
+      { hop: 4, ip: "10.4.0.4", city: "Rotterdam, Netherlands", latitude: 51.92, longitude: 4.48, latency: 30 },
       { hop: 5, ip: "10.4.0.5", city: "Eemshaven, Netherlands", latitude: 53.45, longitude: 6.83, latency: 65 },
     ],
     // Dataset 2: From Paris to Eemshaven, Netherlands
     [
-      { hop: 1, ip: "10.4.1.1", city: "Paris, France", latitude: 48.86, longitude: 2.35, latency: 5 },
-      { hop: 2, ip: "10.4.1.2", city: "Lille, France", latitude: 50.63, longitude: 3.06, latency: 20 },
+      { hop: 1, ip: "10.4.1.1", city: "Paris, France", latitude: 48.86, longitude: 2.35, latency: 3 },
+      { hop: 2, ip: "10.4.1.2", city: "Lille, France", latitude: 50.63, longitude: 3.06, latency: 13 },
       { hop: 3, ip: "10.4.1.3", city: "Brussels, Belgium", latitude: 50.85, longitude: 4.35, latency: 35 },
-      { hop: 4, ip: "10.4.1.4", city: "Amsterdam, Netherlands", latitude: 52.37, longitude: 4.90, latency: 50 },
+      { hop: 4, ip: "10.4.1.4", city: "Amsterdam, Netherlands", latitude: 52.37, longitude: 4.90, latency: 30 },
       { hop: 5, ip: "10.4.1.5", city: "Eemshaven, Netherlands", latitude: 53.45, longitude: 6.83, latency: 65 },
     ],
     // Dataset 3: From Berlin to Eemshaven, Netherlands
@@ -333,9 +333,9 @@ const staticTracerouteData: Record<string, TracerouteHop[][]> = {
     // Dataset 4: From Madrid to Eemshaven, Netherlands
     [
       { hop: 1, ip: "10.4.3.1", city: "Madrid, Spain", latitude: 40.42, longitude: -3.70, latency: 5 },
-      { hop: 2, ip: "10.4.3.2", city: "Barcelona, Spain", latitude: 41.39, longitude: 2.17, latency: 20 },
+      { hop: 2, ip: "10.4.3.2", city: "Barcelona, Spain", latitude: 41.39, longitude: 2.17, latency: 13 },
       { hop: 3, ip: "10.4.3.3", city: "Paris, France", latitude: 48.86, longitude: 2.35, latency: 35 },
-      { hop: 4, ip: "10.4.3.4", city: "Amsterdam, Netherlands", latitude: 52.37, longitude: 4.90, latency: 50 },
+      { hop: 4, ip: "10.4.3.4", city: "Amsterdam, Netherlands", latitude: 52.37, longitude: 4.90, latency: 30 },
       { hop: 5, ip: "10.4.3.5", city: "Eemshaven, Netherlands", latitude: 53.45, longitude: 6.83, latency: 65 },
     ],
     // Dataset 5: From Rome to Eemshaven, Netherlands
@@ -351,7 +351,7 @@ const staticTracerouteData: Record<string, TracerouteHop[][]> = {
       { hop: 1, ip: "10.4.5.1", city: "Stockholm, Sweden", latitude: 59.33, longitude: 18.07, latency: 5 },
       { hop: 2, ip: "10.4.5.2", city: "Copenhagen, Denmark", latitude: 55.68, longitude: 12.57, latency: 20 },
       { hop: 3, ip: "10.4.5.3", city: "Hamburg, Germany", latitude: 53.55, longitude: 9.99, latency: 35 },
-      { hop: 4, ip: "10.4.5.4", city: "Amsterdam, Netherlands", latitude: 52.37, longitude: 4.90, latency: 50 },
+      { hop: 4, ip: "10.4.5.4", city: "Amsterdam, Netherlands", latitude: 52.37, longitude: 4.90, latency: 30 },
       { hop: 5, ip: "10.4.5.5", city: "Eemshaven, Netherlands", latitude: 53.45, longitude: 6.83, latency: 65 },
     ],
   ],
