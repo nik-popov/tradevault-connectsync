@@ -6,7 +6,7 @@ interface UsageProps {
 
 // Simulated data for different endpoints
 const endpointUsageData: Record<string, { requestsToday: number; requestsThisMonth: number; successRate: number; gigsUsedToday: number; gigsUsedThisMonth: number; costPerGigabyte: number }> = {
-    "G-CLOUD-SOUTHAMERICA-WEST1": {
+    "SOUTHAMERICA-WEST1": {
       requestsToday: 1200,
       requestsThisMonth: 36000,
       successRate: 98.7,
@@ -14,7 +14,7 @@ const endpointUsageData: Record<string, { requestsToday: number; requestsThisMon
       gigsUsedThisMonth: 60.0,
       costPerGigabyte: 0.05,
     },
-    "G-CLOUD-US-CENTRAL1": {
+    "US-CENTRAL1": {
       requestsToday: 1800,
       requestsThisMonth: 54000,
       successRate: 99.2,
@@ -22,7 +22,7 @@ const endpointUsageData: Record<string, { requestsToday: number; requestsThisMon
       gigsUsedThisMonth: 84.0,
       costPerGigabyte: 0.04,
     },
-    "G-CLOUD-US-EAST1": {
+    "US-EAST1": {
       requestsToday: 1500,
       requestsThisMonth: 45000,
       successRate: 99.0,
@@ -30,7 +30,7 @@ const endpointUsageData: Record<string, { requestsToday: number; requestsThisMon
       gigsUsedThisMonth: 75.0,
       costPerGigabyte: 0.045,
     },
-    "G-CLOUD-US-EAST4": {
+    "US-EAST4": {
       requestsToday: 13080,
       requestsThisMonth: 349000,
       successRate: 98.8,
@@ -38,7 +38,7 @@ const endpointUsageData: Record<string, { requestsToday: number; requestsThisMon
       gigsUsedThisMonth: 690.0,
       costPerGigabyte: 0.043,
     },
-    "G-CLOUD-US-WEST1": {
+    "US-WEST1": {
       requestsToday: 1000,
       requestsThisMonth: 30000,
       successRate: 98.9,
@@ -46,7 +46,7 @@ const endpointUsageData: Record<string, { requestsToday: number; requestsThisMon
       gigsUsedThisMonth: 57.0,
       costPerGigabyte: 0.06,
     },
-    "G-CLOUD-EUROPE-WEST4": {
+    "EUROPE-WEST4": {
       requestsToday: 1100,
       requestsThisMonth: 33000,
       successRate: 99.1,

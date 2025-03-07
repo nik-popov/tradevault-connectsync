@@ -1,22 +1,16 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import {
-  Box,
-  Grid,
-  GridItem,
-  Heading,
-  Text,
-  Badge,
-  useColorModeValue,
-  Spinner,
-  Alert,
-  AlertIcon,
   Container,
+  Text,
   Flex,
-  Tabs,
-  TabList,
-  TabPanels,
-  Tab,
-  TabPanel,
+  Badge,
+  Spinner,
+  Input,
+  Button,
+  Box,
+  VStack,
+  HStack,
+  Select,
 } from "@chakra-ui/react";
 import { createFileRoute } from "@tanstack/react-router";
 
@@ -27,139 +21,210 @@ interface UserAgent {
   browser: string;
   os: string;
   percentage: number;
+  lastUsed?: string; // ISO timestamp, e.g., "2025-03-07T12:00:00Z"
+  timeUsed?: number; // Duration in seconds
 }
 
 const UserAgentDashboard = () => {
-  const bgColor = useColorModeValue("gray.50", "gray.800");
-  const cardBg = useColorModeValue("white", "gray.700");
-  const borderColor = useColorModeValue("gray.200", "gray.600");
-
   const [userAgents, setUserAgents] = useState<UserAgent[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [searchTerm, setSearchTerm] = useState<string>("");
+  const [browserFilter, setBrowserFilter] = useState<string>("all");
+  const [sortBy, setSortBy] = useState<string>("lastUsed");
+  const [isActive, setIsActive] = useState<boolean>(true); // true = Active, false = Inactive
 
+  // Fetch user agents
+  const fetchUserAgents = async () => {
+    setLoading(true);
+    try {
+      const response = await fetch(
+        "https://api.thedataproxy.com/api/v1/user-agents/?skip=0&limit=100",
+        { method: "GET", headers: { accept: "application/json" } }
+      );
+      if (!response.ok) throw new Error("Failed to fetch user agents");
+      const data = await response.json();
+      console.log("Fetched User Agents:", data.data);
+
+      // Simulate lastUsed and timeUsed since API doesn't provide them
+      const enhancedData = (Array.isArray(data.data) ? data.data : []).map((agent: UserAgent, index: number) => ({
+        ...agent,
+        lastUsed: new Date(Date.now() - index * 3600000).toISOString(), // Hours ago (for testing variety)
+        timeUsed: Math.floor(Math.random() * 600), // Random 0-600s (for display only)
+      }));
+      setUserAgents(enhancedData);
+    } catch (err) {
+      console.error("Error fetching user agents:", err);
+      setUserAgents([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Initial fetch
   useEffect(() => {
-    const fetchUserAgents = async () => {
-      try {
-        const response = await fetch(
-          "https://api.thedataproxy.com/api/v1/user-agents/?skip=0&limit=100",
-          { method: "GET", headers: { accept: "application/json" } }
-        );
-        if (!response.ok) throw new Error("Failed to fetch user agents");
-        const data = await response.json();
-        console.log("Fetched User Agents:", data.data);
-        setUserAgents(data.data || []);
-        setLoading(false);
-      } catch (err) {
-        setError(err.message);
-        setLoading(false);
-      }
-    };
-
     fetchUserAgents();
   }, []);
 
-  const chartData = {
-    labels: userAgents.map((agent) => agent.user_agent.split(",")[0]),
-    datasets: [
-      {
-        label: "Usage Percentage",
-        data: userAgents.map((agent) => agent.percentage),
-        backgroundColor: "rgba(66, 153, 225, 0.6)",
-        borderColor: "rgba(66, 153, 225, 1)",
-        borderWidth: 1,
-      },
-    ],
-  };
+  // Unique browsers for filter buttons
+  const browserCategories = useMemo(() => ["all", ...new Set(userAgents.map((agent) => agent.browser))], [userAgents]);
 
-  const chartOptions = {
-    responsive: true,
-    maintainAspectRatio: false,
-    scales: {
-      y: {
-        beginAtZero: true,
-        title: { display: true, text: "Percentage (%)" },
-      },
-    },
-    plugins: {
-      legend: { position: "top" as const },
-      title: { display: true, text: "User Agent Usage Distribution" },
-    },
-  };
+  // Filter and sort user agents
+  const filteredAndSortedUserAgents = useMemo(() => {
+    return userAgents
+      .filter((agent) => {
+        const matchesSearch =
+          agent.user_agent.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          agent.device.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          agent.browser.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          agent.os.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          String(agent.percentage).includes(searchTerm.toLowerCase()) ||
+          (agent.lastUsed && agent.lastUsed.toLowerCase().includes(searchTerm.toLowerCase())) ||
+          (agent.timeUsed && String(agent.timeUsed).includes(searchTerm.toLowerCase()));
 
-  const overviewContent = (
-    <Box py={10} bg={bgColor}>
-      <Heading textAlign="center" mb={8} fontSize={{ base: "2xl", md: "3xl" }}>
-        User Agent Overview
-      </Heading>
-      <Grid templateColumns={{ base: "1fr", md: "repeat(4, 1fr)" }} gap={6} mb={8}>
-        {userAgents.slice(0, 8).map((agent) => (
-          <GridItem key={agent.id}>
-            <Box
-              p={4}
-              bg={cardBg}
-              borderRadius="lg"
-              boxShadow="md"
-              border="1px"
-              borderColor={borderColor}
-              height="100%"
-              transition="all 0.2s"
-              _hover={{ boxShadow: "lg", transform: "translateY(-4px)" }}
-            >
-              <Text fontWeight="bold" fontSize="sm" isTruncated title={agent.user_agent}>
-                {agent.user_agent}
-              </Text>
-              <Text fontSize="xs" color="gray.500">Device: {agent.device || "N/A"}</Text>
-              <Text fontSize="xs" color="gray.500">Browser: {agent.browser || "N/A"}</Text>
-              <Text fontSize="xs" color="gray.500">OS: {agent.os || "N/A"}</Text>
-              <Badge colorScheme={agent.percentage > 0 ? "green" : "gray"} mt={2}>
-                {agent.percentage}% Usage
-              </Badge>
-            </Box>
-          </GridItem>
-        ))}
-      </Grid>
-      <Box
-        p={4}
-        bg={cardBg}
-        borderRadius="lg"
-        boxShadow="md"
-        border="1px"
-        borderColor={borderColor}
-        height="400px"
-      >
-     
-      </Box>
-    </Box>
-  );
+        const matchesBrowser =
+          browserFilter === "all" || agent.browser.toLowerCase() === browserFilter.toLowerCase();
 
-  if (loading) {
+        const matchesActivity = isActive ? agent.percentage > 0 : agent.percentage === 0;
+
+        return matchesSearch && matchesBrowser && matchesActivity;
+      })
+      .sort((a, b) => {
+        if (sortBy === "lastUsed") {
+          return new Date(b.lastUsed || "1970-01-01").getTime() - new Date(a.lastUsed || "1970-01-01").getTime();
+        } else if (sortBy === "percentage") {
+          return b.percentage - a.percentage;
+        } else if (sortBy === "timeUsed") {
+          return (b.timeUsed || 0) - (a.timeUsed || 0);
+        } else if (sortBy === "name") {
+          return a.user_agent.localeCompare(b.user_agent);
+        }
+        return 0;
+      });
+  }, [userAgents, searchTerm, browserFilter, isActive, sortBy]);
+
+  if (loading && userAgents.length === 0) {
     return (
-      <Box maxW="100%" mx="auto" py={10} textAlign="center">
-        <Spinner size="xl" />
-      </Box>
+      <Container maxW="full" py={10} textAlign="center">
+        <Spinner size="xl" color="blue.500" />
+      </Container>
     );
   }
-
-  if (error) {
-    return (
-      <Box maxW="100%" mx="auto" py={10}>
-        <Alert status="error">
-          <AlertIcon />
-          <Text>{error}</Text>
-        </Alert>
-      </Box>
-    );
-  }
-
 
   return (
-    <Container maxW="full">
-      <Flex align="center" justify="space-between" py={6} flexWrap="wrap" gap={4}>
-        <Box textAlign="left" flex="1">
-          <Text fontSize="xl" fontWeight="bold">User Agents</Text>
-          <Text fontSize="sm">Manage your user agent settings.</Text>
-        </Box>
+    <Container maxW="full" py={6} color="white">
+      <Flex direction="column" gap={4}>
+        {/* Title Section */}
+        <Flex align="center" justify="space-between" py={2} flexWrap="wrap" gap={4}>
+          <Box textAlign="left" flex="1">
+            <Text fontSize="xl" fontWeight="bold">
+              User Agents Dashboard
+            </Text>
+            <Text fontSize="sm" color="gray.500">
+              View and manage user agents for scraping operations.
+            </Text>
+          </Box>
+        </Flex>
+
+        {/* Search and Filters Section */}
+        <Flex gap={4} justify="space-between" align="center" flexWrap="wrap">
+          <Input
+            placeholder="Search user agents..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            w={{ base: "100%", md: "250px" }}
+            aria-label="Search user agents"
+            color="white"
+            borderColor="gray.600"
+            _hover={{ borderColor: "gray.500" }}
+            _focus={{ borderColor: "blue.400" }}
+          />
+          <HStack spacing={4} ml={{ md: "auto" }} align="center" flexWrap="wrap">
+            {browserCategories.map((browser) => (
+              <Button
+                key={browser}
+                size="sm"
+                fontWeight="bold"
+                borderRadius="full"
+                colorScheme={browserFilter === browser ? "purple" : "gray"}
+                variant={browserFilter === browser ? "solid" : "outline"}
+                onClick={() => setBrowserFilter(browser)}
+              >
+                {browser === "all" ? "All" : browser}
+              </Button>
+            ))}
+            <Button
+              size="sm"
+              fontWeight="bold"
+              borderRadius="full"
+              colorScheme={isActive ? "teal" : "orange"}
+              variant="solid"
+              onClick={() => setIsActive(!isActive)}
+            >
+              {isActive ? "Active" : "Inactive"}
+            </Button>
+            <Select
+              value={sortBy}
+              onChange={(e) => setSortBy(e.target.value)}
+              size="sm"
+              w={{ base: "100%", md: "220px" }}
+              color="white"
+              borderColor="gray.600"
+              _hover={{ borderColor: "gray.500" }}
+              _focus={{ borderColor: "blue.400" }}
+            >
+              <option value="lastUsed">Last Used</option>
+              <option value="percentage">Percentage</option>
+              <option value="timeUsed">Time Used</option>
+              <option value="name">Name</option>
+            </Select>
+          </HStack>
+        </Flex>
+
+        {/* User Agents List */}
+        <VStack spacing={4} align="stretch">
+          {filteredAndSortedUserAgents.length === 0 ? (
+            <Text color="gray.500" textAlign="center">
+              No user agents found matching your criteria.
+            </Text>
+          ) : (
+            filteredAndSortedUserAgents.map((agent) => (
+              <Box key={agent.id} p="4" borderWidth="1px" borderRadius="lg">
+                <Flex justify="space-between" align="center" wrap="wrap" gap={2}>
+                  <Box flex="1">
+                    <Text
+                      display="inline"
+                      fontWeight="bold"
+                      color="blue.400"
+                      _hover={{ textDecoration: "underline" }}
+                    >
+                      {agent.user_agent}
+                    </Text>
+                    <Badge
+                      colorScheme={agent.percentage > 0 ? "green" : "red"}
+                      variant="solid"
+                      ml={2}
+                    >
+                      {agent.percentage > 0 ? "Active" : "Inactive"}
+                    </Badge>
+                    <Text fontSize="sm" color="gray.300" mt={1}>
+                      <strong>Device:</strong> {agent.device || "N/A"}, <strong>OS:</strong>{" "}
+                      {agent.os || "N/A"}, <strong>Percentage:</strong> {agent.percentage}%
+                    </Text>
+                    <Text fontSize="sm" color="gray.300" mt={1}>
+                      <strong>Last Used:</strong> {agent.lastUsed ? new Date(agent.lastUsed).toLocaleString() : "N/A"},{" "}
+                      <strong>Time Used:</strong> {agent.timeUsed ? `${agent.timeUsed}s` : "N/A"}
+                    </Text>
+                  </Box>
+                  <Box textAlign="right">
+                    <Text fontSize="sm" fontWeight="semibold" color="gray.400">
+                      {agent.browser || "Unknown"}
+                    </Text>
+                  </Box>
+                </Flex>
+              </Box>
+            ))
+          )}
+        </VStack>
       </Flex>
     </Container>
   );

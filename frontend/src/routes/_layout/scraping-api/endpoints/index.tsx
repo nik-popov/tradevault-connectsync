@@ -1,7 +1,19 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
-import { Container, Box, Text, Flex } from "@chakra-ui/react";
+import { createFileRoute, Link } from '@tanstack/react-router';
+import {
+  Container,
+  Flex,
+  Box,
+  Text,
+  Table,
+  Thead,
+  Tr,
+  Th,
+  Tbody,
+  Td,
+} from '@chakra-ui/react';
 
-interface EndpointData {
+// Define the EndpointData type
+type EndpointData = {
   endpoint: string;
   toolId: string;
   publicIp: string;
@@ -9,12 +21,13 @@ interface EndpointData {
   health: string;
   lastChecked: string;
   error: string;
-}
+};
 
+// Sample endpoint data
 const endpointData: EndpointData[] = [
   {
     endpoint: "https://southamerica-west1-image-scraper-451516.cloudfunctions.net/main",
-    toolId: "G-CLOUD-SOUTHAMERICA-WEST1",
+    toolId: "SOUTHAMERICA-WEST1",
     publicIp: "34.34.252.50",
     status: "Google is reachable",
     health: "Healthy",
@@ -23,7 +36,7 @@ const endpointData: EndpointData[] = [
   },
   {
     endpoint: "https://us-central1-image-scraper-451516.cloudfunctions.net/main",
-    toolId: "G-CLOUD-US-CENTRAL1",
+    toolId: "US-CENTRAL1",
     publicIp: "34.96.44.247",
     status: "Google is reachable",
     health: "Healthy",
@@ -63,42 +76,46 @@ const EndpointsListPage = () => {
         <Text fontSize="lg" fontWeight="bold" mb={2}>
           Endpoint List
         </Text>
-        <table>
-          <thead>
-            <tr>
-              <th>Tool ID</th>
-              <th>Endpoint URL</th>
-              <th>Public IP</th>
-              <th>Status</th>
-              <th>Health</th>
-              <th>Last Checked</th>
-              <th>Error</th>
-            </tr>
-          </thead>
-          <tbody>
+        <Table variant="simple" size="sm">
+          <Thead>
+            <Tr>
+              <Th>Tool ID</Th>
+              <Th>Endpoint URL</Th>
+              <Th>Public IP</Th>
+              <Th>Status</Th>
+              <Th>Health</Th>
+              <Th>Last Checked</Th>
+              <Th>Error</Th>
+            </Tr>
+          </Thead>
+          <Tbody>
             {endpointData.map((endpoint) => (
-              <tr key={endpoint.toolId}>
-                <td>
-                  <Link to="/scraping-api/endpoints/$endpointId" params={{ endpointId: endpoint.toolId }}>
+              <Tr key={endpoint.toolId}>
+                <Td>
+                  <Link
+                    to="/_layout/scraping-api/endpoints/$endpointId"
+                    params={{ endpointId: endpoint.toolId }}
+                  >
                     {endpoint.toolId}
                   </Link>
-                </td>
-                <td>{endpoint.endpoint}</td>
-                <td>{endpoint.publicIp}</td>
-                <td>{endpoint.status}</td>
-                <td>{endpoint.health}</td>
-                <td>{endpoint.lastChecked}</td>
-                <td>{endpoint.error}</td>
-              </tr>
+                </Td>
+                <Td>{endpoint.endpoint}</Td>
+                <Td>{endpoint.publicIp}</Td>
+                <Td>{endpoint.status}</Td>
+                <Td>{endpoint.health}</Td>
+                <Td>{endpoint.lastChecked}</Td>
+                <Td>{endpoint.error}</Td>
+              </Tr>
             ))}
-          </tbody>
-        </table>
+          </Tbody>
+        </Table>
       </Box>
     </Container>
   );
 };
 
-export const Route = createFileRoute("/_layout/scraping-api/endpoints/")({
+// Define the route
+export const Route = createFileRoute('/_layout/scraping-api/endpoints/')({
   component: EndpointsListPage,
 });
 

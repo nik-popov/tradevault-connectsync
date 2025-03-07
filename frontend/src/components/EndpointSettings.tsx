@@ -25,12 +25,12 @@ interface EndpointSettingsProps {
 }
 
 const endpointData: Record<string, string> = {
-  "G-CLOUD-SOUTHAMERICA-WEST1": "https://southamerica-west1-image-scraper-451516.cloudfunctions.net/main",
-  "G-CLOUD-US-CENTRAL1": "https://us-central1-image-scraper-451516.cloudfunctions.net/main",
-  "G-CLOUD-US-EAST1": "https://us-east1-image-scraper-451516.cloudfunctions.net/main",
-  "G-CLOUD-US-EAST4": "https://us-east4-image-scraper-451516.cloudfunctions.net/main",
-  "G-CLOUD-US-WEST1": "https://us-west1-image-scraper-451516.cloudfunctions.net/main",
-  "G-CLOUD-EUROPE-WEST4": "https://europe-west4-image-scraper-451516.cloudfunctions.net/main"
+  "SOUTHAMERICA-WEST1": "https://southamerica-west1-image-scraper-451516.cloudfunctions.net/main",
+  "US-CENTRAL1": "https://us-central1-image-scraper-451516.cloudfunctions.net/main",
+  "US-EAST1": "https://us-east1-image-scraper-451516.cloudfunctions.net/main",
+  "US-EAST4": "https://us-east4-image-scraper-451516.cloudfunctions.net/main",
+  "US-WEST1": "https://us-west1-image-scraper-451516.cloudfunctions.net/main",
+  "EUROPE-WEST4": "https://europe-west4-image-scraper-451516.cloudfunctions.net/main"
 };
 
 const fetchEndpointHealth = async (url: string, timeout: number = 10000): Promise<HealthStatus | null> => {
@@ -171,12 +171,12 @@ const EndpointSettings = memo(({ endpointId, endpoints }: EndpointSettingsProps)
               <Thead position="sticky" top={0} zIndex={1}>
                 <Tr>
                   <Th px={2} py={3} borderBottom="1px" borderColor="gray.600" w="5%" color="white" textAlign="left">#</Th>
+                                    <Th px={2} py={3} borderBottom="1px" borderColor="gray.600" w="10%" textAlign="center" color="white">Health</Th>
+                  <Th px={2} py={3} borderBottom="1px" borderColor="gray.600" w="12%" textAlign="center" color="white">Last Checked</Th>
                   <Th px={2} py={3} borderBottom="1px" borderColor="gray.600" w="20%" color="white">Endpoint</Th>
                   <Th px={2} py={3} borderBottom="1px" borderColor="gray.600" w="15%" color="white">Device ID</Th>
                   <Th px={2} py={3} borderBottom="1px" borderColor="gray.600" w="12%" color="white">Public IP</Th>
                   <Th px={2} py={3} borderBottom="1px" borderColor="gray.600" w="18%" color="white">Status</Th>
-                  <Th px={2} py={3} borderBottom="1px" borderColor="gray.600" w="10%" textAlign="center" color="white">Health</Th>
-                  <Th px={2} py={3} borderBottom="1px" borderColor="gray.600" w="12%" textAlign="center" color="white">Last Checked</Th>
                 </Tr>
               </Thead>
               <Tbody>
@@ -186,6 +186,27 @@ const EndpointSettings = memo(({ endpointId, endpoints }: EndpointSettingsProps)
                   return (
                     <Tr key={endpoint.url}>
                       <Td px={2} py={2} borderBottom="1px" borderColor="gray.600">{endpoint.id}</Td>
+                      <Td px={2} py={2} borderBottom="1px" borderColor="gray.600" textAlign="center">
+                        <Badge 
+                          colorScheme={endpoint.health?.status.includes("reachable") ? "green" : "red"} 
+                          variant="solid"
+                        >
+                          <Highlight query={searchTerm} styles={{ bg: "yellow.200", color: "black" }}>
+                            {endpoint.health?.status.includes("reachable") ? "Healthy" : "Unhealthy"}
+                          </Highlight>
+                        </Badge>
+                      </Td>
+                      <Td px={2} py={2} borderBottom="1px" borderColor="gray.600" textAlign="center">
+                        <Link 
+                          to={`/scraping-api/endpoints/$endpointId`}
+                          params={{ endpointId: epId }}
+                          style={{ color: "blue.400", textDecoration: "underline" }}
+                        >
+                          <Highlight query={searchTerm} styles={{ bg: "yellow.200", color: "black" }}>
+                            {endpoint.lastChecked}
+                          </Highlight>
+                        </Link>
+                      </Td>
                       <Td 
                         px={2} 
                         py={2} 
@@ -214,27 +235,6 @@ const EndpointSettings = memo(({ endpointId, endpoints }: EndpointSettingsProps)
                         <Highlight query={searchTerm} styles={{ bg: "yellow.200", color: "black" }}>
                           {endpoint.health?.status || "Fetch Failed"}
                         </Highlight>
-                      </Td>
-                      <Td px={2} py={2} borderBottom="1px" borderColor="gray.600" textAlign="center">
-                        <Badge 
-                          colorScheme={endpoint.health?.status.includes("reachable") ? "green" : "red"} 
-                          variant="solid"
-                        >
-                          <Highlight query={searchTerm} styles={{ bg: "yellow.200", color: "black" }}>
-                            {endpoint.health?.status.includes("reachable") ? "Healthy" : "Unhealthy"}
-                          </Highlight>
-                        </Badge>
-                      </Td>
-                      <Td px={2} py={2} borderBottom="1px" borderColor="gray.600" textAlign="center">
-                        <Link 
-                          to={`/scraping-api/endpoints/$endpointId`}
-                          params={{ endpointId: epId }}
-                          style={{ color: "blue.400", textDecoration: "underline" }}
-                        >
-                          <Highlight query={searchTerm} styles={{ bg: "yellow.200", color: "black" }}>
-                            {endpoint.lastChecked}
-                          </Highlight>
-                        </Link>
                       </Td>
                     </Tr>
                   );

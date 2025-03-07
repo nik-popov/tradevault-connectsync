@@ -45,17 +45,17 @@ interface TracerouteHop {
 }
 
 const endpointData: Record<string, string> = {
-  "G-CLOUD-SOUTHAMERICA-WEST1": "https://southamerica-west1-image-scraper-451516.cloudfunctions.net/main",
-  "G-CLOUD-US-CENTRAL1": "https://us-central1-image-scraper-451516.cloudfunctions.net/main",
-  "G-CLOUD-US-EAST1": "https://us-east1-image-scraper-451516.cloudfunctions.net/main",
-  "G-CLOUD-US-EAST4": "https://us-east4-image-scraper-451516.cloudfunctions.net/main",
-  "G-CLOUD-US-WEST1": "https://us-west1-image-scraper-451516.cloudfunctions.net/main",
-  "G-CLOUD-EUROPE-WEST4": "https://europe-west4-image-scraper-451516.cloudfunctions.net/main",
+  "SOUTHAMERICA-WEST1": "https://southamerica-west1-image-scraper-451516.cloudfunctions.net/main",
+  "US-CENTRAL1": "https://us-central1-image-scraper-451516.cloudfunctions.net/main",
+  "US-EAST1": "https://us-east1-image-scraper-451516.cloudfunctions.net/main",
+  "US-EAST4": "https://us-east4-image-scraper-451516.cloudfunctions.net/main",
+  "US-WEST1": "https://us-west1-image-scraper-451516.cloudfunctions.net/main",
+  "EUROPE-WEST4": "https://europe-west4-image-scraper-451516.cloudfunctions.net/main",
 };
 
 // Updated static traceroute data with 6 datasets per endpoint
 const staticTracerouteData: Record<string, TracerouteHop[][]> = {
-  "G-CLOUD-SOUTHAMERICA-WEST1": [
+  "SOUTHAMERICA-WEST1": [
     // Dataset 1
     [
       { hop: 1, ip: "192.168.1.1", city: "Santiago, Chile", latitude: -33.4489, longitude: -70.6693, latency: 5 },
@@ -105,7 +105,7 @@ const staticTracerouteData: Record<string, TracerouteHop[][]> = {
       { hop: 5, ip: "34.98.76.59", city: "Manta, Ecuador", latitude: -0.9677, longitude: -80.7089, latency: 110 },
     ],
   ],
-  "G-CLOUD-US-CENTRAL1": [
+  "US-CENTRAL1": [
     // Dataset 1: From Los Angeles to Kansas City, MO
     [
       { hop: 1, ip: "10.0.0.1", city: "Los Angeles, CA", latitude: 34.05, longitude: -118.25, latency: 3 },
@@ -155,7 +155,7 @@ const staticTracerouteData: Record<string, TracerouteHop[][]> = {
       { hop: 5, ip: "10.0.5.5", city: "Kansas City, MO", latitude: 39.10, longitude: -94.58, latency: 65 },
     ],
   ],
-  "G-CLOUD-US-EAST1": [
+  "US-EAST1": [
     // Dataset 1: From Los Angeles to Charleston, SC
     [
       { hop: 1, ip: "10.1.0.1", city: "Los Angeles, CA", latitude: 34.05, longitude: -118.25, latency: 3 },
@@ -205,7 +205,7 @@ const staticTracerouteData: Record<string, TracerouteHop[][]> = {
       { hop: 5, ip: "10.1.5.5", city: "Charleston, SC", latitude: 32.78, longitude: -79.93, latency: 65 },
     ],
   ],
-  "G-CLOUD-US-EAST4": [
+  "US-EAST4": [
     // Dataset 1: From Los Angeles to Ashburn, VA
     [
       { hop: 1, ip: "10.2.0.1", city: "Los Angeles, CA", latitude: 34.05, longitude: -118.25, latency: 3 },
@@ -255,7 +255,7 @@ const staticTracerouteData: Record<string, TracerouteHop[][]> = {
       { hop: 5, ip: "10.2.5.5", city: "Ashburn, VA", latitude: 39.04, longitude: -77.49, latency: 65 },
     ],
   ],
-  "G-CLOUD-US-WEST1": [
+  "US-WEST1": [
     // Dataset 1: From New York to The Dalles, OR
     [
       { hop: 1, ip: "10.3.0.1", city: "New York, NY", latitude: 40.71, longitude: -74.01, latency: 3 },
@@ -305,7 +305,7 @@ const staticTracerouteData: Record<string, TracerouteHop[][]> = {
       { hop: 5, ip: "10.3.5.5", city: "The Dalles, OR", latitude: 45.59, longitude: -121.18, latency: 65 },
     ],
   ],
-  "G-CLOUD-EUROPE-WEST4": [
+  "EUROPE-WEST4": [
     // Dataset 1: From London to Eemshaven, Netherlands
     [
       { hop: 1, ip: "10.4.0.1", city: "London, UK", latitude: 51.51, longitude: -0.13, latency: 3 },

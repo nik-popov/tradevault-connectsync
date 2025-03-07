@@ -1,42 +1,29 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Container, Flex, Text, Tabs, TabList, TabPanels, Tab, TabPanel } from "@chakra-ui/react";
-import EndpointSettings from "../../../components/EndpointSettings";
-import ProxyUsage from "../../../components/Usage";
-import Overview from "../../../components/Overview";
-import UserAgentDashboard from "./user-agents";
+import OverviewGSerp from "../../../components/OverviewGSerp";
+import LogsGSerp from "../../../components/LogsGSerp";
+import PlaygroundGSerp from "../../../components/PlaygroundGSerp";
+import ApiKeyGSerp from "../../../components/ApiKeyGSerp";
 
-// Define all Google SERP-specific endpoints
-const endpointData = {
-    "G-CLOUD-US-CENTRAL1": "https://us-central1-image-scraper-451516.cloudfunctions.net/main",
-    "G-CLOUD-US-EAST1": "https://us-east1-image-scraper-451516.cloudfunctions.net/main",
-    "G-CLOUD-EUROPE-WEST4": "https://europe-west4-image-scraper-451516.cloudfunctions.net/main",
-    "G-CLOUD-US-EAST4": "https://us-east4-image-scraper-451516.cloudfunctions.net/main",
-    "G-CLOUD-US-WEST1": "https://us-west1-image-scraper-451516.cloudfunctions.net/main",
-    "G-CLOUD-SOUTHAMERICA-WEST1": "https://southamerica-west1-image-scraper-451516.cloudfunctions.net/main",
-
-
-  }
 const GoogleSerpPage = () => {
-  const googleSerpEndpoints = Object.entries(endpointData).map(([id, url]) => ({
-        endpointId: id,
-        url,
-      }))
   const tabsConfig = [
-    { title: "Overview", component: () => <Overview endpointId="G-CLOUD-US-CENTRAL" /> },
-    { title: "Endpoint Status", component: () => <EndpointSettings endpoints={googleSerpEndpoints} /> },
-    { title: "Usage", component: () => <ProxyUsage /> },
-    { title: "User Agents", component: () => <UserAgentDashboard /> },
+    { title: "Overview", component: () => <OverviewGSerp /> },
+    { title: "Logs", component: () => <LogsGSerp /> },
+    { title: "Playground", component: () => <PlaygroundGSerp /> },
+    { title: "API Key", component: () => <ApiKeyGSerp /> },
   ];
 
   return (
     <Container maxW="full">
-      <Flex align="center" justify="space-between" py={6} flexWrap="wrap" gap={4}>
+      <Flex align="center" justify="space-between" py={6}>
         <Text fontSize="xl" fontWeight="bold">Google SERP API</Text>
         <Text fontSize="sm">Manage your Google SERP settings and endpoints.</Text>
       </Flex>
       <Tabs variant="enclosed">
         <TabList>
-          {tabsConfig.map((tab, index) => <Tab key={index}>{tab.title}</Tab>)}
+          {tabsConfig.map((tab, index) => (
+            <Tab key={index}>{tab.title}</Tab>
+          ))}
         </TabList>
         <TabPanels>
           {tabsConfig.map((tab, index) => (

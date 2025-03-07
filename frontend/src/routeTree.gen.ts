@@ -22,9 +22,9 @@ import { Route as LayoutSettingsImport } from './routes/_layout/settings'
 import { Route as LayoutItemsImport } from './routes/_layout/items'
 import { Route as LayoutAdminImport } from './routes/_layout/admin'
 import { Route as LayoutScrapingApiUserAgentsImport } from './routes/_layout/scraping-api/user-agents'
+import { Route as LayoutScrapingApiSearchProxiesImport } from './routes/_layout/scraping-api/search-proxies'
 import { Route as LayoutScrapingApiRequestImport } from './routes/_layout/scraping-api/request'
 import { Route as LayoutScrapingApiGoogleSerpImport } from './routes/_layout/scraping-api/google-serp'
-import { Route as LayoutScrapingApiGoogleImageSerpImport } from './routes/_layout/scraping-api/google-image-serp'
 import { Route as LayoutScrapingApiExploreImport } from './routes/_layout/scraping-api/explore'
 import { Route as LayoutProxiesResidentialMobileImport } from './routes/_layout/proxies/residential-mobile'
 import { Route as LayoutProxiesResidentialImport } from './routes/_layout/proxies/residential'
@@ -95,6 +95,12 @@ const LayoutScrapingApiUserAgentsRoute =
     getParentRoute: () => LayoutRoute,
   } as any)
 
+const LayoutScrapingApiSearchProxiesRoute =
+  LayoutScrapingApiSearchProxiesImport.update({
+    path: '/scraping-api/search-proxies',
+    getParentRoute: () => LayoutRoute,
+  } as any)
+
 const LayoutScrapingApiRequestRoute = LayoutScrapingApiRequestImport.update({
   path: '/scraping-api/request',
   getParentRoute: () => LayoutRoute,
@@ -103,12 +109,6 @@ const LayoutScrapingApiRequestRoute = LayoutScrapingApiRequestImport.update({
 const LayoutScrapingApiGoogleSerpRoute =
   LayoutScrapingApiGoogleSerpImport.update({
     path: '/scraping-api/google-serp',
-    getParentRoute: () => LayoutRoute,
-  } as any)
-
-const LayoutScrapingApiGoogleImageSerpRoute =
-  LayoutScrapingApiGoogleImageSerpImport.update({
-    path: '/scraping-api/google-image-serp',
     getParentRoute: () => LayoutRoute,
   } as any)
 
@@ -251,16 +251,16 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LayoutScrapingApiExploreImport
       parentRoute: typeof LayoutImport
     }
-    '/_layout/scraping-api/google-image-serp': {
-      preLoaderRoute: typeof LayoutScrapingApiGoogleImageSerpImport
-      parentRoute: typeof LayoutImport
-    }
     '/_layout/scraping-api/google-serp': {
       preLoaderRoute: typeof LayoutScrapingApiGoogleSerpImport
       parentRoute: typeof LayoutImport
     }
     '/_layout/scraping-api/request': {
       preLoaderRoute: typeof LayoutScrapingApiRequestImport
+      parentRoute: typeof LayoutImport
+    }
+    '/_layout/scraping-api/search-proxies': {
+      preLoaderRoute: typeof LayoutScrapingApiSearchProxiesImport
       parentRoute: typeof LayoutImport
     }
     '/_layout/scraping-api/user-agents': {
@@ -296,9 +296,9 @@ export const routeTree = rootRoute.addChildren([
     LayoutProxiesResidentialRoute,
     LayoutProxiesResidentialMobileRoute,
     LayoutScrapingApiExploreRoute,
-    LayoutScrapingApiGoogleImageSerpRoute,
     LayoutScrapingApiGoogleSerpRoute,
     LayoutScrapingApiRequestRoute,
+    LayoutScrapingApiSearchProxiesRoute,
     LayoutScrapingApiUserAgentsRoute,
     LayoutScrapingApiEndpointsEndpointIdRoute,
     LayoutScrapingApiEndpointsIndexRoute,
