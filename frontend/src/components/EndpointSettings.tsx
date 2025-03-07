@@ -153,15 +153,6 @@ const EndpointSettings = memo(({ endpointId, endpoints }: EndpointSettingsProps)
               _hover={{ borderColor: "gray.500" }}
               _focus={{ borderColor: "blue.400" }}
             />
-            <Button 
-              colorScheme="blue" 
-              onClick={handleRefresh}
-              isLoading={isRefreshing}
-              isDisabled={isRefreshing}
-              aria-label="Refresh endpoint status"
-            >
-              Refresh Status
-            </Button>
           </Flex>
         </Flex>
         <Divider my={4} borderColor="gray.600" />
