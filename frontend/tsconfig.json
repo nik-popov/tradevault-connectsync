@@ -9,6 +9,7 @@
     "allowImportingTsExtensions": true,
     "resolveJsonModule": true,
     "isolatedModules": true,
+    "types": ["node", "@types/react-leaflet"],
     "noEmit": true,
     "jsx": "react-jsx",
     "strict": false,
