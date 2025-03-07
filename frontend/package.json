@@ -44,6 +44,8 @@
     "@tanstack/router-devtools": "1.19.1",
     "@tanstack/router-vite-plugin": "1.19.0",
     "@types/react-leaflet": "^3.0.0",
+    "react-leaflet": "^4.2.1",
+    "leaflet": "^1.9.4",
     "@types/node": "^20.10.5",
     "@types/react": "^18.2.37",
     "@types/react-dom": "^18.2.15",
