@@ -9,10 +9,9 @@ RUN npm install
 
 COPY ./ /app/
 
-ARG VITE_API_URL=${VITE_API_URL}
+ARG VITE_API_URL=${VITE_API_URL} # Ensure this is set during build if required by Vite
 
 RUN npm run build
-
 
 # Stage 1, based on Nginx, to have only the compiled app, ready for production with Nginx
 FROM nginx:1
