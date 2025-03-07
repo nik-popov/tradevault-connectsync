@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useMemo, useCallback } from "react";
 import {
   Box,
   Text,
@@ -21,12 +21,12 @@ import {
   CardBody,
   IconButton,
   Tooltip,
+  Alert,
+  AlertIcon,
 } from "@chakra-ui/react";
 import { CloseIcon } from "@chakra-ui/icons";
 import {
   ResponsiveContainer,
-  LineChart,
-  Line,
   BarChart,
   Bar,
   CartesianGrid,
@@ -34,8 +34,9 @@ import {
   YAxis,
   Tooltip as RechartsTooltip,
 } from "recharts";
+import { debounce } from "lodash";
 
-// Interfaces
+// Interfaces for TypeScript type safety
 interface TimeSeries {
   hour: string;
   count: number;
@@ -59,7 +60,7 @@ interface EndpointData {
   queries: Query[];
 }
 
-// Chart options with colors and Y-axis labels
+// Chart options with labels and colors
 const chartOptions = [
   { key: "requestsOverTime", label: "Requests Over Time", color: "#805AD5", yAxisLabel: "Requests" },
   { key: "categoryDistribution", label: "Category Distribution", color: "#38A169", yAxisLabel: "Total Queries" },
@@ -68,7 +69,7 @@ const chartOptions = [
   { key: "keyMetrics", label: "Key Metrics", color: "#D69E2E", yAxisLabel: "Value" },
 ];
 
-// Comparison options with matching colors
+// Comparison options for each chart type
 const compareOptions: { [key: string]: { value: string; label: string; color: string }[] } = {
   requestsOverTime: [
     { value: "totalRequests", label: "Total Requests", color: "#805AD5" },
@@ -106,13 +107,14 @@ const compareOptions: { [key: string]: { value: string; label: string; color: st
 const BAR_COLORS = ["#805AD5", "#38A169", "#DD6B20", "#C53030", "#D69E2E", "#9F7AEA", "#68D391", "#F6AD55", "#F56565", "#ECC94B"];
 
 const OverviewGSerp: React.FC = () => {
+  // State declarations
   const [isLoading, setIsLoading] = useState(true);
   const [selectedChart, setSelectedChart] = useState("requestsOverTime");
   const [selectedQuery, setSelectedQuery] = useState<Query | null>(null);
   const [showLabels, setShowLabels] = useState(true);
   const [endpointData, setEndpointData] = useState<EndpointData[]>([]);
   const [chartData, setChartData] = useState<any>({});
-  // Initialize compares as empty arrays, so no metrics alter the chart by default
+  const [error, setError] = useState<string | null>(null);
   const [compares, setCompares] = useState<{ [key: string]: string[] }>({
     requestsOverTime: [],
     categoryDistribution: [],
@@ -121,18 +123,24 @@ const OverviewGSerp: React.FC = () => {
     keyMetrics: [],
   });
 
-  // Compute totalRequests based on endpointData
+  // Memoized total requests calculation
   const totalRequests = useMemo(() => {
     return endpointData.reduce((sum, ep) => sum + ep.requestsToday, 0);
   }, [endpointData]);
 
-  // Fetch data from GitHub
-  const fetchData = async () => {
+  // Data fetching function
+  const fetchData = useCallback(async () => {
     setIsLoading(true);
+    setError(null);
     try {
       const response = await fetch("https://s3.us-east-1.amazonaws.com/iconluxury.group/google-serp-overview.json");
       if (!response.ok) throw new Error("Failed to fetch data");
       const data: EndpointData[] = await response.json();
+
+      // Validate data structure
+      if (!Array.isArray(data) || !data.every(ep => 'endpoint' in ep && 'queries' in ep)) {
+        throw new Error("Invalid data format");
+      }
 
       // Enhance queries with endpoint-specific details
       const enhancedData = data.map((endpoint) => ({
@@ -150,11 +158,11 @@ const OverviewGSerp: React.FC = () => {
 
       setEndpointData(enhancedData);
 
-      // Prepare chart data (base data only)
+      // Prepare chart data
       const totalSuccess = enhancedData.reduce((sum, ep) => sum + ep.requestsToday * ep.successRate, 0);
       const overallSuccessRate = totalRequests > 0 ? totalSuccess / totalRequests : 0;
 
-      // Requests Over Time (base data)
+      // Requests Over Time
       const requestsOverTime = Array.from({ length: 24 }, (_, i) => {
         const hour = `${i}:00`;
         const total = enhancedData
@@ -163,7 +171,7 @@ const OverviewGSerp: React.FC = () => {
         return { hour, value: total };
       });
 
-      // Category Distribution (base data)
+      // Category Distribution
       const categoryMap = new Map<string, number>();
       enhancedData.flatMap((ep) => ep.queries).forEach((q) => {
         categoryMap.set(q.category, (categoryMap.get(q.category) || 0) + q.count);
@@ -173,7 +181,7 @@ const OverviewGSerp: React.FC = () => {
         value: count,
       }));
 
-      // Top Queries (base data)
+      // Top Queries
       const queryMap = new Map<string, number>();
       enhancedData.flatMap((ep) => ep.queries).forEach((q) => {
         queryMap.set(q.query, (queryMap.get(q.query) || 0) + q.count);
@@ -183,13 +191,13 @@ const OverviewGSerp: React.FC = () => {
         .slice(0, 10)
         .map(([query, count]) => ({ name: query, value: count }));
 
-      // Success Rate (base data)
+      // Success Rate
       const successRate = enhancedData.map((ep) => ({
         name: ep.endpoint,
         value: ep.successRate * 100, // Convert to percentage
       }));
 
-      // Key Metrics (base data)
+      // Key Metrics
       const keyMetrics = [
         { name: "Total Requests", value: totalRequests },
         { name: "Success Rate", value: overallSuccessRate * 100 }, // Convert to percentage
@@ -207,24 +215,26 @@ const OverviewGSerp: React.FC = () => {
       console.error("Error fetching data:", error);
       setEndpointData([]);
       setChartData({});
+      setError("Failed to load data. Please try again later.");
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [totalRequests]);
 
+  // Fetch data on mount
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [fetchData]);
 
+  // Reset selected query when chart changes
   useEffect(() => {
     setSelectedQuery(null);
   }, [selectedChart]);
 
-  // Update chart data when compares change
+  // Update chart data based on selected comparisons
   const updateChartData = useMemo(() => {
     const updatedData = { ...chartData };
 
-    // Add comparison metrics to chart data only when selected
     Object.keys(compares).forEach((chartKey) => {
       const selectedCompares = compares[chartKey];
       const baseData = chartData[chartKey] || [];
@@ -244,6 +254,7 @@ const OverviewGSerp: React.FC = () => {
               minHourly,
           });
         });
+        updatedData[chartKey] = selectedCompares.length ? additionalData : baseData;
       } else if (chartKey === "categoryDistribution") {
         const totalQueries = baseData.reduce((sum, d) => sum + d.value, 0);
         const avgPerCategory = totalQueries / baseData.length;
@@ -259,6 +270,7 @@ const OverviewGSerp: React.FC = () => {
               uniqueCategories,
           });
         });
+        updatedData[chartKey] = [...baseData, ...additionalData];
       } else if (chartKey === "topQueries") {
         const totalQueryCount = baseData.reduce((sum, d) => sum + d.value, 0);
         const avgQueryCount = totalQueryCount / baseData.length;
@@ -274,6 +286,7 @@ const OverviewGSerp: React.FC = () => {
               featuredQueries,
           });
         });
+        updatedData[chartKey] = [...baseData, ...additionalData];
       } else if (chartKey === "successRate") {
         const overallSuccessRate = totalRequests > 0 ? (endpointData.reduce((sum, ep) => sum + ep.requestsToday * ep.successRate, 0) / totalRequests) * 100 : 0;
         const avgSuccess = baseData.reduce((sum, d) => sum + d.value, 0) / baseData.length;
@@ -288,6 +301,7 @@ const OverviewGSerp: React.FC = () => {
               variance,
           });
         });
+        updatedData[chartKey] = [...baseData, ...additionalData];
       } else if (chartKey === "keyMetrics") {
         const avgRequests = totalRequests / endpointData.length;
         selectedCompares.forEach((compare) => {
@@ -300,9 +314,8 @@ const OverviewGSerp: React.FC = () => {
               avgRequests,
           });
         });
+        updatedData[chartKey] = [...baseData, ...additionalData];
       }
-
-      updatedData[chartKey] = [...baseData, ...additionalData];
     });
 
     return updatedData;
@@ -339,7 +352,7 @@ const OverviewGSerp: React.FC = () => {
     .sort((a, b) => b.count - a.count)
     .slice(0, 10);
 
-  // Calculate summary stats (always include all metrics)
+  // Calculate summary statistics
   const getSummaryStats = (selectedChart: string) => {
     const data = chartData[selectedChart] || [];
     if (!data.length) return [];
@@ -400,7 +413,7 @@ const OverviewGSerp: React.FC = () => {
     }
   };
 
-  // Render summary in grid layout
+  // Render summary section
   const renderSummary = () => {
     const stats = getSummaryStats(selectedChart);
     const summaryContent = selectedQuery ? (
@@ -421,12 +434,7 @@ const OverviewGSerp: React.FC = () => {
           </Box>
         )}
       </>
-
-    ) :
-    
-    (
-
-
+    ) : (
       <Grid templateColumns="repeat(4, 1fr)" gap={4}>
         {stats.map((stat, index) => (
           <Stat key={index}>
@@ -461,17 +469,17 @@ const OverviewGSerp: React.FC = () => {
     );
   };
 
-  // Toggle compare function
-  const toggleCompare = (chartKey: string, value: string) => {
+  // Toggle comparison metrics
+  const toggleCompare = useCallback((chartKey: string, value: string) => {
     setCompares((prev) => ({
       ...prev,
       [chartKey]: prev[chartKey].includes(value)
         ? prev[chartKey].filter((v) => v !== value)
         : [...prev[chartKey], value],
     }));
-  };
+  }, []);
 
-  // Get selected chart option
+  // Get selected chart options
   const selectedOption = chartOptions.find((opt) => opt.key === selectedChart)!;
   const selectedColor = selectedOption.color;
   const yAxisLabel = selectedOption.yAxisLabel;
@@ -489,7 +497,7 @@ const OverviewGSerp: React.FC = () => {
 
   return (
     <Box p={4} width="100%">
-      {/* Header with title and controls */}
+      {/* Header */}
       <Flex justify="space-between" align="center" mb={4} wrap="wrap" gap={2}>
         <Text fontSize="lg" fontWeight="bold">OverviewGSerp</Text>
         <Flex align="center" gap={2} ml="auto">
@@ -497,6 +505,7 @@ const OverviewGSerp: React.FC = () => {
             {chartOptions.map((option) => (
               <Tooltip key={option.key} label={`View ${option.label}`}>
                 <Button
+                  aria-label={`View ${option.label}`}
                   bg={selectedChart === option.key ? option.color : "gray.700"}
                   color={selectedChart === option.key ? "white" : "gray.200"}
                   borderColor={option.color}
@@ -509,7 +518,7 @@ const OverviewGSerp: React.FC = () => {
             ))}
           </ButtonGroup>
           <Tooltip label="Refresh overview data immediately">
-            <Button size="sm" colorScheme="blue" onClick={fetchData} isLoading={isLoading}>
+            <Button size="sm" colorScheme="blue" onClick={debounce(fetchData, 500)} isLoading={isLoading}>
               Refresh Now
             </Button>
           </Tooltip>
@@ -526,12 +535,18 @@ const OverviewGSerp: React.FC = () => {
       </Flex>
 
       {isLoading ? (
-        <Flex justify="center" align="center" h="200px">
+        <Flex justify="center" align="center" h="200px" flexDirection="column" gap={4}>
           <Spinner size="xl" color="blue.500" />
+          <Text>Loading SERP data...</Text>
         </Flex>
+      ) : error ? (
+        <Alert status="error" borderRadius="md">
+          <AlertIcon />
+          {error}
+        </Alert>
       ) : (
         <>
-          {/* Chart and Summary Grid */}
+          {/* Chart and Summary */}
           <Grid templateColumns={{ base: "1fr", md: "1fr 1fr" }} gap={6} mb={6} alignItems="start">
             <GridItem>
               <Text fontSize="md" fontWeight="semibold" mb={2}>
@@ -539,108 +554,83 @@ const OverviewGSerp: React.FC = () => {
               </Text>
               <Box height="400px" borderRadius="md" overflow="hidden" shadow="md" bg="gray.700">
                 <ResponsiveContainer width="100%" height="100%">
-                  {selectedChart === "requestsOverTime" ? (
-                    <LineChart
-                      data={updateChartData.requestsOverTime}
-                      margin={{ top: 20, right: 20, bottom: showLabels ? 60 : 20, left: showLabels ? 40 : 20 }}
-                    >
-                      <CartesianGrid stroke="gray.600" />
-                      <XAxis
-                        dataKey={compares[selectedChart].length ? "name" : "hour"}
-                        stroke="#FFFFFF"
-                        tick={{ fill: "#FFFFFF", fontSize: 12, dy: -10 }}
-                        tickMargin={10}
-                        interval="preserveStartEnd"
-                        label={
-                          showLabels
-                            ? { value: compares[selectedChart].length ? "Metrics" : "Time (Hour)", position: "insideBottom", offset: -20, fill: "#FFFFFF", fontSize: 14 }
-                            : undefined
-                        }
-                      />
-                      <YAxis
-                        stroke="#FFFFFF"
-                        tick={{ fill: "#FFFFFF", fontSize: 12 }}
-                        tickMargin={10}
-                        label={
-                          showLabels
-                            ? { value: yAxisLabel, angle: -45, position: "insideLeft", offset: -20, fill: "#FFFFFF", fontSize: 14 }
-                            : undefined
-                        }
-                      />
-                      <RechartsTooltip contentStyle={{ backgroundColor: "gray.700", color: "white" }} />
-                      {compares[selectedChart].length ? (
-                        updateChartData.requestsOverTime.map((_, index) => (
-                          <Bar key={index} dataKey="value" fill={BAR_COLORS[index % BAR_COLORS.length]} />
-                        ))
-                      ) : (
-                        <Line type="monotone" dataKey="value" stroke={selectedColor} />
-                      )}
-                    </LineChart>
-                  ) : (
-                    <BarChart
-                      data={updateChartData[selectedChart]}
-                      margin={{ top: 20, right: 20, bottom: showLabels ? 60 : 20, left: showLabels ? 40 : 20 }}
-                    >
-                      <CartesianGrid stroke="gray.600" />
-                      <XAxis
-                        dataKey="name"
-                        stroke="#FFFFFF"
-                        tick={{ fill: "#FFFFFF", fontSize: 12 }}
-                        tickMargin={10}
-                        label={
-                          showLabels
-                            ? { value: selectedChart === "keyMetrics" ? "Metrics" : selectedChart === "categoryDistribution" ? "Categories" : "Queries", position: "insideBottom", offset: -20, fill: "#FFFFFF", fontSize: 14 }
-                            : undefined
-                        }
-                      />
-                      <YAxis
-                        stroke="#FFFFFF"
-                        tick={{ fill: "#FFFFFF", fontSize: 12 }}
-                        tickMargin={10}
-                        domain={selectedChart === "successRate" ? [0, 100] : undefined}
-                        label={
-                          showLabels
-                            ? { value: yAxisLabel, angle: -45, position: "insideLeft", offset: -20, fill: "#FFFFFF", fontSize: 14 }
-                            : undefined
-                        }
-                      />
-                      <RechartsTooltip contentStyle={{ backgroundColor: "gray.700", color: "white" }} />
-                      {updateChartData[selectedChart].map((_, index) => (
-                        <Bar key={index} dataKey="value" fill={BAR_COLORS[index % BAR_COLORS.length]} />
-                      ))}
-                    </BarChart>
-                  )}
+                <BarChart
+  data={updateChartData[selectedChart]}
+  margin={{ top: 20, right: 20, bottom: showLabels ? 60 : 20, left: showLabels ? 40 : 20 }}
+>
+  <CartesianGrid stroke="gray.600" />
+  <XAxis
+    dataKey={selectedChart === "requestsOverTime" && !compares[selectedChart].length ? "hour" : "name"}
+    stroke="#FFFFFF"
+    tick={{ fill: "#FFFFFF", fontSize: 12, dy: -10 }}
+    tickMargin={10}
+    interval="preserveStartEnd"
+    label={
+      showLabels
+        ? {
+            value:
+              selectedChart === "requestsOverTime" && !compares[selectedChart].length
+                ? "Time (Hour)"
+                : selectedChart === "keyMetrics"
+                ? "Metrics"
+                : selectedChart === "categoryDistribution"
+                ? "Categories"
+                : selectedChart === "successRate"
+                ? "Endpoints"
+                : "Queries",
+            position: "insideBottom",
+            offset: -20,
+            fill: "#FFFFFF",
+            fontSize: 14,
+          }
+        : undefined
+    }
+  />
+  <YAxis
+    stroke="#FFFFFF"
+    tick={{ fill: "#FFFFFF", fontSize: 12 }}
+    tickMargin={10}
+    domain={selectedChart === "successRate" ? [0, 100] : undefined}
+    label={
+      showLabels
+        ? { value: yAxisLabel, angle: -45, position: "insideLeft", offset: -20, fill: "#FFFFFF", fontSize: 14 }
+        : undefined
+    }
+  />
+  <RechartsTooltip contentStyle={{ backgroundColor: "gray.700", color: "white" }} />
+  <Bar dataKey="value" fill={selectedColor} />
+</BarChart>
                 </ResponsiveContainer>
               </Box>
             </GridItem>
             <GridItem>
-  {renderSummary()}
-  {selectedChart !== "requestsOverTime" && (
-    <Box mt={6}>
-      <Text fontSize="md" fontWeight="semibold" mb={2}>
-        Compare To
-      </Text>
-      <Flex direction="column" gap={2}>
-        {compareRows.map((row, rowIndex) => (
-          <ButtonGroup key={rowIndex} size="sm" variant="outline" isAttached={false}>
-            {row.map((option) => (
-              <Button
-                key={option.value}
-                bg={compares[selectedChart].includes(option.value) ? option.color : "gray.600"}
-                color={compares[selectedChart].includes(option.value) ? "white" : "gray.200"}
-                borderColor={option.color}
-                _hover={{ bg: `${option.color}80` }}
-                onClick={() => toggleCompare(selectedChart, option.value)}
-              >
-                {option.label}
-              </Button>
-            ))}
-          </ButtonGroup>
-        ))}
-      </Flex>
-    </Box>
-  )}
-</GridItem>
+              {renderSummary()}
+              {selectedChart !== "requestsOverTime" && (
+                <Box mt={6}>
+                  <Text fontSize="md" fontWeight="semibold" mb={2}>
+                    Compare To
+                  </Text>
+                  <Flex direction="column" gap={2}>
+                    {compareRows.map((row, rowIndex) => (
+                      <ButtonGroup key={rowIndex} size="sm" variant="outline" isAttached={false}>
+                        {row.map((option) => (
+                          <Button
+                            key={option.value}
+                            bg={compares[selectedChart].includes(option.value) ? option.color : "gray.600"}
+                            color={compares[selectedChart].includes(option.value) ? "white" : "gray.200"}
+                            borderColor={option.color}
+                            _hover={{ bg: `${option.color}80` }}
+                            onClick={() => toggleCompare(selectedChart, option.value)}
+                          >
+                            {option.label}
+                          </Button>
+                        ))}
+                      </ButtonGroup>
+                    ))}
+                  </Flex>
+                </Box>
+              )}
+            </GridItem>
           </Grid>
 
           {/* Top Queries Table */}
