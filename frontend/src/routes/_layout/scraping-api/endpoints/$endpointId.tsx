@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { createFileRoute, useParams } from "@tanstack/react-router";
 import {
   Container,
@@ -32,19 +32,7 @@ import {
 import EndpointSettings from "../../../../components/EndpointSettings";
 import EndpointUsage from "../../../../components/ProxyUsage";
 import Overview from "../../../../components/Overview";
-import "leaflet/dist/leaflet.css";
-import { MapContainer, TileLayer, Marker, Popup, useMap, Polyline } from "react-leaflet";
-import { Marker as LeafletMarker } from "leaflet";
-import "leaflet-defaulticon-compatibility";
-// Define endpoint data
-const endpointData: Record<string, string> = {
-  "G-CLOUD-SOUTHAMERICA-WEST1": "https://southamerica-west1-image-scraper-451516.cloudfunctions.net/main",
-  "G-CLOUD-US-CENTRAL1": "https://us-central1-image-scraper-451516.cloudfunctions.net/main",
-  "G-CLOUD-US-EAST1": "https://us-east1-image-scraper-451516.cloudfunctions.net/main",
-  "G-CLOUD-US-EAST4": "https://us-east4-image-scraper-451516.cloudfunctions.net/main",
-  "G-CLOUD-US-WEST1": "https://us-west1-image-scraper-451516.cloudfunctions.net/main",
-  "G-CLOUD-EUROPE-WEST4": "https://europe-west4-image-scraper-451516.cloudfunctions.net/main",
-};
+import { LoadScript, GoogleMap, Marker, Polyline } from "@react-google-maps/api";
 
 // Interface for traceroute hop data
 interface TracerouteHop {
@@ -56,7 +44,16 @@ interface TracerouteHop {
   latency: number;
 }
 
-// Static traceroute data with two datasets per endpoint
+const endpointData: Record<string, string> = {
+  "G-CLOUD-SOUTHAMERICA-WEST1": "https://southamerica-west1-image-scraper-451516.cloudfunctions.net/main",
+  "G-CLOUD-US-CENTRAL1": "https://us-central1-image-scraper-451516.cloudfunctions.net/main",
+  "G-CLOUD-US-EAST1": "https://us-east1-image-scraper-451516.cloudfunctions.net/main",
+  "G-CLOUD-US-EAST4": "https://us-east4-image-scraper-451516.cloudfunctions.net/main",
+  "G-CLOUD-US-WEST1": "https://us-west1-image-scraper-451516.cloudfunctions.net/main",
+  "G-CLOUD-EUROPE-WEST4": "https://europe-west4-image-scraper-451516.cloudfunctions.net/main",
+};
+
+// Static traceroute data (unchanged from your input)
 const staticTracerouteData: Record<string, TracerouteHop[][]> = {
   "G-CLOUD-SOUTHAMERICA-WEST1": [
     [
@@ -81,6 +78,7 @@ const staticTracerouteData: Record<string, TracerouteHop[][]> = {
       { hop: 3, ip: "34.67.89.12", city: "Council Bluffs, IA", latitude: 41.2619, longitude: -95.8608, latency: 30 },
       { hop: 4, ip: "192.34.56.78", city: "St. Louis, MO", latitude: 38.6270, longitude: -90.1994, latency: 45 },
       { hop: 5, ip: "34.102.34.56", city: "Omaha, NE", latitude: 41.2565, longitude: -95.9345, latency: 60 },
+      { hop: 6, ip: "98.108.2.52", city: "Omaha, NE", latitude: 40.2565, longitude: -80.9345, latency: 60 },
     ],
     [
       { hop: 1, ip: "10.0.0.2", city: "Springfield, MO", latitude: 37.2089, longitude: -93.2923, latency: 4 },
@@ -156,24 +154,41 @@ const staticTracerouteData: Record<string, TracerouteHop[][]> = {
   ],
 };
 
-interface TracerouteHop {
-  hop: number;
-  ip: string;
-  city: string;
-  latitude: number;
-  longitude: number;
-  latency: number;
-}
-
-const MapUpdater: React.FC<{ hops: TracerouteHop[] }> = ({ hops }) => {
-  const map = useMap();
+// MapUpdater component
+const MapUpdater: React.FC<{ hops: TracerouteHop[]; map: google.maps.Map | null }> = ({ hops, map }) => {
   useEffect(() => {
-    if (hops.length > 0) {
-      const bounds = hops.map((hop) => [hop.latitude, hop.longitude] as [number, number]);
-      map.fitBounds(bounds, { padding: [50, 50] });
+    if (map && hops.length > 0) {
+      const bounds = new google.maps.LatLngBounds();
+      hops.forEach((hop) => bounds.extend({ lat: hop.latitude, lng: hop.longitude }));
+      map.fitBounds(bounds, 50);
+      console.log("Map bounds set with hops:", hops);
     }
   }, [hops, map]);
   return null;
+};
+
+// LoadScript wrapper to ensure single load
+const LoadScriptOnce: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const [loaded, setLoaded] = useState(false);
+
+  return (
+    <LoadScript
+      googleMapsApiKey="AIzaSyCGkpSEixfDAVnE3UWw-8v9pd6L3OFXvM0" // Replace if this key doesn’t work
+      onLoad={() => {
+        if (!loaded) {
+          console.log("Google Maps API loaded successfully");
+          setLoaded(true);
+        } else {
+          console.log("Google Maps API already loaded");
+        }
+      }}
+      onError={(e) => {
+        console.error("Google Maps API failed to load:", e);
+      }}
+    >
+      {loaded && children}
+    </LoadScript>
+  );
 };
 
 const EndpointDetailPage = () => {
@@ -186,13 +201,7 @@ const EndpointDetailPage = () => {
   const [dataSetIndex, setDataSetIndex] = useState<number>(0);
   const [showMarkers, setShowMarkers] = useState(true);
   const [showPolyline, setShowPolyline] = useState(true);
-  const firstMarkerRef = useRef<LeafletMarker | null>(null);
-
-  useEffect(() => {
-    if (firstMarkerRef.current) {
-      firstMarkerRef.current.openPopup();
-    }
-  }, [tracerouteData]);
+  const [map, setMap] = useState<google.maps.Map | null>(null);
 
   const fetchTracerouteData = async () => {
     setIsLoading(true);
@@ -204,10 +213,12 @@ const EndpointDetailPage = () => {
       const datasets = staticTracerouteData[endpointId] || [];
       if (datasets.length === 0) {
         setTracerouteData([]);
+        console.log("No datasets found for endpoint:", endpointId);
         return;
       }
 
       const data = datasets[dataSetIndex];
+      console.log("Fetching traceroute data:", data);
       setTracerouteData(data);
       setDataSetIndex((prev) => (prev === 0 ? 1 : 0));
     } catch (err) {
@@ -219,16 +230,6 @@ const EndpointDetailPage = () => {
     }
   };
 
-  const copyTracerouteData = () => {
-    const jsonData = JSON.stringify(tracerouteData, null, 2);
-    navigator.clipboard.writeText(jsonData).then(() => {
-      alert("Traceroute data copied to clipboard!");
-    }).catch((err) => {
-      console.error("Failed to copy data:", err);
-      alert("Failed to copy data to clipboard.");
-    });
-  };
-
   useEffect(() => {
     fetchTracerouteData();
     let interval: NodeJS.Timeout;
@@ -238,89 +239,68 @@ const EndpointDetailPage = () => {
     return () => clearInterval(interval);
   }, [endpointId, autoRefresh, refreshInterval]);
 
+  // Memoize the polyline path
+  const polylinePath = useMemo(() => {
+    return tracerouteData.map((hop) => ({ lat: hop.latitude, lng: hop.longitude }));
+  }, [tracerouteData]);
+
   const tabsConfig = [
     { title: "Overview", component: () => <Overview toolId={endpointId} /> },
-    {
-      title: "Settings",
-      component: () => (
-        <Box>
-          <Text fontSize="lg" fontWeight="bold" mb={4}>Traceroute Settings</Text>
-          <Flex direction="column" gap={4}>
-            <Flex align="center">
-              <Text mr={2}>Auto-Refresh:</Text>
-              <Button
-                size="sm"
-                colorScheme={autoRefresh ? "green" : "gray"}
-                onClick={() => setAutoRefresh(!autoRefresh)}
-              >
-                {autoRefresh ? "Enabled" : "Disabled"}
-              </Button>
-            </Flex>
-            {autoRefresh && (
-              <Flex align="center">
-                <Text mr={2}>Refresh Interval (seconds):</Text>
-                <Input
-                  size="sm"
-                  type="number"
-                  value={refreshInterval / 1000}
-                  onChange={(e) => setRefreshInterval(Math.max(30, Number(e.target.value)) * 1000)}
-                  width="100px"
-                />
-              </Flex>
-            )}
-            <Flex align="center">
-              <Text mr={2}>Show Markers:</Text>
-              <Button
-                size="sm"
-                colorScheme={showMarkers ? "green" : "gray"}
-                onClick={() => setShowMarkers(!showMarkers)}
-              >
-                {showMarkers ? "Enabled" : "Disabled"}
-              </Button>
-            </Flex>
-            <Flex align="center">
-              <Text mr={2}>Show Polyline:</Text>
-              <Button
-                size="sm"
-                colorScheme={showPolyline ? "green" : "gray"}
-                onClick={() => setShowPolyline(!showPolyline)}
-              >
-                {showPolyline ? "Enabled" : "Disabled"}
-              </Button>
-            </Flex>
-          </Flex>
-        </Box>
-      ),
-    },
     { title: "Usage", component: () => <EndpointUsage /> },
     {
       title: "Traceroute",
       component: () => (
         <Box p={4}>
-          <Flex justify="space-between" align="center" mb={4}>
-            <Text fontSize="lg" fontWeight="bold">
-              Traceroute for {endpointId}
-            </Text>
-            <Flex gap={2}>
-              <Tooltip label="Refresh traceroute data immediately">
+          <Flex justify="space-between" align="center" mb={4} wrap="wrap" gap={2}>
+            <Text fontSize="lg" fontWeight="bold">Traceroute for {endpointId}</Text>
+            <Flex align="center" gap={2} wrap="wrap">
+              {/* Nested Flex container for Auto Refresh and Interval */}
+              <Flex direction="row-reverse" align="center" gap={2}>
                 <Button
                   size="sm"
-                  colorScheme="blue"
-                  onClick={fetchTracerouteData}
-                  isLoading={isLoading}
+                  colorScheme={autoRefresh ? "green" : "gray"}
+                  onClick={() => setAutoRefresh(!autoRefresh)}
                 >
+                  {autoRefresh ? "Auto Refresh: On" : "Auto Refresh: Off"}
+                </Button>
+                {autoRefresh && (
+                  <Flex align="center" gap={1}>
+                    <Input
+                      size="sm"
+                      type="number"
+                      value={refreshInterval / 1000}
+                      onChange={(e) => setRefreshInterval(Math.max(30, Number(e.target.value)) * 1000)}
+                      width="60px"
+                    />
+                    <Button size="sm" colorScheme="gray" isDisabled>
+                      Interval (s):
+                    </Button>
+                  </Flex>
+                )}
+              </Flex>
+              {/* Other buttons */}
+              <Tooltip label="Refresh traceroute data immediately">
+                <Button size="sm" colorScheme="blue" onClick={fetchTracerouteData} isLoading={isLoading}>
                   Refresh Now
                 </Button>
               </Tooltip>
-              {tracerouteData.length > 0 && (
-                <Tooltip label="Copy traceroute data as JSON">
-                  <Button size="sm" colorScheme="gray" onClick={copyTracerouteData}>
-                    Copy Data
-                  </Button>
-                </Tooltip>
-              )}
+              <Button
+                size="sm"
+                colorScheme={showMarkers ? "green" : "gray"}
+                onClick={() => setShowMarkers(!showMarkers)}
+              >
+                {showMarkers ? "Map Markers: On" : "Map Markers: Off"}
+              </Button>
+              <Button
+                size="sm"
+                colorScheme={showPolyline ? "green" : "gray"}
+                onClick={() => setShowPolyline(!showPolyline)}
+              >
+                {showPolyline ? "Map Polyline: On" : "Map Polyline: Off"}
+              </Button>
             </Flex>
           </Flex>
+    
           {isLoading ? (
             <Flex justify="center" align="center" h="200px">
               <Spinner size="xl" color="blue.500" />
@@ -331,44 +311,47 @@ const EndpointDetailPage = () => {
             <>
               <Grid templateColumns={{ base: "1fr", md: "1fr 1fr" }} gap={6} mb={6}>
                 <GridItem>
-                  <Text fontSize="md" fontWeight="semibold" mb={2}>Map</Text>
+                  <Text fontSize="md" fontWeight="semibold" mb={2}>Traceroute Map</Text>
                   <Box height="400px" borderRadius="md" overflow="hidden" shadow="md">
-                    <MapContainer
-                      center={[0, 0]}
+                    <GoogleMap
+                      mapContainerStyle={{ height: "100%", width: "100%" }}
                       zoom={3}
-                      style={{ height: "100%", width: "100%" }}
+                      center={
+                        tracerouteData.length > 0
+                          ? { lat: tracerouteData[0].latitude, lng: tracerouteData[0].longitude }
+                          : { lat: 0, lng: 0 }
+                      }
+                      onLoad={(mapInstance) => {
+                        setMap(mapInstance);
+                        console.log("Map instance loaded");
+                      }}
+                      onUnmount={() => setMap(null)}
                     >
-                      <TileLayer
-                        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                        attribution='© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                      />
-                      <MapUpdater hops={tracerouteData} />
+                      <MapUpdater hops={tracerouteData} map={map} />
                       {showMarkers &&
-                        tracerouteData.map((hop, index) => (
+                        tracerouteData.map((hop) => (
                           <Marker
                             key={hop.hop}
-                            position={[hop.latitude, hop.longitude]}
-                            ref={index === 0 ? firstMarkerRef : null}
-                          >
-                            <Popup>
-                              Hop {hop.hop}: {hop.city} ({hop.ip})
-                              <br />
-                              Latency: {hop.latency}ms
-                            </Popup>
-                          </Marker>
+                            position={{ lat: hop.latitude, lng: hop.longitude }}
+                            title={`Hop ${hop.hop}: ${hop.city} (${hop.ip}) - ${hop.latency}ms`}
+                          />
                         ))}
-                      {showPolyline && (
+                      {showPolyline && polylinePath.length > 1 && (
                         <Polyline
-                          positions={tracerouteData.map((hop) => [hop.latitude, hop.longitude])}
-                          color="blue"
-                          weight={2}
+                          path={polylinePath}
+                          options={{ strokeColor: "#0000FF", strokeWeight: 2, strokeOpacity: 1 }}
                         />
                       )}
-                    </MapContainer>
+                    </GoogleMap>
+                    {!map && !error && (
+                      <Flex justify="center" align="center" h="100%">
+                        <Text>Loading Google Maps...</Text>
+                      </Flex>
+                    )}
                   </Box>
                 </GridItem>
                 <GridItem>
-                  <Text fontSize="md" fontWeight="semibold" mb={2}>Details</Text>
+                  <Text fontSize="md" fontWeight="semibold" mb={2}>Traceroute Details</Text>
                   <Card shadow="md" borderWidth="1px">
                     <CardBody>
                       <Stat>
@@ -391,7 +374,7 @@ const EndpointDetailPage = () => {
                   </Card>
                 </GridItem>
               </Grid>
-              <Text fontSize="md" fontWeight="semibold" mb={2}>Trace Locations</Text>
+              <Text fontSize="md" fontWeight="semibold" mb={2}>Traceroute Locations</Text>
               <Table variant="simple" size="sm" shadow="md" borderWidth="1px" borderRadius="md">
                 <Thead>
                   <Tr>
@@ -420,15 +403,13 @@ const EndpointDetailPage = () => {
           ) : (
             <Text color="gray.500">No traceroute data available for this endpoint.</Text>
           )}
-          <Text mt={4} fontSize="sm" color="gray.500">
-            Traceroute data alternates between two static datasets on refresh to simulate changing routes. Latency represents the simulated delay to each hop.
-          </Text>
         </Box>
       ),
     },
   ];
 
   return (
+    <LoadScriptOnce>
     <Container maxW="full">
       <Flex align="center" justify="space-between" py={6} flexWrap="wrap" gap={4}>
         <Box textAlign="left" flex="1">
@@ -449,6 +430,7 @@ const EndpointDetailPage = () => {
         </TabPanels>
       </Tabs>
     </Container>
+    </LoadScriptOnce>
   );
 };
 
