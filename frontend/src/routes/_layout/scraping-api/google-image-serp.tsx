@@ -6,7 +6,7 @@ import Overview from "../../../components/Overview";
 
 const GoogleImageSerp = () => {
   const tabsConfig = [
-    { title: "Overview", component: () => <Overview toolId="google-image-serp" /> },
+    { title: "Overview", component: () => <Overview endpointId="G-CLOUD-US-CENTRAL" /> },
     { title: "Endpoint Status", component: () => <ProxySettings /> },
     { title: "Usage", component: () => <ProxyUsage /> },
   ];
