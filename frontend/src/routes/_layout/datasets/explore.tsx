@@ -95,7 +95,7 @@ function Explore(): JSX.Element {
       ) : isFullyDeactivated ? (
         <Flex justify="space-between" align="center" w="full" p={4} bg="red.50" borderRadius="md">
           <Text>Your subscription has been deactivated. Please renew to access datasets.</Text>
-          <Button colorScheme="red" onClick={() => navigate({ to: "/proxies/billing" })}>
+          <Button colorScheme="red" onClick={() => navigate({ to: "/proxies/pricing" })}>
             Reactivate Now
           </Button>
         </Flex>

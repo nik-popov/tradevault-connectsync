@@ -116,12 +116,6 @@ function Request(): JSX.Element {
       ) : isFullyDeactivated ? (
         <Flex justify="space-between" align="center" w="full" p={4} bg="red.50" borderRadius="md">
           <Text>Your subscription has been deactivated. Please renew to submit requests.</Text>
-          <Button
-            colorScheme="red"
-            onClick={() => navigate({ to: "/billing" })} // Fixed TS2345 at line 125
-          >
-            Reactivate Now
-          </Button>
         </Flex>
       ) : (
         <Flex mt={6} gap={6} justify="space-between" align="stretch" wrap="wrap">

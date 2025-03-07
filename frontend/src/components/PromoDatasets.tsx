@@ -149,7 +149,7 @@ const PromoDatasets: React.FC = () => {
                     ))}
                   </List>
                      <Link to="/proxies/pricing" style={{ width: "100%" }}>
-                  <Button w="full" bg="blue.600" color="white" _hover={{ bg: "blue.500" }} variant={plan.buttonVariant} onClick={() => navigate('/datasets/pricing')} size="sm">
+                  <Button w="full" bg="blue.600" color="white" _hover={{ bg: "blue.500" }} size="sm" variant={plan.buttonVariant}>
                     {plan.price === "Custom" ? "Contact Us" : `Choose ${plan.name}`}
                   </Button>
                   </Link>

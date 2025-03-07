@@ -87,7 +87,7 @@ const ComingSoon: React.FC = () => {
             <Text fontSize="sm" color="gray.300">
               Need early access or have suggestions? Let us know.
             </Text>
-            <Link to="/internal-feedback">
+              <Link to="/support">
               <Button mt={3} bg="blue.600" color="gray.100" _hover={{ bg: "blue.500" }} variant="solid">
                 Provide Feedback
               </Button>

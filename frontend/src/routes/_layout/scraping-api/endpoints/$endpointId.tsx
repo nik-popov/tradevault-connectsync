@@ -169,13 +169,13 @@ const MapUpdater: React.FC<{ hops: TracerouteHop[] }> = ({ hops }) => {
 };
 
 const EndpointDetailPage = () => {
-  const { endpointId } = useParams({ from: "/scraping-api/endpoints/$endpointId" }) as { endpointId: string };
+  const { endpointId } = useParams({ from: "/_layout/scraping-api/endpoints/$endpointId" }) as { endpointId: string };
   const [tracerouteData, setTracerouteData] = useState<TracerouteHop[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [autoRefresh, setAutoRefresh] = useState<boolean>(false);
   const [refreshInterval, setRefreshInterval] = useState<number>(60000);
-  const [dataSetIndex, setDataSetIndex] = useState<number>(0); // Track which dataset to use
+  const [dataSetIndex, setDataSetIndex] = useState<number>(0); 
 
   const fetchTracerouteData = async () => {
     setIsLoading(true);

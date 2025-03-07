@@ -81,7 +81,7 @@ const PromoContent = () => {
           <Text fontSize="md" mb={3}>
             Experience unlimited access to all features for 7 days. No credit card required!
           </Text>
-          <Button colorScheme="whiteAlpha" variant="solid" onClick={() => navigate('/signup')}>
+          <Button colorScheme="whiteAlpha" variant="solid" onClick={() => navigate({ to: '/signup' })}>
             Sign Up for Free
           </Button>
         </Box>
@@ -156,7 +156,7 @@ const PromoContent = () => {
                 </Box>
 
                 {/* CTA Button */}
-                <Button w="full" colorScheme="blue" size="md" variant={plan.buttonVariant} onClick={() => navigate('/proxies/pricing')}>
+                <Button w="full" colorScheme="blue" size="md" variant={plan.buttonVariant} onClick={() => navigate({ to: '/proxies/pricing'})}>
                   {plan.price === "Custom" ? "Contact Us" : `Choose ${plan.name}`}
                 </Button>
               </Box>
