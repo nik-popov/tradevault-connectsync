@@ -112,12 +112,13 @@ const OverviewGSerp: React.FC = () => {
   const [showLabels, setShowLabels] = useState(true);
   const [endpointData, setEndpointData] = useState<EndpointData[]>([]);
   const [chartData, setChartData] = useState<any>({});
+  // Initialize compares as empty arrays, so no metrics alter the chart by default
   const [compares, setCompares] = useState<{ [key: string]: string[] }>({
-    requestsOverTime: compareOptions.requestsOverTime.map(opt => opt.value),
-    categoryDistribution: compareOptions.categoryDistribution.map(opt => opt.value),
-    topQueries: compareOptions.topQueries.map(opt => opt.value),
-    successRate: compareOptions.successRate.map(opt => opt.value),
-    keyMetrics: compareOptions.keyMetrics.map(opt => opt.value),
+    requestsOverTime: [],
+    categoryDistribution: [],
+    topQueries: [],
+    successRate: [],
+    keyMetrics: [],
   });
 
   // Compute totalRequests based on endpointData
@@ -149,11 +150,11 @@ const OverviewGSerp: React.FC = () => {
 
       setEndpointData(enhancedData);
 
-      // Prepare chart data
+      // Prepare chart data (base data only)
       const totalSuccess = enhancedData.reduce((sum, ep) => sum + ep.requestsToday * ep.successRate, 0);
       const overallSuccessRate = totalRequests > 0 ? totalSuccess / totalRequests : 0;
 
-      // Requests Over Time
+      // Requests Over Time (base data)
       const requestsOverTime = Array.from({ length: 24 }, (_, i) => {
         const hour = `${i}:00`;
         const total = enhancedData
@@ -161,11 +162,8 @@ const OverviewGSerp: React.FC = () => {
           .reduce((sum, q) => sum + (q.timeSeries?.find((ts) => ts.hour === hour)?.count || 0), 0);
         return { hour, value: total };
       });
-      const avgHourly = requestsOverTime.reduce((sum, d) => sum + d.value, 0) / 24;
-      const maxHourly = Math.max(...requestsOverTime.map(d => d.value));
-      const minHourly = Math.min(...requestsOverTime.map(d => d.value));
 
-      // Category Distribution
+      // Category Distribution (base data)
       const categoryMap = new Map<string, number>();
       enhancedData.flatMap((ep) => ep.queries).forEach((q) => {
         categoryMap.set(q.category, (categoryMap.get(q.category) || 0) + q.count);
@@ -174,12 +172,8 @@ const OverviewGSerp: React.FC = () => {
         name: category,
         value: count,
       }));
-      const totalQueries = categoryDistribution.reduce((sum, d) => sum + d.value, 0);
-      const avgPerCategory = totalQueries / categoryDistribution.length;
-      const maxCategory = Math.max(...categoryDistribution.map(d => d.value));
-      const uniqueCategories = categoryDistribution.length;
 
-      // Top Queries
+      // Top Queries (base data)
       const queryMap = new Map<string, number>();
       enhancedData.flatMap((ep) => ep.queries).forEach((q) => {
         queryMap.set(q.query, (queryMap.get(q.query) || 0) + q.count);
@@ -188,78 +182,26 @@ const OverviewGSerp: React.FC = () => {
         .sort((a, b) => b[1] - a[1])
         .slice(0, 10)
         .map(([query, count]) => ({ name: query, value: count }));
-      const avgQueryCount = topQueriesChart.reduce((sum, d) => sum + d.value, 0) / topQueriesChart.length;
-      const maxQuery = Math.max(...topQueriesChart.map(d => d.value));
-      const featuredQueries = enhancedData.flatMap(ep => ep.queries).filter(q => q.featured).length;
 
-      // Success Rate
+      // Success Rate (base data)
       const successRate = enhancedData.map((ep) => ({
         name: ep.endpoint,
-        value: ep.successRate, // Percentage (0-100)
+        value: ep.successRate * 100, // Convert to percentage
       }));
-      const errorRate = successRate.map(d => ({ name: d.name, value: 100 - d.value }));
-      const avgSuccess = successRate.reduce((sum, d) => sum + d.value, 0) / successRate.length;
-      const variance = Math.sqrt(successRate.reduce((sum, d) => sum + Math.pow(d.value - avgSuccess, 2), 0) / successRate.length);
 
-      // Key Metrics
+      // Key Metrics (base data)
       const keyMetrics = [
         { name: "Total Requests", value: totalRequests },
         { name: "Success Rate", value: overallSuccessRate * 100 }, // Convert to percentage
         { name: "Endpoints", value: enhancedData.length },
       ];
-      const avgRequests = totalRequests / enhancedData.length;
 
       setChartData({
-        requestsOverTime: [
-          ...requestsOverTime,
-          ...compares.requestsOverTime.map(compare => ({
-            name: compareOptions.requestsOverTime.find(opt => opt.value === compare)!.label,
-            value: compare === "totalRequests" ? totalRequests :
-                   compare === "avgHourly" ? avgHourly :
-                   compare === "maxHourly" ? maxHourly :
-                   minHourly,
-          })),
-        ],
-        categoryDistribution: [
-          ...categoryDistribution,
-          ...compares.categoryDistribution.map(compare => ({
-            name: compareOptions.categoryDistribution.find(opt => opt.value === compare)!.label,
-            value: compare === "totalQueries" ? totalQueries :
-                   compare === "avgPerCategory" ? avgPerCategory :
-                   compare === "maxCategory" ? maxCategory :
-                   uniqueCategories,
-          })),
-        ],
-        topQueries: [
-          ...topQueriesChart,
-          ...compares.topQueries.map(compare => ({
-            name: compareOptions.topQueries.find(opt => opt.value === compare)!.label,
-            value: compare === "queryCount" ? totalQueries :
-                   compare === "avgQueryCount" ? avgQueryCount :
-                   compare === "maxQuery" ? maxQuery :
-                   featuredQueries,
-          })),
-        ],
-        successRate: [
-          ...successRate,
-          ...compares.successRate.map(compare => ({
-            name: compareOptions.successRate.find(opt => opt.value === compare)!.label,
-            value: compare === "successRate" ? overallSuccessRate * 100 :
-                   compare === "errorRate" ? 100 - overallSuccessRate * 100 :
-                   compare === "avgSuccess" ? avgSuccess :
-                   variance,
-          })),
-        ],
-        keyMetrics: [
-          ...keyMetrics,
-          ...compares.keyMetrics.map(compare => ({
-            name: compareOptions.keyMetrics.find(opt => opt.value === compare)!.label,
-            value: compare === "totalRequests" ? totalRequests :
-                   compare === "successRate" ? overallSuccessRate * 100 :
-                   compare === "endpoints" ? enhancedData.length :
-                   avgRequests,
-          })),
-        ],
+        requestsOverTime,
+        categoryDistribution,
+        topQueries: topQueriesChart,
+        successRate,
+        keyMetrics,
       });
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -278,6 +220,94 @@ const OverviewGSerp: React.FC = () => {
     setSelectedQuery(null);
   }, [selectedChart]);
 
+  // Update chart data when compares change
+  const updateChartData = useMemo(() => {
+    const updatedData = { ...chartData };
+
+    // Add comparison metrics to chart data only when selected
+    Object.keys(compares).forEach((chartKey) => {
+      const selectedCompares = compares[chartKey];
+      const baseData = chartData[chartKey] || [];
+      const additionalData = [];
+
+      if (chartKey === "requestsOverTime") {
+        const avgHourly = baseData.reduce((sum, d) => sum + d.value, 0) / 24;
+        const maxHourly = Math.max(...baseData.map((d) => d.value));
+        const minHourly = Math.min(...baseData.map((d) => d.value));
+        selectedCompares.forEach((compare) => {
+          additionalData.push({
+            name: compareOptions[chartKey].find((opt) => opt.value === compare)!.label,
+            value:
+              compare === "totalRequests" ? totalRequests :
+              compare === "avgHourly" ? avgHourly :
+              compare === "maxHourly" ? maxHourly :
+              minHourly,
+          });
+        });
+      } else if (chartKey === "categoryDistribution") {
+        const totalQueries = baseData.reduce((sum, d) => sum + d.value, 0);
+        const avgPerCategory = totalQueries / baseData.length;
+        const maxCategory = Math.max(...baseData.map((d) => d.value));
+        const uniqueCategories = baseData.length;
+        selectedCompares.forEach((compare) => {
+          additionalData.push({
+            name: compareOptions[chartKey].find((opt) => opt.value === compare)!.label,
+            value:
+              compare === "totalQueries" ? totalQueries :
+              compare === "avgPerCategory" ? avgPerCategory :
+              compare === "maxCategory" ? maxCategory :
+              uniqueCategories,
+          });
+        });
+      } else if (chartKey === "topQueries") {
+        const totalQueryCount = baseData.reduce((sum, d) => sum + d.value, 0);
+        const avgQueryCount = totalQueryCount / baseData.length;
+        const maxQuery = Math.max(...baseData.map((d) => d.value));
+        const featuredQueries = endpointData.flatMap((ep) => ep.queries).filter((q) => q.featured).length;
+        selectedCompares.forEach((compare) => {
+          additionalData.push({
+            name: compareOptions[chartKey].find((opt) => opt.value === compare)!.label,
+            value:
+              compare === "queryCount" ? totalQueryCount :
+              compare === "avgQueryCount" ? avgQueryCount :
+              compare === "maxQuery" ? maxQuery :
+              featuredQueries,
+          });
+        });
+      } else if (chartKey === "successRate") {
+        const overallSuccessRate = totalRequests > 0 ? (endpointData.reduce((sum, ep) => sum + ep.requestsToday * ep.successRate, 0) / totalRequests) * 100 : 0;
+        const avgSuccess = baseData.reduce((sum, d) => sum + d.value, 0) / baseData.length;
+        const variance = Math.sqrt(baseData.reduce((sum, d) => sum + Math.pow(d.value - avgSuccess, 2), 0) / baseData.length);
+        selectedCompares.forEach((compare) => {
+          additionalData.push({
+            name: compareOptions[chartKey].find((opt) => opt.value === compare)!.label,
+            value:
+              compare === "successRate" ? overallSuccessRate :
+              compare === "errorRate" ? 100 - overallSuccessRate :
+              compare === "avgSuccess" ? avgSuccess :
+              variance,
+          });
+        });
+      } else if (chartKey === "keyMetrics") {
+        const avgRequests = totalRequests / endpointData.length;
+        selectedCompares.forEach((compare) => {
+          additionalData.push({
+            name: compareOptions[chartKey].find((opt) => opt.value === compare)!.label,
+            value:
+              compare === "totalRequests" ? totalRequests :
+              compare === "successRate" ? baseData.find((d) => d.name === "Success Rate")?.value || 0 :
+              compare === "endpoints" ? endpointData.length :
+              avgRequests,
+          });
+        });
+      }
+
+      updatedData[chartKey] = [...baseData, ...additionalData];
+    });
+
+    return updatedData;
+  }, [chartData, compares, endpointData, totalRequests]);
+
   // Aggregate top queries
   const queryAggregation = new Map<
     string,
@@ -292,10 +322,7 @@ const OverviewGSerp: React.FC = () => {
         featured: existing.featured,
         category: existing.category,
         type: existing.type,
-        endpointDetails: [
-          ...existing.endpointDetails,
-          { endpoint: ep.endpoint, count: q.count },
-        ],
+        endpointDetails: [...existing.endpointDetails, { endpoint: ep.endpoint, count: q.count }],
       });
     });
   });
@@ -312,59 +339,61 @@ const OverviewGSerp: React.FC = () => {
     .sort((a, b) => b.count - a.count)
     .slice(0, 10);
 
-  // Summary stats
+  // Calculate summary stats (always include all metrics)
   const getSummaryStats = (selectedChart: string) => {
-    const data = chartData[selectedChart];
-    if (!data || data.length === 0) return [];
-
-    const values = data.map((point: any) => point.value);
-    const total = values.reduce((sum: number, val: number) => sum + val, 0);
+    const data = chartData[selectedChart] || [];
+    if (!data.length) return [];
 
     switch (selectedChart) {
       case "requestsOverTime":
-      case "topQueries":
-        return [
-          { label: "Total", value: total.toLocaleString() },
-          ...compares[selectedChart].map(compare => {
-            const compareData = chartData[selectedChart].find((d: any) => d.name === compareOptions[selectedChart].find(opt => opt.value === compare)!.label);
-            return {
-              label: compareOptions[selectedChart].find(opt => opt.value === compare)!.label,
-              value: compareData ? compareData.value.toLocaleString() : "N/A",
-            };
-          }),
-        ];
-      case "categoryDistribution":
-        return [
-          { label: "Total Queries", value: total.toLocaleString() },
-          ...compares[selectedChart].map(compare => {
-            const compareData = chartData[selectedChart].find((d: any) => d.name === compareOptions[selectedChart].find(opt => opt.value === compare)!.label);
-            return {
-              label: compareOptions[selectedChart].find(opt => opt.value === compare)!.label,
-              value: compareData ? compareData.value.toLocaleString() : "N/A",
-            };
-          }),
-        ];
-      case "successRate":
-        return [
-          { label: "Overall Success Rate", value: `${(chartData.successRate.find((d: any) => d.name === "Success Rate")?.value || 0).toFixed(2)}%` },
-          ...compares[selectedChart].map(compare => {
-            const compareData = chartData[selectedChart].find((d: any) => d.name === compareOptions[selectedChart].find(opt => opt.value === compare)!.label);
-            return {
-              label: compareOptions[selectedChart].find(opt => opt.value === compare)!.label,
-              value: compareData ? `${compareData.value.toFixed(2)}%` : "N/A",
-            };
-          }),
-        ];
-      case "keyMetrics":
+        const avgHourly = data.reduce((sum, d) => sum + d.value, 0) / 24;
+        const maxHourly = Math.max(...data.map((d) => d.value));
+        const minHourly = Math.min(...data.map((d) => d.value));
         return [
           { label: "Total Requests", value: totalRequests.toLocaleString() },
-          ...compares[selectedChart].map(compare => {
-            const compareData = chartData[selectedChart].find((d: any) => d.name === compareOptions[selectedChart].find(opt => opt.value === compare)!.label);
-            return {
-              label: compareOptions[selectedChart].find(opt => opt.value === compare)!.label,
-              value: compareData ? (compare === "successRate" ? `${compareData.value.toFixed(2)}%` : compareData.value.toLocaleString()) : "N/A",
-            };
-          }),
+          { label: "Avg Hourly Requests", value: avgHourly.toFixed(2) },
+          { label: "Max Hourly Requests", value: maxHourly.toLocaleString() },
+          { label: "Min Hourly Requests", value: minHourly.toLocaleString() },
+        ];
+      case "categoryDistribution":
+        const totalQueries = data.reduce((sum, d) => sum + d.value, 0);
+        const avgPerCategory = totalQueries / data.length;
+        const maxCategory = Math.max(...data.map((d) => d.value));
+        const uniqueCategories = data.length;
+        return [
+          { label: "Total Queries", value: totalQueries.toLocaleString() },
+          { label: "Avg Per Category", value: avgPerCategory.toFixed(2) },
+          { label: "Max Category Count", value: maxCategory.toLocaleString() },
+          { label: "Unique Categories", value: uniqueCategories.toLocaleString() },
+        ];
+      case "topQueries":
+        const totalQueryCount = data.reduce((sum, d) => sum + d.value, 0);
+        const avgQueryCount = totalQueryCount / data.length;
+        const maxQuery = Math.max(...data.map((d) => d.value));
+        const featuredQueries = endpointData.flatMap((ep) => ep.queries).filter((q) => q.featured).length;
+        return [
+          { label: "Query Count", value: totalQueryCount.toLocaleString() },
+          { label: "Avg Query Count", value: avgQueryCount.toFixed(2) },
+          { label: "Max Query Count", value: maxQuery.toLocaleString() },
+          { label: "Featured Queries", value: featuredQueries.toLocaleString() },
+        ];
+      case "successRate":
+        const overallSuccessRate = totalRequests > 0 ? (endpointData.reduce((sum, ep) => sum + ep.requestsToday * ep.successRate, 0) / totalRequests) * 100 : 0;
+        const avgSuccess = data.reduce((sum, d) => sum + d.value, 0) / data.length;
+        const variance = Math.sqrt(data.reduce((sum, d) => sum + Math.pow(d.value - avgSuccess, 2), 0) / data.length);
+        return [
+          { label: "Overall Success Rate", value: `${overallSuccessRate.toFixed(2)}%` },
+          { label: "Error Rate", value: `${(100 - overallSuccessRate).toFixed(2)}%` },
+          { label: "Avg Success Rate", value: `${avgSuccess.toFixed(2)}%` },
+          { label: "Success Variance", value: variance.toFixed(2) },
+        ];
+      case "keyMetrics":
+        const avgRequests = totalRequests / endpointData.length;
+        return [
+          { label: "Total Requests", value: totalRequests.toLocaleString() },
+          { label: "Success Rate", value: `${data.find((d) => d.name === "Success Rate")?.value.toFixed(2) || 0}%` },
+          { label: "Endpoints", value: endpointData.length.toLocaleString() },
+          { label: "Avg Requests", value: avgRequests.toFixed(2) },
         ];
       default:
         return [];
@@ -392,7 +421,12 @@ const OverviewGSerp: React.FC = () => {
           </Box>
         )}
       </>
-    ) : (
+
+    ) :
+    
+    (
+
+
       <Grid templateColumns="repeat(4, 1fr)" gap={4}>
         {stats.map((stat, index) => (
           <Stat key={index}>
@@ -507,19 +541,19 @@ const OverviewGSerp: React.FC = () => {
                 <ResponsiveContainer width="100%" height="100%">
                   {selectedChart === "requestsOverTime" ? (
                     <LineChart
-                      data={chartData.requestsOverTime}
+                      data={updateChartData.requestsOverTime}
                       margin={{ top: 20, right: 20, bottom: showLabels ? 60 : 20, left: showLabels ? 40 : 20 }}
                     >
                       <CartesianGrid stroke="gray.600" />
                       <XAxis
-                        dataKey="hour"
+                        dataKey={compares[selectedChart].length ? "name" : "hour"}
                         stroke="#FFFFFF"
                         tick={{ fill: "#FFFFFF", fontSize: 12, dy: -10 }}
                         tickMargin={10}
                         interval="preserveStartEnd"
                         label={
                           showLabels
-                            ? { value: "Time (Hour)", position: "insideBottom", offset: -20, fill: "#FFFFFF", fontSize: 14 }
+                            ? { value: compares[selectedChart].length ? "Metrics" : "Time (Hour)", position: "insideBottom", offset: -20, fill: "#FFFFFF", fontSize: 14 }
                             : undefined
                         }
                       />
@@ -534,11 +568,17 @@ const OverviewGSerp: React.FC = () => {
                         }
                       />
                       <RechartsTooltip contentStyle={{ backgroundColor: "gray.700", color: "white" }} />
-                      <Line type="monotone" dataKey="value" stroke={selectedColor} />
+                      {compares[selectedChart].length ? (
+                        updateChartData.requestsOverTime.map((_, index) => (
+                          <Bar key={index} dataKey="value" fill={BAR_COLORS[index % BAR_COLORS.length]} />
+                        ))
+                      ) : (
+                        <Line type="monotone" dataKey="value" stroke={selectedColor} />
+                      )}
                     </LineChart>
                   ) : (
                     <BarChart
-                      data={chartData[selectedChart]}
+                      data={updateChartData[selectedChart]}
                       margin={{ top: 20, right: 20, bottom: showLabels ? 60 : 20, left: showLabels ? 40 : 20 }}
                     >
                       <CartesianGrid stroke="gray.600" />
@@ -565,7 +605,7 @@ const OverviewGSerp: React.FC = () => {
                         }
                       />
                       <RechartsTooltip contentStyle={{ backgroundColor: "gray.700", color: "white" }} />
-                      {chartData[selectedChart].map((entry, index) => (
+                      {updateChartData[selectedChart].map((_, index) => (
                         <Bar key={index} dataKey="value" fill={BAR_COLORS[index % BAR_COLORS.length]} />
                       ))}
                     </BarChart>
@@ -574,31 +614,33 @@ const OverviewGSerp: React.FC = () => {
               </Box>
             </GridItem>
             <GridItem>
-              {renderSummary()}
-              <Box mt={6}>
-                <Text fontSize="md" fontWeight="semibold" mb={2}>
-                  Compare To
-                </Text>
-                <Flex direction="column" gap={2}>
-                  {compareRows.map((row, rowIndex) => (
-                    <ButtonGroup key={rowIndex} size="sm" variant="outline" isAttached={false}>
-                      {row.map((option) => (
-                        <Button
-                          key={option.value}
-                          bg={compares[selectedChart].includes(option.value) ? option.color : "gray.600"}
-                          color={compares[selectedChart].includes(option.value) ? "white" : "gray.200"}
-                          borderColor={option.color}
-                          _hover={{ bg: `${option.color}80` }}
-                          onClick={() => toggleCompare(selectedChart, option.value)}
-                        >
-                          {option.label}
-                        </Button>
-                      ))}
-                    </ButtonGroup>
-                  ))}
-                </Flex>
-              </Box>
-            </GridItem>
+  {renderSummary()}
+  {selectedChart !== "requestsOverTime" && (
+    <Box mt={6}>
+      <Text fontSize="md" fontWeight="semibold" mb={2}>
+        Compare To
+      </Text>
+      <Flex direction="column" gap={2}>
+        {compareRows.map((row, rowIndex) => (
+          <ButtonGroup key={rowIndex} size="sm" variant="outline" isAttached={false}>
+            {row.map((option) => (
+              <Button
+                key={option.value}
+                bg={compares[selectedChart].includes(option.value) ? option.color : "gray.600"}
+                color={compares[selectedChart].includes(option.value) ? "white" : "gray.200"}
+                borderColor={option.color}
+                _hover={{ bg: `${option.color}80` }}
+                onClick={() => toggleCompare(selectedChart, option.value)}
+              >
+                {option.label}
+              </Button>
+            ))}
+          </ButtonGroup>
+        ))}
+      </Flex>
+    </Box>
+  )}
+</GridItem>
           </Grid>
 
           {/* Top Queries Table */}

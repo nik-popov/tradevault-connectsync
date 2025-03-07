@@ -34,7 +34,8 @@ function Dashboard() {
 
   const proxyProducts: Product[] = [
     { id: "google-serp", name: "🔍 Google SERP Results", type: "SERP", description: "Scrape real-time Google search results.", owned: true, path: "/scraping-api/google-serp" },
-    { id: "cettire", name: "🔍Cettire", type: "SERP", description: "Scrape Cettire search results.", owned: true, path: "/scraping-api/cettire" },
+    { id: "cettire", name: "🔍Cettire", type: "SERP", description: "Scrape Cettire search results.", owned: false, path: "/scraping-api/cettire" },
+    { id: "manage-proxy", name: "👺 Proxy Management", type: "SERP", description: "Manage Proxy Endpoints.", owned: true, path: "/scraping-api/search-proxies" },
    
   ];
 
@@ -61,7 +62,7 @@ function Dashboard() {
 
         {/* Filter Buttons */}
         <Flex gap={2}>
-          {["All", "SERP", "Data"].map((type) => (
+          {["All", "SERP"].map((type) => (
             <Button
               key={type}
               size="md"

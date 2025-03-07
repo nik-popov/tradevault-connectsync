@@ -23,7 +23,14 @@ const PRODUCT = "serp";
 export const Route = createFileRoute("/_layout/scraping-api/explore")({
   component: Explore,
 });
-
+interface Item {
+  name: string;
+  details: {
+    fileEnd?: string;
+    images: number;
+    records: number;
+  };
+}
 function Explore() {
   const navigate = useNavigate();
 
@@ -117,16 +124,17 @@ function Explore() {
       const matchesSearch = job.name.toLowerCase().includes(searchQuery.toLowerCase());
       return matchesFilter && matchesSearch;
     });
-
-    result.sort((a, b) => {
+    result.sort((a: Item, b: Item) => {
       if (sortBy === "fileEnd") {
-        return new Date(b.details.fileEnd || "1/1/1970") - new Date(a.details.fileEnd || "1/1/1970");
+        const bDate = new Date(b.details.fileEnd || "1/1/1970").getTime();
+        const aDate = new Date(a.details.fileEnd || "1/1/1970").getTime();
+        return bDate - aDate; // Descending order (newer first)
       } else if (sortBy === "images") {
-        return b.details.images - a.details.images;
+        return b.details.images - a.details.images; // Descending order (higher first)
       } else if (sortBy === "records") {
-        return b.details.records - a.details.records;
+        return b.details.records - a.details.records; // Descending order (higher first)
       } else if (sortBy === "name") {
-        return a.name.localeCompare(b.name);
+        return a.name.localeCompare(b.name); // Ascending order (A to Z)
       }
       return 0;
     });

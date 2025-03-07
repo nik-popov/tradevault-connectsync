@@ -93,7 +93,7 @@ const EndpointsListPage = () => {
               <Tr key={endpoint.toolId}>
                 <Td>
                   <Link
-                    to="/_layout/scraping-api/endpoints/$endpointId"
+                    to={`/scraping-api/endpoints/${endpoint.toolId}`}
                     params={{ endpointId: endpoint.toolId }}
                   >
                     {endpoint.toolId}

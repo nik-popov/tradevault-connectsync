@@ -36,6 +36,8 @@ const sidebarStructure: SidebarItem[] = [
     subItems: [
       { title: "Jobs List", path: "/scraping-api/explore" },
       { title: "Proxies", path: "/scraping-api/search-proxies" },
+      { title: "Vision", path: "/scraping-api/vision" },
+      { title: "Reasoning", path: "/scraping-api/language-model" },
       { title: "User Agents", path: "/scraping-api/user-agents" },
       { title: "Request Scraper", path: "/scraping-api/request" },
     ],
@@ -149,7 +151,7 @@ const SidebarItems = ({ onClose }: SidebarItemsProps) => {
             <Box>
               <Flex p={2} color={enabled ? textColor : disabledColor} fontWeight="bold">
                 {icon && <Icon as={icon} alignSelf="center" color={enabled ? textColor : disabledColor} />}
-                <Text ml={2}>{title}</Text>
+                <Text ml={2} color={enabled ? textColor : disabledColor}>{title}</Text>
               </Flex>
               <Box ml={6}>{subItems && renderItems(subItems)}</Box>
             </Box>
