@@ -21,6 +21,7 @@ import {
   CardBody,
   IconButton,
   Tooltip,
+  Select,
 } from "@chakra-ui/react";
 import { CloseIcon } from "@chakra-ui/icons";
 import {
@@ -68,36 +69,41 @@ const chartOptions = [
 ];
 
 const PIE_COLORS = ["#805AD5", "#38A169", "#DD6B20", "#C53030", "#2B6CB0", "#D69E2E", "#9F7AEA", "#4A5568"];
+const COMPARE_COLORS = ["#805AD5", "#E53E3E"]; // Colors for primary and compare endpoints
 
 const Overview: React.FC<OverviewProps> = ({ endpointId }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [allEndpoints, setAllEndpoints] = useState<EndpointData[]>([]);
   const [endpointData, setEndpointData] = useState<EndpointData | null>(null);
+  const [compareEndpointData, setCompareEndpointData] = useState<EndpointData | null>(null);
   const [selectedChart, setSelectedChart] = useState("requests");
   const [selectedQuery, setSelectedQuery] = useState<Query | null>(null);
   const [showLabels, setShowLabels] = useState(true);
+  const [compareEndpointId, setCompareEndpointId] = useState<string>("");
 
-  // Fetch data from your GitHub raw URL
+  // Fetch data from GitHub raw URL
   const fetchData = async () => {
     setIsLoading(true);
     try {
       const response = await fetch(
-        "https://raw.githubusercontent.com/iconluxurygroup/static-data/refs/heads/main/endpoint-overview.json"
+        "https://s3.us-east-1.amazonaws.com/iconluxury.group/endpoint-overview.json"
       );
       if (!response.ok) {
-        throw new Error("Failed to fetch data");
+        throw new Error("Failed to fetch data from GitHub");
       }
       const data: EndpointData[] = await response.json();
-      // Filter the data to find the matching endpoint
-      const matchingEndpoint = data.find((item) => item.endpoint === endpointId);
-      if (!matchingEndpoint) {
-        throw new Error(`Endpoint ${endpointId} not found in the data`);
+      setAllEndpoints(data);
+      const primaryData = data.find((item) => item.endpoint === endpointId);
+      if (!primaryData) {
+        throw new Error(`Endpoint ${endpointId} not found in the GitHub data`);
       }
-      setEndpointData(matchingEndpoint);
+      setEndpointData(primaryData);
       setError(null);
     } catch (err) {
       setError(err instanceof Error ? err.message : "An error occurred");
       setEndpointData(null);
+      setAllEndpoints([]);
     } finally {
       setIsLoading(false);
     }
@@ -106,6 +112,16 @@ const Overview: React.FC<OverviewProps> = ({ endpointId }) => {
   useEffect(() => {
     fetchData();
   }, [endpointId]);
+
+  // Update comparison data when selection changes
+  useEffect(() => {
+    if (compareEndpointId) {
+      const compareData = allEndpoints.find((item) => item.endpoint === compareEndpointId);
+      setCompareEndpointData(compareData || null);
+    } else {
+      setCompareEndpointData(null);
+    }
+  }, [compareEndpointId, allEndpoints]);
 
   useEffect(() => {
     setSelectedQuery(null);
@@ -132,86 +148,35 @@ const Overview: React.FC<OverviewProps> = ({ endpointId }) => {
     );
   }
 
-  // Derived metrics (calculated on frontend)
+  // Derived metrics for primary endpoint
   const processedRequests = Math.round(endpointData.requestsToday * (0.8 + Math.random() * 0.2));
   const failedRequests = Math.round(endpointData.requestsToday * ((1 - endpointData.successRate / 100) * (0.8 + Math.random() * 0.4)));
-  const pendingRequests = Math.round(endpointData.requestsToday * (0.05 + Math.random() * 0.1));
-  const retryRequests = Math.round(endpointData.requestsToday * (0.02 + Math.random() * 0.08));
-  const avgRequestsPerQuery = endpointData.queries.length > 0 ? Math.round(endpointData.requestsToday / endpointData.queries.length) : 0;
-  const totalCostImpact = endpointData.costToday * endpointData.requestsToday / 1000;
-
-  const avgSuccessRate = endpointData.successRate * (0.95 + Math.random() * 0.1);
-  const minSuccessRate = Math.max(90, endpointData.successRate - (Math.random() * 5));
-  const maxSuccessRate = Math.min(100, endpointData.successRate + (Math.random() * 2));
-  const errorTrend = 100 - endpointData.successRate * (0.9 + Math.random() * 0.2);
-  const successVariance = Math.random() * 5;
-  const retrySuccessRate = Math.min(100, endpointData.successRate * (0.8 + Math.random() * 0.4));
-
   const totalScraped = endpointData.queries.reduce((sum, q) => sum + q.count, 0);
-  const avgScrapeCount = endpointData.queries.length > 0 ? totalScraped / endpointData.queries.length : 0;
-  const maxScrapeCount = endpointData.queries.length > 0 ? Math.max(...endpointData.queries.map(q => q.count)) : 0;
-  const minScrapeCount = endpointData.queries.length > 0 ? Math.min(...endpointData.queries.map(q => q.count)) : 0;
-  const uniqueItems = endpointData.queries.length;
-  const scrapeEfficiency = endpointData.queries.length > 0 ? totalScraped / endpointData.requestsToday : 0;
-  const failedScrapes = Math.round(totalScraped * (0.05 + Math.random() * 0.1));
-
-  const avgQueryCount = endpointData.queries.length > 0 ? totalScraped / endpointData.queries.length : 0;
-  const maxQueryCount = endpointData.queries.length > 0 ? Math.max(...endpointData.queries.map(q => q.count)) : 0;
-  const minQueryCount = endpointData.queries.length > 0 ? Math.min(...endpointData.queries.map(q => q.count)) : 0;
-  const queryDiversity = endpointData.queries.length / (endpointData.requestsToday / 1000);
-  const queryOverlap = Math.round(endpointData.queries.length * (0.1 + Math.random() * 0.2));
-  const newQueries = Math.floor(Math.random() * 3);
-
   const avgCost = endpointData.costToday * (0.9 + Math.random() * 0.2);
-  const maxCost = endpointData.costToday * (1 + Math.random() * 0.3);
-  const minCost = endpointData.costToday * (0.7 + Math.random() * 0.2);
-  const costPerRequest = endpointData.costToday / endpointData.requestsToday;
-  const costPerQuery = endpointData.queries.length > 0 ? endpointData.costToday / endpointData.queries.length : 0;
-  const costVariance = endpointData.costToday * (0.05 + Math.random() * 0.1);
 
-  // Chart data
+  // Derived metrics for compare endpoint (if present)
+  const compareProcessedRequests = compareEndpointData ? Math.round(compareEndpointData.requestsToday * (0.8 + Math.random() * 0.2)) : 0;
+  const compareFailedRequests = compareEndpointData ? Math.round(compareEndpointData.requestsToday * ((1 - compareEndpointData.successRate / 100) * (0.8 + Math.random() * 0.4))) : 0;
+  const compareTotalScraped = compareEndpointData ? compareEndpointData.queries.reduce((sum, q) => sum + q.count, 0) : 0;
+  const compareAvgCost = compareEndpointData ? compareEndpointData.costToday * (0.9 + Math.random() * 0.2) : 0;
+
+  // Chart data with comparison
   const chartData = {
     requests: [
-      { name: "Total Requests", value: endpointData.requestsToday },
-      { name: "Processed Requests", value: processedRequests },
-      { name: "Failed Requests", value: failedRequests },
-      { name: "Unique Queries", value: endpointData.queries.length },
-      { name: "Pending Requests", value: pendingRequests },
-      { name: "Retry Requests", value: retryRequests },
-      { name: "Avg Requests/Query", value: avgRequestsPerQuery },
-      { name: "Total Cost Impact", value: totalCostImpact },
+      { name: "Total Requests", value: endpointData.requestsToday, compareValue: compareEndpointData?.requestsToday || 0 },
+      { name: "Processed Requests", value: processedRequests, compareValue: compareProcessedRequests },
+      { name: "Failed Requests", value: failedRequests, compareValue: compareFailedRequests },
     ],
     successRate: [
-      { name: "Success Rate", value: endpointData.successRate },
-      { name: "Error Rate", value: 100 - endpointData.successRate },
-      { name: "Avg Success Rate", value: avgSuccessRate },
-      { name: "Min Success Rate", value: minSuccessRate },
-      { name: "Max Success Rate", value: maxSuccessRate },
-      { name: "Error Trend", value: errorTrend },
-      { name: "Success Variance", value: successVariance },
-      { name: "Retry Success Rate", value: retrySuccessRate },
+      { name: "Success Rate", value: endpointData.successRate, compareValue: compareEndpointData?.successRate || 0 },
+      { name: "Error Rate", value: 100 - endpointData.successRate, compareValue: compareEndpointData ? 100 - compareEndpointData.successRate : 0 },
     ],
     itemsScraped: [
-      ...endpointData.queries.map((q) => ({ name: q.query, value: q.count })),
-      { name: "Avg Scrape Count", value: avgScrapeCount },
-      { name: "Max Scrape Count", value: maxScrapeCount },
-      { name: "Min Scrape Count", value: minScrapeCount },
-      { name: "Unique Items", value: uniqueItems },
-      { name: "Scrape Efficiency", value: scrapeEfficiency },
-      { name: "Failed Scrapes", value: failedScrapes },
+      { name: "Total Scraped", value: totalScraped, compareValue: compareTotalScraped },
     ],
     queryDistribution: endpointData.queries.map((q) => ({ name: q.query, value: q.count })),
     cost: [
-      ...Array.from({ length: 5 }, (_, i) => ({
-        name: `Day ${i + 1}`,
-        value: endpointData.costToday * (0.8 + Math.random() * 0.4),
-      })),
-      { name: "Avg Cost", value: avgCost },
-      { name: "Max Cost", value: maxCost },
-      { name: "Min Cost", value: minCost },
-      { name: "Cost/Request", value: costPerRequest },
-      { name: "Cost/Query", value: costPerQuery },
-      { name: "Cost Variance", value: costVariance },
+      { name: "Avg Cost", value: avgCost, compareValue: compareAvgCost },
     ],
   };
 
@@ -221,52 +186,10 @@ const Overview: React.FC<OverviewProps> = ({ endpointId }) => {
     const data = chartData[selectedChart];
     if (!data || data.length === 0) return [];
 
-    const total = data.reduce((sum: number, point: any) => sum + point.value, 0);
-
-    switch (selectedChart) {
-      case "requests":
-      case "successRate":
-        return data.map((item: any) => ({
-          label: item.name,
-          value: selectedChart === "successRate" && item.name !== "Success Rate" && item.name !== "Error Rate"
-            ? `${item.value.toFixed(1)}%`
-            : item.value.toLocaleString(),
-        }));
-      case "itemsScraped":
-        return [
-          { label: "Total Scraped", value: totalScraped.toLocaleString() },
-          { label: "Avg Scrape Count", value: avgScrapeCount.toLocaleString() },
-          { label: "Max Scrape Count", value: maxScrapeCount.toLocaleString() },
-          { label: "Min Scrape Count", value: minScrapeCount.toLocaleString() },
-          { label: "Unique Items", value: uniqueItems.toLocaleString() },
-          { label: "Scrape Efficiency", value: scrapeEfficiency.toFixed(2) },
-          { label: "Failed Scrapes", value: failedScrapes.toLocaleString() },
-        ];
-      case "queryDistribution":
-        return [
-          { label: "Total Queries", value: total.toLocaleString() },
-          { label: "Avg Query Count", value: avgQueryCount.toLocaleString() },
-          { label: "Max Query Count", value: maxQueryCount.toLocaleString() },
-          { label: "Min Query Count", value: minQueryCount.toLocaleString() },
-          { label: "Query Diversity", value: queryDiversity.toFixed(2) },
-          { label: "Query Overlap", value: queryOverlap.toLocaleString() },
-          { label: "New Queries", value: newQueries.toLocaleString() },
-        ];
-      case "cost":
-        const trendData = data.slice(0, 5);
-        const trendAvg = trendData.length > 0 ? trendData.reduce((sum: number, point: any) => sum + point.value, 0) / trendData.length : 0;
-        return [
-          { label: "Trend Avg Cost", value: `$${trendAvg.toFixed(3)}` },
-          { label: "Avg Cost", value: `$${avgCost.toFixed(3)}` },
-          { label: "Max Cost", value: `$${maxCost.toFixed(3)}` },
-          { label: "Min Cost", value: `$${minCost.toFixed(3)}` },
-          { label: "Cost/Request", value: `$${costPerRequest.toFixed(6)}` },
-          { label: "Cost/Query", value: `$${costPerQuery.toFixed(6)}` },
-          { label: "Cost Variance", value: `$${costVariance.toFixed(3)}` },
-        ];
-      default:
-        return [];
-    }
+    return data.map((item: any) => ({
+      label: item.name,
+      value: `${item.value.toLocaleString()}${compareEndpointData ? ` / ${item.compareValue.toLocaleString()}` : ""}`,
+    }));
   };
 
   const renderSummary = () => {
@@ -292,6 +215,7 @@ const Overview: React.FC<OverviewProps> = ({ endpointId }) => {
       <>
         <Text fontSize="md" fontWeight="semibold" mb={2}>
           {selectedQuery ? "Query Details" : `${chartOptions.find((opt) => opt.key === selectedChart)!.label} Summary`}
+          {compareEndpointData && ` (vs ${compareEndpointData.endpoint})`}
         </Text>
         <Card shadow="md" borderWidth="1px" bg="gray.700" minHeight="150px" position="relative">
           {selectedQuery && (
@@ -330,30 +254,17 @@ const Overview: React.FC<OverviewProps> = ({ endpointId }) => {
               stroke="#FFFFFF"
               tick={{ fill: "#FFFFFF", fontSize: 12 }}
               tickMargin={10}
-              label={
-                showLabels
-                  ? {
-                      value: selectedChart === "itemsScraped" ? "Queries & Metrics" : "Metrics",
-                      position: "insideBottom",
-                      offset: -20,
-                      fill: "#FFFFFF",
-                      fontSize: 14,
-                    }
-                  : undefined
-              }
+              label={showLabels ? { value: "Metrics", position: "insideBottom", offset: -20, fill: "#FFFFFF", fontSize: 14 } : undefined}
             />
             <YAxis
               stroke="#FFFFFF"
               tick={{ fill: "#FFFFFF", fontSize: 12 }}
               tickMargin={10}
-              label={
-                showLabels
-                  ? { value: selectedOption.yLabel, angle: -45, position: "insideLeft", offset: -20, fill: "#FFFFFF", fontSize: 14 }
-                  : undefined
-              }
+              label={showLabels ? { value: selectedOption.yLabel, angle: -45, position: "insideLeft", offset: -20, fill: "#FFFFFF", fontSize: 14 } : undefined}
             />
             <RechartsTooltip contentStyle={{ backgroundColor: "gray.700", color: "white" }} />
-            <Bar dataKey="value" fill={selectedOption.color} />
+            <Bar dataKey="value" fill={COMPARE_COLORS[0]} name={endpointId} />
+            {compareEndpointData && <Bar dataKey="compareValue" fill={COMPARE_COLORS[1]} name={compareEndpointData.endpoint} />}
           </BarChart>
         );
       case "queryDistribution":
@@ -387,24 +298,17 @@ const Overview: React.FC<OverviewProps> = ({ endpointId }) => {
               stroke="#FFFFFF"
               tick={{ fill: "#FFFFFF", fontSize: 12 }}
               tickMargin={10}
-              label={
-                showLabels
-                  ? { value: "Days & Metrics", position: "insideBottom", offset: -20, fill: "#FFFFFF", fontSize: 14 }
-                  : undefined
-              }
+              label={showLabels ? { value: "Metrics", position: "insideBottom", offset: -20, fill: "#FFFFFF", fontSize: 14 } : undefined}
             />
             <YAxis
               stroke="#FFFFFF"
               tick={{ fill: "#FFFFFF", fontSize: 12 }}
               tickMargin={10}
-              label={
-                showLabels
-                  ? { value: selectedOption.yLabel, angle: -45, position: "insideLeft", offset: -20, fill: "#FFFFFF", fontSize: 14 }
-                  : undefined
-              }
+              label={showLabels ? { value: selectedOption.yLabel, angle: -45, position: "insideLeft", offset: -20, fill: "#FFFFFF", fontSize: 14 } : undefined}
             />
             <RechartsTooltip contentStyle={{ backgroundColor: "gray.700", color: "white" }} />
-            <Line type="monotone" dataKey="value" stroke={selectedOption.color} />
+            <Line type="monotone" dataKey="value" stroke={COMPARE_COLORS[0]} name={endpointId} />
+            {compareEndpointData && <Line type="monotone" dataKey="compareValue" stroke={COMPARE_COLORS[1]} name={compareEndpointData.endpoint} />}
           </LineChart>
         );
       default:
@@ -417,6 +321,19 @@ const Overview: React.FC<OverviewProps> = ({ endpointId }) => {
       <Flex justify="space-between" align="center" mb={4} wrap="wrap" gap={2}>
         <Text fontSize="lg" fontWeight="bold">Overview for {endpointId}</Text>
         <Flex align="center" gap={2} ml="auto">
+          <Select
+            size="sm"
+            placeholder="Compare to..."
+            value={compareEndpointId}
+            onChange={(e) => setCompareEndpointId(e.target.value)}
+            width="200px"
+          >
+            {allEndpoints
+              .filter((item) => item.endpoint !== endpointId)
+              .map((item) => (
+                <option key={item.endpoint} value={item.endpoint}>{item.endpoint}</option>
+              ))}
+          </Select>
           <ButtonGroup size="sm" variant="outline">
             {chartOptions.map((option) => (
               <Tooltip key={option.key} label={`View ${option.label}`}>

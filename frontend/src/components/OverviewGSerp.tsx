@@ -130,7 +130,7 @@ const OverviewGSerp: React.FC = () => {
   const fetchData = async () => {
     setIsLoading(true);
     try {
-      const response = await fetch("https://raw.githubusercontent.com/iconluxurygroup/static-data/refs/heads/main/google-serp-overview.json");
+      const response = await fetch("https://s3.us-east-1.amazonaws.com/iconluxury.group/google-serp-overview.json");
       if (!response.ok) throw new Error("Failed to fetch data");
       const data: EndpointData[] = await response.json();
 
