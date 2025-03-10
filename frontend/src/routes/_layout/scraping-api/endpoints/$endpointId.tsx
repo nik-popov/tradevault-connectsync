@@ -60,7 +60,18 @@ const endpointData: Record<string, string> = {
   "US-EAST5": "https://us-east5-gen-lang-client-0697423475.cloudfunctions.net/main",
   "ASIA-SOUTHEAST1": "https://asia-southeast1-gen-lang-client-0697423475.cloudfunctions.net/main",
   "US-WEST2": "https://us-west2-gen-lang-client-0697423475.cloudfunctions.net/main",
-
+  "NORTHAMERICA-NORTHEAST2" : "https://northamerica-northeast2-image-proxy2-453320.cloudfunctions.net/main",
+  "SOUTHAMERICA-EAST1": "https://southamerica-east1-image-proxy2-453320.cloudfunctions.net/main", 
+  "EUROPE-WEST8": "https://europe-west8-icon-image3.cloudfunctions.net/main",
+  "EUROPE-SOUTHWEST1": "https://europe-southwest1-icon-image3.cloudfunctions.net/main",
+  "EUROPE-WEST6": "https://europe-west6-icon-image3.cloudfunctions.net/main",
+  "EUROPE-WEST3": "https://europe-west3-icon-image3.cloudfunctions.net/main",
+  "EUROPE-WEST2": "https://europe-west2-icon-image3.cloudfunctions.net/main",
+  "EUROPE-WEST9": "https://europe-west9-image-proxy2-453320.cloudfunctions.net/main",
+  "MIDDLEEAST-WEST1": "https://me-west1-image-proxy4.cloudfunctions.net/main",
+  "MIDDLEEAST-CENTRAL1": "https://me-central1-image-proxy4.cloudfunctions.net/main",
+  "EUROPE-WEST12": "https://europe-west12-image-proxy4.cloudfunctions.net/main",
+  "EUROPE-WEST10": "https://europe-west10-image-proxy4.cloudfunctions.net/main",
 };
 
 // Updated static traceroute data with 6 datasets per endpoint
