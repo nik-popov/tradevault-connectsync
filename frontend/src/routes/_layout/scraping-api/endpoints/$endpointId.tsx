@@ -51,6 +51,7 @@ const endpointData: Record<string, string> = {
   "US-EAST4": "https://us-east4-image-scraper-451516.cloudfunctions.net/main",
   "US-WEST1": "https://us-west1-image-scraper-451516.cloudfunctions.net/main",
   "EUROPE-WEST4": "https://europe-west4-image-scraper-451516.cloudfunctions.net/main",
+  "US-WEST4":"https://us-west4-image-proxy-453319.cloudfunctions.net/main",
 };
 
 // Updated static traceroute data with 6 datasets per endpoint
