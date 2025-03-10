@@ -52,6 +52,15 @@ const endpointData: Record<string, string> = {
   "US-WEST1": "https://us-west1-image-scraper-451516.cloudfunctions.net/main",
   "EUROPE-WEST4": "https://europe-west4-image-scraper-451516.cloudfunctions.net/main",
   "US-WEST4":"https://us-west4-image-proxy-453319.cloudfunctions.net/main",
+  "EUROPE-WEST1":"https://europe-west1-image-proxy-453319.cloudfunctions.net/main",
+  "EUROPE-NORTH1":"https://europe-north1-image-proxy-453319.cloudfunctions.net/main",
+  "ASIA-EAST1":"https://asia-east1-image-proxy-453319.cloudfunctions.net/main",
+  "US-SOUTH1":"https://us-south1-gen-lang-client-0697423475.cloudfunctions.net/main",
+  "US-WEST3": "https://us-west3-gen-lang-client-0697423475.cloudfunctions.net/main",
+  "US-EAST5": "https://us-east5-gen-lang-client-0697423475.cloudfunctions.net/main",
+  "ASIA-SOUTHEAST1": "https://asia-southeast1-gen-lang-client-0697423475.cloudfunctions.net/main",
+  "US-WEST2": "https://us-west2-gen-lang-client-0697423475.cloudfunctions.net/main",
+
 };
 
 // Updated static traceroute data with 6 datasets per endpoint
