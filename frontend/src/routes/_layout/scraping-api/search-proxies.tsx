@@ -58,6 +58,7 @@ const proxyData: Record<string, { region: string; url: string }[]> = {
     { region: "MIDDLEEAST-CENTRAL1", url: "https://me-central1-image-proxy4.cloudfunctions.net/main"},
     { region: "EUROPE-WEST12", url: "https://europe-west12-image-proxy4.cloudfunctions.net/main"},
     { region: "EUROPE-WEST10", url: "https://europe-west10-image-proxy4.cloudfunctions.net/main"},
+    { region: "ASIA-NORTHEAST2", url: "https://asia-northeast2-image-proxy4.cloudfunctions.net/main"},
   ],
   "AWS": [
     { region: "us-east-1", url: "https://us-east-1-aws-scraper.example.com" },

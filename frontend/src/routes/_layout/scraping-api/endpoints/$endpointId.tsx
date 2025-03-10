@@ -72,6 +72,7 @@ const endpointData: Record<string, string> = {
   "MIDDLEEAST-CENTRAL1": "https://me-central1-image-proxy4.cloudfunctions.net/main",
   "EUROPE-WEST12": "https://europe-west12-image-proxy4.cloudfunctions.net/main",
   "EUROPE-WEST10": "https://europe-west10-image-proxy4.cloudfunctions.net/main",
+  "ASIA-NORTHEAST2" : "https://asia-northeast2-image-proxy4.cloudfunctions.net/main",
 };
 
 // Updated static traceroute data with 6 datasets per endpoint
