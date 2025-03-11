@@ -23,7 +23,18 @@ const PRODUCT = "serp";
 export const Route = createFileRoute("/_layout/scraping-api/explore")({
   component: Explore,
 });
-
+interface ScraperJob {
+  id: number;
+  inputFile?: string;
+  rec?: number;
+  img?: number;
+  fileEnd?: string;
+  imageStart?: string | null;
+  fileStart?: string | null;
+  user?: string;
+  apiUsed?: string;
+  logFileUrl?: string | null;
+}
 interface Item {
   id: number;
   name: string;
@@ -40,17 +51,19 @@ interface Item {
     logFileUrl: string | null;
   };
 }
+// Type ScraperJobListItem props
+interface ScraperJobListItemProps {
+  job: Item;
+  navigate: ReturnType<typeof useNavigate>;
+  isInitiallyExpanded: boolean;
+}
 
-async function fetchScraperJobs() {
+async function fetchScraperJobs(): Promise<ScraperJob[]> {
   const response = await fetch("https://backend-dev.iconluxury.group/api/scraping-jobs", {
     method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-    },
+    headers: { "Content-Type": "application/json" },
   });
-  if (!response.ok) {
-    throw new Error(`Failed to fetch jobs: ${response.status}`);
-  }
+  if (!response.ok) throw new Error(`Failed to fetch jobs: ${response.status}`);
   return response.json();
 }
 
@@ -107,9 +120,9 @@ function Explore() {
     }));
   }, [scraperJobs]);
 
-  const filterCategories = useMemo(() => {
+  const filterCategories = useMemo((): string[] => {
     if (!scraperJobs) return ["all"];
-    return ["all", ...new Set(scraperJobs.map((job: any) => job.apiUsed || "google-serp"))];
+    return ["all", ...new Set(scraperJobs.map((job) => job.apiUsed || "google-serp"))];
   }, [scraperJobs]);
 
   const filteredAndSortedJobs = useMemo(() => {
@@ -189,10 +202,10 @@ function Explore() {
         <Flex gap={6} justify="space-between" align="stretch" wrap="wrap">
           <Box flex="1" minW={{ base: "100%", md: "65%" }}>
             <Flex gap={4} justify="space-between" align="center" flexWrap="wrap">
-              <Input
+             <Input
                 placeholder="Search Jobs by File Name..."
                 value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSearchQuery(e.target.value)}
                 w={{ base: "100%", md: "250px" }}
               />
               <HStack spacing={4} ml="auto" align="center" flexWrap="wrap">
@@ -209,20 +222,20 @@ function Explore() {
                     {type === "all" ? "All" : type}
                   </Button>
                 ))}
-                <Select
-                  value={sortBy}
-                  size="sm"
-                  w={{ base: "100%", md: "220px" }}
-                  borderColor="gray.600"
-                  _hover={{ borderColor: "gray.500" }}
-                  _focus={{ borderColor: "blue.400" }}
-                  onChange={(e) => setSortBy(e.target.value)}
-                >
-                  <option value="fileEnd">Sort by Date</option>
-                  <option value="images">Sort by Image Count</option>
-                  <option value="records">Sort by Row Count</option>
-                  <option value="name">Sort by Name</option>
-                </Select>
+<Select
+  value={sortBy}
+  size="sm"
+  w={{ base: "100%", md: "220px" }}
+  borderColor="gray.600"
+  _hover={{ borderColor: "gray.500" }}
+  _focus={{ borderColor: "blue.400" }}
+  onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setSortBy(e.target.value)}
+>
+  <option value="fileEnd">Sort by Date</option>
+  <option value="images">Sort by Image Count</option>
+  <option value="records">Sort by Row Count</option>
+  <option value="name">Sort by Name</option>
+</Select>
               </HStack>
             </Flex>
 
@@ -280,8 +293,12 @@ function Explore() {
     </Container>
   );
 }
-
-const ScraperJobListItem = ({ job, navigate, isInitiallyExpanded }) => {
+interface ScraperJobListItemProps {
+  job: Item;
+  navigate: ReturnType<typeof useNavigate>;
+  isInitiallyExpanded: boolean;
+}
+const ScraperJobListItem = ({ job, navigate, isInitiallyExpanded }: ScraperJobListItemProps) => {
   const [isExpanded, setIsExpanded] = useState(isInitiallyExpanded);
 
   const handleNavigate = () => {
