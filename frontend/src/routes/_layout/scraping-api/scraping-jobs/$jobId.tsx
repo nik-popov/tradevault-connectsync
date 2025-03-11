@@ -916,4 +916,5 @@ const JobsDetailPage = () => {
 export const Route = createFileRoute("/_layout/scraping-api/scraping-jobs/$jobId")({
   component: JobsDetailPage,
 });
+
 export default JobsDetailPage;
