@@ -89,7 +89,11 @@ interface RecordItem {
 }
 
 // Component to fetch and display log content
-const LogDisplay = ({ logUrl }: { logUrl: string | null }) => {
+interface LogDisplayProps {
+  logUrl: string | null;
+}
+
+const LogDisplay: React.FC<LogDisplayProps> = ({ logUrl }) => {
   const [logContent, setLogContent] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -117,8 +121,25 @@ const LogDisplay = ({ logUrl }: { logUrl: string | null }) => {
   if (!logContent) return <Text>No log content available</Text>;
 
   return (
-    <Box maxH="300px" overflowY="auto" bg="gray.50" p={2}>
-      <pre>{logContent}</pre>
+    <Box
+    maxH="300px"
+    w="full" // Matches the full width of the parent (CardBody)
+    overflowY="auto"
+    overflowX="auto" // Fallback for any unwrapped content
+    bg="gray.800"
+    color="white"
+    p={2}
+    borderRadius="md"
+  >
+<pre
+        style={{
+          whiteSpace: "pre-wrap", // Wraps long lines
+          wordBreak: "break-word", // Breaks long words if needed
+          margin: 0, // Removes default <pre> margin for tight fit
+        }}
+      >
+        {logContent}
+      </pre>
     </Box>
   );
 };
