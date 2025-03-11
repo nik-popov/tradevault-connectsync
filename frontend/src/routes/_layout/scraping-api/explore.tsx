@@ -1,6 +1,10 @@
+import React, { useState, useMemo } from "react";
+import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
+import { useQuery } from "@tanstack/react-query";
 import {
   Box,
   Container,
+  Spinner,
   Text,
   VStack,
   Button,
@@ -10,13 +14,9 @@ import {
   Input,
   Select,
 } from "@chakra-ui/react";
-import { useState, useMemo } from "react";
-import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
-import { useQuery } from "@tanstack/react-query";
 import { FiGithub } from "react-icons/fi";
 import PromoSERP from "../../../components/ComingSoon";
 
-// Storage and Product Key
 const STORAGE_KEY = "subscriptionSettings";
 const PRODUCT = "serp";
 
@@ -30,20 +30,33 @@ interface Item {
   description: string;
   details: {
     status: string;
-    imageStart: string;
-    fileStart: string;
-    fileEnd?: string;
+    imageStart: string | null;
+    fileStart: string | null;
+    fileEnd: string | null;
     user: string;
-    records: number;
-    images: number;
+    records: number; // Record count
+    images: number;  // Image count
     apiUsed: string;
+    logFileUrl: string | null;
   };
+}
+
+async function fetchScraperJobs() {
+  const response = await fetch("https://backend-dev.iconluxury.group/api/scraping-jobs", {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+  if (!response.ok) {
+    throw new Error(`Failed to fetch jobs: ${response.status}`);
+  }
+  return response.json();
 }
 
 function Explore() {
   const navigate = useNavigate();
 
-  // Load Subscription State
   const { data: subscriptionSettings } = useQuery({
     queryKey: ["subscriptionSettings"],
     queryFn: () => {
@@ -63,91 +76,91 @@ function Explore() {
   const isLocked = !hasSubscription && !isTrial;
   const isFullyDeactivated = isDeactivated && !hasSubscription;
 
-  // Search & Filter State
+  const { data: scraperJobs, isLoading, error } = useQuery({
+    queryKey: ["scraperJobs"],
+    queryFn: fetchScraperJobs,
+    staleTime: 5 * 60 * 1000,
+  });
+
   const [searchQuery, setSearchQuery] = useState("");
   const [activeFilter, setActiveFilter] = useState("all");
   const [sortBy, setSortBy] = useState("fileEnd");
+  const [visibleCount, setVisibleCount] = useState(10); // Load first 10
 
-  // Scraper Jobs Data
-  const scraperJobs = [
-    { id: 80, inputFile: "d5a7b7d1-OffWhite.xlsx", imageStart: "3/6/2025 2:30:19 PM", fileStart: "3/6/2025 4:21:32 PM", fileEnd: "3/6/2025 4:25:01 PM", resultFile: "d5a7b7d1-OffWhite.xlsx", user: "", rec: 899, img: 14384, apiUsed: "google-serp" },
-    { id: 79, inputFile: "803315e5-CopyofOWParisImagetest.xlsx", imageStart: "3/6/2025 1:11:02 PM", fileStart: "3/6/2025 4:05:42 PM", fileEnd: "3/6/2025 4:09:20 PM", resultFile: "803315e5-CopyofOWParisImagetest.xlsx", user: "NIk", rec: 923, img: 14768, apiUsed: "google-serp" },
-    { id: 78, inputFile: "043a9b16-Scotch&SodaWomens.xlsx", imageStart: "3/5/2025 1:09:57 PM", fileStart: "3/5/2025 9:09:30 PM", fileEnd: "3/5/2025 9:10:14 PM", resultFile: "043a9b16-Scotch&SodaWomens.xlsx", user: "NIk", rec: 696, img: 6065, apiUsed: "google-serp" },
-    { id: 77, inputFile: "f4f8db90-small-Scotch&SodaMens.xlsx", imageStart: "3/4/2025 5:09:49 PM", fileStart: "3/6/2025 5:51:11 PM", fileEnd: "3/6/2025 5:51:13 PM", resultFile: "f4f8db90-small-Scotch&SodaMens.xlsx", user: "NIk", rec: 7, img: 500, apiUsed: "google-serp" },
-    { id: 76, inputFile: "72054289-Scotch&SodaMens.xlsx", imageStart: "3/4/2025 5:07:05 PM", fileStart: "3/5/2025 12:19:07 PM", fileEnd: "3/5/2025 12:19:39 PM", resultFile: "72054289-Scotch&SodaMens.xlsx", user: "NIk", rec: 597, img: 16363, apiUsed: "google-serp" },
-    { id: 75, inputFile: "2f03faf3-D&GLUXOFFM&W.xlsx", imageStart: "3/4/2025 3:42:44 PM", fileStart: "3/4/2025 4:08:00 PM", fileEnd: "3/4/2025 4:08:56 PM", resultFile: "2f03faf3-D&GLUXOFFM&W.xlsx", user: "", rec: 397, img: 3609, apiUsed: "google-serp" },
-    { id: 73, inputFile: "eaee7d88-CopyofListaperBulk03.02.25.xlsx", imageStart: "3/4/2025 1:01:51 PM", fileStart: "3/4/2025 3:03:19 PM", fileEnd: "3/4/2025 3:03:25 PM", resultFile: "eaee7d88-CopyofListaperBulk03.02.25.xlsx", user: "", rec: 112, img: 628, apiUsed: "google-serp" },
-    { id: 72, inputFile: "047ae051-CopyofListaperBulk03.02.25.xlsx", imageStart: "3/4/2025 9:51:25 AM", fileStart: "3/4/2025 2:40:41 PM", fileEnd: "3/4/2025 2:40:56 PM", resultFile: "047ae051-CopyofListaperBulk03.02.25.xlsx", user: "", rec: 112, img: 1757, apiUsed: "google-serp" },
-    { id: 70, inputFile: "1ff6b763-88e99742-OFFW1_processed.xlsx", imageStart: "3/3/2025 5:26:34 PM", fileStart: "3/3/2025 6:16:32 PM", fileEnd: "3/3/2025 6:17:32 PM", resultFile: "1ff6b763-88e99742-OFFW1_processed.xlsx", user: "", rec: 495, img: 7920, apiUsed: "google-serp" },
-    { id: 69, inputFile: "48b6a543-ysl-test.xlsx", imageStart: "3/3/2025 5:22:33 PM", fileStart: "3/4/2025 2:45:33 PM", fileEnd: "3/4/2025 2:46:08 PM", resultFile: "48b6a543-ysl-test.xlsx", user: "", rec: 25, img: 326, apiUsed: "google-serp" },
-    { id: 68, inputFile: "0b4d4c67-TIMBERLANDPICS3.3.xlsx", imageStart: "3/3/2025 4:56:07 PM", fileStart: "3/3/2025 4:57:13 PM", fileEnd: "3/3/2025 4:57:17 PM", resultFile: "0b4d4c67-TIMBERLANDPICS3.3.xlsx", user: "", rec: 62, img: 960, apiUsed: "google-serp" },
-    { id: 63, inputFile: "2bcf5a79-large-test-OPMJ-tory.xlsx", imageStart: "2/28/2025 4:15:06 PM", fileStart: "3/4/2025 3:15:06 PM", fileEnd: "3/4/2025 3:15:10 PM", resultFile: "2bcf5a79-large-test-OPMJ-tory.xlsx", user: "", rec: 20, img: 296, apiUsed: "google-serp" },
-    { id: 57, inputFile: "df8d951b-med-test-OPMJ-tory.xlsx", imageStart: "2/27/2025 2:40:07 PM", imageEnd: "2/27/2025 9:50:30 PM", fileStart: "3/4/2025 2:56:36 PM", fileEnd: "3/4/2025 2:56:41 PM", resultFile: "df8d951b-med-test-OPMJ-tory.xlsx", user: "NIk", rec: 5, img: 73, apiUsed: "google-serp" },
-    { id: 54, inputFile: "3cbe5dfc-MultiBrandOpportunity+2.21(1).xlsx", imageStart: "2/26/2025 4:21:56 PM", imageEnd: "2/26/2025 5:37:52 PM", fileStart: "2/27/2025 1:28:30 PM", fileEnd: "2/27/2025 1:32:05 PM", resultFile: "3cbe5dfc-MultiBrandOpportunity+2.21(1).xlsx", user: "NIk", rec: 835, img: 13345, apiUsed: "google-serp" },
-    { id: 53, inputFile: "4ddfa432-polandmensneedpics.xlsx", imageStart: "2/26/2025 2:19:47 PM", imageEnd: "2/26/2025 2:26:18 PM", fileStart: "2/26/2025 3:36:40 PM", fileEnd: "2/26/2025 3:48:47 PM", resultFile: "4ddfa432-polandmensneedpics.xlsx", user: "NIk", rec: 459, img: 10042, apiUsed: "google-serp" },
-    { id: 47, inputFile: "6c1adb64-small-JilSander-shoesaccessories.xlsx", imageStart: "2/25/2025 5:58:54 PM", imageEnd: "2/25/2025 5:59:00 PM", fileStart: "3/4/2025 3:14:30 PM", fileEnd: "3/4/2025 3:14:33 PM", resultFile: "6c1adb64-small-JilSander-shoesaccessories.xlsx", user: "NIk", rec: 5, img: 80, apiUsed: "google-serp" },
-    { id: 46, inputFile: "0a8e0211-OWAccAvail2_25(1).xlsx", imageStart: "2/25/2025 1:41:30 PM", imageEnd: "2/25/2025 1:56:29 PM", fileStart: "2/25/2025 1:56:29 PM", fileEnd: "2/25/2025 2:07:24 PM", resultFile: "0a8e0211-OWAccAvail2_25(1).xlsx", user: "", rec: 1155, img: 17991, apiUsed: "google-serp" },
-    { id: 45, inputFile: "6d3f5905-83e74c63-test-MultiBrandOpportunity2.21.xlsx", imageStart: "2/24/2025 2:28:48 PM", imageEnd: "2/24/2025 2:38:30 PM", fileStart: "2/24/2025 2:38:30 PM", fileEnd: "2/24/2025 2:39:43 PM", resultFile: "6d3f5905-83e74c63-test-MultiBrandOpportunity2.21.xlsx", user: "", rec: 312, img: 4992, apiUsed: "google-serp" },
-    { id: 40, inputFile: "54b8d24b-Dickies2-203.xlsx", imageStart: "2/20/2025 5:14:27 PM", imageEnd: "2/21/2025 2:53:31 PM", fileStart: "2/28/2025 1:40:08 PM", fileEnd: "2/21/2025 2:55:04 PM", resultFile: "54b8d24b-Dickies2-203.xlsx", user: "", rec: 498, img: 441, apiUsed: "google-serp" },
-    { id: 39, inputFile: "07d53c0a-Dickies2-202.xlsx", imageStart: "2/20/2025 5:13:56 PM", imageEnd: "2/21/2025 2:49:33 PM", fileStart: "2/21/2025 2:49:33 PM", fileEnd: "2/21/2025 2:51:10 PM", resultFile: "07d53c0a-Dickies2-202.xlsx", user: "", rec: 498, img: 5778, apiUsed: "google-serp" },
-    { id: 38, inputFile: "2291e537-Dickies2-201.xlsx", imageStart: "2/20/2025 5:11:48 PM", imageEnd: "2/21/2025 3:01:26 PM", fileStart: "2/22/2025 3:34:34 PM", fileEnd: "2/22/2025 3:36:42 PM", resultFile: "2291e537-Dickies2-201.xlsx", user: "", rec: 547, img: 6197, apiUsed: "google-serp" },
-    { id: 22, inputFile: "e0d54075-c92e5c04-JilSander-Wbags,shoesaccessories.xlsx", imageStart: "2/19/2025 12:18:03 PM", imageEnd: "2/20/2025 3:14:34 PM", fileStart: "2/20/2025 3:14:34 PM", fileEnd: "2/20/2025 3:18:04 PM", resultFile: "e0d54075-c92e5c04-JilSander-Wbags,shoesaccessories.xlsx", user: "", rec: 343, img: 6113, apiUsed: "google-serp" },
-    { id: 21, inputFile: "17017c0f-DOLCE&GABBANA_STOCK_FASHION_DEALS_FEB06.xlsx", imageStart: "2/19/2025 10:54:17 AM", imageEnd: "2/20/2025 3:58:45 PM", fileStart: "3/4/2025 2:43:39 PM", fileEnd: "3/4/2025 2:43:48 PM", resultFile: "17017c0f-DOLCE&GABBANA_STOCK_FASHION_DEALS_FEB06.xlsx", user: "", rec: 1, img: 8, apiUsed: "google-serp" },
-    { id: 20, inputFile: "d6113639-Dickiesupload.xlsx", imageStart: "2/18/2025 5:28:03 PM", imageEnd: "2/18/2025 5:33:21 PM", fileStart: "2/18/2025 5:33:22 PM", fileEnd: "2/18/2025 5:34:51 PM", resultFile: "d6113639-Dickiesupload.xlsx", user: "", rec: 247, img: 3790, apiUsed: "google-serp" },
-    { id: 19, inputFile: "c92e5c04-JilSander-Wbags,shoesaccessories.xlsx", imageStart: "2/18/2025 3:15:03 PM", imageEnd: "2/24/2025 6:11:37 PM", fileStart: "2/18/2025 3:19:50 PM", fileEnd: "2/18/2025 3:22:20 PM", resultFile: "c92e5c04-JilSander-Wbags,shoesaccessories.xlsx", user: "", rec: 343, img: 5315, apiUsed: "google-serp" },
-    { id: 6, inputFile: "da7aab53-OFFW2.xlsx", imageStart: "1/31/2025 1:50:31 PM", imageEnd: "1/31/2025 2:01:45 PM", fileStart: "1/31/2025 2:01:46 PM", fileEnd: "1/31/2025 2:04:51 PM", resultFile: "da7aab53-OFFW2.xlsx", user: "", rec: 500, img: 8000, apiUsed: "google-serp" },
-    { id: 5, inputFile: "88e99742-OFFW1.xlsx", imageStart: "1/31/2025 1:50:23 PM", imageEnd: "1/31/2025 1:56:18 PM", fileStart: "2/28/2025 2:24:36 PM", fileEnd: "2/28/2025 2:25:39 PM", resultFile: "88e99742-OFFW1.xlsx", user: "", rec: 495, img: 7920, apiUsed: "google-serp" },
-    { id: 4, inputFile: "166ed63c-OPE442OffWhiteM-ACC.xlsx", imageStart: "1/31/2025 12:53:22 PM", imageEnd: "1/31/2025 12:56:38 PM", fileStart: "2/28/2025 3:06:07 PM", fileEnd: "2/28/2025 3:06:55 PM", resultFile: "166ed63c-OPE442OffWhiteM-ACC.xlsx", user: "", rec: 271, img: 4336, apiUsed: "google-serp" },
-    { id: 3, inputFile: "5508ae0d-OffWSneakersTEST.xlsx", imageStart: "1/31/2025 12:30:25 PM", imageEnd: "2/20/2025 5:36:18 PM", fileStart: "2/28/2025 2:43:36 PM", fileEnd: "2/28/2025 2:44:21 PM", resultFile: "5508ae0d-OffWSneakersTEST.xlsx", user: "NIk", rec: 266, img: 4256, apiUsed: "google-serp" },
-  ];
-
-  // Format Jobs for Display
   const formattedJobs = useMemo(() => {
-    return scraperJobs.map((job) => ({
-      id: job.id,
-      name: job.inputFile,
-      description: `Scrapes luxury data for linesheets using ${job.apiUsed} (${job.rec} records, ${job.img} images)`,
+    if (!scraperJobs) return [];
+    return scraperJobs.map((job: any) => ({
+      id: job.id, // Matches API "id"
+      name: job.inputFile || "Unnamed Job", // Matches API "inputFile"
+      description: `${job.inputFile || "Unnamed Job"} (${job.rec || 0} records, ${job.img || 0} images)`,
       details: {
-        status: job.fileEnd ? "Completed" : "Pending",
+        status: job.fileEnd ? "Completed" : "Pending", // Matches API "fileEnd"
         imageStart: job.imageStart,
         fileStart: job.fileStart,
         fileEnd: job.fileEnd,
-        user: job.user || "Unknown",
-        records: job.rec,
-        images: job.img,
-        apiUsed: job.apiUsed,
+        user: job.user || "Unknown", // Matches API "user"
+        records: job.rec || 0, // Record count from API
+        images: job.img || 0,  // Image count from API
+        apiUsed: job.apiUsed || "google-serp", // Fallback if not provided
+        logFileUrl: job.logFileUrl,
       },
     }));
   }, [scraperJobs]);
 
-  // Filter Categories (based on APIs used)
-  const filterCategories = ["all", ...new Set(scraperJobs.map((job) => job.apiUsed))];
+  const filterCategories = useMemo(() => {
+    if (!scraperJobs) return ["all"];
+    return ["all", ...new Set(scraperJobs.map((job: any) => job.apiUsed || "google-serp"))];
+  }, [scraperJobs]);
 
-  // Filtered and Sorted Jobs
   const filteredAndSortedJobs = useMemo(() => {
     let result = formattedJobs.filter((job) => {
       const matchesFilter =
         activeFilter === "all" || job.details.apiUsed.toLowerCase() === activeFilter.toLowerCase();
-      const matchesSearch = job.name.toLowerCase().includes(searchQuery.toLowerCase());
+      const matchesSearch = (job.name || "").toLowerCase().includes(searchQuery.toLowerCase());
       return matchesFilter && matchesSearch;
     });
     result.sort((a: Item, b: Item) => {
       if (sortBy === "fileEnd") {
         const bDate = new Date(b.details.fileEnd || "1/1/1970").getTime();
         const aDate = new Date(a.details.fileEnd || "1/1/1970").getTime();
-        return bDate - aDate; // Descending order (newer first)
+        return bDate - aDate;
       } else if (sortBy === "images") {
-        return b.details.images - a.details.images; // Descending order (higher first)
+        return b.details.images - a.details.images;
       } else if (sortBy === "records") {
-        return b.details.records - a.details.records; // Descending order (higher first)
+        return b.details.records - a.details.records;
       } else if (sortBy === "name") {
-        return a.name.localeCompare(b.name); // Ascending order (A to Z)
+        return a.name.localeCompare(b.name);
       }
       return 0;
     });
-
     return result;
   }, [searchQuery, activeFilter, sortBy, formattedJobs]);
+
+  const visibleJobs = useMemo(() => {
+    return filteredAndSortedJobs.slice(0, visibleCount);
+  }, [filteredAndSortedJobs, visibleCount]);
+
+  const handleLoadMore = () => {
+    setVisibleCount((prev) => prev + 10); // Load 10 more
+  };
+
+  if (isLoading) {
+    return (
+      <Container maxW="full" py={6}>
+        <Flex justify="center" align="center" h="200px">
+          <Spinner size="xl" color="blue.500" />
+        </Flex>
+      </Container>
+    );
+  }
+
+  if (error) {
+    return (
+      <Container maxW="full" py={6}>
+        <Text color="red.500">Failed to load jobs: {error.message}</Text>
+      </Container>
+    );
+  }
 
   return (
     <Container maxW="full">
@@ -214,9 +227,25 @@ function Explore() {
             </Flex>
 
             <VStack spacing={4} mt={6} align="stretch">
-              {filteredAndSortedJobs.map((job, index) => (
-                <ScraperJobListItem key={job.id} job={job} navigate={navigate} isInitiallyExpanded={index === 0} />
+              {visibleJobs.map((job, index) => (
+                <ScraperJobListItem
+                  key={job.id}
+                  job={job}
+                  navigate={navigate}
+                  isInitiallyExpanded={index === 0}
+                />
               ))}
+              {visibleCount < filteredAndSortedJobs.length && (
+                <Button
+                  colorScheme="blue"
+                  size="sm"
+                  onClick={handleLoadMore}
+                  mt={4}
+                  alignSelf="center"
+                >
+                  Load More
+                </Button>
+              )}
             </VStack>
           </Box>
 
@@ -252,8 +281,7 @@ function Explore() {
   );
 }
 
-// Scraper Job List Item Component
-const ScraperJobListItem = ({ job, navigate, isInitiallyExpanded }: { job: Item; navigate: any; isInitiallyExpanded: boolean }) => {
+const ScraperJobListItem = ({ job, navigate, isInitiallyExpanded }) => {
   const [isExpanded, setIsExpanded] = useState(isInitiallyExpanded);
 
   const handleNavigate = () => {
@@ -285,10 +313,10 @@ const ScraperJobListItem = ({ job, navigate, isInitiallyExpanded }: { job: Item;
             <strong>API Used:</strong> {job.details.apiUsed}
           </Text>
           <Text fontSize="sm" color="gray.600">
-            <strong>Image Start:</strong> {job.details.imageStart}
+            <strong>Image Start:</strong> {job.details.imageStart || "N/A"}
           </Text>
           <Text fontSize="sm" color="gray.600">
-            <strong>File Start:</strong> {job.details.fileStart}
+            <strong>File Start:</strong> {job.details.fileStart || "N/A"}
           </Text>
           <Text fontSize="sm" color="gray.600">
             <strong>File End:</strong> {job.details.fileEnd || "Pending"}
