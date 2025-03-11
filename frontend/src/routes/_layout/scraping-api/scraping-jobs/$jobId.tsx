@@ -202,10 +202,14 @@ const UsageTab = ({ job }: { job: JobDetails }) => {
     </Box>
   );
 };
-
 const ResultsTab = ({ job }: { job: JobDetails }) => {
   const handleDownload = () => {
     window.open(job.fileLocationUrl, "_blank", "noopener,noreferrer");
+  };
+
+  const handleLinkClick = (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>, url: string) => {
+    e.preventDefault();
+    window.open(url, "_blank", "noopener,noreferrer");
   };
 
   return (
@@ -265,7 +269,7 @@ const ResultsTab = ({ job }: { job: JobDetails }) => {
                               href={result.imageUrl}
                               target="_blank"
                               rel="noopener noreferrer"
-                              onClick={(e) => e.preventDefault() && window.open(result.imageUrl, "_blank")}
+                              onClick={(e) => handleLinkClick(e, result.imageUrl)}
                             >
                               Link
                             </a>
@@ -276,7 +280,7 @@ const ResultsTab = ({ job }: { job: JobDetails }) => {
                               href={result.imageSource}
                               target="_blank"
                               rel="noopener noreferrer"
-                              onClick={(e) => e.preventDefault() && window.open(result.imageSource, "_blank")}
+                              onClick={(e) => handleLinkClick(e, result.imageSource)}
                             >
                               Source
                             </a>
@@ -416,7 +420,7 @@ const SearchRowsTab = ({ job }: { job: JobDetails }) => {
   return (
     <Box p={4}>
       <Flex justify="space-between" align="center" mb={4}>
-        <Text fontSize="lg" fontWeight="bold">Search Rows (Linesheet View)</Text>
+        <Text fontSize="lg" fontWeight="bold">File Rows</Text>
         <Flex gap={3}>
           <Button size="sm" colorScheme="gray" onClick={() => setDebugMode(true)}>
             Debug
@@ -434,7 +438,7 @@ const SearchRowsTab = ({ job }: { job: JobDetails }) => {
               colorScheme="teal"
               onClick={() => setShowExtraImages(!showExtraImages)}
             >
-              {showExtraImages ? "Hide Extra Images" : "Show Extra Images"}
+              {showExtraImages ? "Hide 2nd Image" : "Show 2nd Image"}
             </Button>
           )}
           {!debugMode && (
