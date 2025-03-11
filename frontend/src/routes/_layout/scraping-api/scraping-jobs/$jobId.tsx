@@ -381,9 +381,9 @@ const LogsTab = ({ job }: { job: JobDetails }) => {
 };
 const SearchRowsTab = ({ job }: { job: JobDetails }) => {
   const [debugMode, setDebugMode] = useState(false);
-  const [showFileDetails, setShowFileDetails] = useState(false); // Default to false (hidden)
+  const [showFileDetails, setShowFileDetails] = useState(false);
   const [showResultDetails, setShowResultDetails] = useState(true);
-  const [showExtraImages, setShowExtraImages] = useState(false); // Default to 1 image
+  const [showExtraImages, setShowExtraImages] = useState(false);
   const [imageLimit, setImageLimit] = useState(10);
 
   const getImagesForEntry = (entryId: number) => {
@@ -401,10 +401,10 @@ const SearchRowsTab = ({ job }: { job: JobDetails }) => {
   };
 
   const googleSearchModelUrl = (model: string) =>
-    `https://www.google.com/search?q=${encodeURIComponent(`${model}`)}&udm=2`;
+    `https://www.google.com/search?q=${encodeURIComponent(`${model} - US`)}&udm=2`;
 
   const googleSearchBrandModelUrl = (model: string, brand: string) =>
-    `https://www.google.com/search?q=${encodeURIComponent(`${brand} ${model}`)}&udm=2`;
+    `https://www.google.com/search?q=${encodeURIComponent(`${brand} ${model} - US`)}&udm=2`;
 
   const handleLinkClick = (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>, url: string) => {
     e.preventDefault();
@@ -434,7 +434,7 @@ const SearchRowsTab = ({ job }: { job: JobDetails }) => {
               colorScheme="teal"
               onClick={() => setShowExtraImages(!showExtraImages)}
             >
-              {showExtraImages ? "Hide 2nd Image" : "Show 2nd Image"}
+              {showExtraImages ? "Hide Extra Images" : "Show Extra Images"}
             </Button>
           )}
           {!debugMode && (
@@ -686,10 +686,10 @@ const SearchRowsTab = ({ job }: { job: JobDetails }) => {
                         <Th>Product Model</Th>
                       </>
                     )}
-                    {Array.from({ length: imageLimit }).map((_, index) => (
-                      <React.Fragment key={index}>
-                        <Th>Image {index + 1}</Th>
-                        {showResultDetails && <Th>Details {index + 1}</Th>}
+                    {Array.from({ length: imageLimit }).map((_, idx) => (
+                      <React.Fragment key={idx}>
+                        <Th>Image {idx + 1}</Th>
+                        {showResultDetails && <Th>Details {idx + 1}</Th>}
                       </React.Fragment>
                     ))}
                   </Tr>
@@ -787,8 +787,8 @@ const SearchRowsTab = ({ job }: { job: JobDetails }) => {
                         ))}
                         {Array(imageLimit - images.length)
                           .fill(null)
-                          .map((_, index) => (
-                            <React.Fragment key={`empty-${index}`}>
+                          .map((_, idx) => (
+                            <React.Fragment key={`empty-${idx}`}>
                               <Td>-</Td>
                               {showResultDetails && <Td>-</Td>}
                             </React.Fragment>
