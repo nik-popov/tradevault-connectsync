@@ -99,7 +99,6 @@ function Explore() {
     { id: 5, inputFile: "88e99742-OFFW1.xlsx", imageStart: "1/31/2025 1:50:23 PM", imageEnd: "1/31/2025 1:56:18 PM", fileStart: "2/28/2025 2:24:36 PM", fileEnd: "2/28/2025 2:25:39 PM", resultFile: "88e99742-OFFW1.xlsx", user: "", rec: 495, img: 7920, apiUsed: "google-serp" },
     { id: 4, inputFile: "166ed63c-OPE442OffWhiteM-ACC.xlsx", imageStart: "1/31/2025 12:53:22 PM", imageEnd: "1/31/2025 12:56:38 PM", fileStart: "2/28/2025 3:06:07 PM", fileEnd: "2/28/2025 3:06:55 PM", resultFile: "166ed63c-OPE442OffWhiteM-ACC.xlsx", user: "", rec: 271, img: 4336, apiUsed: "google-serp" },
     { id: 3, inputFile: "5508ae0d-OffWSneakersTEST.xlsx", imageStart: "1/31/2025 12:30:25 PM", imageEnd: "2/20/2025 5:36:18 PM", fileStart: "2/28/2025 2:43:36 PM", fileEnd: "2/28/2025 2:44:21 PM", resultFile: "5508ae0d-OffWSneakersTEST.xlsx", user: "NIk", rec: 266, img: 4256, apiUsed: "google-serp" },
-    { id: 999, inputFile: "mock-cettire-luxury.xlsx", imageStart: "3/7/2025 10:00:00 AM", fileStart: "3/7/2025 11:30:00 AM", fileEnd: "3/7/2025 11:45:00 AM", resultFile: "mock-cettire-luxury.xlsx", user: "TestUser", rec: 150, img: 2400, apiUsed: "cettire" },
   ];
 
   // Format Jobs for Display
