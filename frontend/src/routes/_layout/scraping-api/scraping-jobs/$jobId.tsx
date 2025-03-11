@@ -451,7 +451,6 @@ const LogsTab = ({ job }: { job: JobDetails }) => {
     </Box>
   );
 };
-
 const SearchRowsTab = ({ job }: { job: JobDetails }) => {
   const [debugMode, setDebugMode] = useState(false);
   const [showFileDetails, setShowFileDetails] = useState(false);
@@ -459,19 +458,24 @@ const SearchRowsTab = ({ job }: { job: JobDetails }) => {
   const [numImages, setNumImages] = useState(1); // Number of images in normal mode, 1 to 10
   const [imageLimit, setImageLimit] = useState(10); // Number of images in debug modal
 
-  // Adjust numImages based on showResultDetails
   useEffect(() => {
     const maxImages = showResultDetails ? 3 : 10;
     if (numImages > maxImages) {
       setNumImages(maxImages);
     }
   }, [showResultDetails]);
-
   const getImagesForEntry = (entryId: number, limit: number) => {
-    return job.results
-      .filter((r) => r.entryId === entryId)
-      .sort((a, b) => a.sortOrder - b.sortOrder) // Sort by sortOrder ascending
-      .slice(0, limit); // Take the top 'limit' results
+    const filteredResults = job.results
+      .filter((r) => r.entryId === entryId && r.sortOrder > 0); // Exclude negatives
+    const sortedResults = [...filteredResults].sort((a, b) => a.sortOrder - b.sortOrder); // 1, 2, 3...
+    const limitedResults = sortedResults.slice(0, limit);
+  
+    console.log(`Entry ID: ${entryId}`);
+    console.log("Filtered Results (no negatives):", filteredResults.map(r => ({ resultId: r.resultId, sortOrder: r.sortOrder })));
+    console.log("Sorted Results:", sortedResults.map(r => ({ resultId: r.resultId, sortOrder: r.sortOrder })));
+    console.log("Limited Results:", limitedResults.map(r => ({ resultId: r.resultId, sortOrder: r.sortOrder })));
+  
+    return limitedResults;
   };
 
   const shortenSourceUrl = (url: string) => {
@@ -575,6 +579,7 @@ const SearchRowsTab = ({ job }: { job: JobDetails }) => {
                                 cursor="pointer"
                                 onClick={() => window.open(image.imageUrlThumbnail, "_blank")}
                               />
+                              <Text fontSize="xs">Sort Order: {image.sortOrder}</Text>
                             </Box>
                           </Td>
                           {showResultDetails && (
@@ -772,6 +777,7 @@ const SearchRowsTab = ({ job }: { job: JobDetails }) => {
                                   onClick={() => window.open(result.imageUrlThumbnail, "_blank")}
                                 />
                               </Box>
+                              <Text fontSize="xs">Sort Order: {result.sortOrder}</Text>
                             </Td>
                             {showResultDetails && (
                               <Td>
