@@ -87,7 +87,7 @@ interface RecordItem {
   productColor: string;
   productCategory: string;
 }
-import DebugModal from "../../../../components/DebugModal";
+
 // Component to fetch and display log content
 const LogDisplay = ({ logUrl }: { logUrl: string | null }) => {
   const [logContent, setLogContent] = useState('');
