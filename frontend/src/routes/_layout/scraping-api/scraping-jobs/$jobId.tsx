@@ -736,7 +736,7 @@ const SearchRowsTab = ({ job }: { job: JobDetails }) => {
                             </Td>
                           </>
                         )}
-                        {images.map((result, index) => (
+                        {images.map((result) => (
                           <React.Fragment key={result.resultId}>
                             <Td>
                               <Box textAlign="center">
@@ -806,7 +806,7 @@ const SearchRowsTab = ({ job }: { job: JobDetails }) => {
   );
 };
 const JobsDetailPage = () => {
-  const { jobId } = useParams({ from: "/_layout/scraping-jobs/$jobId" }) as { jobId: string };
+  const { jobId } = useParams({ from: "/_layout/scraping-api/scraping-jobs/$jobId" }) as { jobId: string };
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [jobData, setJobData] = useState<JobDetails | null>(null);
@@ -916,5 +916,4 @@ const JobsDetailPage = () => {
 export const Route = createFileRoute("/_layout/scraping-api/scraping-jobs/$jobId")({
   component: JobsDetailPage,
 });
-
 export default JobsDetailPage;
