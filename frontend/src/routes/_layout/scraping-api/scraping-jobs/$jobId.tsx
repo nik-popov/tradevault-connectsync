@@ -260,33 +260,33 @@ const ResultsTab = ({ job }: { job: JobDetails }) => {
                       </Tr>
                     </Thead>
                     <Tbody>
-                      {job.results.map((result) => (
-                        <Tr key={result.resultId}>
-                          <Td>{result.resultId}</Td>
-                          <Td>{result.entryId}</Td>
-                          <Td>
-                            <a
-                              href={result.imageUrl}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              onClick={(e) => handleLinkClick(e, result.imageUrl)}
-                            >
-                              Link
-                            </a>
-                          </Td>
-                          <Td>{result.imageDesc}</Td>
-                          <Td>
-                            <a
-                              href={result.imageSource}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              onClick={(e) => handleLinkClick(e, result.imageSource)}
-                            >
-                              Source
-                            </a>
-                          </Td>
-                        </Tr>
-                      ))}
+                    {job.results.map((result) => (
+                    <Tr key={result.resultId}>
+                      <Td>{result.resultId}</Td>
+                      <Td>{result.entryId}</Td>
+                      <Td>
+                        <a
+                          href={result.imageUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          onClick={(e) => handleLinkClick(e, result.imageUrl)}
+                        >
+                          Link
+                        </a>
+                      </Td>
+                      <Td>{result.imageDesc}</Td>
+                      <Td>
+                        <a
+                          href={result.imageSource}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          onClick={(e) => handleLinkClick(e, result.imageSource)}
+                        >
+                          Source
+                        </a>
+                      </Td>
+                    </Tr>
+                  ))}
                     </Tbody>
                   </Table>
                 </AccordionPanel>
