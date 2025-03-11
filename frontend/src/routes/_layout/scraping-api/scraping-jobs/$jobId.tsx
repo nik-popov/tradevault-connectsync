@@ -87,7 +87,7 @@ interface RecordItem {
   productColor: string;
   productCategory: string;
 }
-
+import DebugModal from "../../../../components/DebugModal";
 // Component to fetch and display log content
 const LogDisplay = ({ logUrl }: { logUrl: string | null }) => {
   const [logContent, setLogContent] = useState('');
@@ -100,9 +100,7 @@ const LogDisplay = ({ logUrl }: { logUrl: string | null }) => {
       setIsLoading(true);
       try {
         const response = await fetch(logUrl);
-        if (!response.ok) {
-          throw new Error(`Failed to fetch log: ${response.status} ${response.statusText}`);
-        }
+        if (!response.ok) throw new Error('Failed to fetch log');
         const text = await response.text();
         setLogContent(text);
       } catch (err) {
@@ -313,6 +311,8 @@ const ResultsTab = ({ job }: { job: JobDetails }) => {
                           <Td>
                             <a
                               href={result.imageUrl}
+                              target="_blank"
+                              rel="noopener noreferrer"
                               onClick={(e) => handleLinkClick(e, result.imageUrl)}
                             >
                               Link
@@ -322,6 +322,8 @@ const ResultsTab = ({ job }: { job: JobDetails }) => {
                           <Td>
                             <a
                               href={result.imageSource}
+                              target="_blank"
+                              rel="noopener noreferrer"
                               onClick={(e) => handleLinkClick(e, result.imageSource)}
                             >
                               Source
@@ -432,19 +434,20 @@ const LogsTab = ({ job }: { job: JobDetails }) => {
 const SearchRowsTab = ({ job }: { job: JobDetails }) => {
   const [debugMode, setDebugMode] = useState(false);
   const [showFileDetails, setShowFileDetails] = useState(false);
-  const [showResultDetails, setShowResultDetails] = useState(true);
-  const [numImages, setNumImages] = useState(1); // Number of images to show, 1 to 5
-  const [imageLimit, setImageLimit] = useState(10); // For debug mode
+  const [showResultDetails, setShowResultDetails] = useState(false);
+  const [numImages, setNumImages] = useState(1); // Number of images in normal mode, 1 to 10
+  const [imageLimit, setImageLimit] = useState(10); // Number of images in debug modal
 
-  // Default to no image details in debug mode
+  // Adjust numImages based on showResultDetails
   useEffect(() => {
-    if (debugMode) {
-      setShowResultDetails(false);
+    const maxImages = showResultDetails ? 3 : 10;
+    if (numImages > maxImages) {
+      setNumImages(maxImages);
     }
-  }, [debugMode]);
+  }, [showResultDetails]);
 
-  const getImagesForEntry = (entryId: number) => {
-    return job.results.filter((r) => r.entryId === entryId);
+  const getImagesForEntry = (entryId: number, limit: number) => {
+    return job.results.filter((r) => r.entryId === entryId).slice(0, limit);
   };
 
   const shortenSourceUrl = (url: string) => {
@@ -466,6 +469,15 @@ const SearchRowsTab = ({ job }: { job: JobDetails }) => {
     window.open(url, "_blank", "noopener,noreferrer");
   };
 
+  const handleIncreaseImages = () => {
+    const maxImages = showResultDetails ? 3 : 10;
+    setNumImages((prev) => Math.min(prev + 1, maxImages));
+  };
+
+  const handleDecreaseImages = () => {
+    setNumImages((prev) => Math.max(prev - 1, 1));
+  };
+
   const fileId = job.records[0]?.fileId || "N/A";
 
   return (
@@ -473,44 +485,23 @@ const SearchRowsTab = ({ job }: { job: JobDetails }) => {
       <Flex justify="space-between" align="center" mb={4}>
         <Text fontSize="lg" fontWeight="bold">File Rows</Text>
         <Flex gap={3}>
+          <Button size="sm" colorScheme="purple" onClick={() => setShowResultDetails(!showResultDetails)}>
+            {showResultDetails ? "Hide Image Details" : "Show Image Details"}
+          </Button>
           <Button size="sm" colorScheme="gray" onClick={() => setDebugMode(true)}>
             Debug
           </Button>
-          <Button
-            size="sm"
-            colorScheme="purple"
-            onClick={() => setShowResultDetails(!showResultDetails)}
-          >
-            {showResultDetails ? "Hide Image Details" : "Show Image Details"}
+          <Button size="sm" colorScheme="blue" onClick={() => setShowFileDetails(!showFileDetails)}>
+            {showFileDetails ? "Hide File Details" : "Show File Details"}
           </Button>
-          {!debugMode && (
-            <Flex align="center">
-              <Button
-                size="sm"
-                onClick={() => setNumImages((prev) => Math.max(1, prev - 1))}
-                isDisabled={numImages <= 1}
-              >
-                -
-              </Button>
-              <Text mx={2}>{numImages}</Text>
-              <Button
-                size="sm"
-                onClick={() => setNumImages((prev) => Math.min(5, prev + 1))}
-                isDisabled={numImages >= 5}
-              >
-                +
-              </Button>
-            </Flex>
-          )}
-          {!debugMode && (
-            <Button
-              size="sm"
-              colorScheme="blue"
-              onClick={() => setShowFileDetails(!showFileDetails)}
-            >
-              {showFileDetails ? "Hide File Details" : "Show File Details"}
+          <Flex align="center" gap={2}>
+            <Button size="sm" onClick={handleDecreaseImages} isDisabled={numImages <= 1}>
+              -
             </Button>
-          )}
+            <Button size="sm" onClick={handleIncreaseImages} isDisabled={numImages >= (showResultDetails ? 3 : 10)}>
+              +
+            </Button>
+          </Flex>
         </Flex>
       </Flex>
       {!debugMode ? (
@@ -544,7 +535,7 @@ const SearchRowsTab = ({ job }: { job: JobDetails }) => {
               </Thead>
               <Tbody>
                 {job.records.map((record) => {
-                  const images = getImagesForEntry(record.entryId).slice(0, numImages);
+                  const images = getImagesForEntry(record.entryId, numImages);
                   return (
                     <Tr key={record.entryId}>
                       {images.map((image, index) => (
@@ -565,7 +556,7 @@ const SearchRowsTab = ({ job }: { job: JobDetails }) => {
                           {showResultDetails && (
                             <Td>
                               <Box>
-                                <Text fontSize="xs" color="gray.100">
+                                <Text fontSize="xs" color="gray.700">
                                   <a
                                     href={googleSearchModelUrl(record.productModel)}
                                     onClick={(e) =>
@@ -659,9 +650,9 @@ const SearchRowsTab = ({ job }: { job: JobDetails }) => {
                   <Button
                     colorScheme="green"
                     size="sm"
-                    onClick={() => setImageLimit(imageLimit === 10 ? job.results.length : 10)}
+                    onClick={() => setImageLimit(imageLimit === 10 ? 50 : 10)}
                   >
-                    {imageLimit === 10 ? "Show All" : "Top 10"}
+                    {imageLimit === 10 ? "Show More" : "Show Less"}
                   </Button>
                   <Button size="sm" variant="ghost" onClick={() => setDebugMode(false)}>
                     Close
@@ -703,7 +694,7 @@ const SearchRowsTab = ({ job }: { job: JobDetails }) => {
                 </Thead>
                 <Tbody>
                   {job.records.map((record) => {
-                    const images = getImagesForEntry(record.entryId).slice(0, imageLimit);
+                    const images = getImagesForEntry(record.entryId, imageLimit);
                     return (
                       <Tr key={record.entryId}>
                         {showFileDetails ? (
@@ -761,7 +752,7 @@ const SearchRowsTab = ({ job }: { job: JobDetails }) => {
                             {showResultDetails && (
                               <Td>
                                 <Box>
-                                  <Text fontSize="xs" color="gray.100">
+                                  <Text fontSize="xs" color="gray.700">
                                     <a
                                       href={googleSearchModelUrl(record.productModel)}
                                       onClick={(e) =>
@@ -792,14 +783,12 @@ const SearchRowsTab = ({ job }: { job: JobDetails }) => {
                             )}
                           </React.Fragment>
                         ))}
-                        {Array(imageLimit - images.length)
-                          .fill(null)
-                          .map((_, idx) => (
-                            <React.Fragment key={`empty-${idx}`}>
-                              <Td>-</Td>
-                              {showResultDetails && <Td>-</Td>}
-                            </React.Fragment>
-                          ))}
+                        {Array.from({ length: imageLimit - images.length }).map((_, idx) => (
+                          <React.Fragment key={`empty-${idx}`}>
+                            <Td>-</Td>
+                            {showResultDetails && <Td>-</Td>}
+                          </React.Fragment>
+                        ))}
                       </Tr>
                     );
                   })}
@@ -824,27 +813,17 @@ const JobsDetailPage = () => {
     setIsLoading(true);
     setError(null);
     try {
-      console.log("Fetching job with ID:", jobId);
       const apiUrl = `https://backend-dev.iconluxury.group/api/scraping-jobs/${jobId}`;
-      console.log("API URL:", apiUrl);
-
       const response = await fetch(apiUrl, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
         },
       });
-
-      console.log("Response Status:", response.status);
-      console.log("Response Headers:", [...response.headers.entries()]);
-      const text = await response.text();
-      console.log("Raw Response:", text);
-
       if (!response.ok) {
         throw new Error(`Failed to fetch job data: ${response.status} - ${response.statusText}`);
       }
-
-      const data: JobDetails = JSON.parse(text);
+      const data: JobDetails = await response.json();
       setJobData(data);
     } catch (err) {
       setError(err instanceof Error ? err.message : "An unknown error occurred");
@@ -857,14 +836,6 @@ const JobsDetailPage = () => {
   useEffect(() => {
     fetchJobData();
   }, [jobId]);
-
-  useEffect(() => {
-    const handleFocus = () => {
-      setActiveTab((prev) => prev); // Ensure tab state persists
-    };
-    window.addEventListener("focus", handleFocus);
-    return () => window.removeEventListener("focus", handleFocus);
-  }, []);
 
   if (isLoading) {
     return (
