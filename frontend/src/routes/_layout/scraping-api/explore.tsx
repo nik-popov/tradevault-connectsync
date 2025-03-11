@@ -302,7 +302,7 @@ const ScraperJobListItem = ({ job, navigate, isInitiallyExpanded }: ScraperJobLi
   const [isExpanded, setIsExpanded] = useState(isInitiallyExpanded);
 
   const handleNavigate = () => {
-    navigate({ to: "/_layout/scraping-api/scraping-jobs/$jobId" });
+    navigate({ to: `/scraping-api/scraping-jobs/${job.id}` });
   };
 
   return (
