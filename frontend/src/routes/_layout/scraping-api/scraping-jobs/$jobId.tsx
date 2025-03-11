@@ -88,6 +88,41 @@ interface RecordItem {
   productCategory: string;
 }
 
+// Component to fetch and display log content
+const LogDisplay = ({ logUrl }: { logUrl: string | null }) => {
+  const [logContent, setLogContent] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchLog = async () => {
+      if (!logUrl) return;
+      setIsLoading(true);
+      try {
+        const response = await fetch(logUrl);
+        if (!response.ok) throw new Error('Failed to fetch log');
+        const text = await response.text();
+        setLogContent(text);
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'An unknown error occurred');
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchLog();
+  }, [logUrl]);
+
+  if (isLoading) return <Spinner />;
+  if (error) return <Text color="red.500">{error}</Text>;
+  if (!logContent) return <Text>No log content available</Text>;
+
+  return (
+    <Box maxH="300px" overflowY="auto" bg="gray.50" p={2}>
+      <pre>{logContent}</pre>
+    </Box>
+  );
+};
+
 const OverviewTab = ({ job }: { job: JobDetails }) => {
   const status = job.fileEnd ? "Completed" : "Pending";
   const duration = job.fileEnd && job.fileStart
@@ -130,14 +165,17 @@ const OverviewTab = ({ job }: { job: JobDetails }) => {
 };
 
 const UsageTab = ({ job }: { job: JobDetails }) => {
-  const imagesPerRecord = job.rec > 0 ? (job.img / job.rec).toFixed(2) : "N/A";
+  const totalRecords = job.records.length;
+  const totalImages = job.results.length;
+  const imagesPerRecord = totalRecords > 0 ? (totalImages / totalRecords).toFixed(2) : 'N/A';
   const maxRecords = 1000;
   const maxImages = 20000;
-  const staticMetrics = {
-    totalRequests: 150,
-    successRate: "95%",
-    avgResponseTime: "0.8s",
-  };
+  const totalRequests = totalRecords; // Assuming each record is a request
+  const successfulRequests = job.records.filter(record =>
+    job.results.some(result => result.entryId === record.entryId)
+  ).length;
+  const successRate = totalRequests > 0 ? `${((successfulRequests / totalRequests) * 100).toFixed(1)}%` : 'N/A';
+  const avgResponseTime = 'N/A'; // Cannot calculate without timestamps
 
   return (
     <Box p={4}>
@@ -147,9 +185,9 @@ const UsageTab = ({ job }: { job: JobDetails }) => {
           <CardBody>
             <Stat>
               <StatLabel>Total Records Processed</StatLabel>
-              <StatNumber>{job.rec}</StatNumber>
-              <Progress value={(job.rec / maxRecords) * 100} size="sm" colorScheme="blue" mt={2} />
-              <StatHelpText>{((job.rec / maxRecords) * 100).toFixed(1)}% of max ({maxRecords})</StatHelpText>
+              <StatNumber>{totalRecords}</StatNumber>
+              <Progress value={(totalRecords / maxRecords) * 100} size="sm" colorScheme="blue" mt={2} />
+              <StatHelpText>{((totalRecords / maxRecords) * 100).toFixed(1)}% of max ({maxRecords})</StatHelpText>
             </Stat>
           </CardBody>
         </Card>
@@ -157,9 +195,9 @@ const UsageTab = ({ job }: { job: JobDetails }) => {
           <CardBody>
             <Stat>
               <StatLabel>Total Images Scraped</StatLabel>
-              <StatNumber>{job.img}</StatNumber>
-              <Progress value={(job.img / maxImages) * 100} size="sm" colorScheme="green" mt={2} />
-              <StatHelpText>{((job.img / maxImages) * 100).toFixed(1)}% of max ({maxImages})</StatHelpText>
+              <StatNumber>{totalImages}</StatNumber>
+              <Progress value={(totalImages / maxImages) * 100} size="sm" colorScheme="green" mt={2} />
+              <StatHelpText>{((totalImages / maxImages) * 100).toFixed(1)}% of max ({maxImages})</StatHelpText>
             </Stat>
           </CardBody>
         </Card>
@@ -184,15 +222,15 @@ const UsageTab = ({ job }: { job: JobDetails }) => {
               <Tbody>
                 <Tr>
                   <Td>Total Requests</Td>
-                  <Td>{staticMetrics.totalRequests}</Td>
+                  <Td>{totalRequests}</Td>
                 </Tr>
                 <Tr>
                   <Td>Success Rate</Td>
-                  <Td>{staticMetrics.successRate}</Td>
+                  <Td>{successRate}</Td>
                 </Tr>
                 <Tr>
                   <Td>Avg Response Time</Td>
-                  <Td>{staticMetrics.avgResponseTime}</Td>
+                  <Td>{avgResponseTime}</Td>
                 </Tr>
               </Tbody>
             </Table>
@@ -202,9 +240,15 @@ const UsageTab = ({ job }: { job: JobDetails }) => {
     </Box>
   );
 };
+
 const ResultsTab = ({ job }: { job: JobDetails }) => {
+  const totalRecords = job.records.length;
+  const totalImages = job.results.length;
+
   const handleDownload = () => {
-    window.open(job.fileLocationUrl, "_blank", "noopener,noreferrer");
+    if (job.fileLocationUrl) {
+      window.open(job.fileLocationUrl, "_blank", "noopener,noreferrer");
+    }
   };
 
   const handleLinkClick = (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>, url: string) => {
@@ -216,9 +260,9 @@ const ResultsTab = ({ job }: { job: JobDetails }) => {
     <Box p={4}>
       <Flex justify="space-between" align="center" mb={4}>
         <Text fontSize="lg" fontWeight="bold">Job Results</Text>
-        {job.fileEnd && (
+        {job.fileLocationUrl && (
           <Button size="sm" colorScheme="blue" onClick={handleDownload}>
-            Download Input File
+            Download Result File
           </Button>
         )}
       </Flex>
@@ -227,15 +271,15 @@ const ResultsTab = ({ job }: { job: JobDetails }) => {
           <CardBody>
             <Stat>
               <StatLabel>Result File</StatLabel>
-              <StatHelpText wordBreak="break-all">{job.resultFile}</StatHelpText>
+              <StatHelpText wordBreak="break-all">{job.resultFile || 'Not available'}</StatHelpText>
             </Stat>
             <Stat mt={4}>
               <StatLabel>Total Records</StatLabel>
-              <StatNumber>{job.rec}</StatNumber>
+              <StatNumber>{totalRecords}</StatNumber>
             </Stat>
             <Stat mt={4}>
               <StatLabel>Total Images</StatLabel>
-              <StatNumber>{job.img}</StatNumber>
+              <StatNumber>{totalImages}</StatNumber>
             </Stat>
           </CardBody>
         </Card>
@@ -260,33 +304,33 @@ const ResultsTab = ({ job }: { job: JobDetails }) => {
                       </Tr>
                     </Thead>
                     <Tbody>
-                    {job.results.map((result) => (
-                    <Tr key={result.resultId}>
-                      <Td>{result.resultId}</Td>
-                      <Td>{result.entryId}</Td>
-                      <Td>
-                        <a
-                          href={result.imageUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          onClick={(e) => handleLinkClick(e, result.imageUrl)}
-                        >
-                          Link
-                        </a>
-                      </Td>
-                      <Td>{result.imageDesc}</Td>
-                      <Td>
-                        <a
-                          href={result.imageSource}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          onClick={(e) => handleLinkClick(e, result.imageSource)}
-                        >
-                          Source
-                        </a>
-                      </Td>
-                    </Tr>
-                  ))}
+                      {job.results.map((result) => (
+                        <Tr key={result.resultId}>
+                          <Td>{result.resultId}</Td>
+                          <Td>{result.entryId}</Td>
+                          <Td>
+                            <a
+                              href={result.imageUrl}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              onClick={(e) => handleLinkClick(e, result.imageUrl)}
+                            >
+                              Link
+                            </a>
+                          </Td>
+                          <Td>{result.imageDesc}</Td>
+                          <Td>
+                            <a
+                              href={result.imageSource}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              onClick={(e) => handleLinkClick(e, result.imageSource)}
+                            >
+                              Source
+                            </a>
+                          </Td>
+                        </Tr>
+                      ))}
                     </Tbody>
                   </Table>
                 </AccordionPanel>
@@ -332,7 +376,14 @@ const ResultsTab = ({ job }: { job: JobDetails }) => {
 const LogsTab = ({ job }: { job: JobDetails }) => {
   return (
     <Box p={4}>
-      <Text fontSize="lg" fontWeight="bold" mb={4}>Logs</Text>
+      <Flex justify="space-between" align="center" mb={4}>
+        <Text fontSize="lg" fontWeight="bold">Logs</Text>
+        {job.logFileUrl && (
+          <Button size="sm" onClick={() => window.open(job.logFileUrl, '_blank')}>
+            Download Log File
+          </Button>
+        )}
+      </Flex>
       <Flex direction="column" gap={6}>
         <Card shadow="md" borderWidth="1px">
           <CardBody>
@@ -372,17 +423,14 @@ const LogsTab = ({ job }: { job: JobDetails }) => {
         <Card shadow="md" borderWidth="1px">
           <CardBody>
             <Text fontSize="md" fontWeight="semibold" mb={2}>Log File Preview</Text>
-            {job.logFileUrl ? (
-              <iframe src={job.logFileUrl} width="100%" height="300px" title="Log File Preview" />
-            ) : (
-              <Text>No log file available for preview.</Text>
-            )}
+            <LogDisplay logUrl={job.logFileUrl} />
           </CardBody>
         </Card>
       </Flex>
     </Box>
   );
 };
+
 const SearchRowsTab = ({ job }: { job: JobDetails }) => {
   const [debugMode, setDebugMode] = useState(false);
   const [showFileDetails, setShowFileDetails] = useState(false);
@@ -809,6 +857,7 @@ const SearchRowsTab = ({ job }: { job: JobDetails }) => {
     </Box>
   );
 };
+
 const JobsDetailPage = () => {
   const { jobId } = useParams({ from: "/_layout/scraping-api/scraping-jobs/$jobId" }) as { jobId: string };
   const [isLoading, setIsLoading] = useState<boolean>(true);
