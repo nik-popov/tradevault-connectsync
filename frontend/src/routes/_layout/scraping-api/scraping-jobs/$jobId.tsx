@@ -480,10 +480,10 @@ const SearchRowsTab = ({ job }: { job: JobDetails }) => {
   };
 
   const googleSearchModelUrl = (model: string) =>
-    `https://www.google.com/search?q=${encodeURIComponent(`${model} - US`)}&udm=2`;
+    `https://www.google.com/search?q=${encodeURIComponent(`${model}`)}&udm=2`;
 
   const googleSearchBrandModelUrl = (model: string, brand: string) =>
-    `https://www.google.com/search?q=${encodeURIComponent(`${brand} ${model} - US`)}&udm=2`;
+    `https://www.google.com/search?q=${encodeURIComponent(`${brand} ${model}`)}&udm=2`;
 
   const handleLinkClick = (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>, url: string) => {
     e.preventDefault();
