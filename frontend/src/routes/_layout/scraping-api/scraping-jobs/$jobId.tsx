@@ -100,7 +100,9 @@ const LogDisplay = ({ logUrl }: { logUrl: string | null }) => {
       setIsLoading(true);
       try {
         const response = await fetch(logUrl);
-        if (!response.ok) throw new Error('Failed to fetch log');
+        if (!response.ok) {
+          throw new Error(`Failed to fetch log: ${response.status} ${response.statusText}`);
+        }
         const text = await response.text();
         setLogContent(text);
       } catch (err) {
@@ -311,8 +313,6 @@ const ResultsTab = ({ job }: { job: JobDetails }) => {
                           <Td>
                             <a
                               href={result.imageUrl}
-                              target="_blank"
-                              rel="noopener noreferrer"
                               onClick={(e) => handleLinkClick(e, result.imageUrl)}
                             >
                               Link
@@ -322,8 +322,6 @@ const ResultsTab = ({ job }: { job: JobDetails }) => {
                           <Td>
                             <a
                               href={result.imageSource}
-                              target="_blank"
-                              rel="noopener noreferrer"
                               onClick={(e) => handleLinkClick(e, result.imageSource)}
                             >
                               Source
@@ -435,13 +433,18 @@ const SearchRowsTab = ({ job }: { job: JobDetails }) => {
   const [debugMode, setDebugMode] = useState(false);
   const [showFileDetails, setShowFileDetails] = useState(false);
   const [showResultDetails, setShowResultDetails] = useState(true);
-  const [showExtraImages, setShowExtraImages] = useState(false);
-  const [imageLimit, setImageLimit] = useState(10);
+  const [numImages, setNumImages] = useState(1); // Number of images to show, 1 to 5
+  const [imageLimit, setImageLimit] = useState(10); // For debug mode
+
+  // Default to no image details in debug mode
+  useEffect(() => {
+    if (debugMode) {
+      setShowResultDetails(false);
+    }
+  }, [debugMode]);
 
   const getImagesForEntry = (entryId: number) => {
-    const entryResults = job.results.filter((r) => r.entryId === entryId);
-    const limit = debugMode ? imageLimit : (showExtraImages ? 2 : 1);
-    return entryResults.slice(0, limit);
+    return job.results.filter((r) => r.entryId === entryId);
   };
 
   const shortenSourceUrl = (url: string) => {
@@ -481,13 +484,23 @@ const SearchRowsTab = ({ job }: { job: JobDetails }) => {
             {showResultDetails ? "Hide Image Details" : "Show Image Details"}
           </Button>
           {!debugMode && (
-            <Button
-              size="sm"
-              colorScheme="teal"
-              onClick={() => setShowExtraImages(!showExtraImages)}
-            >
-              {showExtraImages ? "Hide 2nd Image" : "Show 2nd Image"}
-            </Button>
+            <Flex align="center">
+              <Button
+                size="sm"
+                onClick={() => setNumImages((prev) => Math.max(1, prev - 1))}
+                isDisabled={numImages <= 1}
+              >
+                -
+              </Button>
+              <Text mx={2}>{numImages}</Text>
+              <Button
+                size="sm"
+                onClick={() => setNumImages((prev) => Math.min(5, prev + 1))}
+                isDisabled={numImages >= 5}
+              >
+                +
+              </Button>
+            </Flex>
           )}
           {!debugMode && (
             <Button
@@ -512,14 +525,12 @@ const SearchRowsTab = ({ job }: { job: JobDetails }) => {
             >
               <Thead>
                 <Tr>
-                  <Th>Image 1</Th>
-                  {showExtraImages && <Th>Image 2</Th>}
-                  {showResultDetails && (
-                    <>
-                      <Th>Details 1</Th>
-                      {showExtraImages && <Th>Details 2</Th>}
-                    </>
-                  )}
+                  {Array.from({ length: numImages }).map((_, index) => (
+                    <React.Fragment key={index}>
+                      <Th>Image {index + 1}</Th>
+                      {showResultDetails && <Th>Details {index + 1}</Th>}
+                    </React.Fragment>
+                  ))}
                   <Th>Excel Row ID</Th>
                   <Th>Product Model</Th>
                   <Th>Brand</Th>
@@ -533,50 +544,26 @@ const SearchRowsTab = ({ job }: { job: JobDetails }) => {
               </Thead>
               <Tbody>
                 {job.records.map((record) => {
-                  const images = getImagesForEntry(record.entryId);
-                  const hasSecondImage = showExtraImages && images.length > 1;
+                  const images = getImagesForEntry(record.entryId).slice(0, numImages);
                   return (
                     <Tr key={record.entryId}>
-                      <Td>
-                        {images[0] ? (
-                          <Box textAlign="center">
-                            <Image
-                              src={images[0].imageUrlThumbnail}
-                              alt={images[0].imageDesc}
-                              maxW="80px"
-                              maxH="80px"
-                              objectFit="cover"
-                              cursor="pointer"
-                              onClick={() => window.open(images[0].imageUrlThumbnail, "_blank")}
-                            />
-                          </Box>
-                        ) : (
-                          "-"
-                        )}
-                      </Td>
-                      {showExtraImages && (
-                        <Td>
-                          {hasSecondImage ? (
+                      {images.map((image, index) => (
+                        <React.Fragment key={index}>
+                          <Td>
                             <Box textAlign="center">
                               <Image
-                                src={images[1].imageUrlThumbnail}
-                                alt={images[1].imageDesc}
+                                src={image.imageUrlThumbnail}
+                                alt={image.imageDesc}
                                 maxW="80px"
                                 maxH="80px"
                                 objectFit="cover"
                                 cursor="pointer"
-                                onClick={() => window.open(images[1].imageUrlThumbnail, "_blank")}
+                                onClick={() => window.open(image.imageUrlThumbnail, "_blank")}
                               />
                             </Box>
-                          ) : (
-                            "-"
-                          )}
-                        </Td>
-                      )}
-                      {showResultDetails && (
-                        <>
-                          <Td>
-                            {images[0] ? (
+                          </Td>
+                          {showResultDetails && (
+                            <Td>
                               <Box>
                                 <Text fontSize="xs" color="gray.100">
                                   <a
@@ -585,68 +572,36 @@ const SearchRowsTab = ({ job }: { job: JobDetails }) => {
                                       handleLinkClick(e, googleSearchModelUrl(record.productModel))
                                     }
                                   >
-                                    {images[0].imageDesc}
+                                    {image.imageDesc}
                                   </a>
                                 </Text>
                                 <Text fontSize="xs" color="gray.500">
                                   <a
-                                    href={images[0].imageSource}
-                                    onClick={(e) => handleLinkClick(e, images[0].imageSource)}
+                                    href={image.imageSource}
+                                    onClick={(e) => handleLinkClick(e, image.imageSource)}
                                   >
-                                    {shortenSourceUrl(images[0].imageSource)}
+                                    {shortenSourceUrl(image.imageSource)}
                                   </a>
                                 </Text>
                                 <Text fontSize="xs" color="gray.300">
                                   <a
-                                    href={images[0].imageUrl}
-                                    onClick={(e) => handleLinkClick(e, images[0].imageUrl)}
+                                    href={image.imageUrl}
+                                    onClick={(e) => handleLinkClick(e, image.imageUrl)}
                                   >
-                                    {shortenImageUrl(images[0].imageUrl)}
+                                    {shortenImageUrl(image.imageUrl)}
                                   </a>
                                 </Text>
                               </Box>
-                            ) : (
-                              "-"
-                            )}
-                          </Td>
-                          {showExtraImages && (
-                            <Td>
-                              {hasSecondImage ? (
-                                <Box>
-                                  <Text fontSize="xs" color="gray.100">
-                                    <a
-                                      href={googleSearchModelUrl(record.productModel)}
-                                      onClick={(e) =>
-                                        handleLinkClick(e, googleSearchModelUrl(record.productModel))
-                                      }
-                                    >
-                                      {images[1].imageDesc}
-                                    </a>
-                                  </Text>
-                                  <Text fontSize="xs" color="gray.500">
-                                    <a
-                                      href={images[1].imageSource}
-                                      onClick={(e) => handleLinkClick(e, images[1].imageSource)}
-                                    >
-                                      {shortenSourceUrl(images[1].imageSource)}
-                                    </a>
-                                  </Text>
-                                  <Text fontSize="xs" color="gray.300">
-                                    <a
-                                      href={images[1].imageUrl}
-                                      onClick={(e) => handleLinkClick(e, images[1].imageUrl)}
-                                    >
-                                      {shortenImageUrl(images[1].imageUrl)}
-                                    </a>
-                                  </Text>
-                                </Box>
-                              ) : (
-                                "-"
-                              )}
                             </Td>
                           )}
-                        </>
-                      )}
+                        </React.Fragment>
+                      ))}
+                      {Array.from({ length: numImages - images.length }).map((_, index) => (
+                        <React.Fragment key={`empty-${index}`}>
+                          <Td>-</Td>
+                          {showResultDetails && <Td>-</Td>}
+                        </React.Fragment>
+                      ))}
                       <Td>{record.excelRowId}</Td>
                       <Td>
                         <a
@@ -748,7 +703,7 @@ const SearchRowsTab = ({ job }: { job: JobDetails }) => {
                 </Thead>
                 <Tbody>
                   {job.records.map((record) => {
-                    const images = getImagesForEntry(record.entryId);
+                    const images = getImagesForEntry(record.entryId).slice(0, imageLimit);
                     return (
                       <Tr key={record.entryId}>
                         {showFileDetails ? (
