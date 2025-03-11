@@ -11,7 +11,7 @@ import {
   Select,
 } from "@chakra-ui/react";
 import { useState, useMemo } from "react";
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { FiGithub } from "react-icons/fi";
 import PromoSERP from "../../../components/ComingSoon";
@@ -23,14 +23,23 @@ const PRODUCT = "serp";
 export const Route = createFileRoute("/_layout/scraping-api/explore")({
   component: Explore,
 });
+
 interface Item {
+  id: number;
   name: string;
+  description: string;
   details: {
+    status: string;
+    imageStart: string;
+    fileStart: string;
     fileEnd?: string;
-    images: number;
+    user: string;
     records: number;
+    images: number;
+    apiUsed: string;
   };
 }
+
 function Explore() {
   const navigate = useNavigate();
 
@@ -101,7 +110,6 @@ function Explore() {
       description: `Scrapes luxury data for linesheets using ${job.apiUsed} (${job.rec} records, ${job.img} images)`,
       details: {
         status: job.fileEnd ? "Completed" : "Pending",
-        targetUrl: job.inputFile.includes("http") ? job.inputFile : "N/A",
         imageStart: job.imageStart,
         fileStart: job.fileStart,
         fileEnd: job.fileEnd,
@@ -149,6 +157,9 @@ function Explore() {
           <Text fontSize="xl" fontWeight="bold">Scraping Jobs</Text>
           <Text fontSize="sm" color="gray.500">View and manage scraping jobs for luxury linesheets.</Text>
         </Box>
+        <Button as={Link} to="/explore" colorScheme="blue" size="sm">
+          Jobs Dashboard
+        </Button>
       </Flex>
 
       <Divider my={4} />
@@ -172,7 +183,7 @@ function Explore() {
                 onChange={(e) => setSearchQuery(e.target.value)}
                 w={{ base: "100%", md: "250px" }}
               />
-              <HStack spacing={4} ml="auto" align="center">
+              <HStack spacing={4} ml="auto" align="center" flexWrap="wrap">
                 {filterCategories.map((type) => (
                   <Button
                     key={type}
@@ -186,21 +197,20 @@ function Explore() {
                     {type === "all" ? "All" : type}
                   </Button>
                 ))}
-           <Select
-            value={sortBy}
-            size="sm"
-            w={{ base: "100%", md: "220px" }}
-            color="white"
-            borderColor="gray.600"
-            _hover={{ borderColor: "gray.500" }}
-            _focus={{ borderColor: "blue.400" }}
-            onChange={(e) => setSortBy(e.target.value)}
-          >
-            <option value="fileEnd">Date</option>
-            <option value="images">Image Count</option>
-            <option value="records">Row Count</option>
-            <option value="name">Name</option>
-          </Select>
+                <Select
+                  value={sortBy}
+                  size="sm"
+                  w={{ base: "100%", md: "220px" }}
+                  borderColor="gray.600"
+                  _hover={{ borderColor: "gray.500" }}
+                  _focus={{ borderColor: "blue.400" }}
+                  onChange={(e) => setSortBy(e.target.value)}
+                >
+                  <option value="fileEnd">Sort by Date</option>
+                  <option value="images">Sort by Image Count</option>
+                  <option value="records">Sort by Row Count</option>
+                  <option value="name">Sort by Name</option>
+                </Select>
               </HStack>
             </Flex>
 
@@ -225,10 +235,18 @@ function Explore() {
                 >
                   GitHub Discussions
                 </Button>
+                <Button
+                  as={Link}
+                  to="/scraping-jobs"
+                  variant="outline"
+                  size="sm"
+                  mt="2"
+                >
+                  View Jobs Dashboard
+                </Button>
               </Box>
             </VStack>
           </Box>
-      
         </Flex>
       )}
     </Container>
@@ -236,11 +254,11 @@ function Explore() {
 }
 
 // Scraper Job List Item Component
-const ScraperJobListItem = ({ job, navigate, isInitiallyExpanded }) => {
-  const [isExpanded, setIsExpanded] = useState(isInitiallyExpanded || false);
+const ScraperJobListItem = ({ job, navigate, isInitiallyExpanded }: { job: Item; navigate: any; isInitiallyExpanded: boolean }) => {
+  const [isExpanded, setIsExpanded] = useState(isInitiallyExpanded);
 
   const handleNavigate = () => {
-    navigate({ to: `/scraper-jobs/${job.id}` });
+    navigate({ to: `/scraping-api/scraping-jobs/${job.id}` });
   };
 
   return (
@@ -248,7 +266,7 @@ const ScraperJobListItem = ({ job, navigate, isInitiallyExpanded }) => {
       <Flex justify="space-between" align="center">
         <Box>
           <Text fontWeight="bold">{job.name}</Text>
-          <Text fontSize="sm" color="gray.300">{job.description}</Text> {/* Much lighter subtext */}
+          <Text fontSize="sm" color="gray.300">{job.description}</Text>
         </Box>
         <HStack spacing={2}>
           <Button size="sm" colorScheme="blue" onClick={() => setIsExpanded(!isExpanded)}>
@@ -274,7 +292,7 @@ const ScraperJobListItem = ({ job, navigate, isInitiallyExpanded }) => {
             <strong>File Start:</strong> {job.details.fileStart}
           </Text>
           <Text fontSize="sm" color="gray.600">
-            <strong>File End:</strong> {job.details.fileEnd}
+            <strong>File End:</strong> {job.details.fileEnd || "Pending"}
           </Text>
           <Text fontSize="sm" color="gray.600">
             <strong>User:</strong> {job.details.user}

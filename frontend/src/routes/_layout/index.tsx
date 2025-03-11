@@ -35,6 +35,7 @@ function Dashboard() {
   const proxyProducts: Product[] = [
     { id: "google-serp", name: "🔍 Google SERP Results", type: "SERP", description: "Scrape real-time Google search results.", owned: true, path: "/scraping-api/google-serp" },
     { id: "cettire", name: "🔍Cettire", type: "SERP", description: "Scrape Cettire search results.", owned: false, path: "/scraping-api/cettire" },
+    { id: "icon-gpt", name: "🤖 IconGpt", type: "AI", description: "Use OpenAI and X models.", owned: true, path: "/ai/icongpt" },
     { id: "manage-proxy", name: "👺 Proxy Management", type: "SERP", description: "Manage Proxy Endpoints.", owned: true, path: "/scraping-api/search-proxies" },
    
   ];

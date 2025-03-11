@@ -34,7 +34,7 @@ const sidebarStructure: SidebarItem[] = [
   {
     title: "Scraping",
     subItems: [
-      { title: "Jobs List", path: "/scraping-api/explore" },
+      { title: "Jobs", path: "/scraping-api/explore" },
       { title: "Proxies", path: "/scraping-api/search-proxies" },
       { title: "Vision", path: "/scraping-api/vision" },
       { title: "Reasoning", path: "/scraping-api/language-model" },
@@ -90,7 +90,7 @@ const SidebarItems = ({ onClose }: SidebarItemsProps) => {
     finalSidebarStructure.push({ title: "Admin", icon: FiUsers, path: "/admin" });
   }
   const isEnabled = (title: string) =>
-    ["Dashboard", "Scraping"].includes(title) ||
+    ["Dashboard", "Scraping","IconGpt"].includes(title) ||
     (title === "Jobs" && 
       finalSidebarStructure.some(item => 
         item.title === "Scraping" && 

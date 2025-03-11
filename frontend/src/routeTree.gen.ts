@@ -34,7 +34,10 @@ import { Route as LayoutProxiesDatacenterImport } from './routes/_layout/proxies
 import { Route as LayoutProxiesBrowserImport } from './routes/_layout/proxies/browser'
 import { Route as LayoutDatasetsRequestImport } from './routes/_layout/datasets/request'
 import { Route as LayoutDatasetsExploreImport } from './routes/_layout/datasets/explore'
+import { Route as LayoutAiIcongptImport } from './routes/_layout/ai/icongpt'
+import { Route as LayoutScrapingApiScrapingJobsIndexImport } from './routes/_layout/scraping-api/scraping-jobs/index'
 import { Route as LayoutScrapingApiEndpointsIndexImport } from './routes/_layout/scraping-api/endpoints/index'
+import { Route as LayoutScrapingApiScrapingJobsJobIdImport } from './routes/_layout/scraping-api/scraping-jobs/$jobId'
 import { Route as LayoutScrapingApiEndpointsEndpointIdImport } from './routes/_layout/scraping-api/endpoints/$endpointId'
 
 // Create/Update Routes
@@ -159,9 +162,26 @@ const LayoutDatasetsExploreRoute = LayoutDatasetsExploreImport.update({
   getParentRoute: () => LayoutRoute,
 } as any)
 
+const LayoutAiIcongptRoute = LayoutAiIcongptImport.update({
+  path: '/ai/icongpt',
+  getParentRoute: () => LayoutRoute,
+} as any)
+
+const LayoutScrapingApiScrapingJobsIndexRoute =
+  LayoutScrapingApiScrapingJobsIndexImport.update({
+    path: '/scraping-api/scraping-jobs/',
+    getParentRoute: () => LayoutRoute,
+  } as any)
+
 const LayoutScrapingApiEndpointsIndexRoute =
   LayoutScrapingApiEndpointsIndexImport.update({
     path: '/scraping-api/endpoints/',
+    getParentRoute: () => LayoutRoute,
+  } as any)
+
+const LayoutScrapingApiScrapingJobsJobIdRoute =
+  LayoutScrapingApiScrapingJobsJobIdImport.update({
+    path: '/scraping-api/scraping-jobs/$jobId',
     getParentRoute: () => LayoutRoute,
   } as any)
 
@@ -213,6 +233,10 @@ declare module '@tanstack/react-router' {
     }
     '/_layout/': {
       preLoaderRoute: typeof LayoutIndexImport
+      parentRoute: typeof LayoutImport
+    }
+    '/_layout/ai/icongpt': {
+      preLoaderRoute: typeof LayoutAiIcongptImport
       parentRoute: typeof LayoutImport
     }
     '/_layout/datasets/explore': {
@@ -271,8 +295,16 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LayoutScrapingApiEndpointsEndpointIdImport
       parentRoute: typeof LayoutImport
     }
+    '/_layout/scraping-api/scraping-jobs/$jobId': {
+      preLoaderRoute: typeof LayoutScrapingApiScrapingJobsJobIdImport
+      parentRoute: typeof LayoutImport
+    }
     '/_layout/scraping-api/endpoints/': {
       preLoaderRoute: typeof LayoutScrapingApiEndpointsIndexImport
+      parentRoute: typeof LayoutImport
+    }
+    '/_layout/scraping-api/scraping-jobs/': {
+      preLoaderRoute: typeof LayoutScrapingApiScrapingJobsIndexImport
       parentRoute: typeof LayoutImport
     }
   }
@@ -287,6 +319,7 @@ export const routeTree = rootRoute.addChildren([
     LayoutSettingsRoute,
     LayoutSupportRoute,
     LayoutIndexRoute,
+    LayoutAiIcongptRoute,
     LayoutDatasetsExploreRoute,
     LayoutDatasetsRequestRoute,
     LayoutProxiesBrowserRoute,
@@ -301,7 +334,9 @@ export const routeTree = rootRoute.addChildren([
     LayoutScrapingApiSearchProxiesRoute,
     LayoutScrapingApiUserAgentsRoute,
     LayoutScrapingApiEndpointsEndpointIdRoute,
+    LayoutScrapingApiScrapingJobsJobIdRoute,
     LayoutScrapingApiEndpointsIndexRoute,
+    LayoutScrapingApiScrapingJobsIndexRoute,
   ]),
   LoginRoute,
   RecoverPasswordRoute,
