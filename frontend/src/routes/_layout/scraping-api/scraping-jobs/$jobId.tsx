@@ -468,7 +468,10 @@ const SearchRowsTab = ({ job }: { job: JobDetails }) => {
   }, [showResultDetails]);
 
   const getImagesForEntry = (entryId: number, limit: number) => {
-    return job.results.filter((r) => r.entryId === entryId).slice(0, limit);
+    return job.results
+      .filter((r) => r.entryId === entryId)
+      .sort((a, b) => a.sortOrder - b.sortOrder) // Sort by sortOrder ascending
+      .slice(0, limit); // Take the top 'limit' results
   };
 
   const shortenSourceUrl = (url: string) => {
