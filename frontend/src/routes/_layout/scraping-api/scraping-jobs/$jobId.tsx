@@ -455,8 +455,8 @@ const SearchRowsTab = ({ job }: { job: JobDetails }) => {
   const [debugMode, setDebugMode] = useState(false);
   const [showFileDetails, setShowFileDetails] = useState(false);
   const [showResultDetails, setShowResultDetails] = useState(false);
-  const [numImages, setNumImages] = useState(1); // Number of images in normal mode, 1 to 10
-  const [imageLimit, setImageLimit] = useState(10); // Number of images in debug modal
+  const [numImages, setNumImages] = useState(1);
+  const [imageLimit, setImageLimit] = useState(10);
 
   useEffect(() => {
     const maxImages = showResultDetails ? 3 : 10;
@@ -465,19 +465,17 @@ const SearchRowsTab = ({ job }: { job: JobDetails }) => {
     }
   }, [showResultDetails]);
   const getImagesForEntry = (entryId: number, limit: number) => {
-    const filteredResults = job.results
-      .filter((r) => r.entryId === entryId && r.sortOrder > 0); // Exclude negatives
-    const sortedResults = [...filteredResults].sort((a, b) => a.sortOrder - b.sortOrder); // 1, 2, 3...
+    const filteredResults = job.results.filter((r) => r.entryId === entryId && r.sortOrder > 0); // Only positive
+    const sortedResults = [...filteredResults].sort((a, b) => a.sortOrder - b.sortOrder);
     const limitedResults = sortedResults.slice(0, limit);
   
     console.log(`Entry ID: ${entryId}`);
-    console.log("Filtered Results (no negatives):", filteredResults.map(r => ({ resultId: r.resultId, sortOrder: r.sortOrder })));
+    console.log("Filtered Results (positive only):", filteredResults.map(r => ({ resultId: r.resultId, sortOrder: r.sortOrder })));
     console.log("Sorted Results:", sortedResults.map(r => ({ resultId: r.resultId, sortOrder: r.sortOrder })));
     console.log("Limited Results:", limitedResults.map(r => ({ resultId: r.resultId, sortOrder: r.sortOrder })));
   
     return limitedResults;
   };
-
   const shortenSourceUrl = (url: string) => {
     return url.length > 30 ? `${url.slice(0, 27)}...` : url;
   };
@@ -777,7 +775,6 @@ const SearchRowsTab = ({ job }: { job: JobDetails }) => {
                                   onClick={() => window.open(result.imageUrlThumbnail, "_blank")}
                                 />
                               </Box>
-                              <Text fontSize="xs">Sort Order: {result.sortOrder}</Text>
                             </Td>
                             {showResultDetails && (
                               <Td>
@@ -807,6 +804,9 @@ const SearchRowsTab = ({ job }: { job: JobDetails }) => {
                                     >
                                       {shortenImageUrl(result.imageUrl)}
                                     </a>
+                                  </Text>
+                                  <Text fontSize="xs" color="gray.600">
+                                    <strong>Sort Order:</strong> {result.sortOrder}
                                   </Text>
                                 </Box>
                               </Td>
