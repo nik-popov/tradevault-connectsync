@@ -556,7 +556,7 @@ const SearchRowsTab = ({ job }: { job: JobDetails }) => {
                           {showResultDetails && (
                             <Td>
                               <Box>
-                                <Text fontSize="xs" color="gray.700">
+                                <Text fontSize="xs" color="gray.100">
                                   <a
                                     href={googleSearchModelUrl(record.productModel)}
                                     onClick={(e) =>
@@ -752,7 +752,7 @@ const SearchRowsTab = ({ job }: { job: JobDetails }) => {
                             {showResultDetails && (
                               <Td>
                                 <Box>
-                                  <Text fontSize="xs" color="gray.700">
+                                  <Text fontSize="xs" color="gray.100">
                                     <a
                                       href={googleSearchModelUrl(record.productModel)}
                                       onClick={(e) =>
