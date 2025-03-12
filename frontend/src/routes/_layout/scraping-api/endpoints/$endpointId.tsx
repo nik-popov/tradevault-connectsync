@@ -59,7 +59,7 @@ const endpointData: Record<string, string> = {
   "US-EAST1": "https://us-east1-image-scraper-451516.cloudfunctions.net/main",
   "US-EAST4": "https://us-east4-image-scraper-451516.cloudfunctions.net/main",
   "US-WEST1": "https://us-west1-image-scraper-451516.cloudfunctions.net/main",
-  "EUROPE-WEST4": "https://europe-west4-image-scraper-451516.cloudfunctions.net/main",
+  "EUROPE-WEST4": "https://europe-west4-image-proxy-453319.cloudfunctions.net/main",
   "US-WEST4":"https://us-west4-image-proxy-453319.cloudfunctions.net/main",
   "EUROPE-WEST1":"https://europe-west1-image-proxy-453319.cloudfunctions.net/main",
   "EUROPE-NORTH1":"https://europe-north1-image-proxy-453319.cloudfunctions.net/main",

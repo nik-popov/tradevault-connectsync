@@ -3,10 +3,9 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
-  "proxy": "http://localhost:3000",
   "scripts": {
     "start": "vite",
-    "dev": "concurrently \"npm run start\" \"npm run server\"",
+    "dev": "vite",
     "server": "cd server && NODE_CONFIG_DIR=./config node server.js",
     "build": "tsc -p tsconfig.build.json && vite build",
     "lint": "biome check --apply-unsafe --no-errors-on-unmatched --files-ignore-unknown=true ./",

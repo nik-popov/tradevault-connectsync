@@ -30,7 +30,7 @@ const endpointData: Record<string, string> = {
   "US-EAST1": "https://us-east1-image-scraper-451516.cloudfunctions.net/main",
   "US-EAST4": "https://us-east4-image-scraper-451516.cloudfunctions.net/main",
   "US-WEST1": "https://us-west1-image-scraper-451516.cloudfunctions.net/main",
-  "EUROPE-WEST4": "https://europe-west4-image-scraper-451516.cloudfunctions.net/main"
+  "EUROPE-WEST4": "https://europe-west4-image-proxy-453319.cloudfunctions.net/main"
 };
 
 const fetchEndpointHealth = async (url: string, timeout: number = 10000): Promise<HealthStatus | null> => {
