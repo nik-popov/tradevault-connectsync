@@ -166,22 +166,13 @@ function Explore() {
                 <Text fontWeight="bold">Quick Actions</Text>
                 <Button
                   as="a"
-                  href="https://github.com/iconluxurygroupNet"
+                  href="https://github.com/iconluxurygroup"
                   leftIcon={<FiGithub />}
                   variant="outline"
                   size="sm"
                   mt="2"
                 >
                   GitHub
-                </Button>
-                <Button
-                  as={Link}
-                  to="/scraping-jobs"
-                  variant="outline"
-                  size="sm"
-                  mt="2"
-                >
-                  Dashboard
                 </Button>
               </Box>
             </VStack>
