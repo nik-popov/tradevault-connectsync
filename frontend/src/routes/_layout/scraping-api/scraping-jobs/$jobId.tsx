@@ -152,54 +152,103 @@ interface OverviewTabProps {
   job: JobDetails;
   sortBy: "match" | "linesheet" | null;
   setSortBy: (value: "match" | "linesheet" | null) => void;
+  fetchJobData: () => Promise<void>;
+  setSearchQuery: (query: string) => void;
+  setActiveTab: (index: number) => void;
 }
 
-const OverviewTab: React.FC<OverviewTabProps> = ({ job, sortBy, setSortBy }) => {
+const OverviewTab: React.FC<OverviewTabProps> = ({
+  job,
+  sortBy,
+  setSortBy,
+  setSearchQuery,
+  setActiveTab,
+}) => {
   const status = job.fileEnd ? "Completed" : "Pending";
-  const duration = job.fileEnd && job.fileStart
-    ? (new Date(job.fileEnd).getTime() - new Date(job.fileStart).getTime()) / 1000 / 60
-    : null;
+  const duration =
+    job.fileEnd && job.fileStart
+      ? (new Date(job.fileEnd).getTime() - new Date(job.fileStart).getTime()) /
+        1000 /
+        60
+      : null;
   const [isRestarting, setIsRestarting] = useState(false);
   const [isCreatingXLS, setIsCreatingXLS] = useState(false);
 
-  const handleDevRestart = async () => { /* Unchanged */ };
-  const handleCreateXLS = async () => { /* Unchanged */ };
+  const handleDevRestart = async () => { /* Existing restart logic */ };
+  const handleCreateXLS = async () => { /* Existing XLS creation logic */ };
 
+  // Extract domain from URL
   const getDomain = (url: string): string => {
     try {
       const hostname = new URL(url).hostname;
-      return hostname.replace(/^www\./, '');
+      return hostname.replace(/^www\./, "");
     } catch {
-      return 'unknown';
+      return "unknown";
     }
   };
 
-  const domainCounts = job.results.reduce((acc, result) => {
+  // Aggregate domain data, including positive sortOrder count
+  const domainData = job.results.reduce((acc, result) => {
     const domain = getDomain(result.imageSource);
-    acc[domain] = (acc[domain] || 0) + 1;
+    if (!acc[domain]) {
+      acc[domain] = { 
+        count: 0, 
+        entryIds: new Set<number>(), 
+        positiveSortOrderCount: 0 
+      };
+    }
+    acc[domain].count += 1;
+    acc[domain].entryIds.add(result.entryId);
+    if (result.sortOrder > 0) {
+      acc[domain].positiveSortOrderCount += 1;
+    }
     return acc;
-  }, {} as Record<string, number>);
+  }, {} as Record<string, { count: number; entryIds: Set<number>; positiveSortOrderCount: number }>);
 
-  const topDomains = Object.entries(domainCounts)
-    .sort((a, b) => b[1] - a[1])
+  // Calculate top 5 domains by image count
+  const topDomains = Object.entries(domainData)
+    .sort((a, b) => b[1].count - a[1].count)
     .slice(0, 5)
-    .map(([domain, count]) => ({ domain, count }));
+    .map(([domain, data]) => ({
+      domain,
+      count: data.count,
+      uniqueEntries: data.entryIds.size,
+      positiveSortOrderCount: data.positiveSortOrderCount,
+    }));
+
+  // Handle domain click to search in Results tab
+  const handleDomainClick = (domain: string) => {
+    setSearchQuery(domain);
+    setActiveTab(2); // Switch to Results tab
+  };
 
   return (
     <Box p={4}>
       <Flex justify="space-between" align="center" mb={4} flexWrap="wrap" gap={3}>
         <Text fontSize="lg" fontWeight="bold">Job Overview</Text>
         <Flex gap={3}>
-          <Button size="sm" colorScheme="red" onClick={handleDevRestart} isLoading={isRestarting}>
+          <Button
+            size="sm"
+            colorScheme="red"
+            onClick={handleDevRestart}
+            isLoading={isRestarting}
+          >
             Dev Restart
           </Button>
-          <Button size="sm" colorScheme="blue" onClick={handleCreateXLS} isLoading={isCreatingXLS}>
+          <Button
+            size="sm"
+            colorScheme="blue"
+            onClick={handleCreateXLS}
+            isLoading={isCreatingXLS}
+          >
             Click Here To Create XLS File
           </Button>
           <Button
             size="sm"
             colorScheme={sortBy === "linesheet" ? "green" : "gray"}
-            onClick={() => setSortBy(sortBy === "linesheet" ? null : "linesheet")}
+            onClick={() =>
+              setSortBy(sortBy === "linesheet" ? null : "linesheet")
+            }
           >
             Sort by Linesheet Pic
           </Button>
@@ -222,7 +271,9 @@ const OverviewTab: React.FC<OverviewTabProps> = ({ job, sortBy, setSortBy }) => 
           <Stat mt={4}>
             <StatLabel>Status</StatLabel>
             <StatNumber>
-              <Badge colorScheme={status === "Completed" ? "green" : "yellow"}>{status}</Badge>
+              <Badge colorScheme={status === "Completed" ? "green" : "yellow"}>
+                {status}
+              </Badge>
             </StatNumber>
           </Stat>
           {duration && (
@@ -237,19 +288,34 @@ const OverviewTab: React.FC<OverviewTabProps> = ({ job, sortBy, setSortBy }) => 
           </Stat>
           {job.results.length > 0 && (
             <Box mt={4}>
-              <Text fontSize="md" fontWeight="semibold" mb={2}>Top Domains</Text>
+              <Text fontSize="md" fontWeight="semibold" mb={2}>
+                Top Domains
+              </Text>
               <Table variant="simple" size="sm">
                 <Thead>
                   <Tr>
                     <Th>Domain</Th>
-                    <Th>Count</Th>
+                    <Th>Image Count</Th>
+                    <Th>Unique Entries</Th>
+                    <Th>Positive Sort Orders</Th>
                   </Tr>
                 </Thead>
                 <Tbody>
-                  {topDomains.map(({ domain, count }) => (
+                  {topDomains.map(({ domain, count, uniqueEntries, positiveSortOrderCount }) => (
                     <Tr key={domain}>
-                      <Td>{domain}</Td>
+                      <Td>
+                        <Text
+                          color="blue.500"
+                          cursor="pointer"
+                          onClick={() => handleDomainClick(domain)}
+                          _hover={{ textDecoration: "underline" }}
+                        >
+                          {domain}
+                        </Text>
+                      </Td>
                       <Td>{count}</Td>
+                      <Td>{uniqueEntries}</Td>
+                      <Td>{positiveSortOrderCount}</Td>
                     </Tr>
                   ))}
                 </Tbody>
@@ -997,18 +1063,33 @@ const JobsDetailPage = () => {
   }
 
   const tabsConfig = [
-    { title: "Overview", component: () => <OverviewTab job={jobData} sortBy={sortBy} setSortBy={setSortBy} /> },
+    {
+      title: "Overview",
+      component: () => (
+        <OverviewTab
+          job={jobData}
+          sortBy={sortBy}
+          setSortBy={setSortBy}
+          fetchJobData={fetchJobData}
+          setSearchQuery={setSearchQuery}
+          setActiveTab={setActiveTab}
+        />
+      ),
+    },
     { title: "Usage", component: () => <UsageTab job={jobData} /> },
-    { title: "Results", component: () => (
-      <ResultsTab
-        job={jobData}
-        sortBy={sortBy}
-        searchQuery={searchQuery}
-        setSearchQuery={setSearchQuery} // Explicitly passed
-      />
-    )},
+    {
+      title: "Results",
+      component: () => (
+        <ResultsTab
+          job={jobData}
+          sortBy={sortBy}
+          searchQuery={searchQuery}
+          setSearchQuery={setSearchQuery}
+        />
+      ),
+    },
     { title: "Logs", component: () => <LogsTab job={jobData} /> },
-    { title: "File Rows", component: () => <SearchRowsTab job={jobData}/> },
+    { title: "File Rows", component: () => <SearchRowsTab job={jobData} /> },
   ];
 
   return (
