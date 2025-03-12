@@ -406,7 +406,7 @@ const ResultsTab: React.FC<ResultsTabProps> = ({ job, sortBy, searchQuery, setSe
   }
 
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 50;
+  const itemsPerPage = 500;
 
   const query = (searchQuery || "").trim().toLowerCase();
 
@@ -481,7 +481,7 @@ const ResultsTab: React.FC<ResultsTabProps> = ({ job, sortBy, searchQuery, setSe
           disabled={false}
         />
       </Flex>
-      <Flex direction="column" gap={6}>
+      <Flex direction="column" gap={6} >
         <Card shadow="md" borderWidth="1px">
           <CardBody>
             {query ? (
