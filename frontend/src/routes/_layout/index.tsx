@@ -33,6 +33,7 @@ function Dashboard() {
   };
 
   const proxyProducts: Product[] = [
+    { id: "explore-serp", name: "📋 Scraper Jobs", type: "SERP", description: "Use OpenAI and X models.", owned: true, path: "/scraping-api/explore" },
     { id: "google-serp", name: "🔍 Google SERP Results", type: "SERP", description: "Scrape real-time Google search results.", owned: true, path: "/scraping-api/google-serp" },
     { id: "cettire", name: "🔍Cettire", type: "SERP", description: "Scrape Cettire search results.", owned: false, path: "/scraping-api/cettire" },
     { id: "icon-gpt", name: "🤖 IconGpt", type: "AI", description: "Use OpenAI and X models.", owned: true, path: "/ai/icongpt" },
@@ -63,7 +64,7 @@ function Dashboard() {
 
         {/* Filter Buttons */}
         <Flex gap={2}>
-          {["All", "SERP"].map((type) => (
+          {["All", "SERP","AI"].map((type) => (
             <Button
               key={type}
               size="md"
