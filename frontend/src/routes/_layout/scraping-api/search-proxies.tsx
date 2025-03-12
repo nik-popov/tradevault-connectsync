@@ -36,7 +36,7 @@ const proxyData: Record<string, { region: string; url: string }[]> = {
     { region: "US-EAST1", url: "https://us-east1-image-scraper-451516.cloudfunctions.net/main" },
     { region: "US-EAST4", url: "https://us-east4-image-scraper-451516.cloudfunctions.net/main" },
     { region: "US-WEST1", url: "https://us-west1-image-scraper-451516.cloudfunctions.net/main" },
-    { region: "EUROPE-WEST4", url: "https://europe-west4-image-scraper-451516.cloudfunctions.net/main" },
+    { region: "EUROPE-WEST4", url: "https://europe-west4-image-proxy-453319.cloudfunctions.net/main" },
     { region: "US-WEST4", url: "https://us-west4-image-proxy-453319.cloudfunctions.net/main"},
     { region: "EUROPE-WEST1", url: "https://europe-west1-image-proxy-453319.cloudfunctions.net/main"},
     { region: "EUROPE-NORTH1", url: "https://europe-north1-image-proxy-453319.cloudfunctions.net/main"},
