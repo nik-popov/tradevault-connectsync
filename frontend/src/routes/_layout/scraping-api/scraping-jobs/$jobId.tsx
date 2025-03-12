@@ -148,6 +148,7 @@ const LogDisplay: React.FC<LogDisplayProps> = ({ logUrl }) => {
   );
 };
 
+
 interface OverviewTabProps {
   job: JobDetails;
   sortBy: "match" | "linesheet" | null;
@@ -157,27 +158,33 @@ interface OverviewTabProps {
   setActiveTab: (index: number) => void;
 }
 
+
 const OverviewTab: React.FC<OverviewTabProps> = ({
   job,
   sortBy,
   setSortBy,
+  fetchJobData,
   setSearchQuery,
   setActiveTab,
 }) => {
+  const [isRestarting, setIsRestarting] = useState(false);
+  const [isCreatingXLS, setIsCreatingXLS] = useState(false);
+  const [sortConfig, setSortConfig] = useState<{
+    column: "domain" | "count";
+    direction: "asc" | "desc";
+  }>({
+    column: "count",
+    direction: "desc",
+  });
+
+
   const status = job.fileEnd ? "Completed" : "Pending";
   const duration =
     job.fileEnd && job.fileStart
-      ? (new Date(job.fileEnd).getTime() - new Date(job.fileStart).getTime()) /
-        1000 /
-        60
+      ? (new Date(job.fileEnd).getTime() - new Date(job.fileStart).getTime()) / 1000 / 60
       : null;
-  const [isRestarting, setIsRestarting] = useState(false);
-  const [isCreatingXLS, setIsCreatingXLS] = useState(false);
 
-  const handleDevRestart = async () => { /* Existing restart logic */ };
-  const handleCreateXLS = async () => { /* Existing XLS creation logic */ };
 
-  // Extract domain from URL
   const getDomain = (url: string): string => {
     try {
       const hostname = new URL(url).hostname;
@@ -187,36 +194,42 @@ const OverviewTab: React.FC<OverviewTabProps> = ({
     }
   };
 
-  // Aggregate domain data, including positive sortOrder count
   const domainData = job.results.reduce((acc, result) => {
-    const domain = getDomain(result.imageSource);
-    if (!acc[domain]) {
-      acc[domain] = { 
-        count: 0, 
-        entryIds: new Set<number>(), 
-        positiveSortOrderCount: 0 
-      };
-    }
-    acc[domain].count += 1;
-    acc[domain].entryIds.add(result.entryId);
     if (result.sortOrder > 0) {
-      acc[domain].positiveSortOrderCount += 1;
+      const domain = getDomain(result.imageSource);
+      acc[domain] = (acc[domain] || 0) + 1;
     }
     return acc;
-  }, {} as Record<string, { count: number; entryIds: Set<number>; positiveSortOrderCount: number }>);
+  }, {} as Record<string, number>);
 
-  // Calculate top 5 domains by image count
-  const topDomains = Object.entries(domainData)
-    .sort((a, b) => b[1].count - a[1].count)
-    .slice(0, 5)
-    .map(([domain, data]) => ({
-      domain,
-      count: data.count,
-      uniqueEntries: data.entryIds.size,
-      positiveSortOrderCount: data.positiveSortOrderCount,
+  const top15Domains = Object.entries(domainData)
+    .map(([domain, count]) => ({ domain, positiveSortOrderCount: count }))
+    .sort((a, b) => b.positiveSortOrderCount - a.positiveSortOrderCount)
+    .slice(0, 15);
+
+  const sortedTopDomains = [...top15Domains].sort((a, b) => {
+    if (sortConfig.column === "domain") {
+      const aValue = a.domain.toLowerCase();
+      const bValue = b.domain.toLowerCase();
+      return sortConfig.direction === "asc"
+        ? aValue.localeCompare(bValue)
+        : bValue.localeCompare(aValue);
+    } else {
+      return sortConfig.direction === "asc"
+        ? a.positiveSortOrderCount - b.positiveSortOrderCount
+        : b.positiveSortOrderCount - a.positiveSortOrderCount;
+    }
+  });
+
+
+  const handleSort = (column: "domain" | "count") => {
+    setSortConfig((prev) => ({
+      column,
+      direction: prev.column === column && prev.direction === "asc" ? "desc" : "asc",
     }));
+  };
 
-  // Handle domain click to search in Results tab
+
   const handleDomainClick = (domain: string) => {
     setSearchQuery(domain);
     setActiveTab(2); // Switch to Results tab
@@ -224,109 +237,94 @@ const OverviewTab: React.FC<OverviewTabProps> = ({
 
   return (
     <Box p={4}>
-      <Flex justify="space-between" align="center" mb={4} flexWrap="wrap" gap={3}>
-        <Text fontSize="lg" fontWeight="bold">Job Overview</Text>
-        <Flex gap={3}>
-          <Button
-            size="sm"
-            colorScheme="red"
-            onClick={handleDevRestart}
-            isLoading={isRestarting}
-          >
-            Dev Restart
-          </Button>
-          <Button
-            size="sm"
-            colorScheme="blue"
-            onClick={handleCreateXLS}
-            isLoading={isCreatingXLS}
-          >
-            Click Here To Create XLS File
-          </Button>
-          <Button
-            size="sm"
-            colorScheme={sortBy === "linesheet" ? "green" : "gray"}
-            onClick={() =>
-              setSortBy(sortBy === "linesheet" ? null : "linesheet")
-            }
-          >
-            Sort by Linesheet Pic
-          </Button>
-        </Flex>
-      </Flex>
-      <Card shadow="md" borderWidth="1px">
-        <CardBody>
-          <Stat>
-            <StatLabel>Job ID</StatLabel>
-            <StatNumber>{job.id}</StatNumber>
-          </Stat>
+      {/* Job Overview Section */}
+      <Box mb={6}>
+        <Text fontSize="lg" fontWeight="bold" mb={2}>
+          Job Overview
+        </Text>
+        <Stat>
+          <StatLabel>Job ID</StatLabel>
+          <StatNumber>{job.id}</StatNumber>
+        </Stat>
+        <Stat mt={4}>
+          <StatLabel>Input File</StatLabel>
+          <StatHelpText wordBreak="break-all">
+            <Link href={job.fileLocationUrl} isExternal color="blue.500">
+              {job.inputFile}
+            </Link>
+          </StatHelpText>
+        </Stat>
+        <Stat mt={4}>
+          <StatLabel>Status</StatLabel>
+          <StatNumber>
+            <Badge colorScheme={status === "Completed" ? "green" : "yellow"}>
+              {status}
+            </Badge>
+          </StatNumber>
+        </Stat>
+        {duration && (
           <Stat mt={4}>
-            <StatLabel>Input File</StatLabel>
-            <StatHelpText wordBreak="break-all">
-              <Link href={job.fileLocationUrl} isExternal color="blue.500">
-                {job.inputFile}
-              </Link>
-            </StatHelpText>
+            <StatLabel>Processing Duration</StatLabel>
+            <StatNumber>{duration.toFixed(2)} minutes</StatNumber>
           </Stat>
-          <Stat mt={4}>
-            <StatLabel>Status</StatLabel>
-            <StatNumber>
-              <Badge colorScheme={status === "Completed" ? "green" : "yellow"}>
-                {status}
-              </Badge>
-            </StatNumber>
-          </Stat>
-          {duration && (
-            <Stat mt={4}>
-              <StatLabel>Processing Duration</StatLabel>
-              <StatNumber>{duration.toFixed(2)} minutes</StatNumber>
-            </Stat>
-          )}
-          <Stat mt={4}>
-            <StatLabel>API Used</StatLabel>
-            <StatHelpText>{job.apiUsed}</StatHelpText>
-          </Stat>
-          {job.results.length > 0 && (
-            <Box mt={4}>
-              <Text fontSize="md" fontWeight="semibold" mb={2}>
-                Top Domains
-              </Text>
-              <Table variant="simple" size="sm">
-                <Thead>
-                  <Tr>
-                    <Th>Domain</Th>
-                    <Th>Image Count</Th>
-                    <Th>Unique Entries</Th>
-                    <Th>Positive Sort Orders</Th>
-                  </Tr>
-                </Thead>
-                <Tbody>
-                  {topDomains.map(({ domain, count, uniqueEntries, positiveSortOrderCount }) => (
-                    <Tr key={domain}>
-                      <Td>
-                        <Text
-                          color="blue.500"
-                          cursor="pointer"
-                          onClick={() => handleDomainClick(domain)}
-                          _hover={{ textDecoration: "underline" }}
-                        >
-                          {domain}
-                        </Text>
-                      </Td>
-                      <Td>{count}</Td>
-                      <Td>{uniqueEntries}</Td>
-                      <Td>{positiveSortOrderCount}</Td>
-                    </Tr>
-                  ))}
-                </Tbody>
-              </Table>
-            </Box>
-          )}
-        </CardBody>
-      </Card>
+        )}
+        <Stat mt={4}>
+          <StatLabel>API Used</StatLabel>
+          <StatHelpText>{job.apiUsed}</StatHelpText>
+        </Stat>
+        <Stat mt={4}>
+          <StatLabel>Total Results</StatLabel>
+          <StatNumber>{job.results.length}</StatNumber>
+        </Stat>
+      </Box>
+
+      {/* Top Domains Table */}
+      {job.results.length > 0 && (
+        <Box mt={6}>
+          <Text fontSize="md" fontWeight="semibold" mb={2}>
+            Top Domains by Positive Sort Orders (Top 15)
+          </Text>
+          <Table variant="simple" size="sm">
+            <Thead>
+              <Tr>
+                <Th onClick={() => handleSort("domain")} cursor="pointer">
+                  Domain{" "}
+                  {sortConfig.column === "domain" &&
+                    (sortConfig.direction === "asc" ? "↑" : "↓")}
+                </Th>
+                <Th onClick={() => handleSort("count")} cursor="pointer">
+                  Positive Sort Orders Count{" "}
+                  {sortConfig.column === "count" &&
+                    (sortConfig.direction === "asc" ? "↑" : "↓")}
+                </Th>
+              </Tr>
+            </Thead>
+            <Tbody>
+              {sortedTopDomains.map(({ domain, positiveSortOrderCount }) => (
+                <Tr key={domain}>
+                  <Td>
+                    <Text
+                      color="blue.500"
+                      cursor="pointer"
+                      onClick={() => handleDomainClick(domain)}
+                      _hover={{ textDecoration: "underline" }}
+                    >
+                      {domain}
+                    </Text>
+                  </Td>
+                  <Td>{positiveSortOrderCount}</Td>
+                </Tr>
+              ))}
+            </Tbody>
+          </Table>
+        </Box>
+      )}
     </Box>
   );
 };
+
+
+
 const UsageTab = ({ job }: { job: JobDetails }) => {
   const totalRecords = job.records.length;
   const completedRecords = job.records.filter(record => record.completeTime).length;
@@ -544,7 +542,9 @@ const ResultsTab: React.FC<ResultsTabProps> = ({ job, sortBy, searchQuery, setSe
               <>
                 <Stat>
                   <StatLabel>Result File</StatLabel>
-                  <StatHelpText wordBreak="break-all">{job.resultFile || "Not available"}</StatHelpText>
+                  <Link href={job.resultFile} isExternal color="blue.500">
+                {job.inputFile}
+              </Link>
                 </Stat>
                 <Stat mt={4}>
                   <StatLabel>Total Records</StatLabel>
