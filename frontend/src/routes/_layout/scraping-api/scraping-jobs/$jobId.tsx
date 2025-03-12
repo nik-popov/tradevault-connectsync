@@ -494,7 +494,17 @@ const ResultsTab: React.FC<ResultsTabProps> = ({ job, sortBy, searchQuery, setSe
 
   return (
     <Box p={4}>
-      <Flex justify="space-between" align="center" mb={4} flexWrap="wrap" gap={3} id="input-search">
+      <Flex   justify="space-between"
+        align="center"
+        mb={4}
+        position="sticky"
+        top="0"
+        bg="transparent"
+        zIndex="10"
+        py={5}
+        borderBottom="1px solid"
+        borderColor="gray.200"  
+        flexWrap="wrap" gap={3} id="input-search">
         <Text fontSize="lg" fontWeight="bold" >Job Results</Text>
         <Input
           placeholder="Search by description, source, model, brand, etc..."
