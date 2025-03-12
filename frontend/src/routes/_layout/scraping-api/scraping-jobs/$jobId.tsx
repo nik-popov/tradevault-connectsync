@@ -222,13 +222,6 @@ const OverviewTab: React.FC<OverviewTabProps> = ({ job, sortBy, setSortBy, fetch
           </Button>
           <Button
             size="sm"
-            colorScheme={sortBy === "match" ? "green" : "gray"}
-            onClick={() => setSortBy(sortBy === "match" ? null : "match")}
-          >
-            Sort by Match
-          </Button>
-          <Button
-            size="sm"
             colorScheme={sortBy === "linesheet" ? "green" : "gray"}
             onClick={() => setSortBy(sortBy === "linesheet" ? null : "linesheet")}
           >
@@ -244,9 +237,11 @@ const OverviewTab: React.FC<OverviewTabProps> = ({ job, sortBy, setSortBy, fetch
           </Stat>
           <Stat mt={4}>
             <StatLabel>Input File</StatLabel>
-            <StatHelpText wordBreak="break-all">{job.inputFile}</StatHelpText>
-          </Stat>
-          <Stat mt={4}>
+            <StatHelpText wordBreak="break-all">
+                {job.inputFile}
+            </StatHelpText>
+          </Stat>         
+           <Stat mt={4}>
             <StatLabel>Status</StatLabel>
             <StatNumber>
               <Badge colorScheme={status === "Completed" ? "green" : "yellow"}>{status}</Badge>
@@ -271,50 +266,96 @@ const OverviewTab: React.FC<OverviewTabProps> = ({ job, sortBy, setSortBy, fetch
 
 
 const UsageTab = ({ job }: { job: JobDetails }) => {
+  // Total records processed
   const totalRecords = job.records.length;
+
+  // Completed records (those with a completeTime)
+  const completedRecords = job.records.filter(record => record.completeTime).length;
+
+  // Pending records (those without a completeTime)
+  const pendingRecords = totalRecords - completedRecords;
+
+  // Total images scraped
   const totalImages = job.results.length;
+
+  // Average images per record
   const imagesPerRecord = totalRecords > 0 ? (totalImages / totalRecords).toFixed(2) : 'N/A';
-  const maxRecords = 1000;
-  const maxImages = 20000;
-  const totalRequests = totalRecords; // Assuming each record is a request
+
+  // Total requests sent (assuming each record corresponds to a request)
+  const totalRequests = totalRecords;
+
+  // Successful requests (records that have at least one image)
   const successfulRequests = job.records.filter(record =>
     job.results.some(result => result.entryId === record.entryId)
   ).length;
+
+  // Success rate (percentage of records with at least one image)
   const successRate = totalRequests > 0 ? `${((successfulRequests / totalRequests) * 100).toFixed(1)}%` : 'N/A';
-  const avgResponseTime = 'N/A'; // Cannot calculate without timestamps
+
+  // Function to calculate average response time
+  const calculateAvgResponseTime = (): string => {
+    // Filter records with both createTime and completeTime
+    const completedRecordsWithTimes = job.records.filter(
+      record => record.createTime && record.completeTime
+    );
+    if (completedRecordsWithTimes.length === 0) return 'N/A';
+
+    // Calculate total duration in milliseconds
+    const totalDuration = completedRecordsWithTimes.reduce((sum, record) => {
+      const start = new Date(record.createTime).getTime();
+      const end = new Date(record.completeTime).getTime();
+      // Validate dates and ensure end is after start
+      if (!isNaN(start) && !isNaN(end) && end >= start) {
+        return sum + (end - start);
+      }
+      return sum;
+    }, 0);
+
+    // Compute average in seconds
+    const avgDurationMs = totalDuration / completedRecordsWithTimes.length;
+    const avgDurationSec = (avgDurationMs / 1000).toFixed(2);
+    return `${avgDurationSec} seconds`;
+  };
+
+  const avgResponseTime = calculateAvgResponseTime();
 
   return (
     <Box p={4}>
       <Text fontSize="lg" fontWeight="bold" mb={4}>Usage Statistics</Text>
       <Flex direction="column" gap={6}>
+        {/* Records Statistics */}
         <Card shadow="md" borderWidth="1px">
           <CardBody>
             <Stat>
-              <StatLabel>Total Records Processed</StatLabel>
+              <StatLabel>Total Records</StatLabel>
               <StatNumber>{totalRecords}</StatNumber>
-              <Progress value={(totalRecords / maxRecords) * 100} size="sm" colorScheme="blue" mt={2} />
-              <StatHelpText>{((totalRecords / maxRecords) * 100).toFixed(1)}% of max ({maxRecords})</StatHelpText>
+            </Stat>
+            <Stat mt={4}>
+              <StatLabel>Completed Records</StatLabel>
+              <StatNumber>{completedRecords}</StatNumber>
+            </Stat>
+            <Stat mt={4}>
+              <StatLabel>Pending Records</StatLabel>
+              <StatNumber>{pendingRecords}</StatNumber>
             </Stat>
           </CardBody>
         </Card>
+
+        {/* Images Statistics */}
         <Card shadow="md" borderWidth="1px">
           <CardBody>
             <Stat>
               <StatLabel>Total Images Scraped</StatLabel>
               <StatNumber>{totalImages}</StatNumber>
-              <Progress value={(totalImages / maxImages) * 100} size="sm" colorScheme="green" mt={2} />
-              <StatHelpText>{((totalImages / maxImages) * 100).toFixed(1)}% of max ({maxImages})</StatHelpText>
             </Stat>
-          </CardBody>
-        </Card>
-        <Card shadow="md" borderWidth="1px">
-          <CardBody>
-            <Stat>
+            <Stat mt={4}>
               <StatLabel>Average Images per Record</StatLabel>
               <StatNumber>{imagesPerRecord}</StatNumber>
             </Stat>
           </CardBody>
         </Card>
+
+        {/* Scraping Metrics */}
         <Card shadow="md" borderWidth="1px">
           <CardBody>
             <Text fontSize="md" fontWeight="semibold" mb={2}>Scraping Metrics</Text>
@@ -331,11 +372,15 @@ const UsageTab = ({ job }: { job: JobDetails }) => {
                   <Td>{totalRequests}</Td>
                 </Tr>
                 <Tr>
+                  <Td>Successful Requests</Td>
+                  <Td>{successfulRequests}</Td>
+                </Tr>
+                <Tr>
                   <Td>Success Rate</Td>
                   <Td>{successRate}</Td>
                 </Tr>
                 <Tr>
-                  <Td>Avg Response Time</Td>
+                  <Td>Average Response Time</Td>
                   <Td>{avgResponseTime}</Td>
                 </Tr>
               </Tbody>
