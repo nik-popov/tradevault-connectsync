@@ -416,8 +416,8 @@ const ResultsTab: React.FC<ResultsTabProps> = ({ job, sortBy, searchQuery, setSe
 
   return (
     <Box p={4}>
-      <Flex justify="space-between" align="center" mb={4} flexWrap="wrap" gap={3}>
-        <Text fontSize="lg" fontWeight="bold">Job Results</Text>
+      <Flex justify="space-between" align="center" mb={4} flexWrap="wrap" gap={3} id="input-search">
+        <Text fontSize="lg" fontWeight="bold" >Job Results</Text>
         <Input
           placeholder="Search by description, source, model, brand, etc..."
           value={searchQuery}
@@ -723,7 +723,7 @@ const SearchRowsTab: React.FC<SearchRowsTabProps> = ({ job }) => {
 
   const handleRowIdClick = (e: React.MouseEvent<HTMLElement, MouseEvent>, productModel: string) => {
     e.preventDefault(); // Prevent any default navigation
-    const url = `${window.location.pathname}?activeTab=2&search=${encodeURIComponent(productModel || "")}`;
+    const url = `${window.location.pathname}?activeTab=2&search=${encodeURIComponent(productModel || "")}#input-search`;
     window.open(url, "_blank", "noopener,noreferrer"); // Open in new tab, no navigation in current tab
   };
 
@@ -811,7 +811,7 @@ const SearchRowsTab: React.FC<SearchRowsTabProps> = ({ job }) => {
                       opacity={imageCount === 0 && !hideEmptyRows ? 0.3 : 1}
                     >
                       {imagedetails.map((image, index) => (
-                        <React.Fragment key={index}>
+                        <React.Fragment key={index} >
                           <Td>
                             <Box textAlign="center">
                               <Image
