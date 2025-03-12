@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, keepPreviousData } from "@tanstack/react-query"; // Import keepPreviousData
 import {
   Box,
   Container,
@@ -68,20 +68,22 @@ function Explore() {
   const { data: freshJobs, isFetching } = useQuery({
     queryKey: ["scraperJobs", page],
     queryFn: () => fetchJobs(page),
-    keepPreviousData: true,
+    placeholderData: keepPreviousData, // Use placeholderData with keepPreviousData
   });
 
   useEffect(() => {
     if (freshJobs) {
-      setJobs(prev => (page === 1 ? freshJobs : [...prev, ...freshJobs]));
+      setJobs((prev: JobSummary[]) =>
+        page === 1 ? freshJobs : [...prev, ...freshJobs]
+      );
     }
   }, [freshJobs, page]);
 
-  const filteredJobs = jobs.filter(job =>
+  const filteredJobs = jobs.filter((job) =>
     job.inputFile.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  const handleLoadMore = () => setPage(prev => prev + 1);
+  const handleLoadMore = () => setPage((prev) => prev + 1);
 
   return (
     <Container maxW="full">
@@ -128,7 +130,12 @@ function Explore() {
                     </Box>
                     <Button
                       size="sm"
-                      onClick={() => navigate({ to: "/scraping-api/scraping-jobs/$jobId", params: { jobId: job.id.toString() } })}
+                      onClick={() =>
+                        navigate({
+                          to: "/scraping-api/scraping-jobs/$jobId",
+                          params: { jobId: job.id.toString() },
+                        })
+                      }
                     >
                       View Details
                     </Button>
