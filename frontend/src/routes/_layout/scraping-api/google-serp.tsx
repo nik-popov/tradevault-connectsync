@@ -1,9 +1,11 @@
+// GoogleSerpPage.tsx
 import { createFileRoute } from "@tanstack/react-router";
 import { Container, Flex, Text, Tabs, TabList, TabPanels, Tab, TabPanel } from "@chakra-ui/react";
 import OverviewGSerp from "../../../components/OverviewGSerp";
 import LogsGSerp from "../../../components/LogsGSerp";
 import PlaygroundGSerp from "../../../components/PlaygroundGSerp";
 import ApiKeyGSerp from "../../../components/ApiKeyGSerp";
+import WhitelistGSerp from "../../../components/WhitelistGSerp"; // Add this import
 
 const GoogleSerpPage = () => {
   const tabsConfig = [
@@ -11,6 +13,7 @@ const GoogleSerpPage = () => {
     { title: "Logs", component: () => <LogsGSerp /> },
     { title: "Playground", component: () => <PlaygroundGSerp /> },
     { title: "API Key", component: () => <ApiKeyGSerp /> },
+    { title: "Whitelist", component: () => <WhitelistGSerp /> }, // Update this line
   ];
 
   return (

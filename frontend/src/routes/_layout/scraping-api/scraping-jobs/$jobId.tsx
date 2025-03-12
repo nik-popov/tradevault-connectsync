@@ -163,28 +163,21 @@ const OverviewTab: React.FC<OverviewTabProps> = ({
   job,
   sortBy,
   setSortBy,
-  fetchJobData,
   setSearchQuery,
   setActiveTab,
 }) => {
   const [isRestarting, setIsRestarting] = useState(false);
   const [isCreatingXLS, setIsCreatingXLS] = useState(false);
+  // State to manage sorting configuration
   const [sortConfig, setSortConfig] = useState<{
-    column: "domain" | "count";
-    direction: "asc" | "desc";
+    key: "domain" | "totalResults" | "positiveSortOrderCount";
+    direction: "ascending" | "descending";
   }>({
-    column: "count",
-    direction: "desc",
+    key: "positiveSortOrderCount",
+    direction: "descending",
   });
 
-
-  const status = job.fileEnd ? "Completed" : "Pending";
-  const duration =
-    job.fileEnd && job.fileStart
-      ? (new Date(job.fileEnd).getTime() - new Date(job.fileStart).getTime()) / 1000 / 60
-      : null;
-
-
+  // Function to extract domain from URL
   const getDomain = (url: string): string => {
     try {
       const hostname = new URL(url).hostname;
@@ -194,54 +187,109 @@ const OverviewTab: React.FC<OverviewTabProps> = ({
     }
   };
 
+  // Aggregate domain data, excluding average sort order
   const domainData = job.results.reduce((acc, result) => {
+    const domain = getDomain(result.imageSource);
+    if (!acc[domain]) {
+      acc[domain] = {
+        totalResults: 0,
+        positiveSortOrderCount: 0,
+      };
+    }
+    acc[domain].totalResults += 1;
     if (result.sortOrder > 0) {
-      const domain = getDomain(result.imageSource);
-      acc[domain] = (acc[domain] || 0) + 1;
+      acc[domain].positiveSortOrderCount += 1;
     }
     return acc;
-  }, {} as Record<string, number>);
+  }, {} as Record<string, { totalResults: number; positiveSortOrderCount: number }>);
 
-  const top15Domains = Object.entries(domainData)
-    .map(([domain, count]) => ({ domain, positiveSortOrderCount: count }))
+  // Get top 20 domains based on positive sort order count
+  const topDomains = Object.entries(domainData)
+    .map(([domain, data]) => ({
+      domain,
+      totalResults: data.totalResults,
+      positiveSortOrderCount: data.positiveSortOrderCount,
+    }))
     .sort((a, b) => b.positiveSortOrderCount - a.positiveSortOrderCount)
-    .slice(0, 15);
+    .slice(0, 20); // Updated to top 20
 
-  const sortedTopDomains = [...top15Domains].sort((a, b) => {
-    if (sortConfig.column === "domain") {
+  // Apply sorting based on sortConfig
+  const sortedTopDomains = [...topDomains].sort((a, b) => {
+    if (sortConfig.key === "domain") {
       const aValue = a.domain.toLowerCase();
       const bValue = b.domain.toLowerCase();
-      return sortConfig.direction === "asc"
+      return sortConfig.direction === "ascending"
         ? aValue.localeCompare(bValue)
         : bValue.localeCompare(aValue);
-    } else {
-      return sortConfig.direction === "asc"
+    } else if (sortConfig.key === "totalResults") {
+      return sortConfig.direction === "ascending"
+        ? a.totalResults - b.totalResults
+        : b.totalResults - a.totalResults;
+    } else if (sortConfig.key === "positiveSortOrderCount") {
+      return sortConfig.direction === "ascending"
         ? a.positiveSortOrderCount - b.positiveSortOrderCount
         : b.positiveSortOrderCount - a.positiveSortOrderCount;
     }
+    return 0;
   });
 
-
-  const handleSort = (column: "domain" | "count") => {
-    setSortConfig((prev) => ({
-      column,
-      direction: prev.column === column && prev.direction === "asc" ? "desc" : "asc",
-    }));
+  // Handle column header clicks for sorting
+  const handleSort = (key: "domain" | "totalResults" | "positiveSortOrderCount") => {
+    setSortConfig((prev) => {
+      if (prev.key === key) {
+        return {
+          key,
+          direction: prev.direction === "ascending" ? "descending" : "ascending",
+        };
+      }
+      return { key, direction: "ascending" };
+    });
   };
 
-
+  // Handle domain click to filter results
   const handleDomainClick = (domain: string) => {
     setSearchQuery(domain);
     setActiveTab(2); // Switch to Results tab
   };
 
+  // Placeholder for restart logic
+  const handleDevRestart = () => {
+    setIsRestarting(true);
+    // Add restart logic here
+    setTimeout(() => setIsRestarting(false), 2000); // Simulate async operation
+  };
+
+  // Placeholder for file generation logic
+  const handleCreateXLS = () => {
+    setIsCreatingXLS(true);
+    // Add file generation logic here
+    setTimeout(() => setIsCreatingXLS(false), 2000); // Simulate async operation
+  };
+
   return (
     <Box p={4}>
-      {/* Job Overview Section */}
+      {/* Title and Buttons */}
+      <Flex justify="space-between" align="center" mb={4} flexWrap="wrap" gap={3}>
+        <Text fontSize="lg" fontWeight="bold">Job Overview</Text>
+        <Flex gap={3}>
+          <Button size="sm" colorScheme="red" onClick={handleDevRestart} isLoading={isRestarting}>
+            Dev Restart
+          </Button>
+          <Button size="sm" colorScheme="blue" onClick={handleCreateXLS} isLoading={isCreatingXLS}>
+            Click Here To Create XLS File
+          </Button>
+          <Button
+            size="sm"
+            colorScheme={sortBy === "linesheet" ? "green" : "gray"}
+            onClick={() => setSortBy(sortBy === "linesheet" ? null : "linesheet")}
+          >
+            Sort by Linesheet Pic
+          </Button>
+        </Flex>
+      </Flex>
+
+      {/* Job Overview Stats */}
       <Box mb={6}>
-        <Text fontSize="lg" fontWeight="bold" mb={2}>
-          Job Overview
-        </Text>
         <Stat>
           <StatLabel>Job ID</StatLabel>
           <StatNumber>{job.id}</StatNumber>
@@ -257,15 +305,22 @@ const OverviewTab: React.FC<OverviewTabProps> = ({
         <Stat mt={4}>
           <StatLabel>Status</StatLabel>
           <StatNumber>
-            <Badge colorScheme={status === "Completed" ? "green" : "yellow"}>
-              {status}
+            <Badge colorScheme={job.fileEnd ? "green" : "yellow"}>
+              {job.fileEnd ? "Completed" : "Pending"}
             </Badge>
           </StatNumber>
         </Stat>
-        {duration && (
+        {job.fileEnd && (
           <Stat mt={4}>
             <StatLabel>Processing Duration</StatLabel>
-            <StatNumber>{duration.toFixed(2)} minutes</StatNumber>
+            <StatNumber>
+              {(
+                (new Date(job.fileEnd).getTime() - new Date(job.fileStart).getTime()) /
+                1000 /
+                60
+              ).toFixed(2)}{" "}
+              minutes
+            </StatNumber>
           </Stat>
         )}
         <Stat mt={4}>
@@ -282,25 +337,30 @@ const OverviewTab: React.FC<OverviewTabProps> = ({
       {job.results.length > 0 && (
         <Box mt={6}>
           <Text fontSize="md" fontWeight="semibold" mb={2}>
-            Top Domains by Positive Sort Orders (Top 15)
+            Top Domains by Positive Sort Orders (Top 20)
           </Text>
           <Table variant="simple" size="sm">
             <Thead>
               <Tr>
                 <Th onClick={() => handleSort("domain")} cursor="pointer">
                   Domain{" "}
-                  {sortConfig.column === "domain" &&
-                    (sortConfig.direction === "asc" ? "↑" : "↓")}
+                  {sortConfig.key === "domain" &&
+                    (sortConfig.direction === "ascending" ? "↑" : "↓")}
                 </Th>
-                <Th onClick={() => handleSort("count")} cursor="pointer">
+                <Th onClick={() => handleSort("totalResults")} cursor="pointer">
+                  Total Results{" "}
+                  {sortConfig.key === "totalResults" &&
+                    (sortConfig.direction === "ascending" ? "↑" : "↓")}
+                </Th>
+                <Th onClick={() => handleSort("positiveSortOrderCount")} cursor="pointer">
                   Positive Sort Orders Count{" "}
-                  {sortConfig.column === "count" &&
-                    (sortConfig.direction === "asc" ? "↑" : "↓")}
+                  {sortConfig.key === "positiveSortOrderCount" &&
+                    (sortConfig.direction === "ascending" ? "↑" : "↓")}
                 </Th>
               </Tr>
             </Thead>
             <Tbody>
-              {sortedTopDomains.map(({ domain, positiveSortOrderCount }) => (
+              {sortedTopDomains.map(({ domain, totalResults, positiveSortOrderCount }) => (
                 <Tr key={domain}>
                   <Td>
                     <Text
@@ -312,6 +372,7 @@ const OverviewTab: React.FC<OverviewTabProps> = ({
                       {domain}
                     </Text>
                   </Td>
+                  <Td>{totalResults}</Td>
                   <Td>{positiveSortOrderCount}</Td>
                 </Tr>
               ))}
@@ -322,9 +383,6 @@ const OverviewTab: React.FC<OverviewTabProps> = ({
     </Box>
   );
 };
-
-
-
 const UsageTab = ({ job }: { job: JobDetails }) => {
   const totalRecords = job.records.length;
   const completedRecords = job.records.filter(record => record.completeTime).length;
