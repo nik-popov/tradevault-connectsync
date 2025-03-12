@@ -20,14 +20,15 @@ import ActionsMenu from "../../components/Common/ActionsMenu"
 import Navbar from "../../components/Common/Navbar"
 import AddItem from "../../components/Items/AddItem"
 import { PaginationFooter } from "../../components/Common/PaginationFooter.tsx"
-
 const itemsSearchSchema = z.object({
   page: z.number().catch(1),
 })
 
+type ItemsSearch = z.infer<typeof itemsSearchSchema>
+
 export const Route = createFileRoute("/_layout/items")({
   component: Items,
-  validateSearch: (search) => itemsSearchSchema.parse(search),
+  validateSearch: (search): ItemsSearch => itemsSearchSchema.parse(search),
 })
 
 const PER_PAGE = 5
@@ -44,9 +45,13 @@ function ItemsTable() {
   const queryClient = useQueryClient()
   const { page } = Route.useSearch()
   const navigate = useNavigate({ from: Route.fullPath })
-  const setPage = (page: number) =>
-    navigate({ search: (prev: {[key: string]: string}) => ({ ...prev, page }) })
 
+  type ItemsSearch = z.infer<typeof itemsSearchSchema>; // { page: number }
+
+  const setPage = (page: number) =>
+    navigate({
+      search: (prev: ItemsSearch) => ({ ...prev, page }),
+    });
   const {
     data: items,
     isPending,
@@ -66,6 +71,7 @@ function ItemsTable() {
   }, [page, queryClient, hasNextPage])
 
   return (
+    // ... rest of the component unchanged
     <>
       <TableContainer>
         <Table size={{ base: "sm", md: "md" }}>
@@ -127,7 +133,6 @@ function Items() {
       <Heading size="lg" textAlign={{ base: "center", md: "left" }} pt={12}>
         Items Management
       </Heading>
-
       <Navbar type={"Item"} addModalAs={AddItem} />
       <ItemsTable />
     </Container>

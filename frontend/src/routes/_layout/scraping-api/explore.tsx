@@ -92,8 +92,8 @@ function Explore() {
           <Text fontSize="xl" fontWeight="bold">Scraping Jobs</Text>
           <Text fontSize="sm" color="gray.500">View and manage scraping jobs</Text>
         </Box>
-        <Button as={Link} to="/explore" colorScheme="blue" size="sm">
-          Jobs Dashboard
+        <Button as={Link} to="/scraping-api/submit-form/google-serp" colorScheme="blue" size="sm">
+          Submit Form
         </Button>
       </Flex>
 

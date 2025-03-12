@@ -59,7 +59,11 @@ interface EndpointData {
   successRate: number;
   queries: Query[];
 }
-
+interface ChartDataItem {
+  name?: string;  // Optional for charts using 'name' as the key
+  hour?: string;  // Optional for 'requestsOverTime' without comparisons
+  value: number;  // Required for all chart data
+}
 // Chart options with labels and colors
 const chartOptions = [
   { key: "requestsOverTime", label: "Requests Over Time", color: "#805AD5", yAxisLabel: "Requests" },
@@ -113,7 +117,7 @@ const OverviewGSerp: React.FC = () => {
   const [selectedQuery, setSelectedQuery] = useState<Query | null>(null);
   const [showLabels, setShowLabels] = useState(true);
   const [endpointData, setEndpointData] = useState<EndpointData[]>([]);
-  const [chartData, setChartData] = useState<any>({});
+  const [chartData, setChartData] = useState<{ [key: string]: ChartDataItem[] }>({});
   const [error, setError] = useState<string | null>(null);
   const [compares, setCompares] = useState<{ [key: string]: string[] }>({
     requestsOverTime: [],
@@ -231,15 +235,14 @@ const OverviewGSerp: React.FC = () => {
     setSelectedQuery(null);
   }, [selectedChart]);
 
-  // Update chart data based on selected comparisons
   const updateChartData = useMemo(() => {
     const updatedData = { ...chartData };
-
+  
     Object.keys(compares).forEach((chartKey) => {
       const selectedCompares = compares[chartKey];
       const baseData = chartData[chartKey] || [];
-      const additionalData = [];
-
+      const additionalData: ChartDataItem[] = []; // Explicit type annotation
+  
       if (chartKey === "requestsOverTime") {
         const avgHourly = baseData.reduce((sum, d) => sum + d.value, 0) / 24;
         const maxHourly = Math.max(...baseData.map((d) => d.value));
@@ -256,6 +259,7 @@ const OverviewGSerp: React.FC = () => {
         });
         updatedData[chartKey] = selectedCompares.length ? additionalData : baseData;
       } else if (chartKey === "categoryDistribution") {
+        const additionalData: ChartDataItem[] = []; // Explicit type annotation
         const totalQueries = baseData.reduce((sum, d) => sum + d.value, 0);
         const avgPerCategory = totalQueries / baseData.length;
         const maxCategory = Math.max(...baseData.map((d) => d.value));
@@ -272,6 +276,7 @@ const OverviewGSerp: React.FC = () => {
         });
         updatedData[chartKey] = [...baseData, ...additionalData];
       } else if (chartKey === "topQueries") {
+        const additionalData: ChartDataItem[] = []; // Explicit type annotation
         const totalQueryCount = baseData.reduce((sum, d) => sum + d.value, 0);
         const avgQueryCount = totalQueryCount / baseData.length;
         const maxQuery = Math.max(...baseData.map((d) => d.value));
@@ -288,6 +293,7 @@ const OverviewGSerp: React.FC = () => {
         });
         updatedData[chartKey] = [...baseData, ...additionalData];
       } else if (chartKey === "successRate") {
+        const additionalData: ChartDataItem[] = []; // Explicit type annotation
         const overallSuccessRate = totalRequests > 0 ? (endpointData.reduce((sum, ep) => sum + ep.requestsToday * ep.successRate, 0) / totalRequests) * 100 : 0;
         const avgSuccess = baseData.reduce((sum, d) => sum + d.value, 0) / baseData.length;
         const variance = Math.sqrt(baseData.reduce((sum, d) => sum + Math.pow(d.value - avgSuccess, 2), 0) / baseData.length);
@@ -303,6 +309,7 @@ const OverviewGSerp: React.FC = () => {
         });
         updatedData[chartKey] = [...baseData, ...additionalData];
       } else if (chartKey === "keyMetrics") {
+        const additionalData: ChartDataItem[] = []; // Explicit type annotation
         const avgRequests = totalRequests / endpointData.length;
         selectedCompares.forEach((compare) => {
           additionalData.push({
@@ -317,7 +324,7 @@ const OverviewGSerp: React.FC = () => {
         updatedData[chartKey] = [...baseData, ...additionalData];
       }
     });
-
+  
     return updatedData;
   }, [chartData, compares, endpointData, totalRequests]);
 
@@ -484,17 +491,16 @@ const OverviewGSerp: React.FC = () => {
   const selectedColor = selectedOption.color;
   const yAxisLabel = selectedOption.yAxisLabel;
 
-  // Split compare options into rows of 4
-  const chunkArray = (array: any[], size: number) => {
-    const result = [];
+  type CompareOption = { value: string; label: string; color: string };
+
+  const chunkArray = (array: CompareOption[], size: number): CompareOption[][] => {
+    const result: CompareOption[][] = []; // Explicit type annotation
     for (let i = 0; i < array.length; i += size) {
       result.push(array.slice(i, i + size));
     }
     return result;
   };
-
   const compareRows = chunkArray(compareOptions[selectedChart], 4);
-
   return (
     <Box p={4} width="100%">
       {/* Header */}

@@ -204,7 +204,19 @@ const Overview: React.FC<OverviewProps> = ({ endpointId }) => {
     .filter(q => (q.count || 0) > 0)
     .sort((a, b) => (b.count || 0) - (a.count || 0))
     .slice(0, 10);
-
+  const renderSummary = () => {
+  const stats = getSummaryStats(selectedChart);
+  return (
+    <CardBody>
+      {stats.map((stat, index) => (
+        <Stat key={index}>
+          <StatLabel>{stat.label}</StatLabel>
+          <StatNumber>{stat.value}</StatNumber>
+        </Stat>
+      ))}
+    </CardBody>
+  );
+};
     const getSummaryStats = (selectedChart: string) => {
       const data = chartData[selectedChart] || [];
       if (selectedChart === "cost") {
@@ -250,58 +262,12 @@ const Overview: React.FC<OverviewProps> = ({ endpointId }) => {
     }));
   };
 
-  const renderSummary = () => {
-    const stats = getSummaryStats(selectedChart);
-    const summaryContent = selectedQuery ? (
-      <Flex direction="column" gap={2}>
-        <Text><strong>Query:</strong> {selectedQuery.query || "N/A"}</Text>
-        <Text><strong>Category:</strong> {selectedQuery.category || "N/A"}</Text>
-        <Text><strong>Count:</strong> {(selectedQuery.count || 0).toLocaleString()}</Text>
-        {selectedQuery.avgLatencyMs && <Text><strong>Avg Latency:</strong> {selectedQuery.avgLatencyMs.toFixed(1)}ms</Text>}
-      </Flex>
-    ) : (
-      <Grid templateColumns="repeat(auto-fit, minmax(140px, 1fr))" gap={4}>
-        {stats.map((stat, index) => (
-          <Stat key={index}>
-            <StatLabel color="gray.400" fontSize="sm" whiteSpace="normal">{stat.label}</StatLabel>
-            <StatNumber fontSize="lg">{stat.value}</StatNumber>
-          </Stat>
-        ))}
-      </Grid>
-    );
-
-    return (
-        <Flex direction="column" height="100%">
-          <Text fontSize="md" fontWeight="semibold" mb={4}>
-            {selectedQuery ? "Query Details" : `${chartOptions.find((opt) => opt.key === selectedChart)?.label || "Unknown"} Summary`}
-            {compareEndpointData && ` (vs ${compareEndpointData.endpoint})`}
-          </Text>
-          {selectedQuery && (
-            <IconButton
-              aria-label="Back to summary"
-              icon={<CloseIcon />}
-              size="sm"
-              position="absolute"
-              top={2}
-              right={2}
-              onClick={() => setSelectedQuery(null)}
-              variant="ghost"
-            />
-          )}
-          <Box flex="1" overflowY="auto">
-            {summaryContent}
-          </Box>
-        </Flex>
-
-    );
-  };
-
   const selectedOption = chartOptions.find((opt) => opt.key === selectedChart) || chartOptions[0];
 
   const renderChart = () => {
     const data = chartData[selectedChart] || [];
     if (!data.length) return <Text>No data available for this chart</Text>;
-
+  
     const chartProps = {
       margin: { top: 20, right: 20, bottom: showLabels ? 60 : 20, left: showLabels ? 40 : 20 },
       children: [
@@ -314,20 +280,28 @@ const Overview: React.FC<OverviewProps> = ({ endpointId }) => {
           tickMargin={10}
           angle={selectedChart === "cost" ? -45 : 0}
           textAnchor={selectedChart === "cost" ? "end" : "middle"}
-          label={showLabels ? { value: selectedChart === "cost" ? "Date" : "Metrics", position: "insideBottom", offset: -20, fill: "#FFFFFF" } : undefined}
+          label={
+            showLabels
+              ? { value: selectedChart === "cost" ? "Date" : "Metrics", position: "insideBottom", offset: -20, fill: "#FFFFFF" }
+              : undefined
+          }
         />,
         <YAxis
           key="yaxis"
           stroke="#FFFFFF"
           tick={{ fill: "#FFFFFF", fontSize: 12 }}
           tickMargin={10}
-          label={showLabels ? { value: selectedOption.yLabel, angle: -45, position: "insideLeft", offset: -20, fill: "#FFFFFF" } : undefined}
+          label={
+            showLabels
+              ? { value: selectedOption.yLabel, angle: -45, position: "insideLeft", offset: -20, fill: "#FFFFFF" }
+              : undefined
+          }
         />,
         <RechartsTooltip key="tooltip" contentStyle={{ backgroundColor: "gray.700", color: "white" }} />,
-        <Legend key="legend" verticalAlign="top" height={36} />
-      ]
+        <Legend key="legend" verticalAlign="top" height={36} />,
+      ],
     };
-
+  
     switch (selectedChart) {
       case "requests":
       case "successRate":
@@ -336,7 +310,9 @@ const Overview: React.FC<OverviewProps> = ({ endpointId }) => {
           <BarChart {...chartProps} data={data}>
             {chartProps.children}
             <Bar dataKey="value" fill={COMPARE_COLORS[0]} name={endpointId} />
-            {compareEndpointData && <Bar dataKey="compareValue" fill={COMPARE_COLORS[1]} name={compareEndpointData.endpoint} />}
+            {compareEndpointData && (
+              <Bar dataKey="compareValue" fill={COMPARE_COLORS[1]} name={compareEndpointData.endpoint} />
+            )}
           </BarChart>
         );
       case "queryDistribution":
@@ -365,14 +341,15 @@ const Overview: React.FC<OverviewProps> = ({ endpointId }) => {
           <LineChart {...chartProps} data={data}>
             {chartProps.children}
             <Line type="monotone" dataKey="value" stroke={COMPARE_COLORS[0]} name={endpointId} />
-            {compareEndpointData && <Line type="monotone" dataKey="compareValue" stroke={COMPARE_COLORS[1]} name={compareEndpointData.endpoint} />}
+            {compareEndpointData && (
+              <Line type="monotone" dataKey="compareValue" stroke={COMPARE_COLORS[1]} name={compareEndpointData.endpoint} />
+            )}
           </LineChart>
         );
       default:
-        return null;
+        return <Text>Unknown chart type</Text>; // Fallback for invalid chart types
     }
   };
-
   return (
     <Box p={4} width="100%">
       <Flex justify="space-between" align="center" mb={4} wrap="wrap" gap={2}>

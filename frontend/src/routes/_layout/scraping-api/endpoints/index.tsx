@@ -15,7 +15,7 @@ import {
 // Define the EndpointData type
 type EndpointData = {
   endpoint: string;
-  toolId: string;
+  endpointId: string;
   publicIp: string;
   status: string;
   health: string;
@@ -27,7 +27,7 @@ type EndpointData = {
 const endpointData: EndpointData[] = [
   {
     endpoint: "https://southamerica-west1-image-scraper-451516.cloudfunctions.net/main",
-    toolId: "SOUTHAMERICA-WEST1",
+    endpointId: "SOUTHAMERICA-WEST1",
     publicIp: "34.34.252.50",
     status: "Google is reachable",
     health: "Healthy",
@@ -36,7 +36,7 @@ const endpointData: EndpointData[] = [
   },
   {
     endpoint: "https://us-central1-image-scraper-451516.cloudfunctions.net/main",
-    toolId: "US-CENTRAL1",
+    endpointId: "US-CENTRAL1",
     publicIp: "34.96.44.247",
     status: "Google is reachable",
     health: "Healthy",
@@ -45,7 +45,7 @@ const endpointData: EndpointData[] = [
   },
   {
     endpoint: "https://europe-west1-image-serp-451516.cloudfunctions.net/main",
-    toolId: "G-IMAGE-SERP-EUROPE-WEST1",
+    endpointId: "G-IMAGE-SERP-EUROPE-WEST1",
     publicIp: "35.246.78.123",
     status: "Google Images is reachable",
     health: "Healthy",
@@ -54,7 +54,7 @@ const endpointData: EndpointData[] = [
   },
   {
     endpoint: "https://us-central1-image-serp-451516.cloudfunctions.net/main",
-    toolId: "G-IMAGE-SERP-US-CENTRAL1",
+    endpointId: "G-IMAGE-SERP-US-CENTRAL1",
     publicIp: "34.96.44.248",
     status: "Google Images is reachable",
     health: "Healthy",
@@ -63,7 +63,12 @@ const endpointData: EndpointData[] = [
   },
 ];
 
-const EndpointsListPage = () => {
+// Define the route for the list page (no parameters)
+export const Route = createFileRoute('/_layout/scraping-api/endpoints/')({
+  component: EndpointsListPage,
+});
+
+function EndpointsListPage() {
   return (
     <Container maxW="full">
       <Flex align="center" justify="space-between" py={6} flexWrap="wrap" gap={4}>
@@ -79,7 +84,7 @@ const EndpointsListPage = () => {
         <Table variant="simple" size="sm">
           <Thead>
             <Tr>
-              <Th>Tool ID</Th>
+              <Th>Endpoint ID</Th>
               <Th>Endpoint URL</Th>
               <Th>Public IP</Th>
               <Th>Status</Th>
@@ -90,13 +95,13 @@ const EndpointsListPage = () => {
           </Thead>
           <Tbody>
             {endpointData.map((endpoint) => (
-              <Tr key={endpoint.toolId}>
+              <Tr key={endpoint.endpointId}>
                 <Td>
-                  <Link
-                    to={`/scraping-api/endpoints/${endpoint.toolId}`}
-                    params={{ endpointId: endpoint.toolId }}
-                  >
-                    {endpoint.toolId}
+                <Link
+  to="/scraping-api/endpoints/$endpointId"
+  params={{ endpointId: endpoint.endpointId }}
+>
+                    {endpoint.endpointId}
                   </Link>
                 </Td>
                 <Td>{endpoint.endpoint}</Td>
@@ -112,11 +117,6 @@ const EndpointsListPage = () => {
       </Box>
     </Container>
   );
-};
-
-// Define the route
-export const Route = createFileRoute('/_layout/scraping-api/endpoints/')({
-  component: EndpointsListPage,
-});
+}
 
 export default EndpointsListPage;

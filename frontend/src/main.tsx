@@ -1,28 +1,18 @@
-import { ChakraProvider } from "@chakra-ui/react"
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
-import { RouterProvider, createRouter } from "@tanstack/react-router"
-import ReactDOM from "react-dom/client"
-import { routeTree } from "./routeTree.gen"
+import { ChakraProvider } from "@chakra-ui/react";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { RouterProvider, createRouter } from "@tanstack/react-router";
+import ReactDOM from "react-dom/client";
+import { routeTree } from "./routeTree.gen";
+import { StrictMode } from "react";
+import { OpenAPI } from "./client";
+import theme from "./theme";
+import "./styles/global.css";
 
-import { StrictMode } from "react"
-import { OpenAPI } from "./client"
-import theme from "./theme"
-import "./styles/global.css";  // Ensure global.css is inside src/styles/
+OpenAPI.BASE = "https://api.iconluxury.group";
+OpenAPI.TOKEN = async () => localStorage.getItem("access_token") || "";
 
-
-OpenAPI.BASE = "https://api.iconluxury.group"
-OpenAPI.TOKEN = async () => {
-  return localStorage.getItem("access_token") || ""
-}
-
-const queryClient = new QueryClient()
-
-const router = createRouter({ routeTree })
-declare module "@tanstack/react-router" {
-  interface Register {
-    router: typeof router
-  }
-}
+const queryClient = new QueryClient();
+const router = createRouter({ routeTree });
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <StrictMode>
@@ -31,5 +21,5 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
         <RouterProvider router={router} />
       </QueryClientProvider>
     </ChakraProvider>
-  </StrictMode>,
-)
+  </StrictMode>
+);

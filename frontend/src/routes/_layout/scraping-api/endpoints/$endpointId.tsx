@@ -43,6 +43,15 @@ interface TracerouteHop {
   longitude: number;
   latency: number;
 }
+type EndpointData = {
+  endpoint: string;
+  endpointId: string;
+  publicIp?: string; // Optional, present in list page
+  status?: string;
+  health?: string;
+  lastChecked?: string;
+  error?: string;
+};
 
 const endpointData: Record<string, string> = {
   "SOUTHAMERICA-WEST1": "https://southamerica-west1-image-scraper-451516.cloudfunctions.net/main",
@@ -417,7 +426,8 @@ const LoadScriptOnce: React.FC<{ children: React.ReactNode }> = ({ children }) =
 };
 
 const EndpointDetailPage = () => {
-  const { endpointId } = useParams({ from: "/_layout/scraping-api/endpoints/$endpointId" }) as { endpointId: string };
+  const { endpointId } = useParams({ from: "/_layout/scraping-api/endpoints/$endpointId" });
+
   const [tracerouteData, setTracerouteData] = useState<TracerouteHop[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);

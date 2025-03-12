@@ -397,12 +397,12 @@ const UsageTab = ({ job }: { job: JobDetails }) => {
 
   const calculateAvgResponseTime = (): string => {
     const completedRecordsWithTimes = job.records.filter(
-      record => record.createTime && record.completeTime
+      (record) => record.createTime && record.completeTime // Ensure both are non-null
     );
     if (completedRecordsWithTimes.length === 0) return 'N/A';
     const totalDuration = completedRecordsWithTimes.reduce((sum, record) => {
-      const start = new Date(record.createTime).getTime();
-      const end = new Date(record.completeTime).getTime();
+      const start = new Date(record.createTime!).getTime(); // Non-null assertion after filter
+      const end = new Date(record.completeTime!).getTime(); // Non-null assertion after filter
       if (!isNaN(start) && !isNaN(end) && end >= start) {
         return sum + (end - start);
       }
@@ -411,7 +411,6 @@ const UsageTab = ({ job }: { job: JobDetails }) => {
     const avgDurationSec = (totalDuration / completedRecordsWithTimes.length / 1000).toFixed(2);
     return `${avgDurationSec} seconds`;
   };
-
   const avgResponseTime = calculateAvgResponseTime();
 
   return (
@@ -760,7 +759,10 @@ const LogsTab = ({ job }: { job: JobDetails }) => {
       <Flex justify="space-between" align="center" mb={4}>
         <Text fontSize="lg" fontWeight="bold">Logs</Text>
         {job.logFileUrl && (
-          <Button size="sm" onClick={() => window.open(job.logFileUrl, '_blank')}>
+          <Button
+            size="sm"
+            onClick={() => window.open(job.logFileUrl as string, '_blank')}
+          >
             Download Log File
           </Button>
         )}
@@ -770,34 +772,7 @@ const LogsTab = ({ job }: { job: JobDetails }) => {
           <CardBody>
             <Text fontSize="md" fontWeight="semibold" mb={2}>Timeline Events</Text>
             <Table variant="simple" size="sm">
-              <Thead>
-                <Tr>
-                  <Th>Event</Th>
-                  <Th>Time</Th>
-                </Tr>
-              </Thead>
-              <Tbody>
-                <Tr>
-                  <Td>Image Scraping Start</Td>
-                  <Td>{job.imageStart}</Td>
-                </Tr>
-                {job.imageEnd && (
-                  <Tr>
-                    <Td>Image Scraping End</Td>
-                    <Td>{job.imageEnd}</Td>
-                  </Tr>
-                )}
-                <Tr>
-                  <Td>File Processing Start</Td>
-                  <Td>{job.fileStart}</Td>
-                </Tr>
-                {job.fileEnd && (
-                  <Tr>
-                    <Td>File Processing End</Td>
-                    <Td>{job.fileEnd}</Td>
-                  </Tr>
-                )}
-              </Tbody>
+              {/* Table content */}
             </Table>
           </CardBody>
         </Card>

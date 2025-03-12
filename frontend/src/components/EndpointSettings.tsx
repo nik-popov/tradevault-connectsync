@@ -198,10 +198,9 @@ const EndpointSettings = memo(({ endpointId, endpoints }: EndpointSettingsProps)
                       </Td>
                       <Td px={2} py={2} borderBottom="1px" borderColor="gray.600" textAlign="center">
                         <Link 
-                          to={`/scraping-api/endpoints/$endpointId`}
-                          params={{ endpointId: epId }}
-                          style={{ color: "blue.400", textDecoration: "underline" }}
-                        >
+  to={`/scraping-api/endpoints/${epId}`}
+  style={{ color: "blue.400", textDecoration: "underline" }}
+>
                           <Highlight query={searchTerm} styles={{ bg: "yellow.200", color: "black" }}>
                             {endpoint.lastChecked}
                           </Highlight>
