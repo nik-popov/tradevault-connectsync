@@ -24,7 +24,7 @@ const STORAGE_KEY = 'subscriptionSettings';
 const PRODUCT = 'serp';
 
 // Replace with your actual Codespaces forwarded URL for port 3000
-const SERVER_URL = 'https://laughing-telegram-4jjjw7wp9gxrc7v5v-3000.app.github.dev';
+const SERVER_URL = 'https://dev-image-distro.popovtech.com';
 
 export const Route = createFileRoute('/_layout/scraping-api/submit-form/google-serp')({
   component: GoogleSerpForm,

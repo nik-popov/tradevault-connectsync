@@ -135,7 +135,7 @@ const EndpointSettings = memo(({ endpointId, endpoints }: EndpointSettingsProps)
     endpoint.lastChecked.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  const baseUrl = "https://laughing-telegram-4jjjw7wp9gxrc7v5v-5173.app.github.dev";
+  const baseUrl = "https://dashboard.iconluxury.group";
 
   return (
     <Container maxW="full" py={6} color="white">
