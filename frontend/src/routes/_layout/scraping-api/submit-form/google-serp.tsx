@@ -24,7 +24,7 @@ const STORAGE_KEY = 'subscriptionSettings';
 const PRODUCT = 'serp';
 
 // Replace with your actual Codespaces forwarded URL for port 3000
-const SERVER_URL = 'https://backend-dev.iconluxury.group/';
+const SERVER_URL = 'https://backend-dev.iconluxury.group';
 
 export const Route = createFileRoute('/_layout/scraping-api/submit-form/google-serp')({
   component: GoogleSerpForm,
