@@ -678,7 +678,7 @@ const SearchRowsTab: React.FC<SearchRowsTabProps> = ({ job }) => {
   const [hideEmptyRows, setHideEmptyRows] = useState(true);
 
   useEffect(() => {
-    const maxImages = showResultDetails ? 3 : 10;
+    const maxImages = showResultDetails ? 2 : 10;
     if (numImages > maxImages) {
       setNumImages(maxImages);
     }
@@ -713,7 +713,7 @@ const SearchRowsTab: React.FC<SearchRowsTabProps> = ({ job }) => {
   };
 
   const handleIncreaseImages = () => {
-    const maxImages = showResultDetails ? 3 : 10;
+    const maxImages = showResultDetails ? 2 : 10;
     setNumImages((prev) => Math.min(prev + 1, maxImages));
   };
 
