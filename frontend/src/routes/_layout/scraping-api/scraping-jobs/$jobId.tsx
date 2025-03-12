@@ -668,11 +668,9 @@ const LogsTab = ({ job }: { job: JobDetails }) => {
 
 interface SearchRowsTabProps {
   job: JobDetails;
-  setSearchQuery: (value: string) => void;
-  setActiveTab: (index: number) => void;
 }
 
-const SearchRowsTab: React.FC<SearchRowsTabProps> = ({ job, setSearchQuery, setActiveTab }) => {
+const SearchRowsTab: React.FC<SearchRowsTabProps> = ({ job }) => {
   const [debugMode, setDebugMode] = useState(false);
   const [showFileDetails, setShowFileDetails] = useState(true);
   const [showResultDetails, setShowResultDetails] = useState(false);
@@ -723,7 +721,7 @@ const SearchRowsTab: React.FC<SearchRowsTabProps> = ({ job, setSearchQuery, setA
     setNumImages((prev) => Math.max(prev - 1, 1));
   };
 
-  const handleRowIdClick = (e: React.MouseEvent<HTMLTextElement, MouseEvent>, productModel: string) => {
+  const handleRowIdClick = (e: React.MouseEvent<HTMLElement, MouseEvent>, productModel: string) => {
     e.preventDefault(); // Prevent any default navigation
     const url = `${window.location.pathname}?activeTab=2&search=${encodeURIComponent(productModel || "")}`;
     window.open(url, "_blank", "noopener,noreferrer"); // Open in new tab, no navigation in current tab
@@ -998,7 +996,7 @@ const JobsDetailPage = () => {
       />
     )},
     { title: "Logs", component: () => <LogsTab job={jobData} /> },
-    { title: "File Rows", component: () => <SearchRowsTab job={jobData} setSearchQuery={setSearchQuery} setActiveTab={setActiveTab} /> },
+    { title: "File Rows", component: () => <SearchRowsTab job={jobData}/> },
   ];
 
   return (
