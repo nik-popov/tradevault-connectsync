@@ -152,10 +152,9 @@ interface OverviewTabProps {
   job: JobDetails;
   sortBy: "match" | "linesheet" | null;
   setSortBy: (value: "match" | "linesheet" | null) => void;
-  fetchJobData: () => Promise<void>; // Added for auto-reload
 }
 
-const OverviewTab: React.FC<OverviewTabProps> = ({ job, sortBy, setSortBy, fetchJobData }) => {
+const OverviewTab: React.FC<OverviewTabProps> = ({ job, sortBy, setSortBy }) => {
   const status = job.fileEnd ? "Completed" : "Pending";
   const duration = job.fileEnd && job.fileStart
     ? (new Date(job.fileEnd).getTime() - new Date(job.fileStart).getTime()) / 1000 / 60
@@ -998,7 +997,7 @@ const JobsDetailPage = () => {
   }
 
   const tabsConfig = [
-    { title: "Overview", component: () => <OverviewTab job={jobData} sortBy={sortBy} setSortBy={setSortBy} fetchJobData={fetchJobData} /> },
+    { title: "Overview", component: () => <OverviewTab job={jobData} sortBy={sortBy} setSortBy={setSortBy} /> },
     { title: "Usage", component: () => <UsageTab job={jobData} /> },
     { title: "Results", component: () => (
       <ResultsTab
