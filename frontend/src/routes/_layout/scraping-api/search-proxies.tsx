@@ -46,6 +46,7 @@ const proxyData: Record<string, { region: string; url: string }[]> = {
     { region: "US-EAST5", url: "https://us-east5-gen-lang-client-0697423475.cloudfunctions.net/main"},
     { region: "ASIA-SOUTHEAST1", url: "https://asia-southeast1-gen-lang-client-0697423475.cloudfunctions.net/main"},
     { region: "US-WEST2", url: "https://us-west2-gen-lang-client-0697423475.cloudfunctions.net/main"},
+    { region: "NORTHAMERICA-NORTHEAST1", url: "https://northamerica-northeast1-image-proxy2-453320.cloudfunctions.net/main"},
     { region: "NORTHAMERICA-NORTHEAST2", url: "https://northamerica-northeast2-image-proxy2-453320.cloudfunctions.net/main"},
     { region: "SOUTHAMERICA-EAST1", url: "https://southamerica-east1-image-proxy2-453320.cloudfunctions.net/main"}, 
     { region: "EUROPE-WEST8", url: "https://europe-west8-icon-image3.cloudfunctions.net/main"},
@@ -53,6 +54,7 @@ const proxyData: Record<string, { region: string; url: string }[]> = {
     { region: "EUROPE-WEST6", url: "https://europe-west6-icon-image3.cloudfunctions.net/main"},
     { region: "EUROPE-WEST3", url: "https://europe-west3-icon-image3.cloudfunctions.net/main"},
     { region: "EUROPE-WEST2", url: "https://europe-west2-icon-image3.cloudfunctions.net/main"},
+    { region: "EUROPE-CENTRAL2", url: "https://europe-central2-image-proxy2-453320.cloudfunctions.net/main"},
     { region: "EUROPE-WEST9", url: "https://europe-west9-image-proxy2-453320.cloudfunctions.net/main"},
     { region: "MIDDLEEAST-WEST1", url: "https://me-west1-image-proxy4.cloudfunctions.net/main"},
     { region: "MIDDLEEAST-CENTRAL1", url: "https://me-central1-image-proxy4.cloudfunctions.net/main"},
@@ -204,6 +206,10 @@ const ProxyPage = memo(() => {
     const matchesRegion =
       regionFilter === "all" ||
       (regionFilter === "us" && proxy.region.toLowerCase().includes("us")) ||
+      (regionFilter === "northamerica" && proxy.region.toLowerCase().includes("northamerica")) ||
+      (regionFilter === "southamerica" && proxy.region.toLowerCase().includes("southamerica")) ||
+      (regionFilter === "middleeast" && proxy.region.toLowerCase().includes("middleeast")) ||
+      (regionFilter === "asia" && proxy.region.toLowerCase().includes("asia")) ||
       (regionFilter === "europe" && proxy.region.toLowerCase().includes("europe"));
 
     const matchesProvider =
@@ -237,7 +243,16 @@ const ProxyPage = memo(() => {
         </Flex>
 
         {/* Search and Filters Section */}
-        <Flex gap={4} justify="space-between" align="center" flexWrap="wrap">
+        <Flex gap={4} 
+        mb={4}
+        position="sticky"
+        top="0"
+        bg="transparent"
+        zIndex="10"
+        py={5}
+        borderBottom="1px solid"
+        borderColor="gray.200"  
+        justify="space-between" align="center" flexWrap="wrap">
           <Input
             placeholder="Search proxies..."
             value={searchTerm}
@@ -285,7 +300,12 @@ const ProxyPage = memo(() => {
             >
               <option value="all">All Regions</option>
               <option value="us">US</option>
+              <option value="asia">Asia</option>
               <option value="europe">Europe</option>
+              <option value="northamerica">North America</option>
+              <option value="southamerica">South America</option>
+              <option value="middleeast">Middle East</option>
+
             </Select>
             <Button
               colorScheme="blue"
@@ -340,7 +360,7 @@ const ProxyPage = memo(() => {
                       {proxy.provider}
                     </Text>
                     <Text fontSize="sm" color="gray.300" mt={1}>
-                      <strong>Batch:</strong> {proxy.batch}
+                      <strong>Batch:</strong> { proxy.region.split("-")[1] || proxy.region}
                     </Text>
                   </Box>
                 </Flex>

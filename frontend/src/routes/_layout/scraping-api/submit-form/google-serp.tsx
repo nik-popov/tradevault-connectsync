@@ -60,7 +60,7 @@ function GoogleSerpForm() {
   const [colorCol, setColorCol] = useState('Color');
   const [categoryCol, setCategoryCol] = useState('Category');
   const [isSubmitting, setIsSubmitting] = useState(false);
-
+  const [isUploadExcelImage, setIsisUploadExcelImage] = useState(false);
   const sendToEmail = 'your.email@example.com'; // Replace with your actual email
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {

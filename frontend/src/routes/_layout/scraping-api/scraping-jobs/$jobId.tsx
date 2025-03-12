@@ -75,7 +75,6 @@ interface ResultItem {
   aiJson: string | null;
   aiLabel: string | null;
 }
-
 interface RecordItem {
   entryId: number;
   fileId: number;
@@ -90,6 +89,7 @@ interface RecordItem {
   completeTime: string | null;
   productColor: string;
   productCategory: string;
+  excelRowImageRef: string | null; 
 }
 
 // Component to fetch and display log content
@@ -530,11 +530,13 @@ const ResultsTab: React.FC<ResultsTabProps> = ({ job, sortBy, searchQuery, setSe
   const totalImages = job.results.length;
   const totalAllRecords = job.records.length;
 
+  // Check for thumbnails (adjust key to match API)
+  const hasThumbnails = filteredRecords.some((record) => record.excelRowImageRef); // Change to 'excelRowImageRef' if API uses lowercase
+  console.log("Has thumbnails?", hasThumbnails, "Records checked:", filteredRecords);
+
   const shortenUrl = (url: string) => {
     if (!url) return "";
-    let cleanedUrl = url
-      .replace(/^https?:\/\//i, "")
-      .replace(/^www\./i, "");
+    let cleanedUrl = url.replace(/^https?:\/\//i, "").replace(/^www\./i, "");
     if (cleanedUrl.length <= 22) return cleanedUrl;
     return `${cleanedUrl.slice(0, 12)}...${cleanedUrl.slice(-10)}`;
   };
@@ -549,7 +551,8 @@ const ResultsTab: React.FC<ResultsTabProps> = ({ job, sortBy, searchQuery, setSe
 
   return (
     <Box p={4}>
-      <Flex   justify="space-between"
+      <Flex
+        justify="space-between"
         align="center"
         mb={4}
         position="sticky"
@@ -558,28 +561,25 @@ const ResultsTab: React.FC<ResultsTabProps> = ({ job, sortBy, searchQuery, setSe
         zIndex="10"
         py={5}
         borderBottom="1px solid"
-        borderColor="gray.200"  
-        flexWrap="wrap" gap={3} id="input-search">
-        <Text fontSize="lg" fontWeight="bold" >Job Results</Text>
+        borderColor="gray.200"
+        flexWrap="wrap"
+        gap={3}
+        id="input-search"
+      >
+        <Text fontSize="lg" fontWeight="bold">Job Results</Text>
         <Input
           placeholder="Search by description, source, model, brand, etc..."
           value={searchQuery}
-          onChange={(e) => {
-            console.log("onChange called with value:", e.target.value);
-            setSearchQuery(e.target.value);
-          }}
+          onChange={(e) => setSearchQuery(e.target.value)}
           onPaste={(e) => {
             const pastedText = e.clipboardData.getData("text");
-            console.log("onPaste called with value:", pastedText);
             setSearchQuery(pastedText);
             e.preventDefault();
           }}
           width="300px"
-          readOnly={false}
-          disabled={false}
         />
       </Flex>
-      <Flex direction="column" gap={6} >
+      <Flex direction="column" gap={6}>
         <Card shadow="md" borderWidth="1px">
           <CardBody>
             {query ? (
@@ -600,8 +600,8 @@ const ResultsTab: React.FC<ResultsTabProps> = ({ job, sortBy, searchQuery, setSe
                 <Stat>
                   <StatLabel>Result File</StatLabel>
                   <Link href={job.resultFile} isExternal color="blue.500">
-                {job.inputFile}
-              </Link>
+                    {job.inputFile}
+                  </Link>
                 </Stat>
                 <Stat mt={4}>
                   <StatLabel>Total Records</StatLabel>
@@ -678,42 +678,75 @@ const ResultsTab: React.FC<ResultsTabProps> = ({ job, sortBy, searchQuery, setSe
                 </AccordionPanel>
               </AccordionItem>
               <AccordionItem>
-                <AccordionButton>
-                  <Box flex="1" textAlign="left">Records ({totalRecords})</Box>
-                  <AccordionIcon />
-                </AccordionButton>
-                <AccordionPanel pb={4}>
-                  <Table variant="simple" size="sm" border="none">
-                    <Thead>
-                      <Tr>
-                        <Th w="80px">Entry ID</Th>
-                        <Th w="80px">File ID</Th>
-                        <Th w="80px">Excel Row ID</Th>
-                        <Th w="120px">Product Model</Th>
-                        <Th w="120px">Brand</Th>
-                      </Tr>
-                    </Thead>
-                    <Tbody>
-                      {filteredRecords.map((record) => (
-                        <Tr key={record.entryId}>
-                          <Td w="80px">{record.entryId || "N/A"}</Td>
-                          <Td w="80px">{record.fileId || "N/A"}</Td>
-                          <Td w="80px">{record.excelRowId || "N/A"}</Td>
-                          <Td w="120px">{record.productModel || "N/A"}</Td>
-                          <Td w="120px">{record.productBrand || "N/A"}</Td>
-                        </Tr>
-                      ))}
-                      {filteredRecords.length === 0 && (
-                        <Tr>
-                          <Td colSpan={5} textAlign="center">
-                            No records match your search query.
-                          </Td>
-                        </Tr>
-                      )}
-                    </Tbody>
-                  </Table>
-                </AccordionPanel>
-              </AccordionItem>
+  <AccordionButton>
+    <Box flex="1" textAlign="left">Records ({totalRecords})</Box>
+    <AccordionIcon />
+  </AccordionButton>
+  <AccordionPanel pb={4}>
+    <Table variant="simple" size="sm" border="none">
+      <Thead>
+        <Tr>
+          {hasThumbnails && <Th w="60px">Thumbnail</Th>}
+          <Th w="80px">Entry ID</Th>
+          <Th w="80px">File ID</Th>
+          <Th w="80px">Excel Row ID</Th>
+          <Th w="120px">Product Model</Th>
+          <Th w="120px">Brand</Th>
+        </Tr>
+      </Thead>
+      <Tbody>
+        {filteredRecords.map((record) => (
+          <Tr key={record.entryId}>
+            {hasThumbnails && (
+              <Td w="60px">
+                {record.excelRowImageRef ? (
+                  <Image
+                    src={record.excelRowImageRef}
+                    alt={`Thumbnail for ${record.productModel || "Record ID " + record.entryId}`}
+                    maxW="50px"
+                    maxH="50px"
+                    objectFit="cover"
+                    cursor="pointer"
+                    onClick={() => {
+                      console.log("Opening thumbnail:", record.excelRowImageRef);
+                      if (record.excelRowImageRef) {
+                        window.open(record.excelRowImageRef, "_blank");
+                      }
+                    }}
+                    onError={(e) => {
+                      console.warn(`Failed to load S3 image: ${record.excelRowImageRef}`);
+                      e.currentTarget.style.display = "none";
+                      if (e.currentTarget.nextSibling) {
+                        (e.currentTarget.nextSibling as HTMLElement).style.display = "block";
+                      }
+                    }}
+                    onLoad={() => console.log("Thumbnail loaded:", record.excelRowImageRef)}
+                    fallback={<Text fontSize="xs" display="none" color="red.500">Load failed</Text>}
+                    loading="lazy"
+                  />
+                ) : (
+                  <Text fontSize="xs" color="gray.500">No thumb</Text>
+                )}
+              </Td>
+            )}
+            <Td w="80px">{record.entryId || "N/A"}</Td>
+            <Td w="80px">{record.fileId || "N/A"}</Td>
+            <Td w="80px">{record.excelRowId || "N/A"}</Td>
+            <Td w="120px">{record.productModel || "N/A"}</Td>
+            <Td w="120px">{record.productBrand || "N/A"}</Td>
+          </Tr>
+        ))}
+        {filteredRecords.length === 0 && (
+          <Tr>
+            <Td colSpan={hasThumbnails ? 6 : 5} textAlign="center">
+              No records match your search query.
+            </Td>
+          </Tr>
+        )}
+      </Tbody>
+    </Table>
+  </AccordionPanel>
+</AccordionItem>
             </Accordion>
             {query && totalPages > 1 && (
               <Flex justify="center" mt={4} gap={2} align="center">
@@ -752,7 +785,6 @@ const ResultsTab: React.FC<ResultsTabProps> = ({ job, sortBy, searchQuery, setSe
     </Box>
   );
 };
-
 const LogsTab = ({ job }: { job: JobDetails }) => {
   return (
     <Box p={4}>
@@ -1066,14 +1098,13 @@ const JobsDetailPage = () => {
       const apiUrl = `https://backend-dev.iconluxury.group/api/scraping-jobs/${jobId}`;
       const response = await fetch(apiUrl, {
         method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
       });
       if (!response.ok) {
         throw new Error(`Failed to fetch job data: ${response.status} - ${response.statusText}`);
       }
       const data: JobDetails = await response.json();
+      console.log("All records for job", jobId, ":", data.records);
       setJobData(data);
     } catch (err) {
       setError(err instanceof Error ? err.message : "An unknown error occurred");
@@ -1082,7 +1113,6 @@ const JobsDetailPage = () => {
       setIsLoading(false);
     }
   };
-
   useEffect(() => {
     fetchJobData();
   }, [jobId]);
