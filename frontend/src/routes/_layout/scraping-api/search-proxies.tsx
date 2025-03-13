@@ -67,7 +67,7 @@ const proxyData: Record<string, { region: string; url: string }[]> = {
     { region: "eu-west-1", url: "https://eu-west-1-aws-scraper.invalid" },
   ],
   "Azure": [
-    { region: "eastus", url: "https://eastus-azure-scraper.example.com" },
+    { region: "eastus", url: "https://prod-fetch.azurewebsites.net/api/HttpTrigger1?code=aW--Ht7EhrEfmS1BQLz4236XyYXlCK4G-70_1rl0Ot7zAzFuZIXBYA==" },
     { region: "westeurope", url: "https://westeurope-azure-scraper.broken" },
   ],
   "DigitalOcean": [
