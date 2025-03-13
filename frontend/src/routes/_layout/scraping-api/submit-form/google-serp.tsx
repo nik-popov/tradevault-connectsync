@@ -4,24 +4,53 @@ import {
   Text,
   Button,
   VStack,
-  Flex,
   Box,
   Input,
   FormControl,
   FormLabel,
   useToast,
+  FormHelperText,
+  List,
+  ListItem,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
   Table,
+  Tr,
+  Td,
   Thead,
   Tbody,
-  Tr,
   Th,
-  Td,
-  Image,
 } from '@chakra-ui/react';
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
 import { FiSend } from 'react-icons/fi';
+import * as XLSX from 'xlsx';
 import ExcelJS from 'exceljs';
-import { Buffer } from 'buffer';
+
+// Assuming this is a separate component file
+import ExcelDataTable from '../../../../components/ExcelDataTable';
+
+const STORAGE_KEY = 'subscriptionSettings';
+const PRODUCT = 'serp';
+const SERVER_URL = 'https://backend-dev.iconluxury.group';
+
+// Interfaces
+interface ColumnMapping {
+  style: number | null;
+  brand: number | null;
+  imageAdd: number | null;
+  readImage: number | null;
+  category: number | null;
+  colorName: number | null;
+}
+
+interface ExcelData {
+  headers: string[];
+  rows: { row: ExcelJS.CellValue[] }[];
+}
 
 // Helper function to convert cell values to displayable strings
 function getDisplayValue(cellValue: any): string {
@@ -43,125 +72,299 @@ function getDisplayValue(cellValue: any): string {
     } else {
       return JSON.stringify(cellValue);
     }
-  } else {
-    return String(cellValue);
   }
+  return String(cellValue);
 }
 
-// Helper function to determine image MIME type
-function getImageMimeType(imageBuffer: ArrayBuffer): string {
-  const arr = new Uint8Array(imageBuffer).subarray(0, 4);
-  let header = '';
-  for (let i = 0; i < arr.length; i++) {
-    header += arr[i].toString(16);
+// Convert column index to Excel column letter (0-based index to A, B, C, etc.)
+function indexToColumnLetter(index: number): string {
+  let column = '';
+  let temp = index;
+  while (temp >= 0) {
+    column = String.fromCharCode((temp % 26) + 65) + column;
+    temp = Math.floor(temp / 26) - 1;
   }
-  switch (header) {
-    case '89504e47':
-      return 'image/png';
-    case 'ffd8ffe0':
-    case 'ffd8ffe1':
-    case 'ffd8ffe2':
-      return 'image/jpeg';
-    default:
-      return 'image/png';
-  }
+  return column;
 }
 
-interface RowData {
-  row: ExcelJS.CellValue[];
-  images: { data: string; mimeType: string }[];
-}
+const ExcelDataTableMemo = React.memo(ExcelDataTable);
 
 function GoogleSerpForm() {
   const [file, setFile] = useState<File | null>(null);
   const [isLoadingFile, setIsLoadingFile] = useState(false);
-  const [excelData, setExcelData] = useState<{
-    headers: ExcelJS.CellValue[];
-    rows: RowData[];
-  }>({ headers: [], rows: [] });
+  const [excelData, setExcelData] = useState<ExcelData>({ headers: [], rows: [] });
+  const [previewRows, setPreviewRows] = useState<any[]>([]);
+  const [isHeaderModalOpen, setIsHeaderModalOpen] = useState(false);
+  const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
+  const [selectedRowIndex, setSelectedRowIndex] = useState<number | null>(null);
+  const [columnMapping, setColumnMapping] = useState<ColumnMapping>({
+    style: null,
+    brand: null,
+    imageAdd: null,
+    readImage: null,
+    category: null,
+    colorName: null,
+  });
   const toast = useToast();
   const navigate = useNavigate();
 
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setFile(event.target.files?.[0] || null);
-    setExcelData({ headers: [], rows: [] });
-  };
+  const requiredColumns = ['style', 'brand'];
+  const optionalColumns = ['category', 'colorName', 'readImage', 'imageAdd'];
+  const allColumns = [...requiredColumns, ...optionalColumns];
 
-  const handleLoadFile = async () => {
-    if (!file) {
-      toast({
-        title: 'Missing File',
-        description: 'Please choose an Excel file first.',
-        status: 'warning',
-        duration: 4000,
-        isClosable: true,
-        position: 'top',
-      });
-      return;
-    }
+  const targetHeaders = ['IMAGE', 'BRAND', 'GENDER', 'STYLE', 'COLOR', 'CATEGORY'];
 
-    setIsLoadingFile(true);
+  const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     try {
-      const workbook = new ExcelJS.Workbook();
-      const buffer = await file.arrayBuffer();
-      await workbook.xlsx.load(buffer);
+      const selectedFile = event.target.files?.[0];
+      if (!selectedFile) return;
 
-      if (workbook.worksheets.length > 1) {
-        console.warn('Multiple worksheets detected. Using the first one.');
+      if (!['application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 
+            'application/vnd.ms-excel'].includes(selectedFile.type)) {
+        throw new Error('Invalid file type. Please upload an Excel file (.xlsx or .xls)');
       }
-      const worksheet = workbook.worksheets[0];
 
-      const headers = Array.isArray(worksheet.getRow(1).values)
-        ? (worksheet.getRow(1).values as ExcelJS.CellValue[])
-        : Object.values(worksheet.getRow(1).values) as ExcelJS.CellValue[];
+      setFile(selectedFile);
+      setExcelData({ headers: [], rows: [] });
+      setColumnMapping({
+        style: null,
+        brand: null,
+        imageAdd: null,
+        readImage: null,
+        category: null,
+        colorName: null,
+      });
 
-      const rows: ExcelJS.CellValue[][] = [];
-      worksheet.eachRow({ includeEmpty: true }, (row, rowNumber) => {
-        if (rowNumber > 1) {
-          const values = Array.isArray(row.values)
-            ? row.values
-            : Object.values(row.values);
-          rows.push(values as ExcelJS.CellValue[]);
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        try {
+          const data = e.target?.result;
+          if (!data) throw new Error('Failed to read file');
+          
+          const workbook = XLSX.read(data, { type: 'binary' });
+          const sheetName = workbook.SheetNames[0];
+          const worksheet = workbook.Sheets[sheetName];
+          const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: true });
+          const preview = jsonData.slice(0, 100);
+          setPreviewRows(preview);
+
+          let headerRowIndex: number | null = null;
+          for (let i = 0; i < Math.min(10, preview.length); i++) {
+            const row = preview[i] as any[];
+            const rowValues = row.map((cell: any) => String(cell).toUpperCase().trim());
+            const matchedHeaders = rowValues.filter((value: string) => targetHeaders.includes(value));
+            if (matchedHeaders.length >= 2) {
+              headerRowIndex = i;
+              break;
+            }
+          }
+
+          if (headerRowIndex !== null) {
+            const headers = preview[headerRowIndex] as string[];
+            const rows = preview.slice(headerRowIndex + 1).map(row => ({ row: row as ExcelJS.CellValue[] }));
+            setExcelData({ headers, rows });
+            
+            const newColumnMapping: ColumnMapping = { ...columnMapping };
+            // Map required fields first
+            headers.forEach((header, index) => {
+              const upperHeader = String(header).toUpperCase().trim();
+              if (upperHeader === 'STYLE' && newColumnMapping.style === null) newColumnMapping.style = index;
+              if (upperHeader === 'BRAND' && newColumnMapping.brand === null) newColumnMapping.brand = index;
+            });
+
+            // Map remaining detected headers to optional fields in order
+            let optionalIndex = 0;
+            headers.forEach((header, index) => {
+              const upperHeader = String(header).toUpperCase().trim();
+              if (upperHeader === 'CATEGORY' && newColumnMapping.category === null) newColumnMapping.category = index;
+              else if (upperHeader === 'COLOR' && newColumnMapping.colorName === null) newColumnMapping.colorName = index;
+              else if (upperHeader === 'IMAGE' && newColumnMapping.readImage === null && newColumnMapping.imageAdd === null) {
+                newColumnMapping.imageAdd = index; // Default to imageAdd for IMAGE
+              } else if (upperHeader === 'GENDER' && optionalIndex < optionalColumns.length) {
+                // Assign GENDER or other headers to next available optional field
+                while (optionalIndex < optionalColumns.length && newColumnMapping[optionalColumns[optionalIndex]] !== null) {
+                  optionalIndex++;
+                }
+                if (optionalIndex < optionalColumns.length) {
+                  newColumnMapping[optionalColumns[optionalIndex]] = index;
+                  optionalIndex++;
+                }
+              }
+            });
+
+            setColumnMapping(newColumnMapping);
+            toast({
+              title: 'Header Auto-Detected',
+              description: `Row ${headerRowIndex + 1} selected as header with ${headers.join(', ')}`,
+              status: 'info',
+              duration: 4000,
+              isClosable: true,
+              position: 'top',
+            });
+          } else {
+            setIsHeaderModalOpen(true);
+          }
+        } catch (error) {
+          throw new Error('Error parsing Excel file: ' + error.message);
         }
-      });
-
-      const images = worksheet.getImages();
-      const imageMap: { [key: number]: { data: string; mimeType: string }[] } = {};
-      images.forEach((image, index) => {
-        const rowIndex = image.range.tl.row;
-        const imageBuffer = workbook.getImage(index);
-        const imageData = Buffer.from(imageBuffer as unknown as ArrayBuffer).toString('base64');
-        const mimeType = getImageMimeType(imageBuffer as unknown as ArrayBuffer);
-        if (!imageMap[rowIndex]) {
-          imageMap[rowIndex] = [];
-        }
-        imageMap[rowIndex].push({ data: imageData, mimeType });
-      });
-
-      const rowsWithImages: RowData[] = rows.map((row, index) => {
-        const rowImages = imageMap[index + 2] || [];
-        return { row, images: rowImages };
-      });
-
-      setExcelData({ headers, rows: rowsWithImages });
-    } catch (err) {
-      console.error('Error reading Excel file:', err);
+      };
+      reader.onerror = () => {
+        throw new Error('Error reading file');
+      };
+      reader.readAsBinaryString(selectedFile);
+    } catch (error) {
       toast({
-        title: 'File Read Error',
-        description: `Could not read the Excel file: ${(err as Error).message}`,
+        title: 'File Upload Error',
+        description: error.message || 'An unexpected error occurred',
         status: 'error',
         duration: 4000,
         isClosable: true,
         position: 'top',
       });
+      setFile(null);
+    }
+  };
+
+  const handleRowSelect = (rowIndex: number) => {
+    setSelectedRowIndex(rowIndex);
+    setIsConfirmModalOpen(true);
+  };
+
+  const confirmHeaderSelect = () => {
+    if (selectedRowIndex === null) return;
+
+    const headers = previewRows[selectedRowIndex] as string[];
+    const rows = previewRows.slice(selectedRowIndex + 1).map(row => ({ row: row as ExcelJS.CellValue[] }));
+    setExcelData({ headers, rows });
+
+    const newColumnMapping: ColumnMapping = { ...columnMapping };
+    // Map required fields first
+    headers.forEach((header, index) => {
+      const upperHeader = String(header).toUpperCase().trim();
+      if (upperHeader === 'STYLE' && newColumnMapping.style === null) newColumnMapping.style = index;
+      if (upperHeader === 'BRAND' && newColumnMapping.brand === null) newColumnMapping.brand = index;
+    });
+
+    // Map remaining detected headers to optional fields in order
+    let optionalIndex = 0;
+    headers.forEach((header, index) => {
+      const upperHeader = String(header).toUpperCase().trim();
+      if (upperHeader === 'CATEGORY' && newColumnMapping.category === null) newColumnMapping.category = index;
+      else if (upperHeader === 'COLOR' && newColumnMapping.colorName === null) newColumnMapping.colorName = index;
+      else if (upperHeader === 'IMAGE' && newColumnMapping.readImage === null && newColumnMapping.imageAdd === null) {
+        newColumnMapping.imageAdd = index;
+      } else if (upperHeader === 'GENDER' && optionalIndex < optionalColumns.length) {
+        while (optionalIndex < optionalColumns.length && newColumnMapping[optionalColumns[optionalIndex]] !== null) {
+          optionalIndex++;
+        }
+        if (optionalIndex < optionalColumns.length) {
+          newColumnMapping[optionalColumns[optionalIndex]] = index;
+          optionalIndex++;
+        }
+      }
+    });
+
+    setColumnMapping(newColumnMapping);
+    setIsHeaderModalOpen(false);
+    setIsConfirmModalOpen(false);
+    setIsLoadingFile(false);
+    toast({
+      title: 'Header Selected',
+      description: `Row ${selectedRowIndex + 1} confirmed as header with ${headers.join(', ')}`,
+      status: 'info',
+      duration: 4000,
+      isClosable: true,
+      position: 'top',
+    });
+  };
+
+  const handleSubmit = async () => {
+    try {
+      const missingRequired = requiredColumns.filter(col => columnMapping[col] === null);
+      if (missingRequired.length > 0) {
+        toast({
+          title: 'Missing Required Columns',
+          description: `Please map columns for: ${missingRequired.join(', ')}`,
+          status: 'warning',
+          duration: 4000,
+          isClosable: true,
+          position: 'top',
+        });
+        return;
+      }
+
+      if (!file) {
+        throw new Error('No file selected');
+      }
+
+      setIsLoadingFile(true);
+      
+      const formData = new FormData();
+      formData.append('fileUploadImage', file);
+      
+      const styleCol = columnMapping.style !== null ? indexToColumnLetter(columnMapping.style) : 'A';
+      const brandCol = columnMapping.brand !== null ? indexToColumnLetter(columnMapping.brand) : 'B';
+      const imageAddCol = columnMapping.imageAdd !== null ? indexToColumnLetter(columnMapping.imageAdd) : null;
+      const readImageCol = columnMapping.readImage !== null ? indexToColumnLetter(columnMapping.readImage) : null;
+      const colorCol = columnMapping.colorName !== null ? indexToColumnLetter(columnMapping.colorName) : null;
+      const categoryCol = columnMapping.category !== null ? indexToColumnLetter(columnMapping.category) : null;
+
+      const imageColumnImage = readImageCol || imageAddCol;
+      if (imageColumnImage) {
+        formData.append('imageColumnImage', imageColumnImage);
+        console.log(`Sending imageColumnImage: ${imageColumnImage}`);
+      } else {
+        console.log('No image column mapped');
+      }
+      formData.append('searchColImage', styleCol);
+      formData.append('brandColImage', brandCol);
+      if (colorCol) formData.append('ColorColImage', colorCol);
+      if (categoryCol) formData.append('CategoryColImage', categoryCol);
+
+      const response = await fetch(`${SERVER_URL}/submitImage`, {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(`Server error: ${response.status} - ${errorText || response.statusText}`);
+      }
+
+      const result = await response.json();
+      
+      toast({
+        title: 'Success',
+        description: 'Data submitted successfully',
+        status: 'success',
+        duration: 4000,
+        isClosable: true,
+        position: 'top',
+      });
+
+      navigate({ to: '/scraping-api/submit-form/success' });
+
+      return result;
+    } catch (error) {
+      console.error('Submission error:', error);
+      toast({
+        title: 'Submission Error',
+        description: error.message || 'Failed to submit data to server',
+        status: 'error',
+        duration: 5000,
+        isClosable: true,
+        position: 'top',
+      });
+      throw error;
     } finally {
       setIsLoadingFile(false);
     }
   };
-
-  const handleSubmit = () => {
-    // Implement your submission logic here
-  };
+  const allRequiredSelected = requiredColumns.every(col => columnMapping[col] !== null);
+  const missingRequired = requiredColumns.filter(col => columnMapping[col] === null);
+  const mappedColumns = Object.entries(columnMapping)
+    .filter(([_, index]) => index !== null)
+    .map(([col, index]) => `${col.replace(/([A-Z])/g, ' $1').trim()}: ${excelData.headers[index as number] || `Column ${index! + 1}`}`);
 
   return (
     <Container maxW="full">
@@ -171,85 +374,121 @@ function GoogleSerpForm() {
         </Text>
         <FormControl>
           <FormLabel color="white">Upload Excel File</FormLabel>
-          <Input type="file" accept=".xlsx" onChange={handleFileChange} />
+          <Input 
+            type="file" 
+            accept=".xlsx,.xls" 
+            onChange={handleFileChange} 
+            disabled={isLoadingFile}
+          />
+          <FormHelperText color="gray.300">
+            After upload, select the header row and map required fields (Style, Brand) and optional fields (Category, Color Name, Read Image, Image Add).
+          </FormHelperText>
         </FormControl>
-        <Flex gap={4}>
-          <Button
-            colorScheme="blue"
-            onClick={handleLoadFile}
-            isLoading={isLoadingFile}
-          >
-            Load File
-          </Button>
+
+        <Modal isOpen={isHeaderModalOpen} onClose={() => setIsHeaderModalOpen(false)} size="xl">
+          <ModalOverlay />
+          <ModalContent alignSelf="left" ml={4} mt={16}>
+            <ModalHeader>
+              Select Header Row (Click a row to choose) - {previewRows.length} Rows
+            </ModalHeader>
+            <ModalBody maxH="60vh" overflowY="auto">
+              <Table size="sm">
+                <Tbody>
+                  {previewRows.map((row, rowIndex) => (
+                    <Tr 
+                      key={rowIndex} 
+                      onClick={() => handleRowSelect(rowIndex)} 
+                      cursor="pointer" 
+                      _hover={{ bg: 'gray.100' }}
+                    >
+                      {row.map((cell: any, cellIndex: number) => (
+                        <Td key={cellIndex} py={2} px={3}>
+                          {getDisplayValue(cell)}
+                        </Td>
+                      ))}
+                    </Tr>
+                  ))}
+                </Tbody>
+              </Table>
+            </ModalBody>
+            <ModalFooter>
+              <Button size="sm" onClick={() => setIsHeaderModalOpen(false)}>
+                Cancel
+              </Button>
+            </ModalFooter>
+          </ModalContent>
+        </Modal>
+
+        <Modal isOpen={isConfirmModalOpen} onClose={() => setIsConfirmModalOpen(false)}>
+          <ModalOverlay />
+          <ModalContent>
+            <ModalHeader>Confirm Header Selection</ModalHeader>
+            <ModalBody>
+              <Text>Are you sure you want to use row {selectedRowIndex !== null ? selectedRowIndex + 1 : ''} as the header?</Text>
+              {selectedRowIndex !== null && (
+                <Text mt={2}>Selected headers: {previewRows[selectedRowIndex].join(', ')}</Text>
+              )}
+            </ModalBody>
+            <ModalFooter>
+              <Button colorScheme="green" mr={3} onClick={confirmHeaderSelect}>
+                Confirm
+              </Button>
+              <Button variant="ghost" onClick={() => setIsConfirmModalOpen(false)}>
+                Cancel
+              </Button>
+            </ModalFooter>
+          </ModalContent>
+        </Modal>
+
+        {excelData.headers.length > 0 && (
+          <Box>
+            <Text fontSize="md" fontWeight="semibold" color="white">
+              Excel Data Preview
+            </Text>
+            <Text fontSize="sm" color="gray.400" mt={1}>
+              Row Count: {excelData.rows.length}
+            </Text>
+            <List spacing={2} mt={2}>
+              {missingRequired.length > 0 && (
+                <ListItem color="red.300">
+                  Missing Required: {missingRequired.join(', ')}
+                </ListItem>
+              )}
+              {mappedColumns.length > 0 && (
+                <ListItem color="teal.300">
+                  Mapped: {mappedColumns.join(', ')}
+                </ListItem>
+              )}
+              <ListItem color="gray.300">
+                Available Columns: {excelData.headers.map((h, i) => h || `Column ${i + 1}`).join(', ')}
+              </ListItem>
+            </List>
+          </Box>
+        )}
+        
+        <Box>
           <Button
             colorScheme="green"
             leftIcon={<FiSend />}
             onClick={handleSubmit}
-            isDisabled={!excelData.rows.length}
+            isDisabled={!excelData.rows.length || isLoadingFile || !allRequiredSelected}
+            isLoading={isLoadingFile}
           >
             Submit
           </Button>
-        </Flex>
-        {excelData.rows.length > 0 && <ExcelDataTable excelData={excelData} />}
+        </Box>
+
+        {isLoadingFile && <Text color="gray.400">Processing...</Text>}
+        
+        {excelData.rows.length > 0 && (
+          <ExcelDataTableMemo
+            excelData={excelData}
+            columnMapping={columnMapping}
+            setColumnMapping={setColumnMapping}
+          />
+        )}
       </VStack>
     </Container>
-  );
-}
-
-function ExcelDataTable({ excelData }: { excelData: { headers: ExcelJS.CellValue[]; rows: RowData[] } }) {
-  const { headers, rows } = excelData;
-  if (!headers || headers.length === 0 || !rows || rows.length === 0) {
-    return null;
-  }
-
-  return (
-    <Box mt={4} bg="gray.800" p={4} borderRadius="lg">
-      <Text fontSize="md" fontWeight="semibold" mb={4} color="white">
-        Excel Data Preview
-      </Text>
-      <Table variant="striped" size="sm" colorScheme="gray">
-        <Thead>
-          <Tr>
-            <Th color="white" bg="gray.700">
-              Image
-            </Th>
-            {headers.map((header, i) => (
-              <Th key={i} color="white" bg="gray.700">
-                {getDisplayValue(header) || <span>Unnamed</span>}
-              </Th>
-            ))}
-          </Tr>
-        </Thead>
-        <Tbody>
-          {rows.map((rowData, rowIndex) => (
-            <Tr key={rowIndex}>
-              <Td color="gray.200">
-                {rowData.images.length > 0 ? (
-                  rowData.images.map((image, imgIndex) => (
-                    <Image
-                      key={imgIndex}
-                      src={`data:${image.mimeType};base64,${image.data}`}
-                      alt={`Image ${imgIndex + 1}`}
-                      boxSize="60px"
-                      objectFit="cover"
-                      mr={2}
-                      display="inline-block"
-                    />
-                  ))
-                ) : (
-                  <Text>No Image</Text>
-                )}
-              </Td>
-              {rowData.row.map((cell, cellIndex) => (
-                <Td key={cellIndex} color="gray.200">
-                  {getDisplayValue(cell) || <span> </span>}
-                </Td>
-              ))}
-            </Tr>
-          ))}
-        </Tbody>
-      </Table>
-    </Box>
   );
 }
 

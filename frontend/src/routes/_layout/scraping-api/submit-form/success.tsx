@@ -18,9 +18,9 @@ function SuccessPage() {
         </Text>
         <Button
           colorScheme="blue"
-          onClick={() => navigate({ to: '/scraping-api/submit-form/google-serp' })}
+          onClick={() => navigate({ to: '/scraping-api/explore' })}
         >
-          Submit Another Request
+          Jobs List
         </Button>
       </VStack>
     </Container>
