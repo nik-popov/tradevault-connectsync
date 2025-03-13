@@ -644,8 +644,8 @@ const ResultsTab: React.FC<ResultsTabProps> = ({ job, sortBy, searchQuery, setSe
                             <Image
                               src={result.imageUrlThumbnail || ""}
                               alt={result.imageDesc || "No description"}
-                              maxW="50px"
-                              maxH="50px"
+                              maxW="80px"
+                              maxH="80px"
                               objectFit="cover"
                               fallback={<Text fontSize="xs">No image</Text>}
                             />
@@ -703,8 +703,8 @@ const ResultsTab: React.FC<ResultsTabProps> = ({ job, sortBy, searchQuery, setSe
                   <Image
                     src={record.excelRowImageRef}
                     alt={`Thumbnail for ${record.productModel || "Record ID " + record.entryId}`}
-                    maxW="50px"
-                    maxH="50px"
+                    maxW="80px"
+                    maxH="80px"
                     objectFit="cover"
                     cursor="pointer"
                     onClick={() => {
@@ -829,7 +829,7 @@ const SearchRowsTab: React.FC<SearchRowsTabProps> = ({ job }) => {
   const [showFileDetails, setShowFileDetails] = useState(true);
   const [showResultDetails, setShowResultDetails] = useState(true);
   const [numImages, setNumImages] = useState(1);
-  const [hideEmptyRows, setHideEmptyRows] = useState(true);
+  const [hideEmptyRows, setHideEmptyRows] = useState(false);
   const [sortConfig, setSortConfig] = useState<{
     key: string | null;
     direction: "ascending" | "descending";
@@ -965,11 +965,17 @@ const SearchRowsTab: React.FC<SearchRowsTabProps> = ({ job }) => {
           </Button>
           
           <Button
-            size="sm"
-            onClick={() => setHideEmptyRows(!hideEmptyRows)}
-          >
-            {hideEmptyRows ? "+ All Rows" : "- Empty Rows"}
-          </Button>
+          size="sm"
+          onClick={() => {
+            if (job.records.length > 0) {
+              setHideEmptyRows(!hideEmptyRows);
+            }
+          }}
+          colorScheme={job.records.length === 0 ? "gray" : "blue"}
+          variant={job.records.length === 0 ? "outline" : "solid"}
+        >
+          {hideEmptyRows ? "Show All Rows" : "Hide Empty Rows"}
+        </Button>
           <Flex align="center" gap={2}>
             <Button size="sm" onClick={handleDecreaseImages} isDisabled={numImages <= 1}
             >
@@ -1041,7 +1047,7 @@ const SearchRowsTab: React.FC<SearchRowsTabProps> = ({ job }) => {
                         sortConfig.direction === "ascending" ? "↑" : "↓"
                       ) : "↕"}
                       </Th>
-                      <Th bg="blue.300" w="90px" color="white"onClick={() => handleSort("productCategory")} cursor="pointer" >
+                      <Th bg="blue.300" color="white" onClick={() => handleSort("productCategory")} cursor="pointer" >
                       Category{" "}
                       {sortConfig.key === "productCategory" ? (
                         sortConfig.direction === "ascending" ? "↑" : "↓"
@@ -1071,8 +1077,8 @@ const SearchRowsTab: React.FC<SearchRowsTabProps> = ({ job }) => {
                   return (
                     <Tr
                       key={record.entryId}
-                      _hover={{ bg: "gray.800" }}
-                      opacity={positiveSortCount === 0 && !hideEmptyRows ? 0.2 : 1}
+                      _hover={{ bg: "gray.800", opacity: 1}}
+                      opacity={positiveSortCount === 0 && !hideEmptyRows ? 0.8 : 1}
                     >
                       {showFileDetails && hasThumbnails && (
                         <Td w="80px" bg="blue.100">
@@ -1082,6 +1088,13 @@ const SearchRowsTab: React.FC<SearchRowsTabProps> = ({ job }) => {
                               alt={`Pic of ${record.productModel || "Record"}`}
                               maxW="80px"
                               maxH="80px"
+                              fallback={
+                                imagedetails ? (
+                                  <Text fontSize="xs" color="red.500">Failed to load image</Text>
+                                ) : (
+                                  <Text fontSize="xs">Loading...</Text>
+                                )
+                              }
                               objectFit="cover"
                             />
                           ) : (
@@ -1090,9 +1103,17 @@ const SearchRowsTab: React.FC<SearchRowsTabProps> = ({ job }) => {
                           )}
                         </Td>
                       )}
-                      {imagedetails.map((image, index) => (
-                      <React.Fragment key={index}>
-                    
+                    {imagedetails.map((image, index) => (
+                    <React.Fragment key={index}>
+                      <Td>
+                        <Image
+                          src={image.imageUrlThumbnail}
+                          alt={image.imageDesc || "No description"}
+                          maxW="80px"
+                          maxH="80px"
+                          objectFit="cover"
+                          fallback={<Text fontSize="xs" color="gray.500">No image</Text>}
+                        /></Td>
                       {showResultDetails && (
                         <Td bg="purple.100">
                           <Box>

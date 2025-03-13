@@ -4,101 +4,94 @@ import {
   Text,
   Button,
   VStack,
-  Divider,
   Flex,
   Box,
   Input,
   FormControl,
   FormLabel,
   useToast,
-  Badge,
-  Icon,
+  Table,
+  Thead,
+  Tbody,
+  Tr,
+  Th,
+  Td,
+  Image,
 } from '@chakra-ui/react';
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
-import { useQuery } from '@tanstack/react-query';
-import { FiSend, FiGithub, FiInfo } from 'react-icons/fi';
-import PromoSERP from '../../../../components/ComingSoon';
-import WhitelistGSerp from '../../../../components/WhitelistGSerp';
+import { FiSend } from 'react-icons/fi';
+import ExcelJS from 'exceljs';
+import { Buffer } from 'buffer';
 
-const STORAGE_KEY = 'subscriptionSettings';
-const PRODUCT = 'serp';
+// Helper function to convert cell values to displayable strings
+function getDisplayValue(cellValue: any): string {
+  if (cellValue === null || cellValue === undefined) {
+    return '';
+  } else if (typeof cellValue === 'string' || typeof cellValue === 'number' || typeof cellValue === 'boolean') {
+    return String(cellValue);
+  } else if (cellValue instanceof Date) {
+    return cellValue.toLocaleString();
+  } else if (typeof cellValue === 'object') {
+    if (cellValue.error) {
+      return cellValue.error;
+    } else if (cellValue.result !== undefined) {
+      return getDisplayValue(cellValue.result);
+    } else if (cellValue.text) {
+      return cellValue.text;
+    } else if (cellValue.hyperlink) {
+      return cellValue.text || cellValue.hyperlink;
+    } else {
+      return JSON.stringify(cellValue);
+    }
+  } else {
+    return String(cellValue);
+  }
+}
 
-// Replace with your actual Codespaces forwarded URL for port 3000
-const SERVER_URL = 'https://backend-dev.iconluxury.group';
+// Helper function to determine image MIME type
+function getImageMimeType(imageBuffer: ArrayBuffer): string {
+  const arr = new Uint8Array(imageBuffer).subarray(0, 4);
+  let header = '';
+  for (let i = 0; i < arr.length; i++) {
+    header += arr[i].toString(16);
+  }
+  switch (header) {
+    case '89504e47':
+      return 'image/png';
+    case 'ffd8ffe0':
+    case 'ffd8ffe1':
+    case 'ffd8ffe2':
+      return 'image/jpeg';
+    default:
+      return 'image/png';
+  }
+}
 
-export const Route = createFileRoute('/_layout/scraping-api/submit-form/google-serp')({
-  component: GoogleSerpForm,
-});
+interface RowData {
+  row: ExcelJS.CellValue[];
+  images: { data: string; mimeType: string }[];
+}
 
 function GoogleSerpForm() {
-  const navigate = useNavigate();
+  const [file, setFile] = useState<File | null>(null);
+  const [isLoadingFile, setIsLoadingFile] = useState(false);
+  const [excelData, setExcelData] = useState<{
+    headers: ExcelJS.CellValue[];
+    rows: RowData[];
+  }>({ headers: [], rows: [] });
   const toast = useToast();
+  const navigate = useNavigate();
 
-  const { data: subscriptionSettings } = useQuery({
-    queryKey: ['subscriptionSettings'],
-    queryFn: () => {
-      const storedSettings = localStorage.getItem(STORAGE_KEY);
-      return storedSettings ? JSON.parse(storedSettings) : {};
-    },
-    staleTime: Infinity,
-  });
-
-  const settings = subscriptionSettings?.[PRODUCT] || {
-    hasSubscription: false,
-    isTrial: false,
-    isDeactivated: false,
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setFile(event.target.files?.[0] || null);
+    setExcelData({ headers: [], rows: [] });
   };
 
-  const { hasSubscription, isTrial, isDeactivated } = settings;
-  const isLocked = !hasSubscription && !isTrial;
-  const isFullyDeactivated = isDeactivated && !hasSubscription;
-
-  const [file, setFile] = useState<File | null>(null); // Explicitly typed as File | null
-  const [imageColumn, setImageColumn] = useState('Image URL');
-  const [searchCol, setSearchCol] = useState('Style');
-  const [brandCol, setBrandCol] = useState('Brand');
-  const [colorCol, setColorCol] = useState('Color');
-  const [categoryCol, setCategoryCol] = useState('Category');
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isUploadExcelImage, setIsisUploadExcelImage] = useState(false);
-  const sendToEmail = 'your.email@example.com'; // Replace with your actual email
-
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const selectedFile = e.target.files?.[0];
-    if (
-      selectedFile &&
-      selectedFile.type === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
-    ) {
-      setFile(selectedFile);
-    } else {
-      toast({
-        title: 'Invalid File',
-        description: 'Please upload a valid Excel file (.xlsx).',
-        status: 'error',
-        duration: 4000,
-        isClosable: true,
-        position: 'top',
-      });
-      setFile(null);
-    }
-  };
-
-  const handleSubmit = async () => {
+  const handleLoadFile = async () => {
     if (!file) {
       toast({
         title: 'Missing File',
-        description: 'Please upload an Excel file.',
-        status: 'warning',
-        duration: 4000,
-        isClosable: true,
-        position: 'top',
-      });
-      return;
-    }
-    if (!imageColumn || !searchCol || !brandCol) {
-      toast({
-        title: 'Missing Required Fields',
-        description: 'Please provide Image, Style/Search, and Brand columns.',
+        description: 'Please choose an Excel file first.',
         status: 'warning',
         duration: 4000,
         isClosable: true,
@@ -107,300 +100,159 @@ function GoogleSerpForm() {
       return;
     }
 
-    setIsSubmitting(true);
-
-    const formData = new FormData();
-    formData.append('fileUploadImage', file);
-    formData.append('imageColumnImage', imageColumn);
-    formData.append('searchColImage', searchCol);
-    formData.append('brandColImage', brandCol);
-    formData.append('ColorColImage', colorCol);
-    formData.append('CategoryColImage', categoryCol);
-    formData.append('sendToEmail', sendToEmail);
-
+    setIsLoadingFile(true);
     try {
-      console.log('Submitting to direct server URL with FormData:', {
-        file: file.name, // Now valid because file is typed and checked
-        imageColumnImage: imageColumn,
-        searchColImage: searchCol,
-        brandColImage: brandCol,
-        ColorColImage: colorCol,
-        CategoryColImage: categoryCol,
-        sendToEmail,
+      const workbook = new ExcelJS.Workbook();
+      const buffer = await file.arrayBuffer();
+      await workbook.xlsx.load(buffer);
+
+      if (workbook.worksheets.length > 1) {
+        console.warn('Multiple worksheets detected. Using the first one.');
+      }
+      const worksheet = workbook.worksheets[0];
+
+      const headers = Array.isArray(worksheet.getRow(1).values)
+        ? (worksheet.getRow(1).values as ExcelJS.CellValue[])
+        : Object.values(worksheet.getRow(1).values) as ExcelJS.CellValue[];
+
+      const rows: ExcelJS.CellValue[][] = [];
+      worksheet.eachRow({ includeEmpty: true }, (row, rowNumber) => {
+        if (rowNumber > 1) {
+          const values = Array.isArray(row.values)
+            ? row.values
+            : Object.values(row.values);
+          rows.push(values as ExcelJS.CellValue[]);
+        }
       });
 
-      const response = await fetch(`${SERVER_URL}/submitImage`, {
-        method: 'POST',
-        body: formData,
+      const images = worksheet.getImages();
+      const imageMap: { [key: number]: { data: string; mimeType: string }[] } = {};
+      images.forEach((image, index) => {
+        const rowIndex = image.range.tl.row;
+        const imageBuffer = workbook.getImage(index);
+        const imageData = Buffer.from(imageBuffer as unknown as ArrayBuffer).toString('base64');
+        const mimeType = getImageMimeType(imageBuffer as unknown as ArrayBuffer);
+        if (!imageMap[rowIndex]) {
+          imageMap[rowIndex] = [];
+        }
+        imageMap[rowIndex].push({ data: imageData, mimeType });
       });
 
-      if (!response.ok) {
-        const errorText = await response.text();
-        throw new Error(`Server responded with ${response.status}: ${errorText}`);
-      }
+      const rowsWithImages: RowData[] = rows.map((row, index) => {
+        const rowImages = imageMap[index + 2] || [];
+        return { row, images: rowImages };
+      });
 
-      const data = await response.json();
-      console.log('Server response:', data);
-
-      if (data.success) {
-        toast({
-          title: 'Request Submitted',
-          description: 'Your request with file has been successfully submitted.',
-          status: 'success',
-          duration: 5000,
-          isClosable: true,
-          position: 'top',
-        });
-        setFile(null);
-        setImageColumn('Image URL');
-        setSearchCol('Style');
-        setBrandCol('Brand');
-        setColorCol('Color');
-        setCategoryCol('Category');
-        navigate({ to: '/scraping-api/submit-form/success' });
-      } else {
-        toast({
-          title: 'Submission Failed',
-          description: data.message || 'Failed to submit the request.',
-          status: 'error',
-          duration: 5000,
-          isClosable: true,
-          position: 'top',
-        });
-      }
-    } catch (error) {
-      console.error('Submission error:', error);
+      setExcelData({ headers, rows: rowsWithImages });
+    } catch (err) {
+      console.error('Error reading Excel file:', err);
       toast({
-        title: 'Submission Error',
-        description: `An error occurred: ${error.message}`,
+        title: 'File Read Error',
+        description: `Could not read the Excel file: ${(err as Error).message}`,
         status: 'error',
-        duration: 5000,
+        duration: 4000,
         isClosable: true,
         position: 'top',
       });
     } finally {
-      setIsSubmitting(false);
+      setIsLoadingFile(false);
     }
+  };
+
+  const handleSubmit = () => {
+    // Implement your submission logic here
   };
 
   return (
     <Container maxW="full">
       <VStack spacing={6} align="stretch">
-        <Flex align="center" justify="space-between" flexWrap="wrap" gap={4}>
-          <Box>
-            <Text fontSize="xl" fontWeight="bold">
-              Google SERP Scraper
-            </Text>
-            <Text fontSize="sm" color="gray.500">
-              Upload an Excel file and specify columns for SERP scraping.
-            </Text>
-          </Box>
-          <Badge colorScheme={isLocked ? 'red' : 'green'} alignSelf="center">
-            {isLocked ? 'Subscription Required' : 'Active'}
-          </Badge>
+        <Text fontSize="xl" fontWeight="semibold">
+          Google SERP Form
+        </Text>
+        <FormControl>
+          <FormLabel color="white">Upload Excel File</FormLabel>
+          <Input type="file" accept=".xlsx" onChange={handleFileChange} />
+        </FormControl>
+        <Flex gap={4}>
+          <Button
+            colorScheme="blue"
+            onClick={handleLoadFile}
+            isLoading={isLoadingFile}
+          >
+            Load File
+          </Button>
+          <Button
+            colorScheme="green"
+            leftIcon={<FiSend />}
+            onClick={handleSubmit}
+            isDisabled={!excelData.rows.length}
+          >
+            Submit
+          </Button>
         </Flex>
-
-        <Divider borderColor="gray.700" />
-
-        {isLocked ? (
-          <PromoSERP />
-        ) : isFullyDeactivated ? (
-          <Box p={6} bg="red.900" borderRadius="md" textAlign="center">
-            <Text fontSize="lg" fontWeight="semibold" color="red.200" mb={2}>
-              Subscription Deactivated
-            </Text>
-            <Text color="red.300">
-              Your account is deactivated. Please renew your subscription to request scraping.
-            </Text>
-            <Button
-              mt={4}
-              colorScheme="blue"
-              size="md"
-              onClick={() => navigate({ to: '/proxies/pricing' })}
-            >
-              Reactivate Subscription
-            </Button>
-          </Box>
-        ) : (
-          <Flex gap={8} justify="space-between" align="stretch" wrap="wrap">
-            <Box flex="2" minW={{ base: '100%', md: '60%' }}>
-              <Box
-                p={6}
-                bg="gray.800"
-                border="1px solid"
-                borderColor="gray.700"
-                borderRadius="lg"
-                boxShadow="md"
-              >
-                <VStack spacing={5} align="stretch">
-                  <FormControl isRequired>
-                    <FormLabel color="gray.300">Upload Excel File</FormLabel>
-                    <Input
-                      type="file"
-                      accept=".xlsx"
-                      onChange={handleFileChange}
-                      size="md"
-                      bg="gray.700"
-                      color="white"
-                      borderColor="gray.600"
-                      focusBorderColor="blue.300"
-                      _hover={{ borderColor: 'gray.500' }}
-                      p={1}
-                    />
-                  </FormControl>
-
-                  <FormControl isRequired>
-                    <FormLabel color="gray.300">Image Column</FormLabel>
-                    <Input
-                      placeholder="e.g., Image URL"
-                      value={imageColumn}
-                      onChange={(e) => setImageColumn(e.target.value)}
-                      size="md"
-                      bg="gray.700"
-                      color="white"
-                      borderColor="gray.600"
-                      focusBorderColor="blue.300"
-                      _hover={{ borderColor: 'gray.500' }}
-                    />
-                  </FormControl>
-
-                  <FormControl isRequired>
-                    <FormLabel color="gray.300">Style/Search Column</FormLabel>
-                    <Input
-                      placeholder="e.g., Style"
-                      value={searchCol}
-                      onChange={(e) => setSearchCol(e.target.value)}
-                      size="md"
-                      bg="gray.700"
-                      color="white"
-                      borderColor="gray.600"
-                      focusBorderColor="blue.300"
-                      _hover={{ borderColor: 'gray.500' }}
-                    />
-                  </FormControl>
-
-                  <FormControl isRequired>
-                    <FormLabel color="gray.300">Brand Column</FormLabel>
-                    <Input
-                      placeholder="e.g., Brand"
-                      value={brandCol}
-                      onChange={(e) => setBrandCol(e.target.value)}
-                      size="md"
-                      bg="gray.700"
-                      color="white"
-                      borderColor="gray.600"
-                      focusBorderColor="blue.300"
-                      _hover={{ borderColor: 'gray.500' }}
-                    />
-                  </FormControl>
-
-                  <FormControl>
-                    <FormLabel color="gray.300">Color Column</FormLabel>
-                    <Input
-                      placeholder="e.g., Color"
-                      value={colorCol}
-                      onChange={(e) => setColorCol(e.target.value)}
-                      size="md"
-                      bg="gray.700"
-                      color="white"
-                      borderColor="gray.600"
-                      focusBorderColor="blue.300"
-                      _hover={{ borderColor: 'gray.500' }}
-                    />
-                  </FormControl>
-
-                  <FormControl>
-                    <FormLabel color="gray.300">Category Column</FormLabel>
-                    <Input
-                      placeholder="e.g., Category"
-                      value={categoryCol}
-                      onChange={(e) => setCategoryCol(e.target.value)}
-                      size="md"
-                      bg="gray.700"
-                      color="white"
-                      borderColor="gray.600"
-                      focusBorderColor="blue.300"
-                      _hover={{ borderColor: 'gray.500' }}
-                    />
-                  </FormControl>
-
-                  <Button
-                    colorScheme="blue"
-                    leftIcon={<FiSend />}
-                    size="md"
-                    isLoading={isSubmitting}
-                    loadingText="Submitting"
-                    onClick={handleSubmit}
-                    w="full"
-                  >
-                    Submit Request
-                  </Button>
-                </VStack>
-              </Box>
-            </Box>
-
-            <Box w={{ base: '100%', md: '300px' }} p={4}>
-              <VStack spacing={6} align="stretch">
-                <Box
-                  p={4}
-                  bg="gray.800"
-                  border="1px solid"
-                  borderColor="gray.700"
-                  borderRadius="lg"
-                  boxShadow="sm"
-                >
-                  <Text fontWeight="semibold" mb={3} color="white">
-                    Quick Actions
-                  </Text>
-                  <VStack spacing={3} align="stretch">
-                    <Button
-                      as="a"
-                      href="https://github.com/iconluxurygroup"
-                      target="_blank"
-                      leftIcon={<FiGithub />}
-                      variant="outline"
-                      size="md"
-                      colorScheme="gray"
-                      borderColor="gray.600"
-                      color="gray.200"
-                      _hover={{ bg: 'gray.700' }}
-                    >
-                      Discuss on GitHub
-                    </Button>
-                  </VStack>
-                </Box>
-
-                <Box>
-                  <Flex align="center" mb={2}>
-                    <Icon as={FiInfo} color="blue.300" mr={2} />
-                    <Text fontWeight="semibold" color="white">
-                      Need Help?
-                    </Text>
-                  </Flex>
-                  <Text fontSize="sm" color="gray.400">
-                    Contact us via{' '}
-                    <Button
-                      as="a"
-                      href="mailto:support@iconluxury.group"
-                      variant="link"
-                      colorScheme="blue"
-                      size="sm"
-                    >
-                      email
-                    </Button>{' '}
-                    or check our{' '}
-                    <Button as="a" href="/docs" variant="link" colorScheme="blue" size="sm">
-                      documentation
-                    </Button>.
-                  </Text>
-                </Box>
-              </VStack>
-            </Box>
-          </Flex>
-        )}
+        {excelData.rows.length > 0 && <ExcelDataTable excelData={excelData} />}
       </VStack>
     </Container>
   );
 }
 
-export default GoogleSerpForm;
+function ExcelDataTable({ excelData }: { excelData: { headers: ExcelJS.CellValue[]; rows: RowData[] } }) {
+  const { headers, rows } = excelData;
+  if (!headers || headers.length === 0 || !rows || rows.length === 0) {
+    return null;
+  }
+
+  return (
+    <Box mt={4} bg="gray.800" p={4} borderRadius="lg">
+      <Text fontSize="md" fontWeight="semibold" mb={4} color="white">
+        Excel Data Preview
+      </Text>
+      <Table variant="striped" size="sm" colorScheme="gray">
+        <Thead>
+          <Tr>
+            <Th color="white" bg="gray.700">
+              Image
+            </Th>
+            {headers.map((header, i) => (
+              <Th key={i} color="white" bg="gray.700">
+                {getDisplayValue(header) || <span>Unnamed</span>}
+              </Th>
+            ))}
+          </Tr>
+        </Thead>
+        <Tbody>
+          {rows.map((rowData, rowIndex) => (
+            <Tr key={rowIndex}>
+              <Td color="gray.200">
+                {rowData.images.length > 0 ? (
+                  rowData.images.map((image, imgIndex) => (
+                    <Image
+                      key={imgIndex}
+                      src={`data:${image.mimeType};base64,${image.data}`}
+                      alt={`Image ${imgIndex + 1}`}
+                      boxSize="60px"
+                      objectFit="cover"
+                      mr={2}
+                      display="inline-block"
+                    />
+                  ))
+                ) : (
+                  <Text>No Image</Text>
+                )}
+              </Td>
+              {rowData.row.map((cell, cellIndex) => (
+                <Td key={cellIndex} color="gray.200">
+                  {getDisplayValue(cell) || <span> </span>}
+                </Td>
+              ))}
+            </Tr>
+          ))}
+        </Tbody>
+      </Table>
+    </Box>
+  );
+}
+
+export const Route = createFileRoute('/_layout/scraping-api/submit-form/google-serp')({
+  component: GoogleSerpForm,
+});
