@@ -1001,258 +1001,257 @@ const SearchRowsTab: React.FC<SearchRowsTabProps> = ({ job }) => {
       {!debugMode ? (
         <Card shadow="md" borderWidth="1px" bg="rgba(113, 128, 150, 0.2)">
           <CardBody p={0}>
-            <Table
-              variant="simple"
-              size="sm"
-              borderWidth="1px"
-              borderColor="gray.100"
-              sx={{ "td, th": { border: "1px solid", borderColor: "gray.100" } }}
-            >
-              <Thead>
-                <Tr>
-                  {showFileDetails && hasThumbnails && (
-                    <Th w="60px" bg="blue.300" color="white">Excel Picture</Th>
-                  )}
-                  {Array.from({ length: numImages }).map((_, index) => (
-                    <React.Fragment key={index}>
-                      <Th>Picture {index + 1}</Th>
-                      {showResultDetails && (
-                        <Th bg="purple.300" color="white">Picture Detail {index + 1}</Th>
-                      )}
-                    </React.Fragment>
-                  ))}
-                  <Th w="90px" onClick={() => handleSort("excelRowId")} cursor="pointer">
-                    Row #{" "}
-                    {sortConfig.key === "excelRowId" ? (
-                      sortConfig.direction === "ascending" ? "↑" : "↓"
-                    ) : "↕"}
-                  </Th>
-                  <Th onClick={() => handleSort("productModel")} cursor="pointer">
-                    Style #{" "}
-                    {sortConfig.key === "productModel" ? (
-                    sortConfig.direction === "ascending" ? "↑" : "↓"
-                  ) : "↕"}
-                  </Th>
-                  <Th onClick={() => handleSort("productBrand")} cursor="pointer">
-                    Brand{" "}
-                    {sortConfig.key === "productBrand" ? (
-                      sortConfig.direction === "ascending" ? "↑" : "↓"
-                    ) : "↕"}
-                  </Th>
-                  {showFileDetails && (
-                    <>
-                      <Th bg="blue.300" color="white" onClick={() => handleSort("productColor")} cursor="pointer">
-                        Color Name{" "}
-                      {sortConfig.key === "productColor" ? (
-                        sortConfig.direction === "ascending" ? "↑" : "↓"
-                      ) : "↕"}
-                      </Th>
-                      <Th bg="blue.300" color="white" onClick={() => handleSort("productCategory")} cursor="pointer" >
-                      Category{" "}
-                      {sortConfig.key === "productCategory" ? (
-                        sortConfig.direction === "ascending" ? "↑" : "↓"
-                      ) : "↕"}
-                    </Th>
-                    </>
-                  )}
-                  <Th w="90px" onClick={() => handleSort("totalImageCount")} cursor="pointer">
-                      Total Image{" "}
-                    {sortConfig.key === "totalImageCount" ? (
-                      sortConfig.direction === "ascending" ? "↑" : "↓"
-                    ) : "↕"}
-                  </Th>
-                  <Th w="80px" onClick={() => handleSort("positiveSortCount")} cursor="pointer">
-                    Positive Count{" "}
-                  {sortConfig.key === "positiveSortCount" ? (
-                    sortConfig.direction === "ascending" ? "↑" : "↓"
-                  ) : "↕"}
-                </Th>
-                </Tr>
-              </Thead>
-              <Tbody>
-                {sortedRecords.map((record) => {
-                  const imagedetails = getImagesForEntry(record.entryId, numImages);
-                  const totalImageCount = getTotalImageCountForEntry(record.entryId);
-                  const positiveSortCount = getPositiveSortCountForEntry(record.entryId);
-                  return (
-                    <Tr
-                      key={record.entryId}
-                      _hover={{ bg: "gray.800", opacity: 1}}
-                      opacity={positiveSortCount === 0 && !hideEmptyRows ? 0.8 : 1}
-                    >
-                      {showFileDetails && hasThumbnails && (
-                        <Td w="80px" bg="blue.100">
-                          {record.excelRowImageRef ? (
-                            <Image
-                              src={record.excelRowImageRef}
-                              alt={`Pic of ${record.productModel || "Record"}`}
-                              maxW="80px"
-                              maxH="80px"
-                              fallback={
-                                imagedetails ? (
-                                  <Text fontSize="xs" color="red.500">Failed to load image</Text>
-                                ) : (
-                                  <Text fontSize="xs">Loading...</Text>
-                                )
-                              }
-                              objectFit="cover"
-                            />
-                          ) : (
-                            <Text fontSize="xs" color="gray.500"
-                            >No image</Text>
-                          )}
-                        </Td>
-                      )}
-                    {imagedetails.map((image, index) => (
-                    <React.Fragment key={index}>
-                      <Td>
-                        <Image
-                          src={image.imageUrlThumbnail}
-                          alt={image.imageDesc || "No description"}
-                          maxW="80px"
-                          maxH="80px"
-                          objectFit="cover"
-                          fallback={<Text fontSize="xs" color="gray.500">No image</Text>}
-                        /></Td>
-                      {showResultDetails && (
-                        <Td bg="purple.100">
-                          <Box>
-                          <Text fontSize="xs" color="gray.900">
-                                  <a
-                                    href={googleSearch(
-                                      image.imageDesc
-                                    )}
-                                    onClick={(e) =>
-                                      handleLinkClick(
-                                        e,
-                                        googleSearch(
-                                          image.imageDesc
-                                        )
-                                      )
-                                    }
-                                  >
-                                    {image.imageDesc || "N/A"}
-                                  </a>
-                                </Text>
-                                <Text fontSize="xs" color="blue.500"> 
-                            
-                                  <a
-                                    href={image.imageSource}
-                                    onClick={(e) => handleLinkClick(e, image.imageSource)}
-                                  >
-                                    {shortenUrl(image.imageSource)}
-                                  </a>
-                                </Text>
-                                <Text fontSize="xs" color="gray.600">
-                                  <a
-                                    href={image.imageUrl}
-                                    onClick={(e) => handleLinkClick(e, image.imageUrl)}
-                                  >
-                                    {shortenUrl(image.imageUrl)}
-                                  </a>
-                                </Text>
-                                {image.aiCaption && (
-                                  <Text fontSize="xs" color="gray.400">
-                                    AI Caption: {image.aiCaption}
-                                  </Text>
-                                )}
-                                {image.aiLabel && (
-                                  <Text fontSize="xs" color="gray.400">
-                                    AI Label: {image.aiLabel}
-                                  </Text>
-                                )}
-                              </Box>
-                            </Td>
-                          )}
-                        </React.Fragment>
-                    ))}
-
-                    {/* Empty Image Slots */}
-                    {Array.from({ length: numImages - imagedetails.length }).map((_, index) => (
-                      <React.Fragment key={`empty-${index}`}>
-                        <Td>
-                          <Text fontSize="xs" color="gray.500">No picture</Text>
-                        </Td>
-                        {showResultDetails && (
-                          <Td bg="purple.50">
-                            <Text fontSize="xs" color="gray.500">No picture detail</Text>
-                          </Td>
-                        )}
-                      </React.Fragment>
-                    ))}
-                      <Td>
-                        <Text
-                          cursor="pointer"
-                          color="white"
-                          _hover={{ textDecoration: "underline" }}
-                          onClick={(e) => handleRowIdClick(e, record.productModel)}
-                        >
-                          {record.excelRowId}
-                        </Text>
-                      </Td>
-                      <Td>
-                        {record.productModel ? (
-                          <a
-                            href={googleSearch(record.productModel)}
-                            onClick={(e) =>
-                              handleLinkClick(
-                                e,
-                                googleSearch(record.productModel)
-                              )
-                            }
-                          >
-                            {record.productModel}
-                          </a>
-                        ) : (
-                          <Text fontSize="xs" color="gray.500">No style</Text>
-                        )}
-                      </Td>
-                      <Td>
-                        {record.productBrand ? (
-                          <a
-                            href={googleSearchBrandModelUrl(record.productModel, record.productBrand)}
-                            onClick={(e) =>
-                              handleLinkClick(
-                                e,
-                                googleSearchBrandModelUrl(record.productModel, record.productBrand)
-                              )
-                            }
-                          >
-                            {record.productBrand}
-                          </a>
-                        ) : (
-                          <Text fontSize="xs" color="gray.500">No brand</Text>
-                        )}
-                      </Td>
-                      {showFileDetails && (
-                        <>
-                          <Td bg="blue.50" color ="gray.700">
-                            {record.productColor || <Text fontSize="xs" color="gray.500">No color</Text>}
-                          </Td>
-                          <Td bg="blue.50" color ="gray.700">
-                            {record.productCategory || <Text fontSize="xs" color="gray.500">No category</Text>}
-                          </Td>
-                        </>
-                      )}
-                      <Td>
-  {totalImageCount === 0 ? (
-    <Text fontSize="xs" color="gray.500">0</Text>
-  ) : (
-    totalImageCount
-  )}
-</Td>
-                      <Td>
-                    {positiveSortCount === 0 ? (
-                      <Text fontSize="xs" color="gray.500">0</Text>
-                    ) : (
-                      positiveSortCount
+          <Table
+  variant="simple"
+  size="sm"
+  borderWidth="1px"
+  borderColor="gray.100"
+  sx={{
+    "td, th": {
+      border: "1px solid",
+      borderColor: "gray.100",
+      p: 2, // Consistent padding
+      verticalAlign: "middle", // Center content vertically
+    },
+  }}
+>
+  <Thead>
+    <Tr>
+      {showFileDetails && hasThumbnails && (
+        <Th w="80px" bg="blue.300" color="white">
+          Excel Picture
+        </Th>
+      )}
+      {Array.from({ length: numImages }).map((_, index) => (
+        <React.Fragment key={index}>
+          <Th w="100px">Picture {index + 1}</Th>
+          {showResultDetails && (
+            <Th w="200px" bg="purple.300" color="white">
+              Picture Detail {index + 1}
+            </Th>
+          )}
+        </React.Fragment>
+      ))}
+      <Th w="90px" onClick={() => handleSort("excelRowId")} cursor="pointer">
+        Row #{" "}
+        {sortConfig.key === "excelRowId" &&
+          (sortConfig.direction === "ascending" ? "↑" : "↓")}
+      </Th>
+      <Th w="150px" onClick={() => handleSort("productModel")} cursor="pointer">
+        Style #{" "}
+        {sortConfig.key === "productModel" &&
+          (sortConfig.direction === "ascending" ? "↑" : "↓")}
+      </Th>
+      <Th w="150px" onClick={() => handleSort("productBrand")} cursor="pointer">
+        Brand{" "}
+        {sortConfig.key === "productBrand" &&
+          (sortConfig.direction === "ascending" ? "↑" : "↓")}
+      </Th>
+      {showFileDetails && (
+        <>
+          <Th
+            w="120px"
+            bg="blue.300"
+            color="white"
+            onClick={() => handleSort("productColor")}
+            cursor="pointer"
+          >
+            Color Name{" "}
+            {sortConfig.key === "productColor" &&
+              (sortConfig.direction === "ascending" ? "↑" : "↓")}
+          </Th>
+          <Th
+            w="120px"
+            bg="blue.300"
+            color="white"
+            onClick={() => handleSort("productCategory")}
+            cursor="pointer"
+          >
+            Category{" "}
+            {sortConfig.key === "productCategory" &&
+              (sortConfig.direction === "ascending" ? "↑" : "↓")}
+          </Th>
+        </>
+      )}
+      <Th
+        w="100px"
+        onClick={() => handleSort("totalImageCount")}
+        cursor="pointer"
+      >
+        Total Image{" "}
+        {sortConfig.key === "totalImageCount" &&
+          (sortConfig.direction === "ascending" ? "↑" : "↓")}
+      </Th>
+      <Th
+        w="100px"
+        onClick={() => handleSort("positiveSortCount")}
+        cursor="pointer"
+      >
+        Positive Count{" "}
+        {sortConfig.key === "positiveSortCount" &&
+          (sortConfig.direction === "ascending" ? "↑" : "↓")}
+      </Th>
+    </Tr>
+  </Thead>
+  <Tbody>
+    {sortedRecords.map((record) => {
+      const imagedetails = getImagesForEntry(record.entryId, numImages);
+      const totalImageCount = getTotalImageCountForEntry(record.entryId);
+      const positiveSortCount = getPositiveSortCountForEntry(record.entryId);
+      return (
+        <Tr
+          key={record.entryId}
+          _hover={{ bg: "gray.800", opacity: 1 }}
+          opacity={positiveSortCount === 0 && !hideEmptyRows ? 0.8 : 1}
+        >
+          {showFileDetails && hasThumbnails && (
+            <Td w="80px" bg="blue.100">
+              {record.excelRowImageRef ? (
+                <Image
+                  src={record.excelRowImageRef}
+                  alt={`Pic of ${record.productModel || "Record"}`}
+                  maxW="80px"
+                  maxH="80px"
+                  fallback={<Text fontSize="xs" color="red.500">Failed</Text>}
+                  objectFit="cover"
+                />
+              ) : (
+                <Text fontSize="xs" color="gray.500">No image</Text>
+              )}
+            </Td>
+          )}
+          {imagedetails.map((image, index) => (
+            <React.Fragment key={index}>
+              <Td w="100px">
+                <Image
+                  src={image.imageUrlThumbnail}
+                  alt={image.imageDesc || "No description"}
+                  maxW="80px"
+                  maxH="80px"
+                  objectFit="cover"
+                  fallback={<Text fontSize="xs" color="gray.500">No image</Text>}
+                />
+              </Td>
+              {showResultDetails && (
+                <Td w="200px" bg="purple.100">
+                  <Box wordBreak="break-all">
+                    <Text fontSize="xs" color="gray.900">
+                      <a
+                        href={googleSearch(image.imageDesc)}
+                        onClick={(e) => handleLinkClick(e, googleSearch(image.imageDesc))}
+                      >
+                        {image.imageDesc || "N/A"}
+                      </a>
+                    </Text>
+                    <Text fontSize="xs" color="blue.500">
+                      <a
+                        href={image.imageSource}
+                        onClick={(e) => handleLinkClick(e, image.imageSource)}
+                      >
+                        {shortenUrl(image.imageSource)}
+                      </a>
+                    </Text>
+                    <Text fontSize="xs" color="gray.600">
+                      <a
+                        href={image.imageUrl}
+                        onClick={(e) => handleLinkClick(e, image.imageUrl)}
+                      >
+                        {shortenUrl(image.imageUrl)}
+                      </a>
+                    </Text>
+                    {image.aiCaption && (
+                      <Text fontSize="xs" color="gray.400">
+                        AI Caption: {image.aiCaption}
+                      </Text>
                     )}
-                  </Td>
-                    </Tr>
-                  );
-                })}
-              </Tbody>
-            </Table>
+                    {image.aiLabel && (
+                      <Text fontSize="xs" color="gray.400">
+                        AI Label: {image.aiLabel}
+                      </Text>
+                    )}
+                  </Box>
+                </Td>
+              )}
+            </React.Fragment>
+          ))}
+          {/* Empty Image Slots */}
+          {Array.from({ length: numImages - imagedetails.length }).map((_, index) => (
+            <React.Fragment key={`empty-${index}`}>
+              <Td w="100px">
+                <Text fontSize="xs" color="gray.500">No picture</Text>
+              </Td>
+              {showResultDetails && (
+                <Td w="200px" bg="purple.50">
+                  <Text fontSize="xs" color="gray.500">No picture detail</Text>
+                </Td>
+              )}
+            </React.Fragment>
+          ))}
+          <Td w="90px">
+            <Text
+              cursor="pointer"
+              color="white"
+              _hover={{ textDecoration: "underline" }}
+              onClick={(e) => handleRowIdClick(e, record.productModel)}
+            >
+              {record.excelRowId}
+            </Text>
+          </Td>
+          <Td w="150px">
+            {record.productModel ? (
+              <a
+                href={googleSearch(record.productModel)}
+                onClick={(e) => handleLinkClick(e, googleSearch(record.productModel))}
+              >
+                {record.productModel}
+              </a>
+            ) : (
+              <Text fontSize="xs" color="gray.500">No style</Text>
+            )}
+          </Td>
+          <Td w="150px">
+            {record.productBrand ? (
+              <a
+                href={googleSearchBrandModelUrl(record.productModel, record.productBrand)}
+                onClick={(e) =>
+                  handleLinkClick(e, googleSearchBrandModelUrl(record.productModel, record.productBrand))
+                }
+              >
+                {record.productBrand}
+              </a>
+            ) : (
+              <Text fontSize="xs" color="gray.500">No brand</Text>
+            )}
+          </Td>
+          {showFileDetails && (
+            <>
+              <Td w="120px" bg="blue.50" color="gray.700">
+                {record.productColor || <Text fontSize="xs" color="gray.500">No color</Text>}
+              </Td>
+              <Td w="120px" bg="blue.50" color="gray.700">
+                {record.productCategory || <Text fontSize="xs" color="gray.500">No category</Text>}
+              </Td>
+            </>
+          )}
+          <Td w="100px">
+            {totalImageCount === 0 ? (
+              <Text fontSize="xs" color="gray.500">0</Text>
+            ) : (
+              totalImageCount
+            )}
+          </Td>
+          <Td w="100px">
+            {positiveSortCount === 0 ? (
+              <Text fontSize="xs" color="gray.500">0</Text>
+            ) : (
+              positiveSortCount
+            )}
+          </Td>
+        </Tr>
+      );
+    })}
+  </Tbody>
+</Table>
           </CardBody>
         </Card>
       ) : (
