@@ -22,6 +22,12 @@ function SuccessPage() {
         >
           Jobs List
         </Button>
+        <Button
+          colorScheme="purple"
+          onClick={() => navigate({ to: '/scraping-api/submit-form/google-serp' })}
+        >
+      Submit New Job
+        </Button>
       </VStack>
     </Container>
   );
