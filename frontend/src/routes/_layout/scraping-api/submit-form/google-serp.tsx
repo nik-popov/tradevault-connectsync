@@ -49,7 +49,7 @@ interface ExcelData {
   rows: { row: ExcelJS.CellValue[] }[];
 }
 
-// Helper Functions (unchanged)
+// Helper Functions
 function getDisplayValue(cellValue: any): string {
   if (cellValue === null || cellValue === undefined) return '';
   else if (typeof cellValue === 'string' || typeof cellValue === 'number' || typeof cellValue === 'boolean')
@@ -114,7 +114,7 @@ function GoogleSerpForm() {
       setFile(selectedFile);
       setExcelData({ headers: [], rows: [] });
       setColumnMapping({ style: null, brand: null, imageAdd: null, readImage: null, category: null, colorName: null });
-  
+
       const reader = new FileReader();
       reader.onload = (e) => {
         try {
@@ -124,9 +124,9 @@ function GoogleSerpForm() {
           const sheetName = workbook.SheetNames[0];
           const worksheet = workbook.Sheets[sheetName];
           const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: true, defval: '', raw: true });
-          const preview = jsonData.slice(0, 100);
+          const preview = jsonData.slice(0, 1000);
           setPreviewRows(preview);
-  
+
           let headerRowIndex: number | null = null;
           for (let i = 0; i < Math.min(10, preview.length); i++) {
             const row = preview[i] as any[];
@@ -137,7 +137,7 @@ function GoogleSerpForm() {
               break;
             }
           }
-  
+
           if (headerRowIndex !== null) {
             const headers = preview[headerRowIndex] as string[];
             const rows = preview.slice(headerRowIndex + 1).map(row => ({ row: row as ExcelJS.CellValue[] }));
@@ -279,8 +279,18 @@ function GoogleSerpForm() {
 
   const openMappingModal = (columnIndex: number) => {
     setSelectedColumn(columnIndex);
-    const currentField = Object.keys(columnMapping).find(key => columnMapping[key] === columnIndex) || '';
-    setSelectedField(currentField);
+    // Check if the column is already mapped
+    const currentField = Object.keys(columnMapping).find(key => columnMapping[key] === columnIndex);
+    if (currentField) {
+      setSelectedField(currentField);
+    } else {
+      // Set default based on priority: style, brand, category, colorName, none
+      if (columnMapping.style === null) setSelectedField('style');
+      else if (columnMapping.brand === null) setSelectedField('brand');
+      else if (columnMapping.category === null) setSelectedField('category');
+      else if (columnMapping.colorName === null) setSelectedField('colorName');
+      else setSelectedField(''); // None
+    }
     setIsMappingModalOpen(true);
   };
 
@@ -298,6 +308,7 @@ function GoogleSerpForm() {
           <Text fontSize="2xl" fontWeight="bold" color="white">Google SERP Form</Text>
           <Text fontSize="md" color="gray.300">
             Upload an Excel file, select header row, and map required fields (Style, Brand).
+           
           </Text>
         </VStack>
 
@@ -305,6 +316,11 @@ function GoogleSerpForm() {
         <HStack spacing={4} align="center">
           <FormControl w="sm">
             <FormLabel color="white">Upload Excel File</FormLabel>
+
+           {/* No real limit just text. Preview 1000 rows defined in this file */}
+            <Text fontSize="md" color="gray.300">
+            Up of 1000 rows.
+            </Text>
             <Input
               type="file"
               accept=".xlsx,.xls"
@@ -333,10 +349,10 @@ function GoogleSerpForm() {
                 </Text>
               </VStack>
             )}
-   
+            {isLoadingFile && <Text color="gray.400" mt={6}>Processing...</Text>}
           </HStack>
         </HStack>
-        {isLoadingFile && <Text color="gray.400" mt={6}>Processing...</Text>}
+
         {/* Separator */}
         <Box borderBottomWidth="1px" borderColor="gray.600" my={4} />
 
