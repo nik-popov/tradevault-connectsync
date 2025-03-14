@@ -5,6 +5,7 @@ const config: ThemeConfig = {
   useSystemColorMode: false,
 };
 
+
 const theme = extendTheme({
   config,
   styles: {
@@ -12,7 +13,7 @@ const theme = extendTheme({
       "html, body": {
         fontFamily: '"42dot Sans", sans-serif',
         lineHeight: "1.7",
-        bg: props.colorMode === "dark" ? "gray.900" : "gray.100", // Dark mode support
+        bg: props.colorMode === "dark" ? "gray.900" : "gray.100",
         color: props.colorMode === "dark" ? "gray.200" : "gray.800",
         padding: "20px",
       },
@@ -96,15 +97,6 @@ const theme = extendTheme({
           },
         },
       },
-    },
-    Alert: {
-      baseStyle: (props) => ({
-        container: {
-          bg: props.colorMode === "dark" ? "gray.800" : "gray.50",
-          color: props.colorMode === "dark" ? "gray.300" : "gray.700",
-        
-        },
-      }),
     },
   },
 });

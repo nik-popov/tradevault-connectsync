@@ -15,6 +15,7 @@ const queryClient = new QueryClient();
 const router = createRouter({ routeTree });
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
+  
   <StrictMode>
     <ChakraProvider theme={theme}>
       <QueryClientProvider client={queryClient}>
