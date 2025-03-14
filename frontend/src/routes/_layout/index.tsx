@@ -62,7 +62,7 @@ return (
     <Flex mt={6} gap={4} justify="space-between" align="center" flexWrap="wrap">
       {/* Owned Filter Toggle */}
       <Flex align="center">
-        <Text fontWeight="bold" mr={2}>My Products</Text>
+        <Text fontWeight="bold" mr={2}>My Tools</Text>
         <Switch isChecked={ownedOnly} onChange={() => setOwnedOnly((prev) => !prev)} colorScheme="blue" mr={4} />
       </Flex>
 
