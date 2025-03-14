@@ -112,7 +112,7 @@ const SidebarItems = ({ onClose }: SidebarItemsProps) => {
                 <Text ml={2}>{title}</Text>
               </Flex>
             ) : (
-              <Tooltip label="You do not have access to this resource" placement="right">
+              <Tooltip label="Restricted" placement="right">
                 <Flex
                   w="100%"
                   p={2}
