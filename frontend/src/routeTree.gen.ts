@@ -23,10 +23,8 @@ import { Route as LayoutItemsImport } from './routes/_layout/items'
 import { Route as LayoutAdminImport } from './routes/_layout/admin'
 import { Route as LayoutScrapingApiUserAgentsImport } from './routes/_layout/scraping-api/user-agents'
 import { Route as LayoutScrapingApiSearchProxiesImport } from './routes/_layout/scraping-api/search-proxies'
-import { Route as LayoutScrapingApiRequestImport } from './routes/_layout/scraping-api/request'
 import { Route as LayoutScrapingApiGoogleSerpImport } from './routes/_layout/scraping-api/google-serp'
 import { Route as LayoutScrapingApiExploreImport } from './routes/_layout/scraping-api/explore'
-import { Route as LayoutDatasetsRequestImport } from './routes/_layout/datasets/request'
 import { Route as LayoutDatasetsExploreImport } from './routes/_layout/datasets/explore'
 import { Route as LayoutAiIcongptImport } from './routes/_layout/ai/icongpt'
 import { Route as LayoutScrapingApiScrapingJobsIndexImport } from './routes/_layout/scraping-api/scraping-jobs/index'
@@ -111,12 +109,6 @@ const LayoutScrapingApiSearchProxiesRoute =
     getParentRoute: () => LayoutRoute,
   } as any)
 
-const LayoutScrapingApiRequestRoute = LayoutScrapingApiRequestImport.update({
-  id: '/scraping-api/request',
-  path: '/scraping-api/request',
-  getParentRoute: () => LayoutRoute,
-} as any)
-
 const LayoutScrapingApiGoogleSerpRoute =
   LayoutScrapingApiGoogleSerpImport.update({
     id: '/scraping-api/google-serp',
@@ -127,12 +119,6 @@ const LayoutScrapingApiGoogleSerpRoute =
 const LayoutScrapingApiExploreRoute = LayoutScrapingApiExploreImport.update({
   id: '/scraping-api/explore',
   path: '/scraping-api/explore',
-  getParentRoute: () => LayoutRoute,
-} as any)
-
-const LayoutDatasetsRequestRoute = LayoutDatasetsRequestImport.update({
-  id: '/datasets/request',
-  path: '/datasets/request',
   getParentRoute: () => LayoutRoute,
 } as any)
 
@@ -278,13 +264,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LayoutDatasetsExploreImport
       parentRoute: typeof LayoutImport
     }
-    '/_layout/datasets/request': {
-      id: '/_layout/datasets/request'
-      path: '/datasets/request'
-      fullPath: '/datasets/request'
-      preLoaderRoute: typeof LayoutDatasetsRequestImport
-      parentRoute: typeof LayoutImport
-    }
     '/_layout/scraping-api/explore': {
       id: '/_layout/scraping-api/explore'
       path: '/scraping-api/explore'
@@ -297,13 +276,6 @@ declare module '@tanstack/react-router' {
       path: '/scraping-api/google-serp'
       fullPath: '/scraping-api/google-serp'
       preLoaderRoute: typeof LayoutScrapingApiGoogleSerpImport
-      parentRoute: typeof LayoutImport
-    }
-    '/_layout/scraping-api/request': {
-      id: '/_layout/scraping-api/request'
-      path: '/scraping-api/request'
-      fullPath: '/scraping-api/request'
-      preLoaderRoute: typeof LayoutScrapingApiRequestImport
       parentRoute: typeof LayoutImport
     }
     '/_layout/scraping-api/search-proxies': {
@@ -375,10 +347,8 @@ interface LayoutRouteChildren {
   LayoutIndexRoute: typeof LayoutIndexRoute
   LayoutAiIcongptRoute: typeof LayoutAiIcongptRoute
   LayoutDatasetsExploreRoute: typeof LayoutDatasetsExploreRoute
-  LayoutDatasetsRequestRoute: typeof LayoutDatasetsRequestRoute
   LayoutScrapingApiExploreRoute: typeof LayoutScrapingApiExploreRoute
   LayoutScrapingApiGoogleSerpRoute: typeof LayoutScrapingApiGoogleSerpRoute
-  LayoutScrapingApiRequestRoute: typeof LayoutScrapingApiRequestRoute
   LayoutScrapingApiSearchProxiesRoute: typeof LayoutScrapingApiSearchProxiesRoute
   LayoutScrapingApiUserAgentsRoute: typeof LayoutScrapingApiUserAgentsRoute
   LayoutScrapingApiEndpointsEndpointIdRoute: typeof LayoutScrapingApiEndpointsEndpointIdRoute
@@ -397,10 +367,8 @@ const LayoutRouteChildren: LayoutRouteChildren = {
   LayoutIndexRoute: LayoutIndexRoute,
   LayoutAiIcongptRoute: LayoutAiIcongptRoute,
   LayoutDatasetsExploreRoute: LayoutDatasetsExploreRoute,
-  LayoutDatasetsRequestRoute: LayoutDatasetsRequestRoute,
   LayoutScrapingApiExploreRoute: LayoutScrapingApiExploreRoute,
   LayoutScrapingApiGoogleSerpRoute: LayoutScrapingApiGoogleSerpRoute,
-  LayoutScrapingApiRequestRoute: LayoutScrapingApiRequestRoute,
   LayoutScrapingApiSearchProxiesRoute: LayoutScrapingApiSearchProxiesRoute,
   LayoutScrapingApiUserAgentsRoute: LayoutScrapingApiUserAgentsRoute,
   LayoutScrapingApiEndpointsEndpointIdRoute:
@@ -432,10 +400,8 @@ export interface FileRoutesByFullPath {
   '/': typeof LayoutIndexRoute
   '/ai/icongpt': typeof LayoutAiIcongptRoute
   '/datasets/explore': typeof LayoutDatasetsExploreRoute
-  '/datasets/request': typeof LayoutDatasetsRequestRoute
   '/scraping-api/explore': typeof LayoutScrapingApiExploreRoute
   '/scraping-api/google-serp': typeof LayoutScrapingApiGoogleSerpRoute
-  '/scraping-api/request': typeof LayoutScrapingApiRequestRoute
   '/scraping-api/search-proxies': typeof LayoutScrapingApiSearchProxiesRoute
   '/scraping-api/user-agents': typeof LayoutScrapingApiUserAgentsRoute
   '/scraping-api/endpoints/$endpointId': typeof LayoutScrapingApiEndpointsEndpointIdRoute
@@ -458,10 +424,8 @@ export interface FileRoutesByTo {
   '/': typeof LayoutIndexRoute
   '/ai/icongpt': typeof LayoutAiIcongptRoute
   '/datasets/explore': typeof LayoutDatasetsExploreRoute
-  '/datasets/request': typeof LayoutDatasetsRequestRoute
   '/scraping-api/explore': typeof LayoutScrapingApiExploreRoute
   '/scraping-api/google-serp': typeof LayoutScrapingApiGoogleSerpRoute
-  '/scraping-api/request': typeof LayoutScrapingApiRequestRoute
   '/scraping-api/search-proxies': typeof LayoutScrapingApiSearchProxiesRoute
   '/scraping-api/user-agents': typeof LayoutScrapingApiUserAgentsRoute
   '/scraping-api/endpoints/$endpointId': typeof LayoutScrapingApiEndpointsEndpointIdRoute
@@ -486,10 +450,8 @@ export interface FileRoutesById {
   '/_layout/': typeof LayoutIndexRoute
   '/_layout/ai/icongpt': typeof LayoutAiIcongptRoute
   '/_layout/datasets/explore': typeof LayoutDatasetsExploreRoute
-  '/_layout/datasets/request': typeof LayoutDatasetsRequestRoute
   '/_layout/scraping-api/explore': typeof LayoutScrapingApiExploreRoute
   '/_layout/scraping-api/google-serp': typeof LayoutScrapingApiGoogleSerpRoute
-  '/_layout/scraping-api/request': typeof LayoutScrapingApiRequestRoute
   '/_layout/scraping-api/search-proxies': typeof LayoutScrapingApiSearchProxiesRoute
   '/_layout/scraping-api/user-agents': typeof LayoutScrapingApiUserAgentsRoute
   '/_layout/scraping-api/endpoints/$endpointId': typeof LayoutScrapingApiEndpointsEndpointIdRoute
@@ -515,10 +477,8 @@ export interface FileRouteTypes {
     | '/'
     | '/ai/icongpt'
     | '/datasets/explore'
-    | '/datasets/request'
     | '/scraping-api/explore'
     | '/scraping-api/google-serp'
-    | '/scraping-api/request'
     | '/scraping-api/search-proxies'
     | '/scraping-api/user-agents'
     | '/scraping-api/endpoints/$endpointId'
@@ -540,10 +500,8 @@ export interface FileRouteTypes {
     | '/'
     | '/ai/icongpt'
     | '/datasets/explore'
-    | '/datasets/request'
     | '/scraping-api/explore'
     | '/scraping-api/google-serp'
-    | '/scraping-api/request'
     | '/scraping-api/search-proxies'
     | '/scraping-api/user-agents'
     | '/scraping-api/endpoints/$endpointId'
@@ -566,10 +524,8 @@ export interface FileRouteTypes {
     | '/_layout/'
     | '/_layout/ai/icongpt'
     | '/_layout/datasets/explore'
-    | '/_layout/datasets/request'
     | '/_layout/scraping-api/explore'
     | '/_layout/scraping-api/google-serp'
-    | '/_layout/scraping-api/request'
     | '/_layout/scraping-api/search-proxies'
     | '/_layout/scraping-api/user-agents'
     | '/_layout/scraping-api/endpoints/$endpointId'
@@ -624,10 +580,8 @@ export const routeTree = rootRoute
         "/_layout/",
         "/_layout/ai/icongpt",
         "/_layout/datasets/explore",
-        "/_layout/datasets/request",
         "/_layout/scraping-api/explore",
         "/_layout/scraping-api/google-serp",
-        "/_layout/scraping-api/request",
         "/_layout/scraping-api/search-proxies",
         "/_layout/scraping-api/user-agents",
         "/_layout/scraping-api/endpoints/$endpointId",
@@ -678,20 +632,12 @@ export const routeTree = rootRoute
       "filePath": "_layout/datasets/explore.tsx",
       "parent": "/_layout"
     },
-    "/_layout/datasets/request": {
-      "filePath": "_layout/datasets/request.tsx",
-      "parent": "/_layout"
-    },
     "/_layout/scraping-api/explore": {
       "filePath": "_layout/scraping-api/explore.tsx",
       "parent": "/_layout"
     },
     "/_layout/scraping-api/google-serp": {
       "filePath": "_layout/scraping-api/google-serp.tsx",
-      "parent": "/_layout"
-    },
-    "/_layout/scraping-api/request": {
-      "filePath": "_layout/scraping-api/request.tsx",
       "parent": "/_layout"
     },
     "/_layout/scraping-api/search-proxies": {

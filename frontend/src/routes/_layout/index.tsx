@@ -36,13 +36,11 @@ function Dashboard() {
     { id: "submit-form", name: "🧑‍💻Scraper Submit Form", type: "SERP", description: "Submit files to Dev Scraper.", owned: true, path: "/scraping-api/submit-form/google-serp" },
     { id: "explore-serp", name: "📋 Scraper Jobs", type: "SERP", description: "View Scraper Files.", owned: true, path: "/scraping-api/explore" },
     { id: "icon-gpt", name: "🤖 IconGpt", type: "AI", description: "Use OpenAI and X models.", owned: true, path: "/ai/icongpt" },
-    { id: "request-datasets", name: "📁 Request Datasets", type: "datasets", description: "Request Datasets.", owned: true, path: "/datasets/request" },
     { id: "manage-proxy", name: "👺 Proxy Management", type: "SERP", description: "Manage Proxy Endpoints.", owned: true, path: "/scraping-api/search-proxies" },
     { id: "user-agents", name: "🕵️‍♂️ User Agents", type: "SERP", description: "Manage User Agents.", owned: true, path: "/scraping-api/user-agents" },
     { id: "google-serp", name: "🔍 Google SERP Management", type: "SERP", description: "Scrape real-time Google search results.", owned: true, path: "/scraping-api/google-serp" },
     { id: "cettire", name: "🔍 Cettire", type: "SERP", description: "Scrape Cettire search results.", owned: true, path: "/scraping-api/cettire" },
-    { id: "request-api", name: "⚒️ Request Scraping API", type: "SERP", description: "Request Scraping API.", owned: true, path: "/scraping-api/request" },
-    
+  
   ];
 
 // Optimize filtering with useMemo

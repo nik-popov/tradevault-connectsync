@@ -74,8 +74,8 @@ function Support() {
 
   // Tabs Configuration
   const tabsConfig = [
-    { title: "Community", component: <CommunitySection /> },
-    { title: "Support Tickets", component: <SupportTickets tickets={dummyTickets} /> },
+    // { title: "Community", component: <CommunitySection /> },
+    // { title: "Support Tickets", component: <SupportTickets tickets={dummyTickets} /> },
     {
       title: "Submit Request",
       component: (
@@ -91,7 +91,7 @@ function Support() {
         />
       ),
     },
-    { title: "FAQs", component: <FAQSection /> },
+    // { title: "FAQs", component: <FAQSection /> },
   ];
 
   return (
@@ -238,7 +238,7 @@ const SubmitRequest = ({
       <Textarea value={message} onChange={(e) => setMessage(e.target.value)} />
     </FormControl>
     <Button colorScheme="blue" leftIcon={<FiSend />} isLoading={isSubmitting} onClick={handleSubmit}>
-      Submit Request
+      Submit
     </Button>
   </Box>
 );
