@@ -82,6 +82,7 @@ function GoogleSerpForm() {
   const [selectedRowIndex, setSelectedRowIndex] = useState<number | null>(null);
   const [selectedColumn, setSelectedColumn] = useState<number | null>(null);
   const [selectedField, setSelectedField] = useState<string>('');
+  const [headerRowIndex, setHeaderRowIndex] = useState<number | null>(null);
   const [columnMapping, setColumnMapping] = useState<ColumnMapping>({
     style: null,
     brand: null,
@@ -97,7 +98,7 @@ function GoogleSerpForm() {
   const requiredColumns = ['style', 'brand'];
   const optionalColumns = ['category', 'colorName', 'readImage', 'imageAdd'];
   const allColumns = [...requiredColumns, ...optionalColumns];
-  const targetHeaders = ['BRAND', 'GENDER', 'STYLE', 'COLOR NAME', 'CATEGORY'];
+  const targetHeaders = ['BRAND', 'STYLE', 'COLOR NAME', 'CATEGORY'];
   const SERVER_URL = 'https://backend-dev.iconluxury.group';
 
   const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -140,28 +141,23 @@ function GoogleSerpForm() {
             const headers = preview[headerRowIndex] as string[];
             const rows = preview.slice(headerRowIndex + 1).map(row => ({ row: row as ExcelJS.CellValue[] }));
             setExcelData({ headers, rows });
-            const newColumnMapping: ColumnMapping = { ...columnMapping };
+            const newColumnMapping: ColumnMapping = { 
+              style: null,
+              brand: null,
+              imageAdd: null,
+              readImage: null,
+              category: null,
+              colorName: null,
+            };
             headers.forEach((header, index) => {
               const upperHeader = String(header).toUpperCase().trim();
-              if (upperHeader === 'STYLE' && newColumnMapping.style === null) newColumnMapping.style = index;
-              if (upperHeader === 'BRAND' && newColumnMapping.brand === null) newColumnMapping.brand = index;
-            });
-            let optionalIndex = 0;
-            headers.forEach((header, index) => {
-              const upperHeader = String(header).toUpperCase().trim();
-              if (upperHeader === 'CATEGORY' && newColumnMapping.category === null) newColumnMapping.category = index;
-              else if (upperHeader === 'COLOR NAME' && newColumnMapping.colorName === null) newColumnMapping.colorName = index;
-              else if (upperHeader === 'GENDER' && optionalIndex < optionalColumns.length) {
-                while (optionalIndex < optionalColumns.length && newColumnMapping[optionalColumns[optionalIndex]] !== null) {
-                  optionalIndex++;
-                }
-                if (optionalIndex < optionalColumns.length) {
-                  newColumnMapping[optionalColumns[optionalIndex]] = index;
-                  optionalIndex++;
-                }
-              }
+              if (upperHeader === 'STYLE') newColumnMapping.style = index;
+              if (upperHeader === 'BRAND') newColumnMapping.brand = index;
+              if (upperHeader === 'CATEGORY') newColumnMapping.category = index;
+              if (upperHeader === 'COLOR NAME') newColumnMapping.colorName = index;
             });
             setColumnMapping(newColumnMapping);
+            setHeaderRowIndex(headerRowIndex); // Record the header row index
             showToast('Header Auto-Detected', `Row ${headerRowIndex + 1} selected`, 'info');
           } else {
             setIsHeaderModalOpen(true);
@@ -191,28 +187,23 @@ function GoogleSerpForm() {
     const headers = previewRows[selectedRowIndex] as string[];
     const rows = previewRows.slice(selectedRowIndex + 1).map(row => ({ row: row as ExcelJS.CellValue[] }));
     setExcelData({ headers, rows });
-    const newColumnMapping: ColumnMapping = { ...columnMapping };
+    const newColumnMapping: ColumnMapping = { 
+      style: null,
+      brand: null,
+      imageAdd: null,
+      readImage: null,
+      category: null,
+      colorName: null,
+    };
     headers.forEach((header, index) => {
       const upperHeader = String(header).toUpperCase().trim();
-      if (upperHeader === 'STYLE' && newColumnMapping.style === null) newColumnMapping.style = index;
-      if (upperHeader === 'BRAND' && newColumnMapping.brand === null) newColumnMapping.brand = index;
-    });
-    let optionalIndex = 0;
-    headers.forEach((header, index) => {
-      const upperHeader = String(header).toUpperCase().trim();
-      if (upperHeader === 'CATEGORY' && newColumnMapping.category === null) newColumnMapping.category = index;
-      else if (upperHeader === 'COLOR NAME' && newColumnMapping.colorName === null) newColumnMapping.colorName = index;
-      else if (upperHeader === 'GENDER' && optionalIndex < optionalColumns.length) {
-        while (optionalIndex < optionalColumns.length && newColumnMapping[optionalColumns[optionalIndex]] !== null) {
-          optionalIndex++;
-        }
-        if (optionalIndex < optionalColumns.length) {
-          newColumnMapping[optionalColumns[optionalIndex]] = index;
-          optionalIndex++;
-        }
-      }
+      if (upperHeader === 'STYLE') newColumnMapping.style = index;
+      if (upperHeader === 'BRAND') newColumnMapping.brand = index;
+      if (upperHeader === 'CATEGORY') newColumnMapping.category = index;
+      if (upperHeader === 'COLOR NAME') newColumnMapping.colorName = index;
     });
     setColumnMapping(newColumnMapping);
+    setHeaderRowIndex(selectedRowIndex); // Record the header row index
     setIsHeaderModalOpen(false);
     setIsConfirmModalOpen(false);
     setIsLoadingFile(false);
@@ -238,6 +229,7 @@ function GoogleSerpForm() {
         return;
       }
       if (!file) throw new Error('No file selected');
+      if (headerRowIndex === null) throw new Error('Header row not selected');
       setIsLoadingFile(true);
       const formData = new FormData();
       formData.append('fileUploadImage', file);
@@ -253,6 +245,7 @@ function GoogleSerpForm() {
       formData.append('brandColImage', brandCol);
       if (colorCol) formData.append('ColorColImage', colorCol);
       if (categoryCol) formData.append('CategoryColImage', categoryCol);
+      formData.append('headerRow', String(headerRowIndex)); // Add header row index
       const response = await fetch(`${SERVER_URL}/submitImage`, { method: 'POST', body: formData });
       if (!response.ok) throw new Error(`Server error: ${response.status} - ${await response.text()}`);
       const result = await response.json();
