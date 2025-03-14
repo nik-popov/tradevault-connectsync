@@ -314,18 +314,19 @@ function GoogleSerpForm() {
           </Text>
           <Text fontSize="md" color="gray.300">Up to 1000 rows.</Text>
         <HStack spacing={2} align="center">
-        <FormControl w="sm">
+        <FormControl w="xl">
         <Input
           placeholder="Upload Excel File"
           type="file"
           accept=".xlsx,.xls"
           onChange={handleFileChange}
           disabled={isLoadingFile}
-          mt={6}
+          mt={7}
           css={{
             '&::-webkit-file-upload-button': {
               padding: '4px 12px',
               borderRadius: 'md',
+              marginTop: '-8px',
               backgroundColor: 'transparent', // Blend into input
               border: 'none', // No distinct border
               color: 'gray.500', // Subtle text color
@@ -379,7 +380,7 @@ function GoogleSerpForm() {
               isDisabled={!manualBrand || isLoadingFile}
               mt={6}
             >
-              Apply Brand
+              Apply
             </Button>
           </HStack>
         )}
