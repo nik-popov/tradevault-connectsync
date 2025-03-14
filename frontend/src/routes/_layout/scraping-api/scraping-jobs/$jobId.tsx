@@ -167,7 +167,6 @@ const OverviewTab: React.FC<OverviewTabProps> = ({
   job,
   sortBy,
   setSortBy,
-  fetchJobData,
   setSearchQuery,
   setActiveTab,
 }) => {
