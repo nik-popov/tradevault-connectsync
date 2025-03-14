@@ -40,10 +40,9 @@ const sidebarStructure: SidebarItem[] = [
       { title: "Reasoning", path: "/scraping-api/language-model" },
 
     ],
-    icon: FiLayers,
+    icon: FiGlobe,
   },
   { title: "Remote Desktop", icon: FiTool, path: "/support/remote-desktop" },
-  { title: "File Explorer", icon: FiGlobe, path: "/support/file-explorer" },
   { title: "Cloud Storage", icon: FiCloud, path: "/support/cloud-storage" },
   { title: "VPN", icon: FiShield, path: "/support/vpn" },
   // { title: "Sonos", icon: FiMusic, path: "/sonos" },
