@@ -43,7 +43,6 @@ const sidebarStructure: SidebarItem[] = [
     icon: FiLayers,
   },
   { title: "Remote Desktop", icon: FiTool, path: "/support/remote-desktop" },
-  { title: "FTP", icon: FiDatabase, path: "/support/ftp" },
   { title: "Network Logs", icon: FiFileText, path: "/support/network-logs" },
   { title: "System Logs", icon: FiFileText, path: "/support/system-logs" },
   { title: "File Explorer", icon: FiTool, path: "/support/file-explorer" },
