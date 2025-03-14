@@ -35,7 +35,7 @@ interface LogEntry {
 interface LogFile {
   fileId: string;
   fileName: string;
-  url: string | null;
+  url: string | "null"; // Allow null for URLs
   lastModified: string;
   entries: LogEntry[] | null; // Null until fetched
 }
@@ -105,8 +105,9 @@ const LogsGSerp: React.FC = () => {
   const fetchLogEntries = async (file: LogFile) => {
     if (!file.url || file.entries !== null) return; // Skip if no URL or already fetched
 
+    // Since we've checked file.url is not null, TypeScript should infer it's a string here
     try {
-      const response = await fetch(file.url, { cache: "no-store" });
+      const response = await fetch(file.url, { cache: "no-store" }); // No type assertion needed
       if (!response.ok) throw new Error(`Failed to fetch ${file.fileName}: ${response.statusText}`);
       const content = await response.text();
       const entries = parseLogContent(content);
@@ -235,9 +236,7 @@ const LogsGSerp: React.FC = () => {
           <Accordion allowMultiple mt={4}>
             {logFiles.map((file) => (
               <AccordionItem key={file.fileId}>
-                <AccordionButton
-                  onClick={() => fetchLogEntries(file)} // Fetch entries on expand
-                >
+                <AccordionButton onClick={() => fetchLogEntries(file)}>
                   <Box flex="1" textAlign="left">
                     <Text fontWeight="bold">{file.fileName}</Text>
                     <Text fontSize="sm" color="gray.500">
