@@ -98,7 +98,7 @@ function GoogleSerpForm() {
   const requiredColumns = ['style', 'brand'];
   const optionalColumns = ['category', 'colorName', 'readImage', 'imageAdd'];
   const allColumns = [...requiredColumns, ...optionalColumns];
-  const targetHeaders = ['BRAND', 'STYLE', 'COLOR NAME', 'CATEGORY'];
+  const targetHeaders = ['BRAND', 'STYLE'];
   const SERVER_URL = 'https://backend-dev.iconluxury.group';
 
   const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
