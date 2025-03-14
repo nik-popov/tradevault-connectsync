@@ -66,8 +66,6 @@ const sidebarStructure: SidebarItem[] = [
   { title: "Sonos", icon: FiMusic, path: "/sonos" },
   { title: "Firewall", icon: FiShield, path: "/support/firewall" },
   { title: "Backup & Recovery", icon: FiDatabase, path: "/support/backup-recovery" },
-  { title: "Performance Monitoring", icon: FiMonitor, path: "/support/performance-monitoring" },
-  { title: "Help", icon: FiHelpCircle, path: "/support/help" },
 ];
 
 interface SidebarItemsProps {
