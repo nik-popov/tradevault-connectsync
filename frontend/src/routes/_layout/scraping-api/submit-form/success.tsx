@@ -5,10 +5,9 @@ import { createFileRoute, useNavigate, useParams } from '@tanstack/react-router'
 export const Route = createFileRoute('/_layout/scraping-api/submit-form/success')({
   component: SuccessPage,
 });
-
 function SuccessPage() {
   const navigate = useNavigate();
-  const { jobId } = useParams(); // Get jobId from URL
+  const { jobId } = useParams({ from: "/_layout/scraping-api/scraping-jobs/:jobId" }) as { jobId: string };
 
   return (
     <Container maxW="full" py={10}>
@@ -32,7 +31,10 @@ function SuccessPage() {
         {jobId && (
           <Button
             colorScheme="teal"
-            onClick={() => navigate({ to: `/scraping-api/scraping-jobs/${jobId}` })}
+            onClick={() => navigate({
+              to: '/_layout/scraping-api/submit-form/success/:jobId',
+              params: { jobId: '123' }, // Replace '123' with the actual jobId value
+            })}
           >
             Job {jobId} Details
           </Button>
