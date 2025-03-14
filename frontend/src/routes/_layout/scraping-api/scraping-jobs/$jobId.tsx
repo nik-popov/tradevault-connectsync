@@ -1483,7 +1483,6 @@ const JobsDetailPage = () => {
         index={activeTab}
         onChange={(index) => {
           setActiveTab(index);
-          showToast("Tab Changed", `Switched to ${tabsConfig[index].title} tab`, "info");
         }}
       >
         <TabList>
