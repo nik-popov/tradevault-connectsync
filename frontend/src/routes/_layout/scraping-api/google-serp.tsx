@@ -1,19 +1,19 @@
-// GoogleSerpPage.tsx
+// src/pages/GoogleSerpPage.tsx
 import { createFileRoute } from "@tanstack/react-router";
 import { Container, Flex, Text, Tabs, TabList, TabPanels, Tab, TabPanel } from "@chakra-ui/react";
 import OverviewGSerp from "../../../components/OverviewGSerp";
-import LogsGSerp from "../../../components/LogsGSerp";
+import LogsGSerp from "../../../components/LogsGSerp"; 
 import PlaygroundGSerp from "../../../components/PlaygroundGSerp";
 import ApiKeyGSerp from "../../../components/ApiKeyGSerp";
-import WhitelistGSerp from "../../../components/WhitelistGSerp"; // Add this import
+import WhitelistGSerp from "../../../components/WhitelistGSerp";
 
 const GoogleSerpPage = () => {
   const tabsConfig = [
     { title: "Overview", component: () => <OverviewGSerp /> },
-    { title: "Logs", component: () => <LogsGSerp /> },
+    { title: "Logs", component: () => <LogsGSerp /> }, // Uses the tabbed LogsGSerp
     { title: "Playground", component: () => <PlaygroundGSerp /> },
     { title: "API Key", component: () => <ApiKeyGSerp /> },
-    { title: "Whitelist", component: () => <WhitelistGSerp /> }, // Update this line
+    { title: "Whitelist", component: () => <WhitelistGSerp /> },
   ];
 
   return (

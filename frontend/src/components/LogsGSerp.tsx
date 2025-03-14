@@ -1,3 +1,4 @@
+// src/components/LogsGSerp.tsx
 import React, { useState, useEffect, useCallback } from "react";
 import {
   Box,
@@ -13,6 +14,11 @@ import {
   Button,
   Select,
   Tooltip,
+  Tabs,
+  TabList,
+  TabPanels,
+  Tab,
+  TabPanel,
   Accordion,
   AccordionItem,
   AccordionButton,
@@ -22,7 +28,6 @@ import {
 import useCustomToast from "./../hooks/useCustomToast"; // Ensure path is correct
 import debounce from "lodash/debounce"; // Add lodash for debouncing
 
-// Interface for individual log entry
 interface LogEntry {
   timestamp: string;
   endpoint: string;
@@ -31,16 +36,14 @@ interface LogEntry {
   responseTime: number;
 }
 
-// Interface for log file
 interface LogFile {
   fileId: string;
   fileName: string;
-  url: string | "null"; // Allow null for URLs
+  url: string | null;
   lastModified: string;
-  entries: LogEntry[] | null; // Null until fetched
+  entries: LogEntry[] | null;
 }
 
-// Provided S3 log file URLs
 const logFileUrls = [
   "https://iconluxurygroup-s3.s3.us-east-2.amazonaws.com/job_logs/job_3.log",
   "https://iconluxurygroup-s3.s3.us-east-2.amazonaws.com/job_logs/job_4.log",
@@ -61,7 +64,6 @@ const logFileUrls = [
   "https://iconluxurygroup-s3.s3.us-east-2.amazonaws.com/job_logs/job_82.log",
 ];
 
-// Simple log parser (adjust based on actual log format)
 const parseLogContent = (content: string): LogEntry[] => {
   const lines = content.split("\n").filter((line) => line.trim());
   return lines.map((line) => {
@@ -77,12 +79,11 @@ const parseLogContent = (content: string): LogEntry[] => {
 };
 
 const LogsGSerp: React.FC = () => {
-  const [isLoading, setIsLoading] = useState(true); // For initial load
+  const [isLoading, setIsLoading] = useState(true);
   const [logFiles, setLogFiles] = useState<LogFile[]>([]);
   const [filter, setFilter] = useState<"all" | "success" | "error">("all");
   const showToast = useCustomToast();
 
-  // Initialize log files without entries
   const initializeLogFiles = () => {
     const initialLogFiles = logFileUrls.map((url, index) => {
       const jobId = parseInt(url?.split("/").pop()?.replace("job_", "").replace(".log", "") || `${index + 3}`, 10);
@@ -93,21 +94,22 @@ const LogsGSerp: React.FC = () => {
         fileName,
         url,
         lastModified: new Date(Date.now() - index * 86400000).toISOString(),
-        entries: null, // Entries are null until fetched
+        entries: null,
       };
     });
     setLogFiles(initialLogFiles);
     setIsLoading(false);
     showToast("Log Files Initialized", `Loaded ${initialLogFiles.length} log files`, "success");
+    if (initialLogFiles.length > 0) {
+      fetchLogEntries(initialLogFiles[0]);
+    }
   };
 
-  // Fetch log entries for a specific file
   const fetchLogEntries = async (file: LogFile) => {
-    if (!file.url || file.entries !== null) return; // Skip if no URL or already fetched
+    if (!file.url || file.entries !== null) return;
 
-    // Since we've checked file.url is not null, TypeScript should infer it's a string here
     try {
-      const response = await fetch(file.url, { cache: "no-store" }); // No type assertion needed
+      const response = await fetch(file.url, { cache: "no-store" });
       if (!response.ok) throw new Error(`Failed to fetch ${file.fileName}: ${response.statusText}`);
       const content = await response.text();
       const entries = parseLogContent(content);
@@ -132,22 +134,19 @@ const LogsGSerp: React.FC = () => {
     }
   };
 
-  // Debounced refresh function
   const debouncedFetchLogFiles = useCallback(
     debounce(() => {
       setIsLoading(true);
-      setLogFiles([]); // Clear existing logs
-      initializeLogFiles(); // Re-initialize without fetching entries
-    }, 500), // 500ms debounce delay
+      setLogFiles([]);
+      initializeLogFiles();
+    }, 500),
     []
   );
 
-  // Initial fetch on mount
   useEffect(() => {
     initializeLogFiles();
   }, []);
 
-  // Filter log entries within each file based on status
   const getFilteredEntries = (entries: LogEntry[] | null) => {
     if (!entries) return [];
     return entries.filter((log) => filter === "all" || log.status === filter);
@@ -158,19 +157,6 @@ const LogsGSerp: React.FC = () => {
       <Flex justify="space-between" align="center" mb={4}>
         <Text fontSize="lg" fontWeight="bold">API Request Logs</Text>
         <Flex gap={2}>
-          <Select
-            size="sm"
-            value={filter}
-            onChange={(e) => {
-              setFilter(e.target.value as "all" | "success" | "error");
-              showToast("Filter Applied", `Showing ${e.target.value} logs`, "info");
-            }}
-            width="150px"
-          >
-            <option value="all">All Statuses</option>
-            <option value="success">Success Only</option>
-            <option value="error">Errors Only</option>
-          </Select>
           <Tooltip label="Refresh log files">
             <Button
               size="sm"
@@ -194,99 +180,124 @@ const LogsGSerp: React.FC = () => {
           No log files available.
         </Text>
       ) : (
-        <Box shadow="md" borderWidth="1px" borderRadius="md" overflowX="auto">
-          {/* Display all log files initially */}
-          <Table variant="simple" size="sm">
-            <Thead>
-              <Tr>
-                <Th>File Name</Th>
-                <Th>Last Modified</Th>
-                <Th>Total Entries</Th>
-                <Th>Actions</Th>
-              </Tr>
-            </Thead>
-            <Tbody>
-              {logFiles.map((file) => (
-                <Tr key={file.fileId}>
-                  <Td>{file.fileName}</Td>
-                  <Td>{new Date(file.lastModified).toLocaleString()}</Td>
-                  <Td>{file.entries ? file.entries.length : "Not loaded"}</Td>
-                  <Td>
-                    {file.url ? (
-                      <Button
-                        size="xs"
-                        colorScheme="teal"
-                        onClick={() => {
-                          window.open(file.url, "_blank");
-                          showToast("File Opened", `Opened ${file.fileName} in new tab`, "info");
-                        }}
-                      >
-                        Download
-                      </Button>
-                    ) : (
-                      <Text fontSize="xs" color="gray.500">No file</Text>
-                    )}
-                  </Td>
-                </Tr>
-              ))}
-            </Tbody>
-          </Table>
-
-          {/* Expandable log entries */}
-          <Accordion allowMultiple mt={4}>
-            {logFiles.map((file) => (
-              <AccordionItem key={file.fileId}>
-                <AccordionButton onClick={() => fetchLogEntries(file)}>
-                  <Box flex="1" textAlign="left">
-                    <Text fontWeight="bold">{file.fileName}</Text>
-                    <Text fontSize="sm" color="gray.500">
-                      Last Modified: {new Date(file.lastModified).toLocaleString()} | Entries: {file.entries ? file.entries.length : "Not loaded"}
-                    </Text>
-                  </Box>
-                  <AccordionIcon />
-                </AccordionButton>
-                <AccordionPanel pb={4}>
-                  {file.entries === null ? (
-                    <Flex justify="center" align="center" py={4}>
-                      <Spinner size="sm" color="blue.500" />
-                      <Text ml={2}>Loading entries...</Text>
-                    </Flex>
-                  ) : (
-                    <Table variant="simple" size="sm">
-                      <Thead>
-                        <Tr>
-                          <Th>Timestamp</Th>
-                          <Th>Endpoint</Th>
-                          <Th>Query</Th>
-                          <Th>Status</Th>
-                          <Th>Response Time</Th>
-                        </Tr>
-                      </Thead>
-                      <Tbody>
-                        {getFilteredEntries(file.entries).map((log, index) => (
-                          <Tr key={index} bg={log.status === "error" ? "red.900" : "transparent"}>
-                            <Td>{new Date(log.timestamp).toLocaleString()}</Td>
-                            <Td>{log.endpoint}</Td>
-                            <Td>{log.query}</Td>
-                            <Td>{log.status}</Td>
-                            <Td>{log.responseTime} ms</Td>
-                          </Tr>
-                        ))}
-                        {getFilteredEntries(file.entries).length === 0 && (
-                          <Tr>
-                            <Td colSpan={5} textAlign="center">
-                              <Text color="gray.500">No logs match the current filter.</Text>
-                            </Td>
-                          </Tr>
+        <Tabs variant="enclosed" isLazy>
+          <TabList>
+            <Tab>Download</Tab>
+            <Tab>Details</Tab>
+          </TabList>
+          <TabPanels>
+            <TabPanel>
+              <Box shadow="md" borderWidth="1px" borderRadius="md" overflowX="auto">
+                <Table variant="simple" size="sm">
+                  <Thead>
+                    <Tr>
+                      <Th>File Name</Th>
+                      <Th>Last Modified</Th>
+                      <Th>Actions</Th>
+                    </Tr>
+                  </Thead>
+                  <Tbody>
+                    {logFiles.slice(0, 5).map((file) => (
+                      <Tr key={file.fileId}>
+                        <Td>{file.fileName}</Td>
+                        <Td>{new Date(file.lastModified).toLocaleString()}</Td>
+                        <Td>
+                          {file.url ? (
+                            <Button
+                              size="xs"
+                              colorScheme="teal"
+                              onClick={() => {
+                                window.open(file.url, "_blank");
+                                showToast("File Opened", `Opened ${file.fileName} in new tab`, "info");
+                              }}
+                            >
+                              Download
+                            </Button>
+                          ) : (
+                            <Text fontSize="xs" color="gray.500">No file</Text>
+                          )}
+                        </Td>
+                      </Tr>
+                    ))}
+                  </Tbody>
+                </Table>
+              </Box>
+            </TabPanel>
+            <TabPanel>
+              <Flex justify="space-between" align="center" mb={4}>
+                <Text fontSize="md" fontWeight="semibold">Log Details</Text>
+                <Select
+                  size="sm"
+                  value={filter}
+                  onChange={(e) => {
+                    setFilter(e.target.value as "all" | "success" | "error");
+                    showToast("Filter Applied", `Showing ${e.target.value} logs`, "info");
+                  }}
+                  width="150px"
+                >
+                  <option value="all">All Statuses</option>
+                  <option value="success">Success Only</option>
+                  <option value="error">Errors Only</option>
+                </Select>
+              </Flex>
+              <Box shadow="md" borderWidth="1px" borderRadius="md" overflowX="auto">
+                <Accordion allowMultiple defaultIndex={[0]}>
+                  {logFiles.map((file) => (
+                    <AccordionItem key={file.fileId}>
+                      <AccordionButton onClick={() => fetchLogEntries(file)}>
+                        <Box flex="1" textAlign="left">
+                          <Text fontWeight="bold">{file.fileName}</Text>
+                          <Text fontSize="sm" color="gray.500">
+                            Last Modified: {new Date(file.lastModified).toLocaleString()} | Entries: {file.entries ? file.entries.length : "Not loaded"}
+                          </Text>
+                        </Box>
+                        <AccordionIcon />
+                      </AccordionButton>
+                      <AccordionPanel pb={4}>
+                        {file.entries === null ? (
+                          <Flex justify="center" align="center" py={4}>
+                            <Spinner size="sm" color="blue.500" />
+                            <Text ml={2}>Loading entries...</Text>
+                          </Flex>
+                        ) : (
+                          <Table variant="simple" size="sm">
+                            <Thead>
+                              <Tr>
+                                <Th>Timestamp</Th>
+                                <Th>Endpoint</Th>
+                                <Th>Query</Th>
+                                <Th>Status</Th>
+                                <Th>Response Time</Th>
+                              </Tr>
+                            </Thead>
+                            <Tbody>
+                              {getFilteredEntries(file.entries).map((log, index) => (
+                                <Tr key={index} bg={log.status === "error" ? "red.900" : "transparent"}>
+                                  <Td>{new Date(log.timestamp).toLocaleString()}</Td>
+                                  <Td>{log.endpoint}</Td>
+                                  <Td>{log.query}</Td>
+                                  <Td>{log.status}</Td>
+                                  <Td>{log.responseTime} ms</Td>
+                                </Tr>
+                              ))}
+                              {getFilteredEntries(file.entries).length === 0 && (
+                                <Tr>
+                                  <Td colSpan={5} textAlign="center">
+                                    <Text color="gray.500">No logs match the current filter.</Text>
+                                  </Td>
+                                </Tr>
+                              )}
+                            </Tbody>
+                          </Table>
                         )}
-                      </Tbody>
-                    </Table>
-                  )}
-                </AccordionPanel>
-              </AccordionItem>
-            ))}
-          </Accordion>
-        </Box>
+                      </AccordionPanel>
+                    </AccordionItem>
+                  ))}
+                </Accordion>
+              </Box>
+            </TabPanel>
+          </TabPanels>
+        </Tabs>
       )}
     </Box>
   );
