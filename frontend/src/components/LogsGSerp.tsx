@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react"; // Fixed import statement
+import React, { useState, useEffect, useCallback } from "react";
 import {
   Box,
   Text,
@@ -20,6 +20,7 @@ import {
   AccordionIcon,
 } from "@chakra-ui/react";
 import useCustomToast from "./../hooks/useCustomToast"; // Ensure path is correct
+import debounce from "lodash/debounce"; // Add lodash for debouncing
 
 // Interface for individual log entry
 interface LogEntry {
@@ -34,12 +35,12 @@ interface LogEntry {
 interface LogFile {
   fileId: string;
   fileName: string;
-  url: string | null; // Allow null for URLs
-  lastModified: string; // Simulated since S3 URLs don't provide it directly
-  entries: LogEntry[];
+  url: string | null;
+  lastModified: string;
+  entries: LogEntry[] | null; // Null until fetched
 }
 
-// Updated S3 log file URLs with null values for specified IDs
+// Provided S3 log file URLs
 const logFileUrls = [
   "https://iconluxurygroup-s3.s3.us-east-2.amazonaws.com/job_logs/job_3.log",
   "https://iconluxurygroup-s3.s3.us-east-2.amazonaws.com/job_logs/job_4.log",
@@ -64,7 +65,6 @@ const logFileUrls = [
 const parseLogContent = (content: string): LogEntry[] => {
   const lines = content.split("\n").filter((line) => line.trim());
   return lines.map((line) => {
-    // Example parsing: "2023-10-01T12:00:00Z SOUTHAMERICA-WEST1 'query text' SUCCESS 150ms"
     const parts = line.split(" ");
     return {
       timestamp: parts[0] || new Date().toISOString(),
@@ -73,79 +73,82 @@ const parseLogContent = (content: string): LogEntry[] => {
       status: (parts[parts.length - 2] === "SUCCESS" ? "success" : "error") as "success" | "error",
       responseTime: parseInt(parts[parts.length - 1]) || 0,
     };
-  }).filter((entry) => entry.timestamp && entry.endpoint && entry.query); // Filter out malformed entries
+  }).filter((entry) => entry.timestamp && entry.endpoint && entry.query);
 };
 
 const LogsGSerp: React.FC = () => {
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(true); // For initial load
   const [logFiles, setLogFiles] = useState<LogFile[]>([]);
   const [filter, setFilter] = useState<"all" | "success" | "error">("all");
-  const showToast = useCustomToast(); // Use custom toast
+  const showToast = useCustomToast();
 
-  // Fetch log files and their contents
-  const fetchLogFiles = async () => {
-    setIsLoading(true);
+  // Initialize log files without entries
+  const initializeLogFiles = () => {
+    const initialLogFiles = logFileUrls.map((url, index) => {
+      const jobId = parseInt(url?.split("/").pop()?.replace("job_", "").replace(".log", "") || `${index + 3}`, 10);
+      const fileName = url ? url.split("/").pop() || `job_${jobId}.log` : `job_${jobId}.log`;
+      const fileId = fileName.replace(".log", "");
+      return {
+        fileId,
+        fileName,
+        url,
+        lastModified: new Date(Date.now() - index * 86400000).toISOString(),
+        entries: null, // Entries are null until fetched
+      };
+    });
+    setLogFiles(initialLogFiles);
+    setIsLoading(false);
+    showToast("Log Files Initialized", `Loaded ${initialLogFiles.length} log files`, "success");
+  };
+
+  // Fetch log entries for a specific file
+  const fetchLogEntries = async (file: LogFile) => {
+    if (!file.url || file.entries !== null) return; // Skip if no URL or already fetched
+
     try {
-      const logFilesData: LogFile[] = await Promise.all(
-        logFileUrls.map(async (url, index) => {
-          const jobId = parseInt(url?.split("/").pop()?.replace("job_", "").replace(".log", "") || `${index + 3}`, 10);
-          const fileName = url ? url.split("/").pop() || `job_${jobId}.log` : `job_${jobId}.log`;
-          const fileId = fileName.replace(".log", "");
+      const response = await fetch(file.url, { cache: "no-store" });
+      if (!response.ok) throw new Error(`Failed to fetch ${file.fileName}: ${response.statusText}`);
+      const content = await response.text();
+      const entries = parseLogContent(content);
 
-          if (!url) {
-            return {
-              fileId,
-              fileName,
-              url: null,
-              lastModified: new Date(Date.now() - index * 86400000).toISOString(), // Simulated lastModified
-              entries: [],
-            };
-          }
-
-          try {
-            const response = await fetch(url);
-            if (!response.ok) throw new Error(`Failed to fetch ${fileName}: ${response.statusText}`);
-            const content = await response.text();
-            const entries = parseLogContent(content);
-            return {
-              fileId,
-              fileName,
-              url,
-              lastModified: new Date(Date.now() - index * 86400000).toISOString(), // Simulated lastModified
-              entries,
-            };
-          } catch (err) {
-            showToast(
-              "Log Fetch Error",
-              `Failed to load ${fileName}: ${err instanceof Error ? err.message : "Unknown error"}`,
-              "error"
-            );
-            return {
-              fileId,
-              fileName,
-              url,
-              lastModified: new Date(Date.now() - index * 86400000).toISOString(),
-              entries: [],
-            };
-          }
-        })
+      setLogFiles((prev) =>
+        prev.map((f) =>
+          f.fileId === file.fileId ? { ...f, entries } : f
+        )
       );
-      setLogFiles(logFilesData);
-      showToast("Logs Loaded", `Fetched ${logFilesData.length} log files`, "success");
+      showToast("Log Entries Loaded", `Fetched entries for ${file.fileName}`, "success");
     } catch (err) {
       showToast(
-        "Fetch Error",
-        `Failed to load log files: ${err instanceof Error ? err.message : "Unknown error"}`,
+        "Log Fetch Error",
+        `Failed to load ${file.fileName}: ${err instanceof Error ? err.message : "Unknown error"}`,
         "error"
       );
-      setLogFiles([]);
-    } finally {
-      setIsLoading(false);
+      setLogFiles((prev) =>
+        prev.map((f) =>
+          f.fileId === file.fileId ? { ...f, entries: [] } : f
+        )
+      );
     }
   };
 
+  // Debounced refresh function
+  const debouncedFetchLogFiles = useCallback(
+    debounce(() => {
+      setIsLoading(true);
+      setLogFiles([]); // Clear existing logs
+      initializeLogFiles(); // Re-initialize without fetching entries
+    }, 500), // 500ms debounce delay
+    []
+  );
+
+  // Initial fetch on mount
+  useEffect(() => {
+    initializeLogFiles();
+  }, []);
+
   // Filter log entries within each file based on status
-  const getFilteredEntries = (entries: LogEntry[]) => {
+  const getFilteredEntries = (entries: LogEntry[] | null) => {
+    if (!entries) return [];
     return entries.filter((log) => filter === "all" || log.status === filter);
   };
 
@@ -171,10 +174,7 @@ const LogsGSerp: React.FC = () => {
             <Button
               size="sm"
               colorScheme="blue"
-              onClick={() => {
-                fetchLogFiles();
-                showToast("Refresh Initiated", "Refreshing log files", "info");
-              }}
+              onClick={debouncedFetchLogFiles}
               isLoading={isLoading}
             >
               Refresh
@@ -186,6 +186,7 @@ const LogsGSerp: React.FC = () => {
       {isLoading ? (
         <Flex justify="center" align="center" h="200px">
           <Spinner size="xl" color="blue.500" />
+          <Text ml={4}>Loading log files...</Text>
         </Flex>
       ) : logFiles.length === 0 ? (
         <Text color="gray.500" textAlign="center">
@@ -208,7 +209,7 @@ const LogsGSerp: React.FC = () => {
                 <Tr key={file.fileId}>
                   <Td>{file.fileName}</Td>
                   <Td>{new Date(file.lastModified).toLocaleString()}</Td>
-                  <Td>{file.entries.length}</Td>
+                  <Td>{file.entries ? file.entries.length : "Not loaded"}</Td>
                   <Td>
                     {file.url ? (
                       <Button
@@ -234,45 +235,54 @@ const LogsGSerp: React.FC = () => {
           <Accordion allowMultiple mt={4}>
             {logFiles.map((file) => (
               <AccordionItem key={file.fileId}>
-                <AccordionButton>
+                <AccordionButton
+                  onClick={() => fetchLogEntries(file)} // Fetch entries on expand
+                >
                   <Box flex="1" textAlign="left">
                     <Text fontWeight="bold">{file.fileName}</Text>
                     <Text fontSize="sm" color="gray.500">
-                      Last Modified: {new Date(file.lastModified).toLocaleString()} | Entries: {file.entries.length}
+                      Last Modified: {new Date(file.lastModified).toLocaleString()} | Entries: {file.entries ? file.entries.length : "Not loaded"}
                     </Text>
                   </Box>
                   <AccordionIcon />
                 </AccordionButton>
                 <AccordionPanel pb={4}>
-                  <Table variant="simple" size="sm">
-                    <Thead>
-                      <Tr>
-                        <Th>Timestamp</Th>
-                        <Th>Endpoint</Th>
-                        <Th>Query</Th>
-                        <Th>Status</Th>
-                        <Th>Response Time</Th>
-                      </Tr>
-                    </Thead>
-                    <Tbody>
-                      {getFilteredEntries(file.entries).map((log, index) => (
-                        <Tr key={index} bg={log.status === "error" ? "red.900" : "transparent"}>
-                          <Td>{new Date(log.timestamp).toLocaleString()}</Td>
-                          <Td>{log.endpoint}</Td>
-                          <Td>{log.query}</Td>
-                          <Td>{log.status}</Td>
-                          <Td>{log.responseTime} ms</Td>
-                        </Tr>
-                      ))}
-                      {getFilteredEntries(file.entries).length === 0 && (
+                  {file.entries === null ? (
+                    <Flex justify="center" align="center" py={4}>
+                      <Spinner size="sm" color="blue.500" />
+                      <Text ml={2}>Loading entries...</Text>
+                    </Flex>
+                  ) : (
+                    <Table variant="simple" size="sm">
+                      <Thead>
                         <Tr>
-                          <Td colSpan={5} textAlign="center">
-                            <Text color="gray.500">No logs match the current filter.</Text>
-                          </Td>
+                          <Th>Timestamp</Th>
+                          <Th>Endpoint</Th>
+                          <Th>Query</Th>
+                          <Th>Status</Th>
+                          <Th>Response Time</Th>
                         </Tr>
-                      )}
-                    </Tbody>
-                  </Table>
+                      </Thead>
+                      <Tbody>
+                        {getFilteredEntries(file.entries).map((log, index) => (
+                          <Tr key={index} bg={log.status === "error" ? "red.900" : "transparent"}>
+                            <Td>{new Date(log.timestamp).toLocaleString()}</Td>
+                            <Td>{log.endpoint}</Td>
+                            <Td>{log.query}</Td>
+                            <Td>{log.status}</Td>
+                            <Td>{log.responseTime} ms</Td>
+                          </Tr>
+                        ))}
+                        {getFilteredEntries(file.entries).length === 0 && (
+                          <Tr>
+                            <Td colSpan={5} textAlign="center">
+                              <Text color="gray.500">No logs match the current filter.</Text>
+                            </Td>
+                          </Tr>
+                        )}
+                      </Tbody>
+                    </Table>
+                  )}
                 </AccordionPanel>
               </AccordionItem>
             ))}
