@@ -70,19 +70,19 @@ import {
     return (
       <Box borderWidth="1px" borderRadius="lg" p={5} w="100%">
         <Heading size="md" mb={4}>
-          Subscription Management
+          State Management
         </Heading>
         <VStack align="stretch" spacing={6}>
           {PRODUCTS.map((product, index) => (
             <Box key={product} p={4} borderWidth="1px" borderRadius="md">
               <Heading size="sm" mb={2}>
-                {product} Subscription
+                {product} State
               </Heading>
               <Divider my={2} />
   
               <VStack align="stretch" spacing={3}>
                 <HStack justify="space-between">
-                  <Text fontWeight="bold">Subscription Active</Text>
+                  <Text fontWeight="bold">State Active</Text>
                   <Switch
                     isChecked={settings[product].hasSubscription}
                     onChange={() =>
@@ -95,7 +95,7 @@ import {
                 </HStack>
   
                 <HStack justify="space-between">
-                  <Text fontWeight="bold">Trial Mode</Text>
+                  <Text fontWeight="bold">Limited Mode</Text>
                   <Switch
                     isChecked={settings[product].isTrial}
                     onChange={() =>
