@@ -17,7 +17,6 @@ import { Route as RecoverPasswordImport } from './routes/recover-password'
 import { Route as LoginImport } from './routes/login'
 import { Route as LayoutImport } from './routes/_layout'
 import { Route as LayoutIndexImport } from './routes/_layout/index'
-import { Route as LayoutSupportImport } from './routes/_layout/support'
 import { Route as LayoutSettingsImport } from './routes/_layout/settings'
 import { Route as LayoutItemsImport } from './routes/_layout/items'
 import { Route as LayoutAdminImport } from './routes/_layout/admin'
@@ -68,12 +67,6 @@ const LayoutRoute = LayoutImport.update({
 const LayoutIndexRoute = LayoutIndexImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => LayoutRoute,
-} as any)
-
-const LayoutSupportRoute = LayoutSupportImport.update({
-  id: '/support',
-  path: '/support',
   getParentRoute: () => LayoutRoute,
 } as any)
 
@@ -236,13 +229,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LayoutSettingsImport
       parentRoute: typeof LayoutImport
     }
-    '/_layout/support': {
-      id: '/_layout/support'
-      path: '/support'
-      fullPath: '/support'
-      preLoaderRoute: typeof LayoutSupportImport
-      parentRoute: typeof LayoutImport
-    }
     '/_layout/': {
       id: '/_layout/'
       path: '/'
@@ -343,7 +329,6 @@ interface LayoutRouteChildren {
   LayoutAdminRoute: typeof LayoutAdminRoute
   LayoutItemsRoute: typeof LayoutItemsRoute
   LayoutSettingsRoute: typeof LayoutSettingsRoute
-  LayoutSupportRoute: typeof LayoutSupportRoute
   LayoutIndexRoute: typeof LayoutIndexRoute
   LayoutAiIcongptRoute: typeof LayoutAiIcongptRoute
   LayoutDatasetsExploreRoute: typeof LayoutDatasetsExploreRoute
@@ -363,7 +348,6 @@ const LayoutRouteChildren: LayoutRouteChildren = {
   LayoutAdminRoute: LayoutAdminRoute,
   LayoutItemsRoute: LayoutItemsRoute,
   LayoutSettingsRoute: LayoutSettingsRoute,
-  LayoutSupportRoute: LayoutSupportRoute,
   LayoutIndexRoute: LayoutIndexRoute,
   LayoutAiIcongptRoute: LayoutAiIcongptRoute,
   LayoutDatasetsExploreRoute: LayoutDatasetsExploreRoute,
@@ -396,7 +380,6 @@ export interface FileRoutesByFullPath {
   '/admin': typeof LayoutAdminRoute
   '/items': typeof LayoutItemsRoute
   '/settings': typeof LayoutSettingsRoute
-  '/support': typeof LayoutSupportRoute
   '/': typeof LayoutIndexRoute
   '/ai/icongpt': typeof LayoutAiIcongptRoute
   '/datasets/explore': typeof LayoutDatasetsExploreRoute
@@ -420,7 +403,6 @@ export interface FileRoutesByTo {
   '/admin': typeof LayoutAdminRoute
   '/items': typeof LayoutItemsRoute
   '/settings': typeof LayoutSettingsRoute
-  '/support': typeof LayoutSupportRoute
   '/': typeof LayoutIndexRoute
   '/ai/icongpt': typeof LayoutAiIcongptRoute
   '/datasets/explore': typeof LayoutDatasetsExploreRoute
@@ -446,7 +428,6 @@ export interface FileRoutesById {
   '/_layout/admin': typeof LayoutAdminRoute
   '/_layout/items': typeof LayoutItemsRoute
   '/_layout/settings': typeof LayoutSettingsRoute
-  '/_layout/support': typeof LayoutSupportRoute
   '/_layout/': typeof LayoutIndexRoute
   '/_layout/ai/icongpt': typeof LayoutAiIcongptRoute
   '/_layout/datasets/explore': typeof LayoutDatasetsExploreRoute
@@ -473,7 +454,6 @@ export interface FileRouteTypes {
     | '/admin'
     | '/items'
     | '/settings'
-    | '/support'
     | '/'
     | '/ai/icongpt'
     | '/datasets/explore'
@@ -496,7 +476,6 @@ export interface FileRouteTypes {
     | '/admin'
     | '/items'
     | '/settings'
-    | '/support'
     | '/'
     | '/ai/icongpt'
     | '/datasets/explore'
@@ -520,7 +499,6 @@ export interface FileRouteTypes {
     | '/_layout/admin'
     | '/_layout/items'
     | '/_layout/settings'
-    | '/_layout/support'
     | '/_layout/'
     | '/_layout/ai/icongpt'
     | '/_layout/datasets/explore'
@@ -576,7 +554,6 @@ export const routeTree = rootRoute
         "/_layout/admin",
         "/_layout/items",
         "/_layout/settings",
-        "/_layout/support",
         "/_layout/",
         "/_layout/ai/icongpt",
         "/_layout/datasets/explore",
@@ -614,10 +591,6 @@ export const routeTree = rootRoute
     },
     "/_layout/settings": {
       "filePath": "_layout/settings.tsx",
-      "parent": "/_layout"
-    },
-    "/_layout/support": {
-      "filePath": "_layout/support.tsx",
       "parent": "/_layout"
     },
     "/_layout/": {
