@@ -153,8 +153,6 @@ function GoogleSerpForm() {
               const upperHeader = String(header).toUpperCase().trim();
               if (upperHeader === 'STYLE') newColumnMapping.style = index;
               if (upperHeader === 'BRAND') newColumnMapping.brand = index;
-              if (upperHeader === 'CATEGORY') newColumnMapping.category = index;
-              if (upperHeader === 'COLOR NAME') newColumnMapping.colorName = index;
             });
             setColumnMapping(newColumnMapping);
             setHeaderRowIndex(headerRowIndex); // Record the header row index
