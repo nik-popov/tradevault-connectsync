@@ -27,7 +27,7 @@ const tabsConfig = [
   { title: "Password", component: ChangePassword },
   { title: "Appearance", component: Appearance },
   { title: "State Management", component: () =><SubscriptionManagement />},
-  { title: "Danger zone", component: DeleteAccount },
+  { title: "Close Account", component: DeleteAccount },
 ];
 
 export const Route = createFileRoute("/_layout/settings")({
