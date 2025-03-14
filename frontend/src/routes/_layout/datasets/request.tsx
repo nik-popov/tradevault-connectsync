@@ -118,7 +118,7 @@ function Request(): JSX.Element {
             </Flex>
           </Box>
           <Badge colorScheme={isLocked ? "red" : "green"} alignSelf="center">
-            {isLocked ? "Subscription Required" : "Active"}
+            {isLocked ? "Restricted" : "Active"}
           </Badge>
         </Flex>
 
