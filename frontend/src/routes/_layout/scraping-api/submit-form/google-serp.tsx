@@ -387,7 +387,7 @@ function GoogleSerpForm() {
               columnMapping={columnMapping}
               setColumnMapping={setColumnMapping}
               onColumnClick={openMappingModal}
-              manualBrand={manualBrand} // Pass manualBrand to ExcelDataTable
+              isManualBrand={columnMapping.brand !== null && excelData.headers[columnMapping.brand] === 'BRAND (Manual)'}
             />
           </Box>
         )}
