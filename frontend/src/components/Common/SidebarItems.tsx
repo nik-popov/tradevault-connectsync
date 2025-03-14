@@ -73,7 +73,7 @@ const SidebarItems = ({ onClose }: SidebarItemsProps) => {
     finalSidebarStructure.push({ title: "Admin", icon: FiUsers, path: "/admin" });
   }
   const isEnabled = (title: string) =>
-    ["Dashboard", "Scraping","Help"].includes(title) ||
+    ["Dashboard", "Scraping","Admin"].includes(title) ||
     (title === "Jobs" && 
       finalSidebarStructure.some(item => 
         item.title === "Scraping" && 
