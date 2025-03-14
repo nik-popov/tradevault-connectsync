@@ -113,7 +113,7 @@ const compareOptions: { [key: string]: { value: string; label: string; color: st
 const BAR_COLORS = ["#805AD5", "#38A169", "#DD6B20", "#C53030", "#D69E2E", "#9F7AEA", "#68D391", "#F6AD55", "#F56565", "#ECC94B"];
 
 const OverviewGSerp: React.FC = () => {
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const [selectedChart, setSelectedChart] = useState("requestsOverTime");
   const [selectedQuery, setSelectedQuery] = useState<Query | null>(null);
   const [showLabels, setShowLabels] = useState(true);
@@ -218,10 +218,6 @@ const OverviewGSerp: React.FC = () => {
       setIsLoading(false);
     }
   }, [totalRequests, showToast]);
-
-  useEffect(() => {
-    fetchData();
-  }, [fetchData]);
 
   useEffect(() => {
     setSelectedQuery(null);

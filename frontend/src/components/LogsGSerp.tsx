@@ -63,7 +63,7 @@ const logFileUrls = [
 // Simple log parser (adjust based on actual log format)
 const parseLogContent = (content: string): LogEntry[] => {
   const lines = content.split("\n").filter((line) => line.trim());
-  return lines.map((line, index) => {
+  return lines.map((line) => {
     // Example parsing: "2023-10-01T12:00:00Z SOUTHAMERICA-WEST1 'query text' SUCCESS 150ms"
     const parts = line.split(" ");
     return {
@@ -123,10 +123,6 @@ const LogsGSerp: React.FC = () => {
       setIsLoading(false);
     }
   };
-
-  useEffect(() => {
-    fetchLogFiles();
-  }, []);
 
   // Filter log entries within each file based on status
   const getFilteredEntries = (entries: LogEntry[]) => {
