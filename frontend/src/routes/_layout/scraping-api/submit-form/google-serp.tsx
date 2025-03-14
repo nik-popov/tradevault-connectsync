@@ -359,9 +359,9 @@ function GoogleSerpForm() {
                 </Text>
               </VStack>
             )}
-            {isLoadingFile && <Text color="gray.400" mt={6}>Processing...</Text>}
+          
           </HStack>
-
+          {isLoadingFile && <Text color="gray.400" mt={6}>Processing...</Text>}
         {/* Manual Brand Input Section */}
         {excelData.rows.length > 0 && columnMapping.brand === null && (
           <HStack>
