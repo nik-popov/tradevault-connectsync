@@ -311,26 +311,22 @@ function GoogleSerpForm() {
 
   return (
     <Container maxW="full" h="100vh" p={4}>
-      <VStack spacing={6} align="stretch" h="full">
-        <VStack spacing={2} align="stretch">
+      <VStack spacing={2} align="stretch" h="full">
           <Text fontSize="2xl" fontWeight="bold" color="white">Google SERP Form</Text>
           <Text fontSize="md" color="gray.300">
             Upload an Excel file, select header row, and map required fields (Style, Brand).
           </Text>
-        </VStack>
-
-        <HStack spacing={4} align="center">
+          <Text fontSize="md" color="gray.300">Up to 1000 rows.</Text>
+        <HStack spacing={2} align="center">
           <FormControl w="sm">
-            <FormLabel color="white">Upload Excel File</FormLabel>
-            <Text fontSize="md" color="gray.300">Up to 1000 rows.</Text>
             <Input
               type="file"
               accept=".xlsx,.xls"
               onChange={handleFileChange}
               disabled={isLoadingFile}
+              mt={6}
             />
-          </FormControl>
-          <HStack spacing={4} align="center" flex="1">
+                        </FormControl>
             <Button
               colorScheme="green"
               leftIcon={<FiSend />}
@@ -353,18 +349,17 @@ function GoogleSerpForm() {
             )}
             {isLoadingFile && <Text color="gray.400" mt={6}>Processing...</Text>}
           </HStack>
-        </HStack>
 
         {/* Manual Brand Input Section */}
         {excelData.rows.length > 0 && columnMapping.brand === null && (
-          <HStack spacing={4}>
+          <HStack>
             <FormControl w="sm">
-              <FormLabel color="white">Add Brand for All Rows</FormLabel>
               <Input
-                placeholder="Enter brand name"
+                placeholder="Add Brand for All Rows"
                 value={manualBrand}
                 onChange={(e) => setManualBrand(e.target.value)}
                 disabled={isLoadingFile}
+                mt={6}
               />
             </FormControl>
             <Button
