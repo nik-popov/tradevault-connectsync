@@ -129,7 +129,7 @@ function GoogleSerpForm() {
           let headerRowIndex: number | null = null;
           for (let i = 0; i < Math.min(10, preview.length); i++) {
             const row = preview[i] as any[];
-            const rowValues = row.map((cell: any) => String(cell).toUpperCase().trim());
+            const rowValues = row.map((cell: any) => String(cell || "").toUpperCase().trim());
             const matchedHeaders = rowValues.filter((value: string) => targetHeaders.includes(value));
             if (matchedHeaders.length >= 2) {
               headerRowIndex = i;
