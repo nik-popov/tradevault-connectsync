@@ -858,7 +858,7 @@ const SearchRowsTab: React.FC<SearchRowsTabProps> = ({ job }) => {
   // State management
   const [debugMode, setDebugMode] = useState(false);
   const [showFileDetails, setShowFileDetails] = useState(true);
-  const [showResultDetails, setShowResultDetails] = useState(true);
+  const [showResultDetails, setShowResultDetails] = useState(false);
   const [numImages, setNumImages] = useState(1);
   const [hideEmptyRows, setHideEmptyRows] = useState(false);
   const [sortConfig, setSortConfig] = useState<{
