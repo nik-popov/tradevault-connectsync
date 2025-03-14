@@ -33,22 +33,6 @@ const Sidebar = () => {
   const handleLogout = async () => {
     logout()
   }
-
-  // GitHubLogo displays only the GitHub logo as a clickable link
-  const GitHubLogo = () => (
-    <Link
-      href="https://github.com/iconluxurygroupNet"
-      target="_blank"
-      rel="noopener noreferrer"
-    >
-      <Image
-        src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png"
-        alt="GitHub Logo"
-        boxSize="32px"
-      />
-    </Link>
-  )
-
   return (
     <>
       {/* Mobile */}
@@ -84,9 +68,6 @@ const Sidebar = () => {
                   <Text ml={2}>Log out</Text>
                 </Flex>
               </Box>
-              <Box mt={4}>
-                <GitHubLogo />
-              </Box>
             </Flex>
           </DrawerBody>
         </DrawerContent>
@@ -121,7 +102,6 @@ const Sidebar = () => {
                 Logged in as: {currentUser.email}
               </Text>
             )}
-            <GitHubLogo />
           </Box>
         </Flex>
       </Box>
