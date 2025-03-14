@@ -26,7 +26,7 @@ const tabsConfig = [
   { title: "My profile", component: UserInformation },
   { title: "Password", component: ChangePassword },
   { title: "Appearance", component: Appearance },
-  { title: "Subscriptions", component: () =><SubscriptionManagement />},
+  { title: "State Management", component: () =><SubscriptionManagement />},
   { title: "Danger zone", component: DeleteAccount },
 ];
 
