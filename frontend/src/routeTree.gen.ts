@@ -26,12 +26,6 @@ import { Route as LayoutScrapingApiSearchProxiesImport } from './routes/_layout/
 import { Route as LayoutScrapingApiRequestImport } from './routes/_layout/scraping-api/request'
 import { Route as LayoutScrapingApiGoogleSerpImport } from './routes/_layout/scraping-api/google-serp'
 import { Route as LayoutScrapingApiExploreImport } from './routes/_layout/scraping-api/explore'
-import { Route as LayoutProxiesResidentialMobileImport } from './routes/_layout/proxies/residential-mobile'
-import { Route as LayoutProxiesResidentialImport } from './routes/_layout/proxies/residential'
-import { Route as LayoutProxiesPricingImport } from './routes/_layout/proxies/pricing'
-import { Route as LayoutProxiesDatacenterMobileImport } from './routes/_layout/proxies/datacenter-mobile'
-import { Route as LayoutProxiesDatacenterImport } from './routes/_layout/proxies/datacenter'
-import { Route as LayoutProxiesBrowserImport } from './routes/_layout/proxies/browser'
 import { Route as LayoutDatasetsRequestImport } from './routes/_layout/datasets/request'
 import { Route as LayoutDatasetsExploreImport } from './routes/_layout/datasets/explore'
 import { Route as LayoutAiIcongptImport } from './routes/_layout/ai/icongpt'
@@ -133,44 +127,6 @@ const LayoutScrapingApiGoogleSerpRoute =
 const LayoutScrapingApiExploreRoute = LayoutScrapingApiExploreImport.update({
   id: '/scraping-api/explore',
   path: '/scraping-api/explore',
-  getParentRoute: () => LayoutRoute,
-} as any)
-
-const LayoutProxiesResidentialMobileRoute =
-  LayoutProxiesResidentialMobileImport.update({
-    id: '/proxies/residential-mobile',
-    path: '/proxies/residential-mobile',
-    getParentRoute: () => LayoutRoute,
-  } as any)
-
-const LayoutProxiesResidentialRoute = LayoutProxiesResidentialImport.update({
-  id: '/proxies/residential',
-  path: '/proxies/residential',
-  getParentRoute: () => LayoutRoute,
-} as any)
-
-const LayoutProxiesPricingRoute = LayoutProxiesPricingImport.update({
-  id: '/proxies/pricing',
-  path: '/proxies/pricing',
-  getParentRoute: () => LayoutRoute,
-} as any)
-
-const LayoutProxiesDatacenterMobileRoute =
-  LayoutProxiesDatacenterMobileImport.update({
-    id: '/proxies/datacenter-mobile',
-    path: '/proxies/datacenter-mobile',
-    getParentRoute: () => LayoutRoute,
-  } as any)
-
-const LayoutProxiesDatacenterRoute = LayoutProxiesDatacenterImport.update({
-  id: '/proxies/datacenter',
-  path: '/proxies/datacenter',
-  getParentRoute: () => LayoutRoute,
-} as any)
-
-const LayoutProxiesBrowserRoute = LayoutProxiesBrowserImport.update({
-  id: '/proxies/browser',
-  path: '/proxies/browser',
   getParentRoute: () => LayoutRoute,
 } as any)
 
@@ -329,48 +285,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LayoutDatasetsRequestImport
       parentRoute: typeof LayoutImport
     }
-    '/_layout/proxies/browser': {
-      id: '/_layout/proxies/browser'
-      path: '/proxies/browser'
-      fullPath: '/proxies/browser'
-      preLoaderRoute: typeof LayoutProxiesBrowserImport
-      parentRoute: typeof LayoutImport
-    }
-    '/_layout/proxies/datacenter': {
-      id: '/_layout/proxies/datacenter'
-      path: '/proxies/datacenter'
-      fullPath: '/proxies/datacenter'
-      preLoaderRoute: typeof LayoutProxiesDatacenterImport
-      parentRoute: typeof LayoutImport
-    }
-    '/_layout/proxies/datacenter-mobile': {
-      id: '/_layout/proxies/datacenter-mobile'
-      path: '/proxies/datacenter-mobile'
-      fullPath: '/proxies/datacenter-mobile'
-      preLoaderRoute: typeof LayoutProxiesDatacenterMobileImport
-      parentRoute: typeof LayoutImport
-    }
-    '/_layout/proxies/pricing': {
-      id: '/_layout/proxies/pricing'
-      path: '/proxies/pricing'
-      fullPath: '/proxies/pricing'
-      preLoaderRoute: typeof LayoutProxiesPricingImport
-      parentRoute: typeof LayoutImport
-    }
-    '/_layout/proxies/residential': {
-      id: '/_layout/proxies/residential'
-      path: '/proxies/residential'
-      fullPath: '/proxies/residential'
-      preLoaderRoute: typeof LayoutProxiesResidentialImport
-      parentRoute: typeof LayoutImport
-    }
-    '/_layout/proxies/residential-mobile': {
-      id: '/_layout/proxies/residential-mobile'
-      path: '/proxies/residential-mobile'
-      fullPath: '/proxies/residential-mobile'
-      preLoaderRoute: typeof LayoutProxiesResidentialMobileImport
-      parentRoute: typeof LayoutImport
-    }
     '/_layout/scraping-api/explore': {
       id: '/_layout/scraping-api/explore'
       path: '/scraping-api/explore'
@@ -462,12 +376,6 @@ interface LayoutRouteChildren {
   LayoutAiIcongptRoute: typeof LayoutAiIcongptRoute
   LayoutDatasetsExploreRoute: typeof LayoutDatasetsExploreRoute
   LayoutDatasetsRequestRoute: typeof LayoutDatasetsRequestRoute
-  LayoutProxiesBrowserRoute: typeof LayoutProxiesBrowserRoute
-  LayoutProxiesDatacenterRoute: typeof LayoutProxiesDatacenterRoute
-  LayoutProxiesDatacenterMobileRoute: typeof LayoutProxiesDatacenterMobileRoute
-  LayoutProxiesPricingRoute: typeof LayoutProxiesPricingRoute
-  LayoutProxiesResidentialRoute: typeof LayoutProxiesResidentialRoute
-  LayoutProxiesResidentialMobileRoute: typeof LayoutProxiesResidentialMobileRoute
   LayoutScrapingApiExploreRoute: typeof LayoutScrapingApiExploreRoute
   LayoutScrapingApiGoogleSerpRoute: typeof LayoutScrapingApiGoogleSerpRoute
   LayoutScrapingApiRequestRoute: typeof LayoutScrapingApiRequestRoute
@@ -490,12 +398,6 @@ const LayoutRouteChildren: LayoutRouteChildren = {
   LayoutAiIcongptRoute: LayoutAiIcongptRoute,
   LayoutDatasetsExploreRoute: LayoutDatasetsExploreRoute,
   LayoutDatasetsRequestRoute: LayoutDatasetsRequestRoute,
-  LayoutProxiesBrowserRoute: LayoutProxiesBrowserRoute,
-  LayoutProxiesDatacenterRoute: LayoutProxiesDatacenterRoute,
-  LayoutProxiesDatacenterMobileRoute: LayoutProxiesDatacenterMobileRoute,
-  LayoutProxiesPricingRoute: LayoutProxiesPricingRoute,
-  LayoutProxiesResidentialRoute: LayoutProxiesResidentialRoute,
-  LayoutProxiesResidentialMobileRoute: LayoutProxiesResidentialMobileRoute,
   LayoutScrapingApiExploreRoute: LayoutScrapingApiExploreRoute,
   LayoutScrapingApiGoogleSerpRoute: LayoutScrapingApiGoogleSerpRoute,
   LayoutScrapingApiRequestRoute: LayoutScrapingApiRequestRoute,
@@ -531,12 +433,6 @@ export interface FileRoutesByFullPath {
   '/ai/icongpt': typeof LayoutAiIcongptRoute
   '/datasets/explore': typeof LayoutDatasetsExploreRoute
   '/datasets/request': typeof LayoutDatasetsRequestRoute
-  '/proxies/browser': typeof LayoutProxiesBrowserRoute
-  '/proxies/datacenter': typeof LayoutProxiesDatacenterRoute
-  '/proxies/datacenter-mobile': typeof LayoutProxiesDatacenterMobileRoute
-  '/proxies/pricing': typeof LayoutProxiesPricingRoute
-  '/proxies/residential': typeof LayoutProxiesResidentialRoute
-  '/proxies/residential-mobile': typeof LayoutProxiesResidentialMobileRoute
   '/scraping-api/explore': typeof LayoutScrapingApiExploreRoute
   '/scraping-api/google-serp': typeof LayoutScrapingApiGoogleSerpRoute
   '/scraping-api/request': typeof LayoutScrapingApiRequestRoute
@@ -563,12 +459,6 @@ export interface FileRoutesByTo {
   '/ai/icongpt': typeof LayoutAiIcongptRoute
   '/datasets/explore': typeof LayoutDatasetsExploreRoute
   '/datasets/request': typeof LayoutDatasetsRequestRoute
-  '/proxies/browser': typeof LayoutProxiesBrowserRoute
-  '/proxies/datacenter': typeof LayoutProxiesDatacenterRoute
-  '/proxies/datacenter-mobile': typeof LayoutProxiesDatacenterMobileRoute
-  '/proxies/pricing': typeof LayoutProxiesPricingRoute
-  '/proxies/residential': typeof LayoutProxiesResidentialRoute
-  '/proxies/residential-mobile': typeof LayoutProxiesResidentialMobileRoute
   '/scraping-api/explore': typeof LayoutScrapingApiExploreRoute
   '/scraping-api/google-serp': typeof LayoutScrapingApiGoogleSerpRoute
   '/scraping-api/request': typeof LayoutScrapingApiRequestRoute
@@ -597,12 +487,6 @@ export interface FileRoutesById {
   '/_layout/ai/icongpt': typeof LayoutAiIcongptRoute
   '/_layout/datasets/explore': typeof LayoutDatasetsExploreRoute
   '/_layout/datasets/request': typeof LayoutDatasetsRequestRoute
-  '/_layout/proxies/browser': typeof LayoutProxiesBrowserRoute
-  '/_layout/proxies/datacenter': typeof LayoutProxiesDatacenterRoute
-  '/_layout/proxies/datacenter-mobile': typeof LayoutProxiesDatacenterMobileRoute
-  '/_layout/proxies/pricing': typeof LayoutProxiesPricingRoute
-  '/_layout/proxies/residential': typeof LayoutProxiesResidentialRoute
-  '/_layout/proxies/residential-mobile': typeof LayoutProxiesResidentialMobileRoute
   '/_layout/scraping-api/explore': typeof LayoutScrapingApiExploreRoute
   '/_layout/scraping-api/google-serp': typeof LayoutScrapingApiGoogleSerpRoute
   '/_layout/scraping-api/request': typeof LayoutScrapingApiRequestRoute
@@ -632,12 +516,6 @@ export interface FileRouteTypes {
     | '/ai/icongpt'
     | '/datasets/explore'
     | '/datasets/request'
-    | '/proxies/browser'
-    | '/proxies/datacenter'
-    | '/proxies/datacenter-mobile'
-    | '/proxies/pricing'
-    | '/proxies/residential'
-    | '/proxies/residential-mobile'
     | '/scraping-api/explore'
     | '/scraping-api/google-serp'
     | '/scraping-api/request'
@@ -663,12 +541,6 @@ export interface FileRouteTypes {
     | '/ai/icongpt'
     | '/datasets/explore'
     | '/datasets/request'
-    | '/proxies/browser'
-    | '/proxies/datacenter'
-    | '/proxies/datacenter-mobile'
-    | '/proxies/pricing'
-    | '/proxies/residential'
-    | '/proxies/residential-mobile'
     | '/scraping-api/explore'
     | '/scraping-api/google-serp'
     | '/scraping-api/request'
@@ -695,12 +567,6 @@ export interface FileRouteTypes {
     | '/_layout/ai/icongpt'
     | '/_layout/datasets/explore'
     | '/_layout/datasets/request'
-    | '/_layout/proxies/browser'
-    | '/_layout/proxies/datacenter'
-    | '/_layout/proxies/datacenter-mobile'
-    | '/_layout/proxies/pricing'
-    | '/_layout/proxies/residential'
-    | '/_layout/proxies/residential-mobile'
     | '/_layout/scraping-api/explore'
     | '/_layout/scraping-api/google-serp'
     | '/_layout/scraping-api/request'
@@ -759,12 +625,6 @@ export const routeTree = rootRoute
         "/_layout/ai/icongpt",
         "/_layout/datasets/explore",
         "/_layout/datasets/request",
-        "/_layout/proxies/browser",
-        "/_layout/proxies/datacenter",
-        "/_layout/proxies/datacenter-mobile",
-        "/_layout/proxies/pricing",
-        "/_layout/proxies/residential",
-        "/_layout/proxies/residential-mobile",
         "/_layout/scraping-api/explore",
         "/_layout/scraping-api/google-serp",
         "/_layout/scraping-api/request",
@@ -820,30 +680,6 @@ export const routeTree = rootRoute
     },
     "/_layout/datasets/request": {
       "filePath": "_layout/datasets/request.tsx",
-      "parent": "/_layout"
-    },
-    "/_layout/proxies/browser": {
-      "filePath": "_layout/proxies/browser.tsx",
-      "parent": "/_layout"
-    },
-    "/_layout/proxies/datacenter": {
-      "filePath": "_layout/proxies/datacenter.tsx",
-      "parent": "/_layout"
-    },
-    "/_layout/proxies/datacenter-mobile": {
-      "filePath": "_layout/proxies/datacenter-mobile.tsx",
-      "parent": "/_layout"
-    },
-    "/_layout/proxies/pricing": {
-      "filePath": "_layout/proxies/pricing.tsx",
-      "parent": "/_layout"
-    },
-    "/_layout/proxies/residential": {
-      "filePath": "_layout/proxies/residential.tsx",
-      "parent": "/_layout"
-    },
-    "/_layout/proxies/residential-mobile": {
-      "filePath": "_layout/proxies/residential-mobile.tsx",
       "parent": "/_layout"
     },
     "/_layout/scraping-api/explore": {

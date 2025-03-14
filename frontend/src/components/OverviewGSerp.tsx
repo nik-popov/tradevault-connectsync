@@ -134,6 +134,7 @@ const OverviewGSerp: React.FC = () => {
 
   // Data fetching function
   const fetchData = useCallback(async () => {
+    
     setIsLoading(true);
     setError(null);
     try {
@@ -523,11 +524,17 @@ const OverviewGSerp: React.FC = () => {
               </Tooltip>
             ))}
           </ButtonGroup>
+          
           <Tooltip label="Refresh overview data immediately">
-            <Button size="sm" colorScheme="blue" onClick={debounce(fetchData, 500)} isLoading={isLoading}>
-              Refresh Now
-            </Button>
-          </Tooltip>
+        <Button
+          size="sm"
+          colorScheme="blue"
+          onClick={debounce(fetchData, 500)} // Debounced function
+          isLoading={isLoading}
+        >
+          Refresh Now
+        </Button>
+      </Tooltip>
           <Tooltip label="Toggle chart labels">
             <Button
               size="sm"
@@ -545,8 +552,17 @@ const OverviewGSerp: React.FC = () => {
           <Spinner size="xl" color="blue.500" />
           <Text>Loading SERP data...</Text>
         </Flex>
-      ) : error ? (
-        <Alert status="error" borderRadius="md">
+      ) :error ? (
+        <Alert
+          status="error"
+          borderRadius="md"
+          position="absolute"
+          top="20px"
+          left="20px"
+          bg="white"
+          color="gray.900"
+          zIndex="10000"
+        >
           <AlertIcon />
           {error}
         </Alert>

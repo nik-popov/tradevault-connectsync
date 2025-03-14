@@ -98,6 +98,57 @@ const theme = extendTheme({
         },
       },
     },
+    Toast: {
+      baseStyle: {
+        container: {
+          bg: "white", // Bright white background
+          color: "gray.900", // Dark text
+          borderRadius: "md",
+          boxShadow: "lg",
+          padding: "16px",
+          position: "absolute",
+          top: "20px",
+          left: "50%", // Center horizontally
+          transform: "translateX(-50%)", // Adjust for centering
+          minWidth: "300px",
+          maxWidth: "90%",
+        },
+      },
+      variants: {
+        error: {
+          container: {
+            bg: "red.100", // Light red for error
+            color: "red.900",
+            border: "1px solid",
+            borderColor: "red.300",
+          },
+        },
+        success: {
+          container: {
+            bg: "green.100", // Light green for success
+            color: "green.900",
+            border: "1px solid",
+            borderColor: "green.300",
+          },
+        },
+        info: {
+          container: {
+            bg: "blue.100", // Light blue for info
+            color: "blue.900",
+            border: "1px solid",
+            borderColor: "blue.300",
+          },
+        },
+        warning: {
+          container: {
+            bg: "yellow.100", // Light yellow for warning
+            color: "yellow.900",
+            border: "1px solid",
+            borderColor: "yellow.300",
+          },
+        },
+      },
+    },
   },
 });
 
