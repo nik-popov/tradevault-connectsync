@@ -91,14 +91,14 @@ function GoogleSerpForm() {
     category: null,
     colorName: null,
   });
-  const showToast = useCustomToast(); // Use custom toast hook
+  const [manualBrand, setManualBrand] = useState<string>(''); // New state for manual brand input
+  const showToast = useCustomToast();
   const navigate = useNavigate();
 
   const requiredColumns = ['style', 'brand'];
   const optionalColumns = ['category', 'colorName', 'readImage', 'imageAdd'];
   const allColumns = [...requiredColumns, ...optionalColumns];
-  const targetHeaders = ['IMAGE', 'BRAND', 'GENDER', 'STYLE', 'COLOR', 'CATEGORY'];
-  // Constants
+  const targetHeaders = ['IMAGE', 'BRAND', 'GENDER', 'STYLE', 'COLOR NAME', 'CATEGORY'];
   const STORAGE_KEY = 'subscriptionSettings';
   const PRODUCT = 'serp';
   const SERVER_URL = 'https://backend-dev.iconluxury.group';
@@ -113,6 +113,7 @@ function GoogleSerpForm() {
       setFile(selectedFile);
       setExcelData({ headers: [], rows: [] });
       setColumnMapping({ style: null, brand: null, imageAdd: null, readImage: null, category: null, colorName: null });
+      setManualBrand(''); // Reset manual brand on new file upload
 
       const reader = new FileReader();
       reader.onload = (e) => {
@@ -151,7 +152,7 @@ function GoogleSerpForm() {
             headers.forEach((header, index) => {
               const upperHeader = String(header).toUpperCase().trim();
               if (upperHeader === 'CATEGORY' && newColumnMapping.category === null) newColumnMapping.category = index;
-              else if (upperHeader === 'COLOR' && newColumnMapping.colorName === null) newColumnMapping.colorName = index;
+              else if (upperHeader === 'COLOR NAME' && newColumnMapping.colorName === null) newColumnMapping.colorName = index;
               else if (upperHeader === 'IMAGE' && newColumnMapping.readImage === null && newColumnMapping.imageAdd === null) {
                 newColumnMapping.imageAdd = index;
               } else if (upperHeader === 'GENDER' && optionalIndex < optionalColumns.length) {
@@ -201,7 +202,7 @@ function GoogleSerpForm() {
     headers.forEach((header, index) => {
       const upperHeader = String(header).toUpperCase().trim();
       if (upperHeader === 'CATEGORY' && newColumnMapping.category === null) newColumnMapping.category = index;
-      else if (upperHeader === 'COLOR' && newColumnMapping.colorName === null) newColumnMapping.colorName = index;
+      else if (upperHeader === 'COLOR NAME' && newColumnMapping.colorName === null) newColumnMapping.colorName = index;
       else if (upperHeader === 'IMAGE' && newColumnMapping.readImage === null && newColumnMapping.imageAdd === null) {
         newColumnMapping.imageAdd = index;
       } else if (upperHeader === 'GENDER' && optionalIndex < optionalColumns.length) {
@@ -219,6 +220,17 @@ function GoogleSerpForm() {
     setIsConfirmModalOpen(false);
     setIsLoadingFile(false);
     showToast('Header Selected', `Row ${selectedRowIndex + 1} confirmed`, 'info');
+  };
+
+  const applyManualBrand = () => {
+    if (!manualBrand || columnMapping.brand !== null) return;
+    const newHeaders = [...excelData.headers, 'BRAND (Manual)'];
+    const newRows = excelData.rows.map(row => ({
+      row: [...row.row, manualBrand],
+    }));
+    setExcelData({ headers: newHeaders, rows: newRows });
+    setColumnMapping(prev => ({ ...prev, brand: newHeaders.length - 1 }));
+    showToast('Manual Brand Applied', `Brand "${manualBrand}" added to all rows`, 'success');
   };
 
   const handleSubmit = async () => {
@@ -343,6 +355,29 @@ function GoogleSerpForm() {
           </HStack>
         </HStack>
 
+        {/* Manual Brand Input Section */}
+        {excelData.rows.length > 0 && columnMapping.brand === null && (
+          <HStack spacing={4}>
+            <FormControl w="sm">
+              <FormLabel color="white">Add Brand for All Rows</FormLabel>
+              <Input
+                placeholder="Enter brand name"
+                value={manualBrand}
+                onChange={(e) => setManualBrand(e.target.value)}
+                disabled={isLoadingFile}
+              />
+            </FormControl>
+            <Button
+              colorScheme="orange"
+              onClick={applyManualBrand}
+              isDisabled={!manualBrand || isLoadingFile}
+              mt={6}
+            >
+              Apply Brand
+            </Button>
+          </HStack>
+        )}
+
         <Box borderBottomWidth="1px" borderColor="gray.600" my={4} />
 
         {excelData.rows.length > 0 && (
@@ -352,6 +387,7 @@ function GoogleSerpForm() {
               columnMapping={columnMapping}
               setColumnMapping={setColumnMapping}
               onColumnClick={openMappingModal}
+              manualBrand={manualBrand} // Pass manualBrand to ExcelDataTable
             />
           </Box>
         )}

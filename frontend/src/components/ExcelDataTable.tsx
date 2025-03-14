@@ -16,11 +16,26 @@ interface ExcelDataTableProps {
   columnMapping: ColumnMapping;
   setColumnMapping?: React.Dispatch<React.SetStateAction<ColumnMapping>>;
   onColumnClick: (columnIndex: number) => void;
+  isManualBrand?: boolean; // Indicates if the brand column is manually added
 }
 
-const ExcelDataTable: React.FC<ExcelDataTableProps> = ({ excelData, columnMapping, onColumnClick }) => {
+const ExcelDataTable: React.FC<ExcelDataTableProps> = ({
+  excelData,
+  columnMapping,
+  onColumnClick,
+  isManualBrand = false,
+}) => {
+  // Check if a column is mapped to any field
   const isColumnMapped = (index: number) =>
     Object.values(columnMapping).some(value => value === index && value !== null);
+
+  // Determine header background color based on mapping and manual brand status
+  const getHeaderBgColor = (index: number) => {
+    if (isManualBrand && columnMapping.brand === index) {
+      return 'orange.200'; // Distinct color for manually added brand
+    }
+    return isColumnMapped(index) ? 'teal.100' : 'transparent';
+  };
 
   // Determine the maximum number of columns from headers or rows
   const maxColumns = Math.max(
@@ -38,7 +53,7 @@ const ExcelDataTable: React.FC<ExcelDataTableProps> = ({ excelData, columnMappin
                 key={index}
                 onClick={() => onColumnClick(index)}
                 cursor="pointer"
-                bg={isColumnMapped(index) ? 'teal.100' : 'transparent'}
+                bg={getHeaderBgColor(index)}
                 _hover={{ bg: 'gray.100' }}
               >
                 {excelData.headers[index] || `Column ${index + 1}`}
