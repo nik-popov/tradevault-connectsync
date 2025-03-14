@@ -33,7 +33,7 @@ function Dashboard() {
   };
 
   const proxyProducts: Product[] = [
-    { id: "submit-form", name: "🧑‍💻Google SERP Submit Form", type: "SERP", description: "Submit files to Dev Scraper.", owned: true, path: "/scraping-api/submit-form/google-serp" },
+    { id: "submit-form", name: "🧑‍💻Scraper Submit Form", type: "SERP", description: "Submit files to Dev Scraper.", owned: true, path: "/scraping-api/submit-form/google-serp" },
     { id: "explore-serp", name: "📋 Scraper Jobs", type: "SERP", description: "View Scraper Files.", owned: true, path: "/scraping-api/explore" },
     { id: "icon-gpt", name: "🤖 IconGpt", type: "AI", description: "Use OpenAI and X models.", owned: true, path: "/ai/icongpt" },
     { id: "request-datasets", name: "📁 Request Datasets", type: "datasets", description: "Request Datasets.", owned: true, path: "/datasets/request" },
