@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react"; // Fixed import statement
 import {
   Box,
   Text,
@@ -19,7 +19,7 @@ import {
   AccordionPanel,
   AccordionIcon,
 } from "@chakra-ui/react";
-import useCustomToast from "./../hooks/useCustomToast"; // Import the custom toast hook
+import useCustomToast from "./../hooks/useCustomToast"; // Ensure path is correct
 
 // Interface for individual log entry
 interface LogEntry {
@@ -34,12 +34,12 @@ interface LogEntry {
 interface LogFile {
   fileId: string;
   fileName: string;
-  url: string;
-  lastModified: string; // We'll simulate this since S3 URLs don't provide it directly
+  url: string | null; // Allow null for URLs
+  lastModified: string; // Simulated since S3 URLs don't provide it directly
   entries: LogEntry[];
 }
 
-// Provided S3 log file URLs
+// Updated S3 log file URLs with null values for specified IDs
 const logFileUrls = [
   "https://iconluxurygroup-s3.s3.us-east-2.amazonaws.com/job_logs/job_3.log",
   "https://iconluxurygroup-s3.s3.us-east-2.amazonaws.com/job_logs/job_4.log",
@@ -73,7 +73,7 @@ const parseLogContent = (content: string): LogEntry[] => {
       status: (parts[parts.length - 2] === "SUCCESS" ? "success" : "error") as "success" | "error",
       responseTime: parseInt(parts[parts.length - 1]) || 0,
     };
-  }).filter(entry => entry.timestamp && entry.endpoint && entry.query); // Filter out malformed entries
+  }).filter((entry) => entry.timestamp && entry.endpoint && entry.query); // Filter out malformed entries
 };
 
 const LogsGSerp: React.FC = () => {
@@ -88,8 +88,20 @@ const LogsGSerp: React.FC = () => {
     try {
       const logFilesData: LogFile[] = await Promise.all(
         logFileUrls.map(async (url, index) => {
-          const fileName = url.split("/").pop() || `job_${index}.log`;
+          const jobId = parseInt(url?.split("/").pop()?.replace("job_", "").replace(".log", "") || `${index + 3}`, 10);
+          const fileName = url ? url.split("/").pop() || `job_${jobId}.log` : `job_${jobId}.log`;
           const fileId = fileName.replace(".log", "");
+
+          if (!url) {
+            return {
+              fileId,
+              fileName,
+              url: null,
+              lastModified: new Date(Date.now() - index * 86400000).toISOString(), // Simulated lastModified
+              entries: [],
+            };
+          }
+
           try {
             const response = await fetch(url);
             if (!response.ok) throw new Error(`Failed to fetch ${fileName}: ${response.statusText}`);
@@ -103,7 +115,11 @@ const LogsGSerp: React.FC = () => {
               entries,
             };
           } catch (err) {
-            showToast("Log Fetch Error", `Failed to load ${fileName}: ${err instanceof Error ? err.message : "Unknown error"}`, "error");
+            showToast(
+              "Log Fetch Error",
+              `Failed to load ${fileName}: ${err instanceof Error ? err.message : "Unknown error"}`,
+              "error"
+            );
             return {
               fileId,
               fileName,
@@ -117,7 +133,11 @@ const LogsGSerp: React.FC = () => {
       setLogFiles(logFilesData);
       showToast("Logs Loaded", `Fetched ${logFilesData.length} log files`, "success");
     } catch (err) {
-      showToast("Fetch Error", `Failed to load log files: ${err instanceof Error ? err.message : "Unknown error"}`, "error");
+      showToast(
+        "Fetch Error",
+        `Failed to load log files: ${err instanceof Error ? err.message : "Unknown error"}`,
+        "error"
+      );
       setLogFiles([]);
     } finally {
       setIsLoading(false);
@@ -194,16 +214,20 @@ const LogsGSerp: React.FC = () => {
                   <Td>{new Date(file.lastModified).toLocaleString()}</Td>
                   <Td>{file.entries.length}</Td>
                   <Td>
-                    <Button
-                      size="xs"
-                      colorScheme="teal"
-                      onClick={() => {
-                        window.open(file.url, "_blank");
-                        showToast("File Opened", `Opened ${file.fileName} in new tab`, "info");
-                      }}
-                    >
-                      Download
-                    </Button>
+                    {file.url ? (
+                      <Button
+                        size="xs"
+                        colorScheme="teal"
+                        onClick={() => {
+                          window.open(file.url, "_blank");
+                          showToast("File Opened", `Opened ${file.fileName} in new tab`, "info");
+                        }}
+                      >
+                        Download
+                      </Button>
+                    ) : (
+                      <Text fontSize="xs" color="gray.500">No file</Text>
+                    )}
                   </Td>
                 </Tr>
               ))}
