@@ -109,7 +109,9 @@ const LogsGSerp: React.FC = () => {
     if (!file.url || file.entries !== null) return;
 
     try {
-      const response = await fetch(file.url, { cache: "no-store" });
+      // Ensure file.url is treated as string after null check
+      const url: string = file.url; // Type narrowing
+      const response = await fetch(url, { cache: "no-store" });
       if (!response.ok) throw new Error(`Failed to fetch ${file.fileName}: ${response.statusText}`);
       const content = await response.text();
       const entries = parseLogContent(content);
@@ -142,6 +144,13 @@ const LogsGSerp: React.FC = () => {
     }, 500),
     []
   );
+
+  const handleDownload = (url: string | null) => {
+    if (url) { // Explicitly check for null and narrow type to string
+      window.open(url, "_blank");
+      showToast("File Opened", `Opened ${url.split("/").pop()} in new tab`, "info");
+    }
+  };
 
   useEffect(() => {
     initializeLogFiles();
@@ -206,10 +215,7 @@ const LogsGSerp: React.FC = () => {
                             <Button
                               size="xs"
                               colorScheme="teal"
-                              onClick={() => {
-                                window.open(file.url, "_blank");
-                                showToast("File Opened", `Opened ${file.fileName} in new tab`, "info");
-                              }}
+                              onClick={() => handleDownload(file.url)}
                             >
                               Download
                             </Button>

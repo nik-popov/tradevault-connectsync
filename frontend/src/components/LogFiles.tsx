@@ -90,6 +90,13 @@ const LogFiles: React.FC = () => {
     initializeLogFiles();
   }, []);
 
+  const handleDownload = (url: string | null) => {
+    if (url) { // Explicitly check for null and narrow type to string
+      window.open(url, "_blank");
+      showToast("File Opened", `Opened ${url.split("/").pop()} in new tab`, "info");
+    }
+  };
+
   return (
     <Box p={4} width="100%">
       <Flex justify="space-between" align="center" mb={4}>
@@ -145,10 +152,7 @@ const LogFiles: React.FC = () => {
                       <Button
                         size="xs"
                         colorScheme="teal"
-                        onClick={() => {
-                          window.open(file.url, "_blank");
-                          showToast("File Opened", `Opened ${file.fileName} in new tab`, "info");
-                        }}
+                        onClick={() => handleDownload(file.url)}
                       >
                         Download
                       </Button>
