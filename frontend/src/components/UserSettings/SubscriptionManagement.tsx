@@ -19,7 +19,7 @@ import {
   };
   
   // Define product categories
-  const PRODUCTS = ["proxy", "serp", "datasets"] as const;
+  const PRODUCTS = ["serp"] as const;
   type ProductType = (typeof PRODUCTS)[number];
   
   const STORAGE_KEY = "subscriptionSettings"; // Key for localStorage
