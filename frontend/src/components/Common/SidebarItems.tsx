@@ -67,7 +67,7 @@ const sidebarStructure: SidebarItem[] = [
   { title: "Firewall", icon: FiShield, path: "/support/firewall" },
   { title: "Backup & Recovery", icon: FiDatabase, path: "/support/backup-recovery" },
   { title: "Performance Monitoring", icon: FiMonitor, path: "/support/performance-monitoring" },
-  { title: "Help & Support", icon: FiHelpCircle, path: "/support/help" },
+  { title: "Help", icon: FiHelpCircle, path: "/support/help" },
 ];
 
 interface SidebarItemsProps {
@@ -87,16 +87,11 @@ const SidebarItems = ({ onClose }: SidebarItemsProps) => {
     finalSidebarStructure.push({ title: "Admin", icon: FiUsers, path: "/admin" });
   }
   const isEnabled = (title: string) =>
-    ["Dashboard", "Scraping","IconGpt","Admin"].includes(title) ||
+    ["Dashboard", "Scraping","Help"].includes(title) ||
     (title === "Jobs" && 
       finalSidebarStructure.some(item => 
         item.title === "Scraping" && 
         item.subItems?.some(sub => sub.title === "Jobs")
-      )) ||
-    (title === "Request" && 
-      finalSidebarStructure.some(item => 
-        item.title === "Scraping" && 
-        item.subItems?.some(sub => sub.title === "Request")
       )) ||
     (title === "Proxies" && 
       finalSidebarStructure.some(item => 
