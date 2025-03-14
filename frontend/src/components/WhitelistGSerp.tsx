@@ -31,7 +31,7 @@ const WhitelistGSerp: React.FC = () => {
           throw new Error(`Failed to fetch domains: ${response.status}`);
         }
         const data: DomainAggregation[] = await response.json();
-        console.log("Fetched domains:", data);
+        // console.log("Fetched domains:", data);
         setDomains(data);
         setIsLoading(false);
       } catch (error) {

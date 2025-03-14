@@ -32,6 +32,7 @@ import {
 import Usage from "../../../../components/Usage";
 import Overview from "../../../../components/Overview";
 import { LoadScript, GoogleMap, Marker, Polyline } from "@react-google-maps/api";
+import useCustomToast from "../../../../hooks/useCustomToast"; // Import the custom toast hook
 
 // Interface for traceroute hop data
 interface TracerouteHop {
@@ -42,6 +43,7 @@ interface TracerouteHop {
   longitude: number;
   latency: number;
 }
+
 type EndpointData = {
   endpoint: string;
   endpointId: string;
@@ -59,17 +61,17 @@ const endpointData: Record<string, string> = {
   "US-EAST4": "https://us-east4-image-scraper-451516.cloudfunctions.net/main",
   "US-WEST1": "https://us-west1-image-scraper-451516.cloudfunctions.net/main",
   "EUROPE-WEST4": "https://europe-west4-image-proxy-453319.cloudfunctions.net/main",
-  "US-WEST4":"https://us-west4-image-proxy-453319.cloudfunctions.net/main",
-  "EUROPE-WEST1":"https://europe-west1-image-proxy-453319.cloudfunctions.net/main",
-  "EUROPE-NORTH1":"https://europe-north1-image-proxy-453319.cloudfunctions.net/main",
-  "ASIA-EAST1":"https://asia-east1-image-proxy-453319.cloudfunctions.net/main",
-  "US-SOUTH1":"https://us-south1-gen-lang-client-0697423475.cloudfunctions.net/main",
+  "US-WEST4": "https://us-west4-image-proxy-453319.cloudfunctions.net/main",
+  "EUROPE-WEST1": "https://europe-west1-image-proxy-453319.cloudfunctions.net/main",
+  "EUROPE-NORTH1": "https://europe-north1-image-proxy-453319.cloudfunctions.net/main",
+  "ASIA-EAST1": "https://asia-east1-image-proxy-453319.cloudfunctions.net/main",
+  "US-SOUTH1": "https://us-south1-gen-lang-client-0697423475.cloudfunctions.net/main",
   "US-WEST3": "https://us-west3-gen-lang-client-0697423475.cloudfunctions.net/main",
   "US-EAST5": "https://us-east5-gen-lang-client-0697423475.cloudfunctions.net/main",
   "ASIA-SOUTHEAST1": "https://asia-southeast1-gen-lang-client-0697423475.cloudfunctions.net/main",
   "US-WEST2": "https://us-west2-gen-lang-client-0697423475.cloudfunctions.net/main",
-  "NORTHAMERICA-NORTHEAST2" : "https://northamerica-northeast2-image-proxy2-453320.cloudfunctions.net/main",
-  "SOUTHAMERICA-EAST1": "https://southamerica-east1-image-proxy2-453320.cloudfunctions.net/main", 
+  "NORTHAMERICA-NORTHEAST2": "https://northamerica-northeast2-image-proxy2-453320.cloudfunctions.net/main",
+  "SOUTHAMERICA-EAST1": "https://southamerica-east1-image-proxy2-453320.cloudfunctions.net/main",
   "EUROPE-WEST8": "https://europe-west8-icon-image3.cloudfunctions.net/main",
   "EUROPE-SOUTHWEST1": "https://europe-southwest1-icon-image3.cloudfunctions.net/main",
   "EUROPE-WEST6": "https://europe-west6-icon-image3.cloudfunctions.net/main",
@@ -80,7 +82,7 @@ const endpointData: Record<string, string> = {
   "MIDDLEEAST-CENTRAL1": "https://me-central1-image-proxy4.cloudfunctions.net/main",
   "EUROPE-WEST12": "https://europe-west12-image-proxy4.cloudfunctions.net/main",
   "EUROPE-WEST10": "https://europe-west10-image-proxy4.cloudfunctions.net/main",
-  "ASIA-NORTHEAST2" : "https://asia-northeast2-image-proxy4.cloudfunctions.net/main",
+  "ASIA-NORTHEAST2": "https://asia-northeast2-image-proxy4.cloudfunctions.net/main",
 };
 
 // Updated static traceroute data with 6 datasets per endpoint
@@ -102,7 +104,7 @@ const staticTracerouteData: Record<string, TracerouteHop[][]> = {
       { hop: 4, ip: "201.54.32.11", city: "Bogotá, Colombia", latitude: 4.7110, longitude: -74.0721, latency: 70 },
       { hop: 5, ip: "34.98.76.55", city: "Caracas, Venezuela", latitude: 10.4806, longitude: -66.9036, latency: 90 },
     ],
-    // Dataset 3 (New)
+    // Dataset 3
     [
       { hop: 1, ip: "192.168.1.3", city: "Concepción, Chile", latitude: -36.8270, longitude: -73.0503, latency: 7 },
       { hop: 2, ip: "200.45.67.91", city: "Mendoza, Argentina", latitude: -32.8895, longitude: -68.8458, latency: 30 },
@@ -110,7 +112,7 @@ const staticTracerouteData: Record<string, TracerouteHop[][]> = {
       { hop: 4, ip: "201.54.32.12", city: "Medellín, Colombia", latitude: 6.2442, longitude: -75.5812, latency: 75 },
       { hop: 5, ip: "34.98.76.56", city: "Guayaquil, Ecuador", latitude: -2.1894, longitude: -79.8891, latency: 95 },
     ],
-    // Dataset 4 (New)
+    // Dataset 4
     [
       { hop: 1, ip: "192.168.1.4", city: "Antofagasta, Chile", latitude: -23.6509, longitude: -70.3975, latency: 8 },
       { hop: 2, ip: "200.45.67.92", city: "Rosario, Argentina", latitude: -32.9442, longitude: -60.6505, latency: 35 },
@@ -118,7 +120,7 @@ const staticTracerouteData: Record<string, TracerouteHop[][]> = {
       { hop: 4, ip: "201.54.32.13", city: "Cali, Colombia", latitude: 3.4516, longitude: -76.5320, latency: 80 },
       { hop: 5, ip: "34.98.76.57", city: "Cuenca, Ecuador", latitude: -2.9005, longitude: -79.0045, latency: 100 },
     ],
-    // Dataset 5 (New)
+    // Dataset 5
     [
       { hop: 1, ip: "192.168.1.5", city: "La Serena, Chile", latitude: -29.9027, longitude: -71.2519, latency: 9 },
       { hop: 2, ip: "200.45.67.93", city: "Salta, Argentina", latitude: -24.7821, longitude: -65.4232, latency: 40 },
@@ -126,7 +128,7 @@ const staticTracerouteData: Record<string, TracerouteHop[][]> = {
       { hop: 4, ip: "201.54.32.14", city: "Cartagena, Colombia", latitude: 10.3910, longitude: -75.4794, latency: 85 },
       { hop: 5, ip: "34.98.76.58", city: "Loja, Ecuador", latitude: -3.9931, longitude: -79.2042, latency: 105 },
     ],
-    // Dataset 6 (New)
+    // Dataset 6
     [
       { hop: 1, ip: "192.168.1.6", city: "Iquique, Chile", latitude: -20.2208, longitude: -70.1431, latency: 10 },
       { hop: 2, ip: "200.45.67.94", city: "San Miguel de Tucumán, Argentina", latitude: -26.8083, longitude: -65.2176, latency: 45 },
@@ -389,34 +391,38 @@ const staticTracerouteData: Record<string, TracerouteHop[][]> = {
 
 // MapUpdater component
 const MapUpdater: React.FC<{ hops: TracerouteHop[]; map: google.maps.Map | null }> = ({ hops, map }) => {
+  const showToast = useCustomToast(); // Use custom toast in MapUpdater
+
   useEffect(() => {
     if (map && hops.length > 0) {
       const bounds = new google.maps.LatLngBounds();
       hops.forEach((hop) => bounds.extend({ lat: hop.latitude, lng: hop.longitude }));
       map.fitBounds(bounds, 50);
-      console.log("Map bounds set with hops:", hops);
+      showToast("Map Updated", `Map bounds set with ${hops.length} hops`, "info");
     }
-  }, [hops, map]);
+  }, [hops, map, showToast]);
+
   return null;
 };
 
 // LoadScript wrapper to ensure single load
 const LoadScriptOnce: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [loaded, setLoaded] = useState(false);
+  const showToast = useCustomToast(); // Use custom toast in LoadScriptOnce
 
   return (
     <LoadScript
       googleMapsApiKey="AIzaSyCGkpSEixfDAVnE3UWw-8v9pd6L3OFXvM0"
       onLoad={() => {
         if (!loaded) {
-          console.log("Google Maps API loaded successfully");
+          showToast("Google Maps Loaded", "Google Maps API loaded successfully", "success");
           setLoaded(true);
         } else {
-          console.log("Google Maps API already loaded");
+          showToast("Google Maps Already Loaded", "Google Maps API was already loaded", "info");
         }
       }}
       onError={(e) => {
-        console.error("Google Maps API failed to load:", e);
+        showToast("Google Maps Error", `Failed to load Google Maps API: ${e.message}`, "error");
       }}
     >
       {loaded && children}
@@ -426,6 +432,7 @@ const LoadScriptOnce: React.FC<{ children: React.ReactNode }> = ({ children }) =
 
 const EndpointDetailPage = () => {
   const { endpointId } = useParams({ from: "/_layout/scraping-api/endpoints/$endpointId" });
+  const showToast = useCustomToast(); // Use custom toast in main component
 
   const [tracerouteData, setTracerouteData] = useState<TracerouteHop[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -447,17 +454,18 @@ const EndpointDetailPage = () => {
       const datasets = staticTracerouteData[endpointId] || [];
       if (datasets.length === 0) {
         setTracerouteData([]);
-        console.log("No datasets found for endpoint:", endpointId);
+        showToast("No Data", `No traceroute datasets found for endpoint: ${endpointId}`, "warning");
         return;
       }
 
       const data = datasets[dataSetIndex];
-      console.log("Fetching traceroute data:", data);
+      showToast("Traceroute Fetched", `Loaded traceroute dataset ${dataSetIndex + 1} for ${endpointId}`, "success");
       setTracerouteData(data);
       setDataSetIndex((prev) => (prev + 1) % 6); // Cycle through 6 datasets
     } catch (err) {
-      console.error("Traceroute fetch error:", err);
-      setError(err instanceof Error ? err.message : "An unknown error occurred");
+      const errorMessage = err instanceof Error ? err.message : "An unknown error occurred";
+      showToast("Traceroute Error", `Failed to fetch traceroute data: ${errorMessage}`, "error");
+      setError(errorMessage);
       setTracerouteData([]);
     } finally {
       setIsLoading(false);
@@ -554,9 +562,12 @@ const EndpointDetailPage = () => {
                       }
                       onLoad={(mapInstance) => {
                         setMap(mapInstance);
-                        console.log("Map instance loaded");
+                        showToast("Map Loaded", "Google Map instance loaded successfully", "success");
                       }}
-                      onUnmount={() => setMap(null)}
+                      onUnmount={() => {
+                        setMap(null);
+                        showToast("Map Unmounted", "Google Map instance unmounted", "info");
+                      }}
                     >
                       <MapUpdater hops={tracerouteData} map={map} />
                       {showMarkers &&

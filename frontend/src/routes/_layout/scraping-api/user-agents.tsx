@@ -13,6 +13,7 @@ import {
   Select,
 } from "@chakra-ui/react";
 import { createFileRoute } from "@tanstack/react-router";
+import useCustomToast from "../../../hooks/useCustomToast"; // Import the custom toast hook
 
 interface UserAgent {
   id: string;
@@ -32,6 +33,7 @@ const UserAgentDashboard = () => {
   const [browserFilter, setBrowserFilter] = useState<string>("all");
   const [sortBy, setSortBy] = useState<string>("lastUsed");
   const [isActive, setIsActive] = useState<boolean>(true); // true = Active, false = Inactive
+  const showToast = useCustomToast(); // Use custom toast
 
   // Fetch user agents
   const fetchUserAgents = async () => {
@@ -43,7 +45,7 @@ const UserAgentDashboard = () => {
       );
       if (!response.ok) throw new Error("Failed to fetch user agents");
       const data = await response.json();
-      console.log("Fetched User Agents:", data.data);
+      showToast("User Agents Fetched", `Loaded ${data.data.length} user agents`, "success");
 
       // Simulate lastUsed and timeUsed since API doesn't provide them
       const enhancedData = (Array.isArray(data.data) ? data.data : []).map((agent: UserAgent, index: number) => ({
@@ -53,7 +55,8 @@ const UserAgentDashboard = () => {
       }));
       setUserAgents(enhancedData);
     } catch (err) {
-      console.error("Error fetching user agents:", err);
+      const errorMessage = err instanceof Error ? err.message : "An unknown error occurred";
+      showToast("Fetch Error", errorMessage, "error");
       setUserAgents([]);
     } finally {
       setLoading(false);
@@ -130,7 +133,10 @@ const UserAgentDashboard = () => {
           <Input
             placeholder="Search user agents..."
             value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
+            onChange={(e) => {
+              setSearchTerm(e.target.value);
+              showToast("Search Updated", `Searching for: ${e.target.value}`, "info");
+            }}
             w={{ base: "100%", md: "250px" }}
             aria-label="Search user agents"
             color="white"
@@ -147,7 +153,10 @@ const UserAgentDashboard = () => {
                 borderRadius="full"
                 colorScheme={browserFilter === browser ? "purple" : "gray"}
                 variant={browserFilter === browser ? "solid" : "outline"}
-                onClick={() => setBrowserFilter(browser)}
+                onClick={() => {
+                  setBrowserFilter(browser);
+                  showToast("Browser Filter", `Filtered by browser: ${browser}`, "info");
+                }}
               >
                 {browser === "all" ? "All" : browser}
               </Button>
@@ -158,13 +167,19 @@ const UserAgentDashboard = () => {
               borderRadius="full"
               colorScheme={isActive ? "teal" : "orange"}
               variant="solid"
-              onClick={() => setIsActive(!isActive)}
+              onClick={() => {
+                setIsActive(!isActive);
+                showToast("Activity Filter", `Showing ${isActive ? "inactive" : "active"} agents`, "info");
+              }}
             >
               {isActive ? "Active" : "Inactive"}
             </Button>
             <Select
               value={sortBy}
-              onChange={(e) => setSortBy(e.target.value)}
+              onChange={(e) => {
+                setSortBy(e.target.value);
+                showToast("Sort Applied", `Sorted by: ${e.target.value}`, "info");
+              }}
               size="sm"
               w={{ base: "100%", md: "220px" }}
               color="white"

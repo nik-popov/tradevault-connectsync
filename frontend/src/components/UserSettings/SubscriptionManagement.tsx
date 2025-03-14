@@ -126,9 +126,9 @@ import {
           ))}
         </VStack>
   
-        <Button mt={6} colorScheme="blue" w="full" onClick={() => console.log("Updated Settings:", settings)}>
+        {/* <Button mt={6} colorScheme="blue" w="full">
           Save Changes
-        </Button>
+        </Button> */}
       </Box>
     );
   };

@@ -38,7 +38,6 @@ const sidebarStructure: SidebarItem[] = [
       { title: "Proxies", path: "/scraping-api/search-proxies" },
       { title: "Vision", path: "/scraping-api/vision" },
       { title: "Reasoning", path: "/scraping-api/language-model" },
-      { title: "User Agents", path: "/scraping-api/user-agents" },
 
     ],
     icon: FiLayers,
