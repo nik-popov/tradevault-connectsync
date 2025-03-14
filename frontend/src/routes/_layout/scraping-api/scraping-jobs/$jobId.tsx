@@ -1196,7 +1196,6 @@ const SearchRowsTab: React.FC<SearchRowsTabProps> = ({ job }) => {
                               maxH="80px"
                               objectFit="cover"
                               fallback={<Text fontSize="xs" color="gray.500">No image</Text>}
-                              onLoad={() => showToast("Image Loaded", `Loaded image ${index + 1} for record ${record.entryId}`, "success")}
                               onError={() => showToast("Image Error", `Failed to load image ${index + 1} for record ${record.entryId}`, "error")}
                             />
                           </Td>
