@@ -124,6 +124,10 @@ const LogsGSerp: React.FC = () => {
     }
   };
 
+  useEffect(() => {
+    fetchLogFiles();
+  }, []);
+
   // Filter log entries within each file based on status
   const getFilteredEntries = (entries: LogEntry[]) => {
     return entries.filter((log) => filter === "all" || log.status === filter);
