@@ -1,4 +1,3 @@
-// src/routes/_layout/scraping-api/submit-form/google-serp.tsx
 import React, { useState } from 'react';
 import {
   Container,
@@ -9,7 +8,6 @@ import {
   Box,
   Input,
   FormControl,
-  FormLabel,
   Modal,
   ModalOverlay,
   ModalContent,
@@ -21,6 +19,7 @@ import {
   Td,
   Tbody,
   Select,
+  Spinner,
 } from '@chakra-ui/react';
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
 import { FiSend } from 'react-icons/fi';
@@ -91,7 +90,7 @@ function GoogleSerpForm() {
     category: null,
     colorName: null,
   });
-  const [manualBrand, setManualBrand] = useState<string>(''); // New state for manual brand input
+  const [manualBrand, setManualBrand] = useState<string>('');
   const showToast = useCustomToast();
   const navigate = useNavigate();
 
@@ -99,8 +98,6 @@ function GoogleSerpForm() {
   const optionalColumns = ['category', 'colorName', 'readImage', 'imageAdd'];
   const allColumns = [...requiredColumns, ...optionalColumns];
   const targetHeaders = ['BRAND', 'GENDER', 'STYLE', 'COLOR NAME', 'CATEGORY'];
-  const STORAGE_KEY = 'subscriptionSettings';
-  const PRODUCT = 'serp';
   const SERVER_URL = 'https://backend-dev.iconluxury.group';
 
   const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -113,7 +110,8 @@ function GoogleSerpForm() {
       setFile(selectedFile);
       setExcelData({ headers: [], rows: [] });
       setColumnMapping({ style: null, brand: null, imageAdd: null, readImage: null, category: null, colorName: null });
-      setManualBrand(''); // Reset manual brand on new file upload
+      setManualBrand('');
+      setIsLoadingFile(true);
 
       const reader = new FileReader();
       reader.onload = (e) => {
@@ -170,6 +168,8 @@ function GoogleSerpForm() {
           }
         } catch (error) {
           throw new Error('Error parsing Excel file: ' + error.message);
+        } finally {
+          setIsLoadingFile(false);
         }
       };
       reader.onerror = () => { throw new Error('Error reading file'); };
@@ -177,6 +177,7 @@ function GoogleSerpForm() {
     } catch (error) {
       showToast('File Upload Error', error.message, 'error');
       setFile(null);
+      setIsLoadingFile(false);
     }
   };
 
@@ -307,95 +308,112 @@ function GoogleSerpForm() {
 
   return (
     <Container maxW="full" h="100vh" p={4}>
-      <VStack spacing={2} align="stretch" h="full">
-          <Text fontSize="2xl" fontWeight="bold" color="white">Submit Form</Text>
-          <Text fontSize="md" color="gray.300">
-            Upload an Excel file, select header row, and map required fields (Style, Brand).
-          </Text>
-          <Text fontSize="md" color="gray.300">Up to 1000 rows.</Text>
-        <HStack spacing={2} align="center">
-        <FormControl w="xl">
-        <Input
-          placeholder="Upload Excel File"
-          type="file"
-          accept=".xlsx,.xls"
-          onChange={handleFileChange}
-          disabled={isLoadingFile}
-          mt={7}
-          css={{
-            '&::-webkit-file-upload-button': {
-              padding: '4px 12px',
-              borderRadius: 'md',
-              marginTop: '-8px',
-              backgroundColor: 'transparent', // Blend into input
-              border: 'none', // No distinct border
-              color: 'gray.500', // Subtle text color
-              fontSize: 'md', // Match input font size
-              cursor: 'pointer',
-            },
-            '&:focus': {
-              outline: 'none',
-              boxShadow: 'outline',
-            },
-          }}
-        />
-      </FormControl>
-            <Button
-              colorScheme="green"
-              leftIcon={<FiSend />}
-              onClick={handleSubmit}
-              isDisabled={!excelData.rows.length || isLoadingFile || !allRequiredSelected}
-              isLoading={isLoadingFile}
-              mt={6}
-            >
-            </Button>
-            {excelData.headers.length > 0 && (
-              <VStack align="start" spacing={1} mt={6}>
-                <Text fontSize="sm" color="gray.400">Rows: {excelData.rows.length}</Text>
-                <Text fontSize="sm" color={missingRequired.length > 0 ? 'red.300' : 'teal.300'}>
-                  {missingRequired.length > 0
-                    ? `Missing: ${missingRequired.join(', ')}`
-                    : `Mapped: ${mappedColumns.join(', ')}`}
-                </Text>
-              </VStack>
-            )}
-          
-          </HStack>
-          {isLoadingFile && <Text color="gray.400" mt={6}>Processing...</Text>}
+      <VStack spacing={1} align="stretch" h="full">
+        <Text fontSize="2xl" fontWeight="bold" color="white">Submit Form</Text>
+        <Text fontSize="md" color="gray.300">
+          Upload an Excel file, select header row, and map required fields (Style, Brand).
+        </Text>
+        <Text fontSize="md" color="gray.300">Up to 1000 rows.</Text>
+        <HStack spacing={2} align="flex-end" wrap="wrap"> {/* Changed align to flex-end */}
+          <FormControl w="xl">
+            <Input
+              placeholder="Upload Excel File"
+              type="file"
+              accept=".xlsx,.xls"
+              onChange={handleFileChange}
+              disabled={isLoadingFile}
+              mt={2}
+              css={{
+                '&::-webkit-file-upload-button': {
+                  padding: '4px 12px',
+                  borderRadius: 'md',
+                  marginTop: '-8px',
+                  backgroundColor: 'transparent',
+                  border: 'none',
+                  color: 'gray.500',
+                  fontSize: 'md',
+                  cursor: 'pointer',
+                },
+                '&:focus': {
+                  outline: 'none',
+                  boxShadow: 'outline',
+                },
+              }}
+            />
+          </FormControl>
+          <Button
+            colorScheme="green"
+            leftIcon={<FiSend />}
+            onClick={handleSubmit}
+            isDisabled={!excelData.rows.length || isLoadingFile || !allRequiredSelected}
+            isLoading={isLoadingFile}
+            mt={2}
+            mb={0} // Ensure button bottom aligns with input
+          />
+          {excelData.headers.length > 0 && (
+            <VStack align="start" spacing={0} mb={0}> {/* Changed mt to mb to align bottom */}
+              {missingRequired.length > 0 ? (
+                <VStack align="start" spacing={0} flexDirection="column-reverse"> {/* Stack upwards */}
+                  {missingRequired.map((col) => (
+                    <Text key={col} fontSize="sm" color="red.300">{col}</Text>
+                  ))}
+                  <Text fontSize="sm" color="red.300">Missing:</Text>
+                </VStack>
+              ) : (
+                <VStack align="start" spacing={0} flexDirection="column-reverse"> {/* Stack upwards */}
+                  {mappedColumns.map((mapping, index) => (
+                    <Text key={index} fontSize="sm" color="teal.300">{mapping}</Text>
+                  ))}
+                  <Text fontSize="sm" color="teal.300">Mapped:</Text>
+                </VStack>
+              )}
+              <Text fontSize="sm" color="gray.400">Rows: {excelData.rows.length}</Text>
+            </VStack>
+          )}
+          {isLoadingFile && <Text color="gray.400" mt={2} mb={0}>Processing...</Text>}
+        </HStack>
+
         {/* Manual Brand Input Section */}
         {excelData.rows.length > 0 && columnMapping.brand === null && (
-          <HStack>
+          <HStack spacing={2} mt={1}>
             <FormControl w="sm">
               <Input
                 placeholder="Add Brand for All Rows"
                 value={manualBrand}
                 onChange={(e) => setManualBrand(e.target.value)}
                 disabled={isLoadingFile}
-                mt={6}
+                mt={1}
               />
             </FormControl>
             <Button
               colorScheme="orange"
               onClick={applyManualBrand}
               isDisabled={!manualBrand || isLoadingFile}
-              mt={6}
+              mt={1}
             >
               Apply
             </Button>
           </HStack>
         )}
 
-        <Box borderBottomWidth="1px" borderColor="gray.600" my={4} />
+        <Box borderBottomWidth="1px" borderColor="gray.600" my={2} />
 
         {excelData.rows.length > 0 && (
           <Box flex="1" overflowY="auto" maxH="60vh" borderWidth="1px" borderRadius="md" p={4}>
-            <ExcelDataTableMemo
-              excelData={excelData}
-              columnMapping={columnMapping}
-              setColumnMapping={setColumnMapping}
-              onColumnClick={openMappingModal}
-              isManualBrand={columnMapping.brand !== null && excelData.headers[columnMapping.brand] === 'BRAND (Manual)'}
-            />
+            {isLoadingFile ? (
+              <VStack justify="center" h="full">
+                <Spinner size="lg" color="gray.400" />
+                <Text color="gray.400">Loading table data...</Text>
+              </VStack>
+            ) : (
+              <ExcelDataTableMemo
+                excelData={excelData}
+                columnMapping={columnMapping}
+                setColumnMapping={setColumnMapping}
+                onColumnClick={openMappingModal}
+                isManualBrand={columnMapping.brand !== null && excelData.headers[columnMapping.brand] === 'BRAND (Manual)'}
+              />
+            )}
           </Box>
         )}
 

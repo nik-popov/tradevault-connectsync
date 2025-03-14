@@ -1,6 +1,6 @@
 import React from 'react';
 import { Container, VStack, Heading, Text, Button } from '@chakra-ui/react';
-import { createFileRoute, useNavigate } from '@tanstack/react-router';
+import { createFileRoute, useNavigate, useParams } from '@tanstack/react-router';
 
 export const Route = createFileRoute('/_layout/scraping-api/submit-form/success')({
   component: SuccessPage,
@@ -8,6 +8,7 @@ export const Route = createFileRoute('/_layout/scraping-api/submit-form/success'
 
 function SuccessPage() {
   const navigate = useNavigate();
+  const { jobId } = useParams(); // Get jobId from URL
 
   return (
     <Container maxW="full" py={10}>
@@ -26,8 +27,16 @@ function SuccessPage() {
           colorScheme="purple"
           onClick={() => navigate({ to: '/scraping-api/submit-form/google-serp' })}
         >
-      Submit New Job
+          Submit New Job
         </Button>
+        {jobId && (
+          <Button
+            colorScheme="teal"
+            onClick={() => navigate({ to: `/scraping-api/scraping-jobs/${jobId}` })}
+          >
+            Job {jobId} Details
+          </Button>
+        )}
       </VStack>
     </Container>
   );
