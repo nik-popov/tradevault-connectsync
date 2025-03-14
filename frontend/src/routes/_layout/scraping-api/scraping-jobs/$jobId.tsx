@@ -926,7 +926,7 @@ const SearchRowsTab: React.FC<SearchRowsTabProps> = ({ job }) => {
 
   const handleRowIdClick = (e: React.MouseEvent<HTMLElement, MouseEvent>, productModel: string) => {
     e.preventDefault();
-    const url = `${window.location.pathname}?activeTab=2&search=${encodeURIComponent(productModel || "")}#input-search`;
+    const url = `${window.location.pathname}?activeTab=2&search=${encodeURIComponent(productModel || "")}`;
     window.open(url, "_blank", "noopener,noreferrer");
     showToast("Row Clicked", `Opened results for model: ${productModel}`, "info");
   };
