@@ -61,7 +61,7 @@ function Login() {
   // GitHub logo remains unchanged
   const GitHubLogo = () => (
     <Link
-      href="https://github.com/iconluxurygroupNet"
+      href="https://github.com/iconluxurygroup"
       target="_blank"
       rel="noopener noreferrer"
     >
