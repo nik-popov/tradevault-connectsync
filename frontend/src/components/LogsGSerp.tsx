@@ -241,7 +241,7 @@ const LogsGSerp: React.FC = () => {
                   }}
                   width="150px"
                 >
-                  <option value="all">All Statuses</option>
+                  <option value="all">All</option>
                   <option value="success">Success Only</option>
                   <option value="error">Errors Only</option>
                 </Select>

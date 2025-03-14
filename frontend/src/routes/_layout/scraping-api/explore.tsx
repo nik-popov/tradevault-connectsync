@@ -127,7 +127,7 @@ function Explore() {
                 onChange={(e) => setStatusFilter(e.target.value as "all" | "completed" | "pending")}
                 w={{ base: "100%", md: "200px" }}
               >
-                <option value="all">All Statuses</option>
+                <option value="all">All</option>
                 <option value="completed">Completed</option>
                 <option value="pending">Pending</option>
               </Select>
