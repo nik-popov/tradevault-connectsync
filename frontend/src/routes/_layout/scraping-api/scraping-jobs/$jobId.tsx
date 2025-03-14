@@ -1417,8 +1417,7 @@ const JobsDetailPage = () => {
       setIsLoading(false);
     }
   };
-
-  useEffect(() => {
+    useEffect(() => {
     fetchJobData();
   }, [jobId]);
 
