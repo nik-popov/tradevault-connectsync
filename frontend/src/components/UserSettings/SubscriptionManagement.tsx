@@ -69,9 +69,6 @@ import {
   
     return (
       <Box borderWidth="1px" borderRadius="lg" p={5} w="100%">
-        <Heading size="md" mb={4}>
-          State Management
-        </Heading>
         <VStack align="stretch" spacing={6}>
           {PRODUCTS.map((product, index) => (
             <Box key={product} p={4} borderWidth="1px" borderRadius="md">
