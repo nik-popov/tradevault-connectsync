@@ -245,7 +245,7 @@ function GoogleSerpForm() {
       formData.append('brandColImage', brandCol);
       if (colorCol) formData.append('ColorColImage', colorCol);
       if (categoryCol) formData.append('CategoryColImage', categoryCol);
-      formData.append('headerRow', String(headerRowIndex)); // Add header row index
+      formData.append('header_index', String(headerRowIndex)); // Fixed key name
       const response = await fetch(`${SERVER_URL}/submitImage`, { method: 'POST', body: formData });
       if (!response.ok) throw new Error(`Server error: ${response.status} - ${await response.text()}`);
       const result = await response.json();
@@ -259,7 +259,6 @@ function GoogleSerpForm() {
       setIsLoadingFile(false);
     }
   };
-
   const handleMappingConfirm = (confirm: boolean) => {
     if (confirm && selectedColumn !== null) {
       const newMapping = { ...columnMapping };
