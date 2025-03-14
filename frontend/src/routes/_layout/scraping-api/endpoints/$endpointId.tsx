@@ -29,7 +29,6 @@ import {
   Th,
   Td,
 } from "@chakra-ui/react";
-import EndpointSettings from "../../../../components/EndpointSettings";
 import Usage from "../../../../components/Usage";
 import Overview from "../../../../components/Overview";
 import { LoadScript, GoogleMap, Marker, Polyline } from "@react-google-maps/api";

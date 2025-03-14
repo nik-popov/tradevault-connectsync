@@ -38,7 +38,7 @@ const UserMenu = () => {
             data-testid="user-menu"
           />
           <MenuList>
-            <MenuItem icon={<FiUser fontSize="18px" />} as={Link} to="settings">
+            <MenuItem icon={<FiUser fontSize="18px" />} as={Link} to="/settings">
              Settings
             </MenuItem>
             <MenuItem

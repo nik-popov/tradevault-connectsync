@@ -10,7 +10,6 @@ import {
   Textarea,
   FormControl,
   FormLabel,
-  useToast,
   Heading,
   Badge,
   Icon,
@@ -19,6 +18,7 @@ import { useState } from "react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { FiSend, FiGithub, FiInfo } from "react-icons/fi";
+import useCustomToast from "../../../hooks/useCustomToast"; // Import the custom toast hook
 import PromoSERP from "../../../components/ComingSoon";
 
 // Storage and Product Key
@@ -31,7 +31,7 @@ export const Route = createFileRoute("/_layout/scraping-api/request")({
 
 function Request(): JSX.Element {
   const navigate = useNavigate();
-  const toast = useToast();
+  const showToast = useCustomToast(); // Use the custom toast hook
 
   // Load Subscription State using useQuery
   const { data: subscriptionSettings } = useQuery({
@@ -61,26 +61,20 @@ function Request(): JSX.Element {
 
   const handleSubmit = async (): Promise<void> => {
     if (!websiteName.trim() || !websiteUrl.trim() || !scrapingPurpose.trim()) {
-      toast({
-        title: "Missing Information",
-        description: "Please complete all fields to submit your scraping request.",
-        status: "warning",
-        duration: 4000,
-        isClosable: true,
-        position: "top",
-      });
+      showToast(
+        "Missing Information",
+        "Please complete all fields to submit your scraping request.",
+        "warning"
+      );
       return;
     }
 
     if (!/^https?:\/\/[^\s/$.?#].[^\s]*$/.test(websiteUrl)) {
-      toast({
-        title: "Invalid URL",
-        description: "Please provide a valid website URL (e.g., https://example.com).",
-        status: "error",
-        duration: 4000,
-        isClosable: true,
-        position: "top",
-      });
+      showToast(
+        "Invalid URL",
+        "Please provide a valid website URL (e.g., https://example.com).",
+        "error"
+      );
       return;
     }
 
@@ -90,28 +84,22 @@ function Request(): JSX.Element {
       // Simulate API request
       await new Promise((resolve) => setTimeout(resolve, 1000));
 
-      toast({
-        title: "Request Submitted",
-        description: "Your website scraping request has been successfully submitted. We'll review it shortly.",
-        status: "success",
-        duration: 5000,
-        isClosable: true,
-        position: "top",
-      });
+      showToast(
+        "Request Submitted",
+        "Your website scraping request has been successfully submitted. We'll review it shortly.",
+        "success"
+      );
 
       // Reset form
       setWebsiteName("");
       setWebsiteUrl("");
       setScrapingPurpose("");
     } catch (error) {
-      toast({
-        title: "Submission Error",
-        description: "An error occurred while submitting your request. Please try again later.",
-        status: "error",
-        duration: 5000,
-        isClosable: true,
-        position: "top",
-      });
+      showToast(
+        "Submission Error",
+        "An error occurred while submitting your request. Please try again later.",
+        "error"
+      );
     } finally {
       setIsSubmitting(false);
     }
@@ -123,12 +111,12 @@ function Request(): JSX.Element {
         {/* Header */}
         <Flex align="center" justify="space-between" flexWrap="wrap" gap={4}>
           <Box>
-          <Flex align="center" justify="space-between" py={6} flexWrap="wrap" gap={4}>
-        <Box textAlign="left" flex="1">
-          <Text fontSize="xl" fontWeight="bold">Request Scraper</Text>
-          <Text fontSize="sm" color="gray.500">Provide details about the website you want to scrape.</Text>
-        </Box>
-      </Flex>
+            <Flex align="center" justify="space-between" py={6} flexWrap="wrap" gap={4}>
+              <Box textAlign="left" flex="1">
+                <Text fontSize="xl" fontWeight="bold">Request Scraper</Text>
+                <Text fontSize="sm" color="gray.500">Provide details about the website you want to scrape.</Text>
+              </Box>
+            </Flex>
           </Box>
           <Badge colorScheme={isLocked ? "red" : "green"} alignSelf="center">
             {isLocked ? "Subscription Required" : "Active"}
@@ -169,7 +157,7 @@ function Request(): JSX.Element {
                 borderRadius="lg"
                 boxShadow="md"
               >
-               <VStack spacing={5} align="stretch">
+                <VStack spacing={5} align="stretch">
                   <FormControl isRequired>
                     <FormLabel color="gray.300">Website Name</FormLabel>
                     <Input

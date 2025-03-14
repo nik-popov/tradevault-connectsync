@@ -1,3 +1,4 @@
+// src/components/Support.tsx
 import React, { useState } from "react";
 import {
   Container,
@@ -22,10 +23,10 @@ import {
   Th,
   Td,
   Tbody,
-  useToast,
 } from "@chakra-ui/react";
 import { createFileRoute } from "@tanstack/react-router";
 import { FiSend, FiHelpCircle, FiGithub } from "react-icons/fi";
+import useCustomToast from "./../../hooks/useCustomToast"; // Import the custom hook
 
 // Route Setup
 export const Route = createFileRoute("/_layout/support")({
@@ -33,7 +34,7 @@ export const Route = createFileRoute("/_layout/support")({
 });
 
 function Support() {
-  const toast = useToast();
+  const showToast = useCustomToast(); // Use the custom toast hook
 
   // Form State
   const [name, setName] = useState("");
@@ -43,13 +44,7 @@ function Support() {
 
   const handleSubmit = async () => {
     if (!name || !email || !message) {
-      toast({
-        title: "Error",
-        description: "Please fill in all fields before submitting.",
-        status: "error",
-        duration: 3000,
-        isClosable: true,
-      });
+      showToast("Error", "Please fill in all fields before submitting.", "error");
       return;
     }
 
@@ -58,26 +53,14 @@ function Support() {
     try {
       await new Promise((resolve) => setTimeout(resolve, 1000));
 
-      toast({
-        title: "Support Request Sent",
-        description: "Our team will get back to you soon.",
-        status: "success",
-        duration: 3000,
-        isClosable: true,
-      });
+      showToast("Support Request Sent", "Our team will get back to you soon.", "success");
 
       // Reset form
       setName("");
       setEmail("");
       setMessage("");
     } catch (error) {
-      toast({
-        title: "Submission Failed",
-        description: "Something went wrong. Please try again later.",
-        status: "error",
-        duration: 3000,
-        isClosable: true,
-      });
+      showToast("Submission Failed", "Something went wrong. Please try again later.", "error");
     }
 
     setIsSubmitting(false);
@@ -85,7 +68,7 @@ function Support() {
 
   // Dummy Support Tickets
   const dummyTickets = [
-    { id: 1, subject: "Billing Issue", status: "Open", date: "2025-02-10" },
+    { id: 1, subject: "File Upload Issue", status: "Open", date: "2025-02-10" },
     { id: 2, subject: "Proxy Connection Issue", status: "Closed", date: "2025-02-11" },
   ];
 
@@ -93,7 +76,21 @@ function Support() {
   const tabsConfig = [
     { title: "Community", component: <CommunitySection /> },
     { title: "Support Tickets", component: <SupportTickets tickets={dummyTickets} /> },
-    { title: "Submit Request", component: <SubmitRequest handleSubmit={handleSubmit} name={name} setName={setName} email={email} setEmail={setEmail} message={message} setMessage={setMessage} isSubmitting={isSubmitting} /> },
+    {
+      title: "Submit Request",
+      component: (
+        <SubmitRequest
+          handleSubmit={handleSubmit}
+          name={name}
+          setName={setName}
+          email={email}
+          setEmail={setEmail}
+          message={message}
+          setMessage={setMessage}
+          isSubmitting={isSubmitting}
+        />
+      ),
+    },
     { title: "FAQs", component: <FAQSection /> },
   ];
 
@@ -180,7 +177,7 @@ const CommunitySection = () => (
 );
 
 // Support Tickets Section
-const SupportTickets = ({ tickets }) => (
+const SupportTickets = ({ tickets }: { tickets: { id: number; subject: string; status: string; date: string }[] }) => (
   <Box>
     <Text fontSize="xl" fontWeight="bold">Your Support Tickets</Text>
     <Table variant="simple" mt={4}>
@@ -207,7 +204,25 @@ const SupportTickets = ({ tickets }) => (
 );
 
 // Submit Request Section
-const SubmitRequest = ({ handleSubmit, name, setName, email, setEmail, message, setMessage, isSubmitting }) => (
+const SubmitRequest = ({
+  handleSubmit,
+  name,
+  setName,
+  email,
+  setEmail,
+  message,
+  setMessage,
+  isSubmitting,
+}: {
+  handleSubmit: () => void;
+  name: string;
+  setName: (value: string) => void;
+  email: string;
+  setEmail: (value: string) => void;
+  message: string;
+  setMessage: (value: string) => void;
+  isSubmitting: boolean;
+}) => (
   <Box>
     <Text fontSize="xl" fontWeight="bold" mb={4}>Submit a Support Request</Text>
     <FormControl mb={4}>
@@ -222,7 +237,9 @@ const SubmitRequest = ({ handleSubmit, name, setName, email, setEmail, message, 
       <FormLabel>Message</FormLabel>
       <Textarea value={message} onChange={(e) => setMessage(e.target.value)} />
     </FormControl>
-    <Button colorScheme="blue" leftIcon={<FiSend />} isLoading={isSubmitting} onClick={handleSubmit}>Submit Request</Button>
+    <Button colorScheme="blue" leftIcon={<FiSend />} isLoading={isSubmitting} onClick={handleSubmit}>
+      Submit Request
+    </Button>
   </Box>
 );
 

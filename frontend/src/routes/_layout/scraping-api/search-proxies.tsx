@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, memo } from "react";
+import React, { useState, useEffect, useCallback, memo } from "react"; // Fixed import statement
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import {
   Container,
@@ -8,13 +8,13 @@ import {
   Spinner,
   Input,
   Button,
-  useToast,
   Box,
   VStack,
   Select,
   HStack,
 } from "@chakra-ui/react";
 import debounce from "lodash/debounce"; // Install with: npm install lodash
+import useCustomToast from "./../../../hooks/useCustomToast"; // Import the custom toast hook
 
 // Interface for Proxy data
 interface Proxy {
@@ -37,30 +37,30 @@ const proxyData: Record<string, { region: string; url: string }[]> = {
     { region: "US-EAST4", url: "https://us-east4-image-scraper-451516.cloudfunctions.net/main" },
     { region: "US-WEST1", url: "https://us-west1-image-scraper-451516.cloudfunctions.net/main" },
     { region: "EUROPE-WEST4", url: "https://europe-west4-image-proxy-453319.cloudfunctions.net/main" },
-    { region: "US-WEST4", url: "https://us-west4-image-proxy-453319.cloudfunctions.net/main"},
-    { region: "EUROPE-WEST1", url: "https://europe-west1-image-proxy-453319.cloudfunctions.net/main"},
-    { region: "EUROPE-NORTH1", url: "https://europe-north1-image-proxy-453319.cloudfunctions.net/main"},
-    { region: "ASIA-EAST1", url: "https://asia-east1-image-proxy-453319.cloudfunctions.net/main"},
-    { region: "US-SOUTH1", url: "https://us-south1-gen-lang-client-0697423475.cloudfunctions.net/main"},
-    { region: "US-WEST3", url: "https://us-west3-gen-lang-client-0697423475.cloudfunctions.net/main"},
-    { region: "US-EAST5", url: "https://us-east5-gen-lang-client-0697423475.cloudfunctions.net/main"},
-    { region: "ASIA-SOUTHEAST1", url: "https://asia-southeast1-gen-lang-client-0697423475.cloudfunctions.net/main"},
-    { region: "US-WEST2", url: "https://us-west2-gen-lang-client-0697423475.cloudfunctions.net/main"},
-    { region: "NORTHAMERICA-NORTHEAST1", url: "https://northamerica-northeast1-image-proxy2-453320.cloudfunctions.net/main"},
-    { region: "NORTHAMERICA-NORTHEAST2", url: "https://northamerica-northeast2-image-proxy2-453320.cloudfunctions.net/main"},
-    { region: "SOUTHAMERICA-EAST1", url: "https://southamerica-east1-image-proxy2-453320.cloudfunctions.net/main"}, 
-    { region: "EUROPE-WEST8", url: "https://europe-west8-icon-image3.cloudfunctions.net/main"},
-    { region: "EUROPE-SOUTHWEST1", url: "https://europe-southwest1-icon-image3.cloudfunctions.net/main"},
-    { region: "EUROPE-WEST6", url: "https://europe-west6-icon-image3.cloudfunctions.net/main"},
-    { region: "EUROPE-WEST3", url: "https://europe-west3-icon-image3.cloudfunctions.net/main"},
-    { region: "EUROPE-WEST2", url: "https://europe-west2-icon-image3.cloudfunctions.net/main"},
-    { region: "EUROPE-CENTRAL2", url: "https://europe-central2-image-proxy2-453320.cloudfunctions.net/main"},
-    { region: "EUROPE-WEST9", url: "https://europe-west9-image-proxy2-453320.cloudfunctions.net/main"},
-    { region: "MIDDLEEAST-WEST1", url: "https://me-west1-image-proxy4.cloudfunctions.net/main"},
-    { region: "MIDDLEEAST-CENTRAL1", url: "https://me-central1-image-proxy4.cloudfunctions.net/main"},
-    { region: "EUROPE-WEST12", url: "https://europe-west12-image-proxy4.cloudfunctions.net/main"},
-    { region: "EUROPE-WEST10", url: "https://europe-west10-image-proxy4.cloudfunctions.net/main"},
-    { region: "ASIA-NORTHEAST2", url: "https://asia-northeast2-image-proxy4.cloudfunctions.net/main"},
+    { region: "US-WEST4", url: "https://us-west4-image-proxy-453319.cloudfunctions.net/main" },
+    { region: "EUROPE-WEST1", url: "https://europe-west1-image-proxy-453319.cloudfunctions.net/main" },
+    { region: "EUROPE-NORTH1", url: "https://europe-north1-image-proxy-453319.cloudfunctions.net/main" },
+    { region: "ASIA-EAST1", url: "https://asia-east1-image-proxy-453319.cloudfunctions.net/main" },
+    { region: "US-SOUTH1", url: "https://us-south1-gen-lang-client-0697423475.cloudfunctions.net/main" },
+    { region: "US-WEST3", url: "https://us-west3-gen-lang-client-0697423475.cloudfunctions.net/main" },
+    { region: "US-EAST5", url: "https://us-east5-gen-lang-client-0697423475.cloudfunctions.net/main" },
+    { region: "ASIA-SOUTHEAST1", url: "https://asia-southeast1-gen-lang-client-0697423475.cloudfunctions.net/main" },
+    { region: "US-WEST2", url: "https://us-west2-gen-lang-client-0697423475.cloudfunctions.net/main" },
+    { region: "NORTHAMERICA-NORTHEAST1", url: "https://northamerica-northeast1-image-proxy2-453320.cloudfunctions.net/main" },
+    { region: "NORTHAMERICA-NORTHEAST2", url: "https://northamerica-northeast2-image-proxy2-453320.cloudfunctions.net/main" },
+    { region: "SOUTHAMERICA-EAST1", url: "https://southamerica-east1-image-proxy2-453320.cloudfunctions.net/main" },
+    { region: "EUROPE-WEST8", url: "https://europe-west8-icon-image3.cloudfunctions.net/main" },
+    { region: "EUROPE-SOUTHWEST1", url: "https://europe-southwest1-icon-image3.cloudfunctions.net/main" },
+    { region: "EUROPE-WEST6", url: "https://europe-west6-icon-image3.cloudfunctions.net/main" },
+    { region: "EUROPE-WEST3", url: "https://europe-west3-icon-image3.cloudfunctions.net/main" },
+    { region: "EUROPE-WEST2", url: "https://europe-west2-icon-image3.cloudfunctions.net/main" },
+    { region: "EUROPE-CENTRAL2", url: "https://europe-central2-image-proxy2-453320.cloudfunctions.net/main" },
+    { region: "EUROPE-WEST9", url: "https://europe-west9-image-proxy2-453320.cloudfunctions.net/main" },
+    { region: "MIDDLEEAST-WEST1", url: "https://me-west1-image-proxy4.cloudfunctions.net/main" },
+    { region: "MIDDLEEAST-CENTRAL1", url: "https://me-central1-image-proxy4.cloudfunctions.net/main" },
+    { region: "EUROPE-WEST12", url: "https://europe-west12-image-proxy4.cloudfunctions.net/main" },
+    { region: "EUROPE-WEST10", url: "https://europe-west10-image-proxy4.cloudfunctions.net/main" },
+    { region: "ASIA-NORTHEAST2", url: "https://asia-northeast2-image-proxy4.cloudfunctions.net/main" },
   ],
   "AWS": [
     { region: "us-east-1", url: "https://us-east-1-aws-scraper.example.com" },
@@ -108,7 +108,7 @@ const fetchProxyHealth = async (url: string, timeout: number = 10000): Promise<P
 };
 
 const ProxyPage = memo(() => {
-  const toast = useToast();
+  const showToast = useCustomToast(); // Use the custom toast hook
   const navigate = useNavigate();
   const [proxies, setProxies] = useState<Proxy[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -152,20 +152,18 @@ const ProxyPage = memo(() => {
         );
         setProxies(updatedProxies);
         if (isManual) {
-          toast({
-            title: "Proxy Status Updated",
-            description: "Health status for all search proxies refreshed.",
-            status: "info",
-            duration: 3000,
-            isClosable: true,
-          });
+          showToast(
+            "Proxy Status Updated",
+            "Health status for all search proxies refreshed.",
+            "success"
+          );
         }
       } finally {
         setIsRefreshing(false);
         if (proxies.length === 0) setIsLoading(false);
       }
     },
-    [toast, allProxies, proxies.length]
+    [showToast, allProxies, proxies.length] // Updated dependency array
   );
 
   // Initial load
@@ -243,16 +241,20 @@ const ProxyPage = memo(() => {
         </Flex>
 
         {/* Search and Filters Section */}
-        <Flex gap={4} 
-        mb={4}
-        position="sticky"
-        top="0"
-        bg="transparent"
-        zIndex="10"
-        py={5}
-        borderBottom="1px solid"
-        borderColor="gray.200"  
-        justify="space-between" align="center" flexWrap="wrap">
+        <Flex
+          gap={4}
+          mb={4}
+          position="sticky"
+          top="0"
+          bg="transparent"
+          zIndex="10"
+          py={5}
+          borderBottom="1px solid"
+          borderColor="gray.200"
+          justify="space-between"
+          align="center"
+          flexWrap="wrap"
+        >
           <Input
             placeholder="Search proxies..."
             value={searchTerm}
@@ -305,7 +307,6 @@ const ProxyPage = memo(() => {
               <option value="northamerica">North America</option>
               <option value="southamerica">South America</option>
               <option value="middleeast">Middle East</option>
-
             </Select>
             <Button
               colorScheme="blue"
@@ -360,7 +361,7 @@ const ProxyPage = memo(() => {
                       {proxy.provider}
                     </Text>
                     <Text fontSize="sm" color="gray.300" mt={1}>
-                      <strong>Batch:</strong> { proxy.region.split("-")[1] || proxy.region}
+                      <strong>Batch:</strong> {proxy.region.split("-")[1] || proxy.region}
                     </Text>
                   </Box>
                 </Flex>

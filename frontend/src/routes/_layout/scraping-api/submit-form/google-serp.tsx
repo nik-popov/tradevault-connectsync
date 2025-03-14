@@ -10,7 +10,6 @@ import {
   Input,
   FormControl,
   FormLabel,
-  useToast,
   Modal,
   ModalOverlay,
   ModalContent,
@@ -28,11 +27,7 @@ import { FiSend } from 'react-icons/fi';
 import * as XLSX from 'xlsx';
 import ExcelJS from 'exceljs';
 import ExcelDataTable from '../../../../components/ExcelDataTable';
-
-// Constants
-const STORAGE_KEY = 'subscriptionSettings';
-const PRODUCT = 'serp';
-const SERVER_URL = 'https://backend-dev.iconluxury.group';
+import useCustomToast from '../../../../hooks/useCustomToast';
 
 // Interfaces
 interface ColumnMapping {
@@ -96,13 +91,17 @@ function GoogleSerpForm() {
     category: null,
     colorName: null,
   });
-  const toast = useToast();
+  const showToast = useCustomToast(); // Use custom toast hook
   const navigate = useNavigate();
 
   const requiredColumns = ['style', 'brand'];
   const optionalColumns = ['category', 'colorName', 'readImage', 'imageAdd'];
   const allColumns = [...requiredColumns, ...optionalColumns];
   const targetHeaders = ['IMAGE', 'BRAND', 'GENDER', 'STYLE', 'COLOR', 'CATEGORY'];
+  // Constants
+  const STORAGE_KEY = 'subscriptionSettings';
+  const PRODUCT = 'serp';
+  const SERVER_URL = 'https://backend-dev.iconluxury.group';
 
   const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     try {
@@ -166,7 +165,7 @@ function GoogleSerpForm() {
               }
             });
             setColumnMapping(newColumnMapping);
-            toast({ title: 'Header Auto-Detected', description: `Row ${headerRowIndex + 1} selected`, status: 'info', duration: 4000, isClosable: true, position: 'top' });
+            showToast('Header Auto-Detected', `Row ${headerRowIndex + 1} selected`, 'info');
           } else {
             setIsHeaderModalOpen(true);
           }
@@ -177,7 +176,7 @@ function GoogleSerpForm() {
       reader.onerror = () => { throw new Error('Error reading file'); };
       reader.readAsBinaryString(selectedFile);
     } catch (error) {
-      toast({ title: 'File Upload Error', description: error.message, status: 'error', duration: 4000, isClosable: true, position: 'top' });
+      showToast('File Upload Error', error.message, 'error');
       setFile(null);
     }
   };
@@ -219,14 +218,14 @@ function GoogleSerpForm() {
     setIsHeaderModalOpen(false);
     setIsConfirmModalOpen(false);
     setIsLoadingFile(false);
-    toast({ title: 'Header Selected', description: `Row ${selectedRowIndex + 1} confirmed`, status: 'info', duration: 4000, isClosable: true, position: 'top' });
+    showToast('Header Selected', `Row ${selectedRowIndex + 1} confirmed`, 'info');
   };
 
   const handleSubmit = async () => {
     try {
       const missingRequired = requiredColumns.filter(col => columnMapping[col] === null);
       if (missingRequired.length > 0) {
-        toast({ title: 'Missing Required Columns', description: `Map: ${missingRequired.join(', ')}`, status: 'warning', duration: 4000, isClosable: true, position: 'top' });
+        showToast('Missing Required Columns', `Map: ${missingRequired.join(', ')}`, 'warning');
         return;
       }
       if (!file) throw new Error('No file selected');
@@ -248,11 +247,11 @@ function GoogleSerpForm() {
       const response = await fetch(`${SERVER_URL}/submitImage`, { method: 'POST', body: formData });
       if (!response.ok) throw new Error(`Server error: ${response.status} - ${await response.text()}`);
       const result = await response.json();
-      toast({ title: 'Success', description: 'Data submitted', status: 'success', duration: 4000, isClosable: true, position: 'top' });
+      showToast('Success', 'Data submitted', 'success');
       navigate({ to: '/scraping-api/submit-form/success' });
       return result;
     } catch (error) {
-      toast({ title: 'Submission Error', description: error.message, status: 'error', duration: 5000, isClosable: true, position: 'top' });
+      showToast('Submission Error', error.message, 'error');
       throw error;
     } finally {
       setIsLoadingFile(false);
@@ -279,17 +278,15 @@ function GoogleSerpForm() {
 
   const openMappingModal = (columnIndex: number) => {
     setSelectedColumn(columnIndex);
-    // Check if the column is already mapped
     const currentField = Object.keys(columnMapping).find(key => columnMapping[key] === columnIndex);
     if (currentField) {
       setSelectedField(currentField);
     } else {
-      // Set default based on priority: style, brand, category, colorName, none
       if (columnMapping.style === null) setSelectedField('style');
       else if (columnMapping.brand === null) setSelectedField('brand');
       else if (columnMapping.category === null) setSelectedField('category');
       else if (columnMapping.colorName === null) setSelectedField('colorName');
-      else setSelectedField(''); // None
+      else setSelectedField('');
     }
     setIsMappingModalOpen(true);
   };
@@ -303,24 +300,17 @@ function GoogleSerpForm() {
   return (
     <Container maxW="full" h="100vh" p={4}>
       <VStack spacing={6} align="stretch" h="full">
-        {/* Main Title and Subtitle */}
         <VStack spacing={2} align="stretch">
           <Text fontSize="2xl" fontWeight="bold" color="white">Google SERP Form</Text>
           <Text fontSize="md" color="gray.300">
             Upload an Excel file, select header row, and map required fields (Style, Brand).
-           
           </Text>
         </VStack>
 
-        {/* Controls */}
         <HStack spacing={4} align="center">
           <FormControl w="sm">
             <FormLabel color="white">Upload Excel File</FormLabel>
-
-           {/* No real limit just text. Preview 1000 rows defined in this file */}
-            <Text fontSize="md" color="gray.300">
-            Up of 1000 rows.
-            </Text>
+            <Text fontSize="md" color="gray.300">Up to 1000 rows.</Text>
             <Input
               type="file"
               accept=".xlsx,.xls"
@@ -353,10 +343,8 @@ function GoogleSerpForm() {
           </HStack>
         </HStack>
 
-        {/* Separator */}
         <Box borderBottomWidth="1px" borderColor="gray.600" my={4} />
 
-        {/* Preview Data */}
         {excelData.rows.length > 0 && (
           <Box flex="1" overflowY="auto" maxH="60vh" borderWidth="1px" borderRadius="md" p={4}>
             <ExcelDataTableMemo
@@ -368,7 +356,6 @@ function GoogleSerpForm() {
           </Box>
         )}
 
-        {/* Mapping Modal */}
         <Modal isOpen={isMappingModalOpen} onClose={() => setIsMappingModalOpen(false)}>
           <ModalOverlay />
           <ModalContent>
@@ -409,7 +396,6 @@ function GoogleSerpForm() {
           </ModalContent>
         </Modal>
 
-        {/* Header Selection Modals */}
         <Modal isOpen={isHeaderModalOpen} onClose={() => setIsHeaderModalOpen(false)} size="xl">
           <ModalOverlay />
           <ModalContent alignSelf="left" ml={4} mt={16}>

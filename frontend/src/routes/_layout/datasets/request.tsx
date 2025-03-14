@@ -2,20 +2,22 @@ import {
   Container,
   Text,
   Button,
-  Flex,
   VStack,
-  Box,
   Divider,
+  Flex,
+  Box,
   Input,
   Textarea,
   FormControl,
   FormLabel,
-  useToast,
+  Badge,
+  Icon,
 } from "@chakra-ui/react";
 import { useState } from "react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import { FiSend, FiGithub } from "react-icons/fi";
+import { FiSend, FiGithub, FiInfo } from "react-icons/fi";
+import useCustomToast from "../../../hooks/useCustomToast"; // Import the custom toast hook
 import PromoSERP from "../../../components/ComingSoon"; // Assuming a similar promo component
 
 // Storage and Product Key
@@ -28,7 +30,7 @@ export const Route = createFileRoute("/_layout/datasets/request")({
 
 function Request(): JSX.Element {
   const navigate = useNavigate();
-  const toast = useToast();
+  const showToast = useCustomToast(); // Use the custom toast hook
 
   // Load Subscription State using useQuery
   const { data: subscriptionSettings } = useQuery({
@@ -50,7 +52,7 @@ function Request(): JSX.Element {
   const isLocked = !hasSubscription && !isTrial;
   const isFullyDeactivated = isDeactivated && !hasSubscription;
 
-  // Form State (mirroring scraping-api/request.tsx)
+  // Form State
   const [datasetName, setDatasetName] = useState("");
   const [datasetDescription, setDatasetDescription] = useState("");
   const [datasetUrl, setDatasetUrl] = useState("");
@@ -58,13 +60,20 @@ function Request(): JSX.Element {
 
   const handleSubmit = async (): Promise<void> => {
     if (!datasetName.trim() || !datasetDescription.trim() || !datasetUrl.trim()) {
-      toast({
-        title: "Error",
-        description: "Please fill in all fields before submitting.",
-        status: "error",
-        duration: 3000,
-        isClosable: true,
-      });
+      showToast(
+        "Missing Information",
+        "Please complete all fields to submit your dataset request.",
+        "warning"
+      );
+      return;
+    }
+
+    if (!/^https?:\/\/[^\s/$.?#].[^\s]*$/.test(datasetUrl)) {
+      showToast(
+        "Invalid URL",
+        "Please provide a valid dataset URL (e.g., https://example.com/dataset).",
+        "error"
+      );
       return;
     }
 
@@ -74,127 +83,202 @@ function Request(): JSX.Element {
       // Simulate API request
       await new Promise((resolve) => setTimeout(resolve, 1000));
 
-      toast({
-        title: "Request Submitted",
-        description: "Your dataset request has been submitted successfully.",
-        status: "success",
-        duration: 3000,
-        isClosable: true,
-      });
+      showToast(
+        "Request Submitted",
+        "Your dataset request has been successfully submitted. We'll review it shortly.",
+        "success"
+      );
 
       // Reset form
       setDatasetName("");
       setDatasetDescription("");
       setDatasetUrl("");
     } catch (error) {
-      toast({
-        title: "Submission Failed",
-        description: "Something went wrong. Please try again later.",
-        status: "error",
-        duration: 3000,
-        isClosable: true,
-      });
+      showToast(
+        "Submission Error",
+        "An error occurred while submitting your request. Please try again later.",
+        "error"
+      );
+    } finally {
+      setIsSubmitting(false);
     }
-
-    setIsSubmitting(false);
   };
 
   return (
     <Container maxW="full">
-      <Flex align="center" justify="space-between" py={6} flexWrap="wrap" gap={4}>
-        <Box textAlign="left" flex="1">
-          <Text fontSize="xl" fontWeight="bold">Request Datasets</Text>
-          <Text fontSize="sm">Request a dataset to add to our available datasets.</Text>
-        </Box>
-      </Flex>
-
-      <Divider my={4} />
-
-      {/* No Subscription - Show Promo */}
-      {isLocked ? (
-        <PromoSERP />
-      ) : isFullyDeactivated ? (
-        <Flex justify="space-between" align="center" w="full" p={4} bg="red.50" borderRadius="md">
-          <Text>Your subscription has been deactivated. Please renew to submit requests.</Text>
-        </Flex>
-      ) : (
-        <Flex mt={6} gap={6} justify="space-between" align="stretch" wrap="wrap">
-          {/* Request Dataset Form */}
-          <Box flex="1" minW={{ base: "100%", md: "65%" }}>
-            <Box p={6} border="1px solid" borderColor="gray.200" borderRadius="md" boxShadow="sm">
-              <Text fontSize="xl" fontWeight="bold" mb={4}>
-                Request a New Dataset
-              </Text>
-
-              <FormControl mb={4}>
-                <FormLabel>Dataset Name</FormLabel>
-                <Input
-                  placeholder="Enter dataset name"
-                  value={datasetName}
-                  onChange={(e) => setDatasetName(e.target.value)}
-                />
-              </FormControl>
-
-              <FormControl mb={4}>
-                <FormLabel>Dataset Description</FormLabel>
-                <Textarea
-                  placeholder="Describe the dataset and its purpose"
-                  value={datasetDescription}
-                  onChange={(e) => setDatasetDescription(e.target.value)}
-                />
-              </FormControl>
-
-              <FormControl mb={4}>
-                <FormLabel>Dataset Source URL</FormLabel>
-                <Input
-                  placeholder="https://example.com/dataset"
-                  value={datasetUrl}
-                  onChange={(e) => setDatasetUrl(e.target.value)}
-                />
-              </FormControl>
-
-              <Button
-                colorScheme="blue"
-                leftIcon={<FiSend />}
-                size="lg"
-                isLoading={isSubmitting}
-                onClick={handleSubmit}
-              >
-                Submit Request
-              </Button>
-            </Box>
-          </Box>
-
-          {/* Sidebar */}
-          <Box w={{ base: "100%", md: "250px" }} p="4" borderLeft={{ md: "1px solid #E2E8F0" }}>
-            <VStack spacing="4" align="stretch">
-              <Box p="4" shadow="sm" borderWidth="1px" borderRadius="lg">
-                <Text fontWeight="bold">Quick Actions</Text>
-                <Button
-                  as="a"
-                  href="https://github.com/iconluxurygroupNet"
-                  leftIcon={<FiGithub />}
-                  variant="outline"
-                  size="sm"
-                  mt="2"
-                >
-                  GitHub Discussions
-                </Button>
-                <Button
-                  as="a"
-                  href="mailto:support@iconluxury.group"
-                  leftIcon={<FiSend />}
-                  variant="outline"
-                  size="sm"
-                  mt="2"
-                >
-                  Email Support
-                </Button>
+      <VStack spacing={6} align="stretch">
+        {/* Header */}
+        <Flex align="center" justify="space-between" flexWrap="wrap" gap={4}>
+          <Box>
+            <Flex align="center" justify="space-between" py={6} flexWrap="wrap" gap={4}>
+              <Box textAlign="left" flex="1">
+                <Text fontSize="xl" fontWeight="bold">Request Datasets</Text>
+                <Text fontSize="sm" color="gray.500">Request a dataset to add to our available datasets.</Text>
               </Box>
-            </VStack>
+            </Flex>
           </Box>
+          <Badge colorScheme={isLocked ? "red" : "green"} alignSelf="center">
+            {isLocked ? "Subscription Required" : "Active"}
+          </Badge>
         </Flex>
-      )}
+
+        <Divider borderColor="gray.700" />
+
+        {/* Conditional Content */}
+        {isLocked ? (
+          <PromoSERP />
+        ) : isFullyDeactivated ? (
+          <Box p={6} bg="red.900" borderRadius="md" textAlign="center">
+            <Text fontSize="lg" fontWeight="semibold" color="red.200" mb={2}>
+              Subscription Deactivated
+            </Text>
+            <Text color="red.300">
+              Your account is deactivated. Please renew your subscription to request datasets.
+            </Text>
+            <Button
+              mt={4}
+              colorScheme="blue"
+              size="md"
+              onClick={() => navigate({ to: "/proxies/pricing" })}
+            >
+              Reactivate Subscription
+            </Button>
+          </Box>
+        ) : (
+          <Flex gap={8} justify="space-between" align="stretch" wrap="wrap">
+            {/* Request Form */}
+            <Box flex="2" minW={{ base: "100%", md: "60%" }}>
+              <Box
+                p={6}
+                bg="gray.800"
+                border="1px solid"
+                borderColor="gray.700"
+                borderRadius="lg"
+                boxShadow="md"
+              >
+                <VStack spacing={5} align="stretch">
+                  <FormControl isRequired>
+                    <FormLabel color="gray.300">Dataset Name</FormLabel>
+                    <Input
+                      placeholder="e.g., Market Trends 2025"
+                      value={datasetName}
+                      onChange={(e) => setDatasetName(e.target.value)}
+                      size="md"
+                      bg="gray.700"
+                      color="white"
+                      borderColor="gray.600"
+                      focusBorderColor="blue.300"
+                      _hover={{ borderColor: "gray.500" }}
+                    />
+                  </FormControl>
+
+                  <FormControl isRequired>
+                    <FormLabel color="gray.300">Dataset Source URL</FormLabel>
+                    <Input
+                      placeholder="e.g., https://example.com/dataset"
+                      value={datasetUrl}
+                      onChange={(e) => setDatasetUrl(e.target.value)}
+                      size="md"
+                      bg="gray.700"
+                      color="white"
+                      borderColor="gray.600"
+                      focusBorderColor="blue.300"
+                      _hover={{ borderColor: "gray.500" }}
+                    />
+                  </FormControl>
+
+                  <FormControl isRequired>
+                    <FormLabel color="gray.300">Dataset Description</FormLabel>
+                    <Textarea
+                      placeholder="Describe the dataset and its purpose (e.g., sales data for analysis)"
+                      value={datasetDescription}
+                      onChange={(e) => setDatasetDescription(e.target.value)}
+                      size="md"
+                      rows={4}
+                      bg="gray.700"
+                      color="white"
+                      borderColor="gray.600"
+                      focusBorderColor="blue.300"
+                      _hover={{ borderColor: "gray.500" }}
+                    />
+                  </FormControl>
+
+                  <Button
+                    colorScheme="blue"
+                    leftIcon={<FiSend />}
+                    size="md"
+                    isLoading={isSubmitting}
+                    loadingText="Submitting"
+                    onClick={handleSubmit}
+                    w="full"
+                  >
+                    Submit Request
+                  </Button>
+                </VStack>
+              </Box>
+            </Box>
+
+            {/* Sidebar */}
+            <Box w={{ base: "100%", md: "300px" }} p={4}>
+              <VStack spacing={6} align="stretch">
+                <Box
+                  p={4}
+                  bg="gray.800"
+                  border="1px solid"
+                  borderColor="gray.700"
+                  borderRadius="lg"
+                  boxShadow="sm"
+                >
+                  <Text fontWeight="semibold" mb={3} color="white">
+                    Quick Actions
+                  </Text>
+                  <VStack spacing={3} align="stretch">
+                    <Button
+                      as="a"
+                      href="https://github.com/iconluxurygroupNet"
+                      target="_blank"
+                      leftIcon={<FiGithub />}
+                      variant="outline"
+                      size="md"
+                      colorScheme="gray"
+                      borderColor="gray.600"
+                      color="gray.200"
+                      _hover={{ bg: "gray.700" }}
+                    >
+                      Discuss on GitHub
+                    </Button>
+                  </VStack>
+                </Box>
+
+                <Box>
+                  <Flex align="center" mb={2}>
+                    <Icon as={FiInfo} color="blue.300" mr={2} />
+                    <Text fontWeight="semibold" color="white">
+                      Need Help?
+                    </Text>
+                  </Flex>
+                  <Text fontSize="sm" color="gray.400">
+                    Contact us via{" "}
+                    <Button
+                      as="a"
+                      href="mailto:support@iconluxury.group"
+                      variant="link"
+                      colorScheme="blue"
+                      size="sm"
+                    >
+                      email
+                    </Button>{" "}
+                    or check our{" "}
+                    <Button as="a" href="/docs" variant="link" colorScheme="blue" size="sm">
+                      documentation
+                    </Button>.
+                  </Text>
+                </Box>
+              </VStack>
+            </Box>
+          </Flex>
+        )}
+      </VStack>
     </Container>
   );
 }

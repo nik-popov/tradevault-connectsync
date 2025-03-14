@@ -39,7 +39,7 @@ const sidebarStructure: SidebarItem[] = [
       { title: "Vision", path: "/scraping-api/vision" },
       { title: "Reasoning", path: "/scraping-api/language-model" },
       { title: "User Agents", path: "/scraping-api/user-agents" },
-      { title: "Request Scraper", path: "/scraping-api/request" },
+
     ],
     icon: FiLayers,
   },
@@ -47,7 +47,6 @@ const sidebarStructure: SidebarItem[] = [
     title: "Datasets",
     subItems: [
       { title: "Explore", path: "/datasets/explore" },
-      { title: "Request Data", path: "/datasets/request" },
     ],
     icon: FiDatabase,
   },

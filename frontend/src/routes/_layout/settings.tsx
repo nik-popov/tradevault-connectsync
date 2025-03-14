@@ -26,8 +26,7 @@ const tabsConfig = [
   { title: "My profile", component: UserInformation },
   { title: "Password", component: ChangePassword },
   { title: "Appearance", component: Appearance },
-  { title: "Subscriptions", component: () =><SubscriptionManagement />
-  },
+  { title: "Subscriptions", component: () =><SubscriptionManagement />},
   { title: "Danger zone", component: DeleteAccount },
 ];
 
@@ -44,9 +43,8 @@ function UserSettings() {
   }
 
   const finalTabs = currentUser?.is_superuser
-    ? [...tabsConfig.slice(0, 3), tabsConfig[4]] // Ensures Subscription tab is included for superusers
-    : tabsConfig;
-
+  ? tabsConfig // All tabs for superusers
+  : tabsConfig; // All tabs for non-superusers (or adjust as needed)
   return (
     <Container maxW="full">
       <Flex align="center" justify="space-between" py={6} flexWrap="wrap" gap={4}>

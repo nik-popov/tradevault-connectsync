@@ -1,3 +1,4 @@
+// Assuming this is located at src/components/OverviewGSerp.tsx or similar
 import React, { useState, useEffect, useMemo, useCallback } from "react";
 import {
   Box,
@@ -21,8 +22,6 @@ import {
   CardBody,
   IconButton,
   Tooltip,
-  Alert,
-  AlertIcon,
 } from "@chakra-ui/react";
 import { CloseIcon } from "@chakra-ui/icons";
 import {
@@ -35,6 +34,7 @@ import {
   Tooltip as RechartsTooltip,
 } from "recharts";
 import { debounce } from "lodash";
+import useCustomToast from "../hooks/useCustomToast";
 
 // Interfaces for TypeScript type safety
 interface TimeSeries {
@@ -59,11 +59,13 @@ interface EndpointData {
   successRate: number;
   queries: Query[];
 }
+
 interface ChartDataItem {
-  name?: string;  // Optional for charts using 'name' as the key
-  hour?: string;  // Optional for 'requestsOverTime' without comparisons
-  value: number;  // Required for all chart data
+  name?: string;
+  hour?: string;
+  value: number;
 }
+
 // Chart options with labels and colors
 const chartOptions = [
   { key: "requestsOverTime", label: "Requests Over Time", color: "#805AD5", yAxisLabel: "Requests" },
@@ -111,7 +113,6 @@ const compareOptions: { [key: string]: { value: string; label: string; color: st
 const BAR_COLORS = ["#805AD5", "#38A169", "#DD6B20", "#C53030", "#D69E2E", "#9F7AEA", "#68D391", "#F6AD55", "#F56565", "#ECC94B"];
 
 const OverviewGSerp: React.FC = () => {
-  // State declarations
   const [isLoading, setIsLoading] = useState(true);
   const [selectedChart, setSelectedChart] = useState("requestsOverTime");
   const [selectedQuery, setSelectedQuery] = useState<Query | null>(null);
@@ -126,28 +127,25 @@ const OverviewGSerp: React.FC = () => {
     successRate: [],
     keyMetrics: [],
   });
+  const showToast = useCustomToast();
 
-  // Memoized total requests calculation
   const totalRequests = useMemo(() => {
     return endpointData.reduce((sum, ep) => sum + ep.requestsToday, 0);
   }, [endpointData]);
 
-  // Data fetching function
   const fetchData = useCallback(async () => {
-    
     setIsLoading(true);
+
     setError(null);
     try {
       const response = await fetch("https://s3.us-east-1.amazonaws.com/iconluxury.group/google-serp-overview.json");
       if (!response.ok) throw new Error("Failed to fetch data");
       const data: EndpointData[] = await response.json();
 
-      // Validate data structure
       if (!Array.isArray(data) || !data.every(ep => 'endpoint' in ep && 'queries' in ep)) {
         throw new Error("Invalid data format");
       }
 
-      // Enhance queries with endpoint-specific details
       const enhancedData = data.map((endpoint) => ({
         ...endpoint,
         queries: endpoint.queries.map((query) => ({
@@ -163,11 +161,9 @@ const OverviewGSerp: React.FC = () => {
 
       setEndpointData(enhancedData);
 
-      // Prepare chart data
       const totalSuccess = enhancedData.reduce((sum, ep) => sum + ep.requestsToday * ep.successRate, 0);
       const overallSuccessRate = totalRequests > 0 ? totalSuccess / totalRequests : 0;
 
-      // Requests Over Time
       const requestsOverTime = Array.from({ length: 24 }, (_, i) => {
         const hour = `${i}:00`;
         const total = enhancedData
@@ -176,7 +172,6 @@ const OverviewGSerp: React.FC = () => {
         return { hour, value: total };
       });
 
-      // Category Distribution
       const categoryMap = new Map<string, number>();
       enhancedData.flatMap((ep) => ep.queries).forEach((q) => {
         categoryMap.set(q.category, (categoryMap.get(q.category) || 0) + q.count);
@@ -186,7 +181,6 @@ const OverviewGSerp: React.FC = () => {
         value: count,
       }));
 
-      // Top Queries
       const queryMap = new Map<string, number>();
       enhancedData.flatMap((ep) => ep.queries).forEach((q) => {
         queryMap.set(q.query, (queryMap.get(q.query) || 0) + q.count);
@@ -196,19 +190,17 @@ const OverviewGSerp: React.FC = () => {
         .slice(0, 10)
         .map(([query, count]) => ({ name: query, value: count }));
 
-      // Success Rate
       const successRate = enhancedData.map((ep) => ({
         name: ep.endpoint,
-        value: ep.successRate * 100, // Convert to percentage
+        value: ep.successRate * 100,
       }));
 
-      // Key Metrics
       const keyMetrics = [
         { name: "Total Requests", value: totalRequests },
-        { name: "Success Rate", value: overallSuccessRate * 100 }, // Convert to percentage
+        { name: "Success Rate", value: overallSuccessRate * 100 },
         { name: "Endpoints", value: enhancedData.length },
       ];
-
+      showToast("Data Load","Fetched Data" , "success");
       setChartData({
         requestsOverTime,
         categoryDistribution,
@@ -220,30 +212,27 @@ const OverviewGSerp: React.FC = () => {
       console.error("Error fetching data:", error);
       setEndpointData([]);
       setChartData({});
-      setError("Failed to load data. Please try again later.");
+      setError(error.message);
+      showToast("Data Fetch Error", error.message, "error");
     } finally {
       setIsLoading(false);
     }
-  }, [totalRequests]);
+  }, [totalRequests, showToast]);
 
-  // Fetch data on mount
   useEffect(() => {
     fetchData();
   }, [fetchData]);
 
-  // Reset selected query when chart changes
   useEffect(() => {
     setSelectedQuery(null);
   }, [selectedChart]);
 
   const updateChartData = useMemo(() => {
     const updatedData = { ...chartData };
-  
     Object.keys(compares).forEach((chartKey) => {
       const selectedCompares = compares[chartKey];
       const baseData = chartData[chartKey] || [];
-      const additionalData: ChartDataItem[] = []; // Explicit type annotation
-  
+      const additionalData: ChartDataItem[] = [];
       if (chartKey === "requestsOverTime") {
         const avgHourly = baseData.reduce((sum, d) => sum + d.value, 0) / 24;
         const maxHourly = Math.max(...baseData.map((d) => d.value));
@@ -260,7 +249,6 @@ const OverviewGSerp: React.FC = () => {
         });
         updatedData[chartKey] = selectedCompares.length ? additionalData : baseData;
       } else if (chartKey === "categoryDistribution") {
-        const additionalData: ChartDataItem[] = []; // Explicit type annotation
         const totalQueries = baseData.reduce((sum, d) => sum + d.value, 0);
         const avgPerCategory = totalQueries / baseData.length;
         const maxCategory = Math.max(...baseData.map((d) => d.value));
@@ -277,7 +265,6 @@ const OverviewGSerp: React.FC = () => {
         });
         updatedData[chartKey] = [...baseData, ...additionalData];
       } else if (chartKey === "topQueries") {
-        const additionalData: ChartDataItem[] = []; // Explicit type annotation
         const totalQueryCount = baseData.reduce((sum, d) => sum + d.value, 0);
         const avgQueryCount = totalQueryCount / baseData.length;
         const maxQuery = Math.max(...baseData.map((d) => d.value));
@@ -294,7 +281,6 @@ const OverviewGSerp: React.FC = () => {
         });
         updatedData[chartKey] = [...baseData, ...additionalData];
       } else if (chartKey === "successRate") {
-        const additionalData: ChartDataItem[] = []; // Explicit type annotation
         const overallSuccessRate = totalRequests > 0 ? (endpointData.reduce((sum, ep) => sum + ep.requestsToday * ep.successRate, 0) / totalRequests) * 100 : 0;
         const avgSuccess = baseData.reduce((sum, d) => sum + d.value, 0) / baseData.length;
         const variance = Math.sqrt(baseData.reduce((sum, d) => sum + Math.pow(d.value - avgSuccess, 2), 0) / baseData.length);
@@ -310,7 +296,6 @@ const OverviewGSerp: React.FC = () => {
         });
         updatedData[chartKey] = [...baseData, ...additionalData];
       } else if (chartKey === "keyMetrics") {
-        const additionalData: ChartDataItem[] = []; // Explicit type annotation
         const avgRequests = totalRequests / endpointData.length;
         selectedCompares.forEach((compare) => {
           additionalData.push({
@@ -325,11 +310,9 @@ const OverviewGSerp: React.FC = () => {
         updatedData[chartKey] = [...baseData, ...additionalData];
       }
     });
-  
     return updatedData;
   }, [chartData, compares, endpointData, totalRequests]);
 
-  // Aggregate top queries
   const queryAggregation = new Map<
     string,
     { count: number; id: number; featured: boolean; category: string; type: string; endpointDetails: { endpoint: string; count: number }[] }
@@ -360,11 +343,9 @@ const OverviewGSerp: React.FC = () => {
     .sort((a, b) => b.count - a.count)
     .slice(0, 10);
 
-  // Calculate summary statistics
   const getSummaryStats = (selectedChart: string) => {
     const data = chartData[selectedChart] || [];
     if (!data.length) return [];
-
     switch (selectedChart) {
       case "requestsOverTime":
         const avgHourly = data.reduce((sum, d) => sum + d.value, 0) / 24;
@@ -421,7 +402,6 @@ const OverviewGSerp: React.FC = () => {
     }
   };
 
-  // Render summary section
   const renderSummary = () => {
     const stats = getSummaryStats(selectedChart);
     const summaryContent = selectedQuery ? (
@@ -477,7 +457,6 @@ const OverviewGSerp: React.FC = () => {
     );
   };
 
-  // Toggle comparison metrics
   const toggleCompare = useCallback((chartKey: string, value: string) => {
     setCompares((prev) => ({
       ...prev,
@@ -487,7 +466,6 @@ const OverviewGSerp: React.FC = () => {
     }));
   }, []);
 
-  // Get selected chart options
   const selectedOption = chartOptions.find((opt) => opt.key === selectedChart)!;
   const selectedColor = selectedOption.color;
   const yAxisLabel = selectedOption.yAxisLabel;
@@ -495,16 +473,16 @@ const OverviewGSerp: React.FC = () => {
   type CompareOption = { value: string; label: string; color: string };
 
   const chunkArray = (array: CompareOption[], size: number): CompareOption[][] => {
-    const result: CompareOption[][] = []; // Explicit type annotation
+    const result: CompareOption[][] = [];
     for (let i = 0; i < array.length; i += size) {
       result.push(array.slice(i, i + size));
     }
     return result;
   };
   const compareRows = chunkArray(compareOptions[selectedChart], 4);
+
   return (
     <Box p={4} width="100%">
-      {/* Header */}
       <Flex justify="space-between" align="center" mb={4} wrap="wrap" gap={2}>
         <Text fontSize="lg" fontWeight="bold">OverviewGSerp</Text>
         <Flex align="center" gap={2} ml="auto">
@@ -524,17 +502,16 @@ const OverviewGSerp: React.FC = () => {
               </Tooltip>
             ))}
           </ButtonGroup>
-          
           <Tooltip label="Refresh overview data immediately">
-        <Button
-          size="sm"
-          colorScheme="blue"
-          onClick={debounce(fetchData, 500)} // Debounced function
-          isLoading={isLoading}
-        >
-          Refresh Now
-        </Button>
-      </Tooltip>
+            <Button
+              size="sm"
+              colorScheme="blue"
+              onClick={debounce(fetchData, 500)}
+              isLoading={isLoading}
+            >
+              Refresh Now
+            </Button>
+          </Tooltip>
           <Tooltip label="Toggle chart labels">
             <Button
               size="sm"
@@ -552,23 +529,8 @@ const OverviewGSerp: React.FC = () => {
           <Spinner size="xl" color="blue.500" />
           <Text>Loading SERP data...</Text>
         </Flex>
-      ) :error ? (
-        <Alert
-          status="error"
-          borderRadius="md"
-          position="absolute"
-          top="20px"
-          left="20px"
-          bg="white"
-          color="gray.900"
-          zIndex="10000"
-        >
-          <AlertIcon />
-          {error}
-        </Alert>
       ) : (
         <>
-          {/* Chart and Summary */}
           <Grid templateColumns={{ base: "1fr", md: "1fr 1fr" }} gap={6} mb={6} alignItems="start">
             <GridItem>
               <Text fontSize="md" fontWeight="semibold" mb={2}>
@@ -576,52 +538,52 @@ const OverviewGSerp: React.FC = () => {
               </Text>
               <Box height="400px" borderRadius="md" overflow="hidden" shadow="md" bg="gray.700">
                 <ResponsiveContainer width="100%" height="100%">
-                <BarChart
-  data={updateChartData[selectedChart]}
-  margin={{ top: 20, right: 20, bottom: showLabels ? 60 : 20, left: showLabels ? 40 : 20 }}
->
-  <CartesianGrid stroke="gray.600" />
-  <XAxis
-    dataKey={selectedChart === "requestsOverTime" && !compares[selectedChart].length ? "hour" : "name"}
-    stroke="#FFFFFF"
-    tick={{ fill: "#FFFFFF", fontSize: 12, dy: -10 }}
-    tickMargin={10}
-    interval="preserveStartEnd"
-    label={
-      showLabels
-        ? {
-            value:
-              selectedChart === "requestsOverTime" && !compares[selectedChart].length
-                ? "Time (Hour)"
-                : selectedChart === "keyMetrics"
-                ? "Metrics"
-                : selectedChart === "categoryDistribution"
-                ? "Categories"
-                : selectedChart === "successRate"
-                ? "Endpoints"
-                : "Queries",
-            position: "insideBottom",
-            offset: -20,
-            fill: "#FFFFFF",
-            fontSize: 14,
-          }
-        : undefined
-    }
-  />
-  <YAxis
-    stroke="#FFFFFF"
-    tick={{ fill: "#FFFFFF", fontSize: 12 }}
-    tickMargin={10}
-    domain={selectedChart === "successRate" ? [0, 100] : undefined}
-    label={
-      showLabels
-        ? { value: yAxisLabel, angle: -45, position: "insideLeft", offset: -20, fill: "#FFFFFF", fontSize: 14 }
-        : undefined
-    }
-  />
-  <RechartsTooltip contentStyle={{ backgroundColor: "gray.700", color: "white" }} />
-  <Bar dataKey="value" fill={selectedColor} />
-</BarChart>
+                  <BarChart
+                    data={updateChartData[selectedChart]}
+                    margin={{ top: 20, right: 20, bottom: showLabels ? 60 : 20, left: showLabels ? 40 : 20 }}
+                  >
+                    <CartesianGrid stroke="gray.600" />
+                    <XAxis
+                      dataKey={selectedChart === "requestsOverTime" && !compares[selectedChart].length ? "hour" : "name"}
+                      stroke="#FFFFFF"
+                      tick={{ fill: "#FFFFFF", fontSize: 12, dy: -10 }}
+                      tickMargin={10}
+                      interval="preserveStartEnd"
+                      label={
+                        showLabels
+                          ? {
+                              value:
+                                selectedChart === "requestsOverTime" && !compares[selectedChart].length
+                                  ? "Time (Hour)"
+                                  : selectedChart === "keyMetrics"
+                                  ? "Metrics"
+                                  : selectedChart === "categoryDistribution"
+                                  ? "Categories"
+                                  : selectedChart === "successRate"
+                                  ? "Endpoints"
+                                  : "Queries",
+                              position: "insideBottom",
+                              offset: -20,
+                              fill: "#FFFFFF",
+                              fontSize: 14,
+                            }
+                          : undefined
+                      }
+                    />
+                    <YAxis
+                      stroke="#FFFFFF"
+                      tick={{ fill: "#FFFFFF", fontSize: 12 }}
+                      tickMargin={10}
+                      domain={selectedChart === "successRate" ? [0, 100] : undefined}
+                      label={
+                        showLabels
+                          ? { value: yAxisLabel, angle: -45, position: "insideLeft", offset: -20, fill: "#FFFFFF", fontSize: 14 }
+                          : undefined
+                      }
+                    />
+                    <RechartsTooltip contentStyle={{ backgroundColor: "gray.700", color: "white" }} />
+                    <Bar dataKey="value" fill={selectedColor} />
+                  </BarChart>
                 </ResponsiveContainer>
               </Box>
             </GridItem>
@@ -655,7 +617,6 @@ const OverviewGSerp: React.FC = () => {
             </GridItem>
           </Grid>
 
-          {/* Top Queries Table */}
           <Box mt={6}>
             <Text fontSize="md" fontWeight="semibold" mb={2}>Top Search Queries</Text>
             <Box shadow="md" borderWidth="1px" borderRadius="md" overflowX="auto">

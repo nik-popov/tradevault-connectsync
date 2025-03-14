@@ -35,52 +35,58 @@ function Dashboard() {
   const proxyProducts: Product[] = [
     { id: "explore-serp", name: "📋 Scraper Jobs", type: "SERP", description: "View Scraper Files.", owned: true, path: "/scraping-api/explore" },
     { id: "google-serp", name: "🔍 Google SERP Results", type: "SERP", description: "Scrape real-time Google search results.", owned: true, path: "/scraping-api/google-serp" },
-    { id: "cettire", name: "🔍Cettire", type: "SERP", description: "Scrape Cettire search results.", owned: false, path: "/scraping-api/cettire" },
+    { id: "cettire", name: "🔍 Cettire", type: "SERP", description: "Scrape Cettire search results.", owned: false, path: "/scraping-api/cettire" },
     { id: "icon-gpt", name: "🤖 IconGpt", type: "AI", description: "Use OpenAI and X models.", owned: true, path: "/ai/icongpt" },
+    { id: "request-api", name: "⚒️ Request Scraping API", type: "SERP", description: "Request Scraping API.", owned: true, path: "/scraping-api/request" },
+    { id: "request-datasets", name: "📁 Request Datasets", type: "datasets", description: "Request Datasets.", owned: true, path: "/datasets/request" },
+    { id: "user-agents", name: "🕵️‍♂️ User Agents", type: "SERP", description: "Manage User Agents.", owned: true, path: "/scraping-api/user-agents" },
     { id: "manage-proxy", name: "👺 Proxy Management", type: "SERP", description: "Manage Proxy Endpoints.", owned: true, path: "/scraping-api/search-proxies" },
-   
   ];
 
-  // ✅ Optimize filtering with useMemo
-  const filteredProducts = useMemo(() => {
-    return proxyProducts.filter((product) => {
-      const matchesFilter = activeFilter === "all" || product.type === activeFilter;
-      const matchesOwnership = !ownedOnly || product.owned;
-      return matchesFilter && matchesOwnership;
-    });
-  }, [activeFilter, ownedOnly, proxyProducts]);
+// Optimize filtering with useMemo
+const filteredProducts = useMemo(() => {
+  return proxyProducts.filter((product) => {
+    const matchesFilter =
+      activeFilter === "all" ||
+      product.type.toLowerCase() === activeFilter.toLowerCase(); // Case-insensitive comparison
+    const matchesOwnership = !ownedOnly || product.owned;
+    return matchesFilter && matchesOwnership;
+  });
+}, [activeFilter, ownedOnly]);
 
-  return (
-    <Container maxW="full">
-      {/* 🚀 Promo Banner */}
-
-      {/* Filters & Toggle */}
-      <Flex mt={6} gap={4} justify="space-between" align="center" flexWrap="wrap">
-        {/* Owned Filter Toggle */}
-        <Flex align="center">
-          <Text fontWeight="bold" mr={2}>My Products</Text>
-          <Switch isChecked={ownedOnly} onChange={() => setOwnedOnly((prev) => !prev)} colorScheme="blue" mr={4} />
-        </Flex>
-
-        {/* Filter Buttons */}
-        <Flex gap={2}>
-          {["All", "SERP","AI"].map((type) => (
-            <Button
-              key={type}
-              size="md"
-              fontWeight="bold"
-              borderRadius="full"
-              colorScheme={activeFilter === type || (type === "All" && activeFilter === "all") ? "blue" : "gray"}
-              variant={activeFilter === type || (type === "All" && activeFilter === "all") ? "solid" : "outline"}
-              onClick={() => setActiveFilter(type === "All" ? "all" : type)}
-            >
-              {type}
-            </Button>
-          ))}
-        </Flex>
+return (
+  <Container maxW="full">
+    {/* Filters & Toggle */}
+    <Flex mt={6} gap={4} justify="space-between" align="center" flexWrap="wrap">
+      {/* Owned Filter Toggle */}
+      <Flex align="center">
+        <Text fontWeight="bold" mr={2}>My Products</Text>
+        <Switch isChecked={ownedOnly} onChange={() => setOwnedOnly((prev) => !prev)} colorScheme="blue" mr={4} />
       </Flex>
 
-      <Divider my={4} />
+      {/* Filter Buttons */}
+      <Flex gap={2}>
+        {["All", "SERP", "Datasets", "AI"].map((type) => (
+          <Button
+            key={type}
+            size="md"
+            fontWeight="bold"
+            borderRadius="full"
+            colorScheme={
+              activeFilter === type.toLowerCase() || (type === "All" && activeFilter === "all") ? "blue" : "gray"
+            }
+            variant={
+              activeFilter === type.toLowerCase() || (type === "All" && activeFilter === "all") ? "solid" : "outline"
+            }
+            onClick={() => setActiveFilter(type === "All" ? "all" : type.toLowerCase())} // Normalize to lowercase
+          >
+            {type}
+          </Button>
+        ))}
+      </Flex>
+    </Flex>
+
+    <Divider my={4} />
 
       <Flex mt={6} gap={6} justify="space-between">
         {/* Main Content */}
