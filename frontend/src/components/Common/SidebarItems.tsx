@@ -43,15 +43,13 @@ const sidebarStructure: SidebarItem[] = [
     icon: FiLayers,
   },
   { title: "Remote Desktop", icon: FiTool, path: "/support/remote-desktop" },
-  { title: "File Explorer", icon: FiTool, path: "/support/file-explorer" },
+  { title: "File Explorer", icon: FiGlobe, path: "/support/file-explorer" },
   { title: "Email", icon: FiMessageSquare, path: "/support/email" },
   { title: "Cloud Storage", icon: FiCloud, path: "/support/cloud-storage" },
   { title: "VPN", icon: FiShield, path: "/support/vpn" },
   // { title: "Sonos", icon: FiMusic, path: "/sonos" },
   { title: "Network Logs", icon: FiFileText, path: "/support/network-logs" },
-  { title: "System Logs", icon: FiFileText, path: "/support/system-logs" },
-  { title: "Firewall", icon: FiShield, path: "/support/firewall" },
-  { title: "Backup & Recovery", icon: FiDatabase, path: "/support/backup-recovery" },
+  { title: "NAS", icon: FiDatabase, path: "/support/backup-recovery" },
 ];
 
 interface SidebarItemsProps {
