@@ -49,7 +49,6 @@ const sidebarStructure: SidebarItem[] = [
     ],
     icon: FiDatabase,
   },
-  { title: "IconGpt", icon: FiCpu, path: "/ai/icongpt" },
   { title: "Messaging", icon: FiMessageSquare, path: "/messaging" },
   { title: "CMS Events", icon: FiCalendar, path: "/events" },
   { title: "Calendar", icon: FiCalendar, path: "/calendar" },
