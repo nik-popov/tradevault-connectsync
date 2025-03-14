@@ -19,7 +19,7 @@ const GoogleSerpPage = () => {
   return (
     <Container maxW="full">
       <Flex align="center" justify="space-between" py={6}>
-        <Text fontSize="xl" fontWeight="bold">Google SERP API</Text>
+        <Text fontSize="xl" fontWeight="bold">Google SERP</Text>
         <Text fontSize="sm">Manage your Google SERP settings and endpoints.</Text>
       </Flex>
       <Tabs variant="enclosed">
