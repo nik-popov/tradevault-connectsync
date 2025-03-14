@@ -98,7 +98,7 @@ function GoogleSerpForm() {
   const requiredColumns = ['style', 'brand'];
   const optionalColumns = ['category', 'colorName', 'readImage', 'imageAdd'];
   const allColumns = [...requiredColumns, ...optionalColumns];
-  const targetHeaders = ['IMAGE', 'BRAND', 'GENDER', 'STYLE', 'COLOR NAME', 'CATEGORY'];
+  const targetHeaders = ['BRAND', 'GENDER', 'STYLE', 'COLOR NAME', 'CATEGORY'];
   const STORAGE_KEY = 'subscriptionSettings';
   const PRODUCT = 'serp';
   const SERVER_URL = 'https://backend-dev.iconluxury.group';
@@ -153,9 +153,7 @@ function GoogleSerpForm() {
               const upperHeader = String(header).toUpperCase().trim();
               if (upperHeader === 'CATEGORY' && newColumnMapping.category === null) newColumnMapping.category = index;
               else if (upperHeader === 'COLOR NAME' && newColumnMapping.colorName === null) newColumnMapping.colorName = index;
-              else if (upperHeader === 'IMAGE' && newColumnMapping.readImage === null && newColumnMapping.imageAdd === null) {
-                newColumnMapping.imageAdd = index;
-              } else if (upperHeader === 'GENDER' && optionalIndex < optionalColumns.length) {
+              else if (upperHeader === 'GENDER' && optionalIndex < optionalColumns.length) {
                 while (optionalIndex < optionalColumns.length && newColumnMapping[optionalColumns[optionalIndex]] !== null) {
                   optionalIndex++;
                 }
@@ -203,9 +201,7 @@ function GoogleSerpForm() {
       const upperHeader = String(header).toUpperCase().trim();
       if (upperHeader === 'CATEGORY' && newColumnMapping.category === null) newColumnMapping.category = index;
       else if (upperHeader === 'COLOR NAME' && newColumnMapping.colorName === null) newColumnMapping.colorName = index;
-      else if (upperHeader === 'IMAGE' && newColumnMapping.readImage === null && newColumnMapping.imageAdd === null) {
-        newColumnMapping.imageAdd = index;
-      } else if (upperHeader === 'GENDER' && optionalIndex < optionalColumns.length) {
+      else if (upperHeader === 'GENDER' && optionalIndex < optionalColumns.length) {
         while (optionalIndex < optionalColumns.length && newColumnMapping[optionalColumns[optionalIndex]] !== null) {
           optionalIndex++;
         }
@@ -312,21 +308,37 @@ function GoogleSerpForm() {
   return (
     <Container maxW="full" h="100vh" p={4}>
       <VStack spacing={2} align="stretch" h="full">
-          <Text fontSize="2xl" fontWeight="bold" color="white">Google SERP Form</Text>
+          <Text fontSize="2xl" fontWeight="bold" color="white">Submit Form</Text>
           <Text fontSize="md" color="gray.300">
             Upload an Excel file, select header row, and map required fields (Style, Brand).
           </Text>
           <Text fontSize="md" color="gray.300">Up to 1000 rows.</Text>
         <HStack spacing={2} align="center">
-          <FormControl w="sm">
-            <Input
-              type="file"
-              accept=".xlsx,.xls"
-              onChange={handleFileChange}
-              disabled={isLoadingFile}
-              mt={6}
-            />
-                        </FormControl>
+        <FormControl w="sm">
+        <Input
+          placeholder="Upload Excel File"
+          type="file"
+          accept=".xlsx,.xls"
+          onChange={handleFileChange}
+          disabled={isLoadingFile}
+          mt={6}
+          css={{
+            '&::-webkit-file-upload-button': {
+              padding: '4px 12px',
+              borderRadius: 'md',
+              backgroundColor: 'transparent', // Blend into input
+              border: 'none', // No distinct border
+              color: 'gray.500', // Subtle text color
+              fontSize: 'md', // Match input font size
+              cursor: 'pointer',
+            },
+            '&:focus': {
+              outline: 'none',
+              boxShadow: 'outline',
+            },
+          }}
+        />
+      </FormControl>
             <Button
               colorScheme="green"
               leftIcon={<FiSend />}
@@ -335,7 +347,6 @@ function GoogleSerpForm() {
               isLoading={isLoadingFile}
               mt={6}
             >
-              Submit
             </Button>
             {excelData.headers.length > 0 && (
               <VStack align="start" spacing={1} mt={6}>

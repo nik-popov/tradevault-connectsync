@@ -184,21 +184,30 @@ function Explore() {
           </Box>
 
           <Box w={{ base: "100%", md: "250px" }} p="4" borderLeft={{ md: "1px solid #E2E8F0" }}>
-            <VStack spacing="4" align="stretch">
-              <Box p="4" shadow="sm" borderWidth="1px" borderRadius="lg">
-                <Text fontWeight="bold">Quick Actions</Text>
-                <Button
-                  as="a"
-                  href="https://github.com/iconluxurygroup"
-                  leftIcon={<FiGithub />}
-                  variant="outline"
-                  size="sm"
-                  mt="2"
-                >
-                  GitHub
-                </Button>
-              </Box>
-            </VStack>
+          <VStack spacing="4" align="stretch">
+  <Box p="4" shadow="sm" borderWidth="1px" borderRadius="lg">
+    <Text fontWeight="bold">Quick Actions</Text>
+    <Button
+      as="a"
+      href="/scraping-api/submit-form/google-serp"
+      variant="outline"
+      size="sm"
+      mt="2"
+    >
+      Submit Form
+    </Button>
+    <Button
+      as="a"
+      href="https://github.com/iconluxurygroup"
+      leftIcon={<FiGithub />}
+      variant="outline"
+      size="sm"
+      mt="2"
+    >
+      GitHub
+    </Button>
+  </Box>
+</VStack>
           </Box>
         </Flex>
       )}
