@@ -984,7 +984,7 @@ const SearchRowsTab: React.FC<SearchRowsTabProps> = ({ job }) => {
         borderBottom="1px solid"
         borderColor="gray.200"
       >
-        <Text fontSize="lg" fontWeight="bold">File Rows</Text>
+        <Text fontSize="lg" fontWeight="bold">File Rows ({sortedRecords.length})</Text>
         <Flex gap={3}>
           <Button
             borderBottom="2px solid"

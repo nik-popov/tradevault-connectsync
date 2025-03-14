@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, memo } from "react"; // Fixed import statement
+import React, { useState, useEffect, useCallback, memo } from "react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import {
   Container,
@@ -13,10 +13,9 @@ import {
   Select,
   HStack,
 } from "@chakra-ui/react";
-import debounce from "lodash/debounce"; // Install with: npm install lodash
-import useCustomToast from "./../../../hooks/useCustomToast"; // Import the custom toast hook
+import debounce from "lodash/debounce";
+import useCustomToast from "./../../../hooks/useCustomToast";
 
-// Interface for Proxy data
 interface Proxy {
   id: number;
   provider: string;
@@ -28,7 +27,7 @@ interface Proxy {
   batch?: string;
 }
 
-// Mock proxy data for multiple providers, including some that will fail
+// Mock proxy data remains unchanged
 const proxyData: Record<string, { region: string; url: string }[]> = {
   "Google Cloud": [
     { region: "SOUTHAMERICA-WEST1", url: "https://southamerica-west1-image-scraper-451516.cloudfunctions.net/main" },
@@ -76,7 +75,7 @@ const proxyData: Record<string, { region: string; url: string }[]> = {
   ],
 };
 
-// Fetch proxy health status
+// fetchProxyHealth remains unchanged
 const fetchProxyHealth = async (url: string, timeout: number = 10000): Promise<Proxy | null> => {
   const healthUrl = `${url}/health/google`;
   try {
@@ -108,7 +107,7 @@ const fetchProxyHealth = async (url: string, timeout: number = 10000): Promise<P
 };
 
 const ProxyPage = memo(() => {
-  const showToast = useCustomToast(); // Use the custom toast hook
+  const showToast = useCustomToast();
   const navigate = useNavigate();
   const [proxies, setProxies] = useState<Proxy[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -116,9 +115,9 @@ const ProxyPage = memo(() => {
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [regionFilter, setRegionFilter] = useState<string>("all");
   const [providerFilter, setProviderFilter] = useState<string>("all");
-  const [isHealthy, setIsHealthy] = useState<boolean>(true); // true = Healthy, false = Unhealthy
+  const [healthFilter, setHealthFilter] = useState<string>("all");
+  const [showDetails, setShowDetails] = useState<boolean>(true);
 
-  // Flatten proxy data into a single array
   const allProxies = Object.entries(proxyData).flatMap(([provider, regions], providerIndex) =>
     regions.map((proxy, index) => ({
       id: providerIndex * 100 + index + 1,
@@ -163,17 +162,15 @@ const ProxyPage = memo(() => {
         if (proxies.length === 0) setIsLoading(false);
       }
     },
-    [showToast, allProxies, proxies.length] // Updated dependency array
+    [showToast, allProxies, proxies.length]
   );
 
-  // Initial load
   useEffect(() => {
     if (proxies.length === 0) {
       updateProxyStatus();
     }
   }, [updateProxyStatus, proxies.length]);
 
-  // Auto-refresh every 30 seconds
   useEffect(() => {
     const interval = setInterval(() => updateProxyStatus(false), 30000);
     return () => clearInterval(interval);
@@ -190,7 +187,6 @@ const ProxyPage = memo(() => {
     }
   };
 
-  // Filter proxies based on search term, region, provider, and health status
   const filteredProxies = proxies.filter((proxy) => {
     const matchesSearch =
       proxy.provider.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -213,7 +209,10 @@ const ProxyPage = memo(() => {
     const matchesProvider =
       providerFilter === "all" || proxy.provider.toLowerCase() === providerFilter.toLowerCase();
 
-    const matchesHealth = isHealthy ? proxy.status.includes("reachable") : !proxy.status.includes("reachable");
+    const matchesHealth =
+      healthFilter === "all" ||
+      (healthFilter === "healthy" && proxy.status.includes("reachable")) ||
+      (healthFilter === "unhealthy" && !proxy.status.includes("reachable"));
 
     return matchesSearch && matchesRegion && matchesProvider && matchesHealth;
   });
@@ -222,14 +221,12 @@ const ProxyPage = memo(() => {
     navigate({ to: "/scraping-api/endpoints/$endpointId", params: { endpointId: region } });
   };
 
-  // Unique providers for filter buttons
   const providerCategories = ["all", ...new Set(allProxies.map((proxy) => proxy.provider))];
 
   return (
     <Container maxW="full" py={6} color="white">
       <Flex direction="column" gap={4}>
-        {/* Title Section */}
-        <Flex align="center" justify="space-between" py={2} flexWrap="wrap" gap={4}>
+        <Flex align="center" justify="space-between" flexWrap="wrap" gap={4}>
           <Box textAlign="left" flex="1">
             <Text fontSize="xl" fontWeight="bold">
               Search Proxies Dashboard
@@ -240,7 +237,6 @@ const ProxyPage = memo(() => {
           </Box>
         </Flex>
 
-        {/* Search and Filters Section */}
         <Flex
           gap={4}
           mb={4}
@@ -280,16 +276,20 @@ const ProxyPage = memo(() => {
                 {provider === "all" ? "All" : provider}
               </Button>
             ))}
-            <Button
+            <Select
+              value={healthFilter}
+              onChange={(e) => setHealthFilter(e.target.value)}
               size="sm"
-              fontWeight="bold"
-              borderRadius="full"
-              colorScheme={isHealthy ? "green" : "red"}
-              variant="solid"
-              onClick={() => setIsHealthy(!isHealthy)}
+              w={{ base: "100%", md: "150px" }}
+              color="white"
+              borderColor="gray.600"
+              _hover={{ borderColor: "gray.500" }}
+              _focus={{ borderColor: "blue.400" }}
             >
-              {isHealthy ? "Healthy" : "Unhealthy"}
-            </Button>
+              <option value="all">All Health</option>
+              <option value="healthy">Healthy</option>
+              <option value="unhealthy">Unhealthy</option>
+            </Select>
             <Select
               value={regionFilter}
               onChange={(e) => setRegionFilter(e.target.value)}
@@ -317,54 +317,103 @@ const ProxyPage = memo(() => {
             >
               Refresh Now
             </Button>
+            <Button
+              colorScheme="gray"
+              onClick={() => setShowDetails(!showDetails)}
+              size="sm"
+            >
+              {showDetails ? "Hide Details" : "Show Details"}
+            </Button>
           </HStack>
         </Flex>
 
-        {/* Proxy List Section */}
         {isLoading ? (
           <Flex justify="center" align="center" h="200px">
             <Spinner size="xl" color="blue.500" />
           </Flex>
         ) : (
-          <VStack spacing={4} align="stretch">
+          <VStack spacing={showDetails ? 4 : 2} align="stretch">
             {filteredProxies.map((proxy) => (
-              <Box key={`${proxy.provider}-${proxy.region}`} p="4" borderWidth="1px" borderRadius="lg">
-                <Flex justify="space-between" align="center" wrap="wrap" gap={2}>
-                  <Box flex="1">
+              <Box 
+                key={`${proxy.provider}-${proxy.region}`} 
+                p={showDetails ? "4" : "2"} 
+                borderWidth="1px" 
+                borderRadius="lg"
+              >
+                {showDetails ? (
+                  <Flex justify="space-between" align="center" wrap="wrap" gap={2}>
+                    <Box flex="1">
+                      <Text
+                        display="inline"
+                        fontWeight="bold"
+                        color="blue.400"
+                        cursor="pointer"
+                        onClick={() => handleTitleClick(proxy.region)}
+                        _hover={{ textDecoration: "underline" }}
+                      >
+                        {proxy.region}
+                      </Text>
+                      <Badge
+                        colorScheme={proxy.status.includes("reachable") ? "green" : "red"}
+                        variant="solid"
+                        ml={2}
+                      >
+                        {proxy.status.includes("reachable") ? "Healthy" : "Unhealthy"}
+                      </Badge>
+                      <Text fontSize="sm" color="gray.300" mt={1}>
+                        <strong>Public IP:</strong> {proxy.public_ip || "N/A"}, <strong>Status:</strong>{" "}
+                        {proxy.status}, <strong>Last Checked:</strong> {proxy.lastChecked}
+                      </Text>
+                      <Text fontSize="sm" color="gray.300" mt={1} wordBreak="break-word">
+                        <strong>URL:</strong> {proxy.url}
+                      </Text>
+                    </Box>
+                    <Box textAlign="right">
+                      <Text fontSize="sm" fontWeight="semibold" color="gray.400">
+                        {proxy.provider}
+                      </Text>
+                      <Text fontSize="sm" color="gray.300" mt={1}>
+                        <strong>Batch:</strong> {proxy.region.split("-")[1] || proxy.region}
+                      </Text>
+                    </Box>
+                  </Flex>
+                ) : (
+                  <Flex 
+                    align="center" 
+                    justify="space-between" 
+                    wrap="nowrap" 
+                    gap={2}
+                  >
                     <Text
-                      display="inline"
                       fontWeight="bold"
                       color="blue.400"
                       cursor="pointer"
                       onClick={() => handleTitleClick(proxy.region)}
                       _hover={{ textDecoration: "underline" }}
+                      flex="1"
+                      isTruncated
                     >
                       {proxy.region}
                     </Text>
                     <Badge
                       colorScheme={proxy.status.includes("reachable") ? "green" : "red"}
                       variant="solid"
-                      ml={2}
+                      minW="80px" // Fixed minimum width for consistency
+                      textAlign="center"
                     >
                       {proxy.status.includes("reachable") ? "Healthy" : "Unhealthy"}
                     </Badge>
-                    <Text fontSize="sm" color="gray.300" mt={1}>
-                      <strong>Public IP:</strong> {proxy.public_ip || "N/A"}, <strong>Status:</strong>{" "}
-                      {proxy.status}, <strong>Last Checked:</strong> {proxy.lastChecked}
-                    </Text>
-                    <Text fontSize="sm" color="gray.300" mt={1} wordBreak="break-word">
-                      <strong>URL:</strong> {proxy.url}
-                    </Text>
-                  </Box>
-                  <Box textAlign="right">
-                    <Text fontSize="sm" fontWeight="semibold" color="gray.400">
+                    <Text 
+                      fontSize="sm" 
+                      color="gray.400"
+                      flex="1"
+                      textAlign="right"
+                      isTruncated
+                    >
                       {proxy.provider}
                     </Text>
-                    <Text fontSize="sm" color="gray.300" mt={1}>
-                      <strong>Batch:</strong> {proxy.region.split("-")[1] || proxy.region}
-                    </Text>
-                  </Box>
-                </Flex>
+                  </Flex>
+                )}
               </Box>
             ))}
           </VStack>
@@ -376,7 +425,6 @@ const ProxyPage = memo(() => {
 
 ProxyPage.displayName = "SearchProxiesPage";
 
-// Define the route
 export const Route = createFileRoute("/_layout/scraping-api/search-proxies")({
   component: ProxyPage,
 });
