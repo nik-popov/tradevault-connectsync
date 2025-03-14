@@ -33,6 +33,7 @@ function Dashboard() {
   };
 
   const proxyProducts: Product[] = [
+    { id: "submit-form", name: "🧑‍💻 Submit Form", type: "SERP", description: "Submit files to Dev Scraper.", owned: true, path: "/scraping-api/submit-form/google-serp" },
     { id: "explore-serp", name: "📋 Scraper Jobs", type: "SERP", description: "View Scraper Files.", owned: true, path: "/scraping-api/explore" },
     { id: "google-serp", name: "🔍 Google SERP Results", type: "SERP", description: "Scrape real-time Google search results.", owned: true, path: "/scraping-api/google-serp" },
     { id: "cettire", name: "🔍 Cettire", type: "SERP", description: "Scrape Cettire search results.", owned: true, path: "/scraping-api/cettire" },
