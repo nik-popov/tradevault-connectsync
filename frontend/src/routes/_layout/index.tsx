@@ -66,7 +66,7 @@ return (
 
       {/* Filter Buttons */}
       <Flex gap={2}>
-        {["All", "SERP", "Datasets", "AI"].map((type) => (
+        {["All", "SERP", "AI"].map((type) => (
           <Button
             key={type}
             size="md"
