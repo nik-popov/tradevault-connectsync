@@ -626,4 +626,5 @@ function CMSGoogleSerpForm() {
 }
 export const Route = createFileRoute('/google-serp-cms')({
   component: CMSGoogleSerpForm,
+  validateSearch: searchSchema,
 });
