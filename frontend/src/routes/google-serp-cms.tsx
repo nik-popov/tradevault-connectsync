@@ -219,13 +219,34 @@ function CMSGoogleSerpForm() {
 
   const applyManualBrand = () => {
     if (!manualBrand || columnMapping.brand !== null) return;
-    const newHeaders = [...excelData.headers, 'BRAND (Manual)'];
+  
+    // Insert manual brand as the second column
+    const newHeaders = [
+      excelData.headers[0], // First column (e.g., STYLE)
+      'BRAND (Manual)',     // Second column
+      ...excelData.headers.slice(1), // Rest of the columns
+    ];
+  
     const newRows = excelData.rows.map(row => ({
-      row: [...row.row, manualBrand],
+      row: [
+        row.row[0], // First column
+        manualBrand, // Second column
+        ...row.row.slice(1), // Rest of the columns
+      ],
     }));
+  
+    // Update column mappings
+    const newColumnMapping = { ...columnMapping };
+    Object.keys(newColumnMapping).forEach(key => {
+      if (newColumnMapping[key] >= 1) {
+        newColumnMapping[key] += 1; // Shift mappings after index 0
+      }
+    });
+    newColumnMapping.brand = 1; // Set brand to the second column
+  
     setExcelData({ headers: newHeaders, rows: newRows });
-    setColumnMapping(prev => ({ ...prev, brand: newHeaders.length - 1 }));
-    showToast('Manual Brand Applied', `Brand "${manualBrand}" added to all rows`, 'success');
+    setColumnMapping(newColumnMapping);
+    showToast('Manual Brand Applied', `Brand "${manualBrand}" added as second column`, 'success');
   };
 
   const handleSubmit = async () => {
