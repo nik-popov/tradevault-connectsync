@@ -20,7 +20,7 @@ const theme = extendTheme({
   },
   colors: {
     ui: {
-      main: "#2C7A7B", // Teal as the primary accent color
+      main: "#45b05b", // Teal as the primary accent color
       secondary: "#E6FFFA", // Light teal for secondary elements
       success: "#38A169", // Green for success states
       danger: "#E53E3E", // Red for errors (unchanged)
