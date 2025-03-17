@@ -261,38 +261,47 @@ function CMSGoogleSerpForm() {
       setIsLoadingFile(true);
       const formData = new FormData();
       formData.append('fileUploadImage', file);
-
+  
       const styleCol = columnMapping.style !== null ? indexToColumnLetter(columnMapping.style) : 'A';
-      const brandCol = columnMapping.brand !== null ? indexToColumnLetter(columnMapping.brand) : 'B';
+      // Updated brandCol logic
+      const brandCol = columnMapping.brand !== null
+        ? excelData.headers[columnMapping.brand] === 'BRAND (Manual)'
+          ? 'MANUAL'
+          : indexToColumnLetter(columnMapping.brand)
+        : 'B';
       const imageAddCol = columnMapping.imageAdd !== null ? indexToColumnLetter(columnMapping.imageAdd) : null;
       const readImageCol = columnMapping.readImage !== null ? indexToColumnLetter(columnMapping.readImage) : null;
       const colorCol = columnMapping.colorName !== null ? indexToColumnLetter(columnMapping.colorName) : null;
       const categoryCol = columnMapping.category !== null ? indexToColumnLetter(columnMapping.category) : null;
-
+  
       const imageColumnImage = readImageCol || imageAddCol;
-
+  
       if (imageColumnImage) formData.append('imageColumnImage', imageColumnImage);
       formData.append('searchColImage', styleCol);
       formData.append('brandColImage', brandCol);
       if (colorCol) formData.append('ColorColImage', colorCol);
       if (categoryCol) formData.append('CategoryColImage', categoryCol);
       formData.append('header_index', String(headerRowIndex));
-
-      if (columnMapping.brand !== null && excelData.headers[columnMapping.brand] === 'BRAND (Manual)') {
+  
+      // Append manualBrand only if brandCol is 'MANUAL'
+      if (brandCol === 'MANUAL') {
         formData.append('manualBrand', manualBrand);
       }
-
+  
+      // Optional: Log values for debugging
+      console.log("Submitting with brandCol:", brandCol, "manualBrand:", manualBrand);
+  
       const response = await fetch(`${SERVER_URL}/submitImage`, {
         method: 'POST',
         body: formData,
       });
-
+  
       if (!response.ok) throw new Error(`Server error: ${response.status} - ${await response.text()}`);
       const result = await response.json();
       showToast('Success', 'Data submitted', 'success');
       setTimeout(() => {
         window.location.reload();
-      }, 1000); // Reload page after 1 second to show toast
+      }, 1000);
       return result;
     } catch (error) {
       showToast('Submission Error', error.message, 'error');
