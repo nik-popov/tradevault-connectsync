@@ -353,7 +353,6 @@ function CMSGoogleSerpForm() {
             isDisabled={!excelData.rows.length || isLoadingFile || !allRequiredSelected}
             isLoading={isLoadingFile}
           >
-            Submit
           </Button>
         </HStack>
 
