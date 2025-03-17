@@ -107,7 +107,6 @@ const theme = extendTheme({
           padding: "16px",
           position: "absolute",
           top: "20px",
-          left: "80%", // Center horizontally
           transform: "translateX(-50%)", // Adjust for centering
           minWidth: "300px",
           maxWidth: "90%",
