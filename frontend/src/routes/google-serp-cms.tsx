@@ -474,7 +474,7 @@ function CMSGoogleSerpForm() {
                   <Text color="black" fontWeight="bold" mb={2}>Column Preview (Top 100 Rows):</Text>
                   <Table size="sm" variant="simple">
                     <Tbody>
-                      {mappingPreviewRows.slice(0, 100).map((row, rowIndex) => (
+                      {mappingPreviewRows.slice(0, 50).map((row, rowIndex) => (
                         <Tr key={rowIndex}>
                           <Td color="black" borderColor="gray.200">
                             {getDisplayValue(row[selectedColumn])}
