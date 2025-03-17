@@ -122,12 +122,12 @@ function CMSGoogleSerpForm() {
         throw new Error('Invalid file type. Please upload an Excel file (.xlsx or .xls)');
       }
       setFile(selectedFile);
-      setFileName(selectedFile.name); // Store the full filename
+      setFileName(selectedFile.name);
       setExcelData({ headers: [], rows: [] });
       setColumnMapping({ style: null, brand: null, imageAdd: null, readImage: null, category: null, colorName: null });
       setManualBrand('');
       setIsLoadingFile(true);
-
+  
       const reader = new FileReader();
       reader.onload = (e) => {
         try {
@@ -136,13 +136,26 @@ function CMSGoogleSerpForm() {
           const workbook = XLSX.read(data, { type: 'binary' });
           const sheetName = workbook.SheetNames[0];
           const worksheet = workbook.Sheets[sheetName];
-          const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: true, defval: '', raw: true });
-          const allRows = jsonData; // Full dataset
-          const preview = allRows; // All rows for table display
-          const mappingPreview = allRows.slice(0, 50); // Top 100 rows for column mapping
+  
+          // Limit to top 50 rows
+          const range = XLSX.utils.decode_range(worksheet['!ref'] || 'A1');
+          const limitedRange = {
+            s: { c: 0, r: 0 }, // Start at A1
+            e: { c: range.e.c, r: Math.min(49, range.e.r) } // End at column max, row 49 (50 rows total)
+          };
+          const jsonData = XLSX.utils.sheet_to_json(worksheet, {
+            header: 1,
+            range: limitedRange,
+            blankrows: true,
+            defval: '',
+            raw: true
+          });
+          const allRows = jsonData; // Top 50 rows
+          const preview = allRows;
+          const mappingPreview = allRows; // Already limited to 50
           setPreviewRows(preview);
           setMappingPreviewRows(mappingPreview);
-
+  
           let headerRowIndex: number | null = null;
           for (let i = 0; i < Math.min(10, preview.length); i++) {
             const row = preview[i] as any[];
@@ -153,10 +166,10 @@ function CMSGoogleSerpForm() {
               break;
             }
           }
-
+  
           if (headerRowIndex !== null) {
             const headers = preview[headerRowIndex] as string[];
-            const rows = allRows.slice(headerRowIndex + 1).map(row => ({ row: row as ExcelJS.CellValue[] })); // Use all rows
+            const rows = preview.slice(headerRowIndex + 1).map(row => ({ row: row as ExcelJS.CellValue[] }));
             setExcelData({ headers, rows });
             const newColumnMapping: ColumnMapping = {
               style: null,
@@ -192,7 +205,6 @@ function CMSGoogleSerpForm() {
       setIsLoadingFile(false);
     }
   };
-
   const handleRowSelect = (rowIndex: number) => {
     setSelectedRowIndex(rowIndex);
     setIsConfirmModalOpen(true);
