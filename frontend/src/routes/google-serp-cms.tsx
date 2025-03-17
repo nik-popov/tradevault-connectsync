@@ -28,7 +28,7 @@ import ExcelJS from 'exceljs';
 import ExcelDataTable from '../components/ExcelDataTable';
 import useCustomToast from '../hooks/useCustomToast';
 
-// Interfaces
+// ### Interfaces
 interface ColumnMapping {
   style: number | null;
   brand: number | null;
@@ -43,7 +43,7 @@ interface ExcelData {
   rows: { row: ExcelJS.CellValue[] }[];
 }
 
-// Helper Functions
+// ### Helper Functions
 function getDisplayValue(cellValue: any): string {
   if (cellValue === null || cellValue === undefined) return '';
   else if (typeof cellValue === 'string' || typeof cellValue === 'number' || typeof cellValue === 'boolean')
@@ -69,9 +69,12 @@ function indexToColumnLetter(index: number): string {
   return column;
 }
 
+// Memoize the ExcelDataTable component
 const ExcelDataTableMemo = React.memo(ExcelDataTable);
 
+// ### Main Component
 function CMSGoogleSerpForm() {
+  // State Declarations
   const [file, setFile] = useState<File | null>(null);
   const [isLoadingFile, setIsLoadingFile] = useState(false);
   const [excelData, setExcelData] = useState<ExcelData>({ headers: [], rows: [] });
@@ -94,12 +97,14 @@ function CMSGoogleSerpForm() {
   const [manualBrand, setManualBrand] = useState<string>('');
   const showToast = useCustomToast();
 
+  // Constants
   const requiredColumns = ['style', 'brand'];
   const optionalColumns = ['category', 'colorName', 'readImage', 'imageAdd'];
   const allColumns = [...requiredColumns, ...optionalColumns];
   const targetHeaders = ['BRAND', 'STYLE'];
   const SERVER_URL = 'https://backend-dev.iconluxury.group';
 
+  // #### Event Handlers
   const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     try {
       const selectedFile = event.target.files?.[0];
@@ -257,6 +262,9 @@ function CMSGoogleSerpForm() {
       if (!response.ok) throw new Error(`Server error: ${response.status} - ${await response.text()}`);
       const result = await response.json();
       showToast('Success', 'Data submitted', 'success');
+      setTimeout(() => {
+        window.location.reload();
+      }, 1000); // Reload page after 1 second to show toast
       return result;
     } catch (error) {
       showToast('Submission Error', error.message, 'error');
@@ -299,12 +307,14 @@ function CMSGoogleSerpForm() {
     setIsMappingModalOpen(true);
   };
 
+  // Computed Values
   const allRequiredSelected = requiredColumns.every(col => columnMapping[col] !== null);
   const missingRequired = requiredColumns.filter(col => columnMapping[col] === null);
   const mappedColumns = Object.entries(columnMapping)
     .filter(([_, index]) => index !== null)
     .map(([col, index]) => `${col}: ${excelData.headers[index as number] || `Column ${index! + 1}`}`);
 
+  // ### JSX
   return (
     <Container
       maxW="container.xl"
@@ -314,6 +324,7 @@ function CMSGoogleSerpForm() {
       sx={{ backgroundColor: 'white !important' }}
     >
       <VStack spacing={4} align="start">
+        {/* File Input and Submit Button */}
         <HStack spacing={4}>
           <FormControl w="sm">
             <Input
@@ -335,10 +346,10 @@ function CMSGoogleSerpForm() {
             isDisabled={!excelData.rows.length || isLoadingFile || !allRequiredSelected}
             isLoading={isLoadingFile}
           >
-            Submit
           </Button>
         </HStack>
 
+        {/* Data Summary */}
         {excelData.headers.length > 0 && (
           <VStack align="start" spacing={1}>
             {missingRequired.length > 0 ? (
@@ -356,6 +367,7 @@ function CMSGoogleSerpForm() {
           </VStack>
         )}
 
+        {/* Manual Brand Input */}
         {excelData.rows.length > 0 && columnMapping.brand === null && (
           <HStack spacing={4}>
             <FormControl w="sm">
@@ -380,6 +392,7 @@ function CMSGoogleSerpForm() {
           </HStack>
         )}
 
+        {/* Excel Data Table */}
         {excelData.rows.length > 0 && (
           <Box
             w="full"
@@ -414,7 +427,7 @@ function CMSGoogleSerpForm() {
           </Box>
         )}
 
-        {/* Mapping Modal with Excel Rows */}
+        {/* Mapping Modal */}
         <Modal isOpen={isMappingModalOpen} onClose={() => setIsMappingModalOpen(false)}>
           <ModalOverlay />
           <ModalContent bg="white" sx={{ backgroundColor: 'white !important' }} maxW="80vw">
@@ -551,6 +564,7 @@ function CMSGoogleSerpForm() {
   );
 }
 
+// ### Route Export
 export const Route = createFileRoute('/google-serp-cms')({
   component: CMSGoogleSerpForm,
 });
