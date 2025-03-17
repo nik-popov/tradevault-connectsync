@@ -8,12 +8,12 @@ const config: ThemeConfig = {
 const theme = extendTheme({
   config,
   styles: {
-    global: (props) => ({
+    global: () => ({
       "html, body": {
         fontFamily: '"42dot Sans", sans-serif',
         lineHeight: "1.7",
-        bg: props.colorMode === "dark" ? "gray.900" : "gray.50", // Light gray background for light mode
-        color: props.colorMode === "dark" ? "gray.200" : "gray.800", // Dark text for readability in light mode
+        bg: "gray.50", // Hardcoded light gray background for light mode
+        color: "gray.800", // Hardcoded dark text for readability in light mode
         padding: "20px",
       },
     }),
