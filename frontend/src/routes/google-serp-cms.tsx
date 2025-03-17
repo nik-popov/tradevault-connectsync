@@ -76,9 +76,11 @@ const ExcelDataTableMemo = React.memo(ExcelDataTable);
 function CMSGoogleSerpForm() {
   // State Declarations
   const [file, setFile] = useState<File | null>(null);
+  const [fileName, setFileName] = useState<string>(''); // Added state for filename
   const [isLoadingFile, setIsLoadingFile] = useState(false);
   const [excelData, setExcelData] = useState<ExcelData>({ headers: [], rows: [] });
   const [previewRows, setPreviewRows] = useState<any[]>([]);
+  const [mappingPreviewRows, setMappingPreviewRows] = useState<any[]>([]); // Added state for mapping preview
   const [isHeaderModalOpen, setIsHeaderModalOpen] = useState(false);
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
   const [isMappingModalOpen, setIsMappingModalOpen] = useState(false);
@@ -113,6 +115,7 @@ function CMSGoogleSerpForm() {
         throw new Error('Invalid file type. Please upload an Excel file (.xlsx or .xls)');
       }
       setFile(selectedFile);
+      setFileName(selectedFile.name); // Store the full filename
       setExcelData({ headers: [], rows: [] });
       setColumnMapping({ style: null, brand: null, imageAdd: null, readImage: null, category: null, colorName: null });
       setManualBrand('');
@@ -127,8 +130,11 @@ function CMSGoogleSerpForm() {
           const sheetName = workbook.SheetNames[0];
           const worksheet = workbook.Sheets[sheetName];
           const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: true, defval: '', raw: true });
-          const preview = jsonData.slice(0, 1000);
+          const allRows = jsonData; // Full dataset
+          const preview = allRows; // All rows for table display
+          const mappingPreview = allRows.slice(0, 100); // Top 100 rows for column mapping
           setPreviewRows(preview);
+          setMappingPreviewRows(mappingPreview);
 
           let headerRowIndex: number | null = null;
           for (let i = 0; i < Math.min(10, preview.length); i++) {
@@ -143,7 +149,7 @@ function CMSGoogleSerpForm() {
 
           if (headerRowIndex !== null) {
             const headers = preview[headerRowIndex] as string[];
-            const rows = preview.slice(headerRowIndex + 1).map(row => ({ row: row as ExcelJS.CellValue[] }));
+            const rows = allRows.slice(headerRowIndex + 1).map(row => ({ row: row as ExcelJS.CellValue[] })); // Use all rows
             setExcelData({ headers, rows });
             const newColumnMapping: ColumnMapping = {
               style: null,
@@ -175,6 +181,7 @@ function CMSGoogleSerpForm() {
     } catch (error) {
       showToast('File Upload Error', error.message, 'error');
       setFile(null);
+      setFileName('');
       setIsLoadingFile(false);
     }
   };
@@ -346,12 +353,16 @@ function CMSGoogleSerpForm() {
             isDisabled={!excelData.rows.length || isLoadingFile || !allRequiredSelected}
             isLoading={isLoadingFile}
           >
+            Submit
           </Button>
         </HStack>
 
-        {/* Data Summary */}
+        {/* File Name and Data Summary */}
         {excelData.headers.length > 0 && (
           <VStack align="start" spacing={1}>
+            <Text fontSize="sm" color="gray.600">
+              File: {fileName}
+            </Text>
             {missingRequired.length > 0 ? (
               <Text fontSize="sm" color="red.500">
                 Missing: {missingRequired.join(', ')}
@@ -427,7 +438,7 @@ function CMSGoogleSerpForm() {
           </Box>
         )}
 
-        {/* Mapping Modal */}
+        {/* Mapping Modal with Top 100 Rows */}
         <Modal isOpen={isMappingModalOpen} onClose={() => setIsMappingModalOpen(false)}>
           <ModalOverlay />
           <ModalContent bg="white" sx={{ backgroundColor: 'white !important' }} maxW="80vw">
@@ -459,15 +470,15 @@ function CMSGoogleSerpForm() {
                   </option>
                 ))}
               </Select>
-              {selectedColumn !== null && excelData.rows.length > 0 && (
+              {selectedColumn !== null && mappingPreviewRows.length > 0 && (
                 <Box mt={4} maxH="30vh" overflowY="auto">
-                  <Text color="black" fontWeight="bold" mb={2}>Column Preview:</Text>
+                  <Text color="black" fontWeight="bold" mb={2}>Column Preview (Top 100 Rows):</Text>
                   <Table size="sm" variant="simple">
                     <Tbody>
-                      {excelData.rows.slice(0, 5).map((row, rowIndex) => (
+                      {mappingPreviewRows.slice(0, 100).map((row, rowIndex) => (
                         <Tr key={rowIndex}>
                           <Td color="black" borderColor="gray.200">
-                            {getDisplayValue(row.row[selectedColumn])}
+                            {getDisplayValue(row[selectedColumn])}
                           </Td>
                         </Tr>
                       ))}
