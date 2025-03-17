@@ -26,8 +26,8 @@ const ExcelDataTable: React.FC<ExcelDataTableProps> = ({
   columnMapping,
   onColumnClick,
   isManualBrand = false,
-  textColor = 'black', // Default to black
-  fontWeight = 'normal', // Default to normal
+  textColor = 'black',
+  fontWeight = 'normal',
 }) => {
   const isColumnMapped = (index: number) =>
     Object.values(columnMapping).some(value => value === index && value !== null);
@@ -45,8 +45,12 @@ const ExcelDataTable: React.FC<ExcelDataTableProps> = ({
   );
 
   return (
-    <Box overflowX="auto">
-      <Table size="sm" bg="white">
+    <Box overflowX="auto" bg="white" sx={{ backgroundColor: 'white !important' }}>
+      <Table
+        size="sm"
+        bg="white"
+        sx={{ backgroundColor: 'white !important' }}
+      >
         <Thead>
           <Tr>
             {Array.from({ length: maxColumns }, (_, index) => (
@@ -56,9 +60,9 @@ const ExcelDataTable: React.FC<ExcelDataTableProps> = ({
                 cursor="pointer"
                 bg={getHeaderBgColor(index)}
                 _hover={{ bg: 'gray.100' }}
-                color={textColor} // Apply textColor prop
-                fontWeight={fontWeight} // Apply fontWeight prop
-                sx={{ color: textColor + ' !important' }} // Force text color with !important
+                color={textColor}
+                fontWeight={fontWeight}
+                sx={{ backgroundColor: getHeaderBgColor(index), color: textColor + ' !important' }}
               >
                 {excelData.headers[index] || `Column ${index + 1}`}
               </Th>
@@ -71,10 +75,10 @@ const ExcelDataTable: React.FC<ExcelDataTableProps> = ({
               {Array.from({ length: maxColumns }, (_, cellIndex) => (
                 <Td
                   key={cellIndex}
-                  color={textColor} // Apply textColor prop
-                  fontWeight={fontWeight} // Apply fontWeight prop
+                  color={textColor}
+                  fontWeight={fontWeight}
                   bg="white"
-                  sx={{ color: textColor + ' !important' }} // Force text color with !important
+                  sx={{ backgroundColor: 'white !important', color: textColor + ' !important' }}
                 >
                   {row.row[cellIndex] !== undefined ? String(row.row[cellIndex]) : ''}
                 </Td>
