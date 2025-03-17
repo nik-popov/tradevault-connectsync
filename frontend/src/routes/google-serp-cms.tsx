@@ -264,20 +264,41 @@ function CMSGoogleSerpForm() {
       const formData = new FormData();
       formData.append('fileUploadImage', file);
   
-      const styleCol = columnMapping.style !== null ? indexToColumnLetter(columnMapping.style) : 'A';
-      // Updated brandCol logic
-      const brandCol = columnMapping.brand !== null
-        ? excelData.headers[columnMapping.brand] === 'BRAND (Manual)'
-          ? 'MANUAL'
-          : indexToColumnLetter(columnMapping.brand)
-        : 'B';
-      const imageAddCol = columnMapping.imageAdd !== null ? indexToColumnLetter(columnMapping.imageAdd) : null;
-      const readImageCol = columnMapping.readImage !== null ? indexToColumnLetter(columnMapping.readImage) : null;
-      const colorCol = columnMapping.colorName !== null ? indexToColumnLetter(columnMapping.colorName) : null;
-      const categoryCol = columnMapping.category !== null ? indexToColumnLetter(columnMapping.category) : null;
+      // Define the insertion point of the manual brand
+      const insertIndex = 1; // Manual brand is inserted at index 1
+      const isManualBrand = columnMapping.brand === insertIndex && excelData.headers[insertIndex] === 'BRAND (Manual)';
+  
+      // Function to get the original column index in the Excel file
+      const getOriginalIndex = (key) => {
+        const mappedIndex = columnMapping[key];
+        if (mappedIndex === null) return null;
+        if (isManualBrand) {
+          if (mappedIndex < insertIndex) return mappedIndex; // Before insertion, no change
+          if (mappedIndex > insertIndex) return mappedIndex - 1; // After insertion, shift left
+          // If mappedIndex === insertIndex, it’s the manual brand (handled separately)
+        }
+        return mappedIndex; // No manual brand, use as is
+      };
+  
+      // Calculate column letters for the original file
+      const styleColIndex = getOriginalIndex('style');
+      const styleCol = styleColIndex !== null ? indexToColumnLetter(styleColIndex) : 'A';
+  
+      const brandCol = isManualBrand ? 'MANUAL' : (columnMapping.brand !== null ? indexToColumnLetter(getOriginalIndex('brand')) : 'B');
+  
+      // Handle other optional columns similarly
+      const imageAddColIndex = getOriginalIndex('imageAdd');
+      const imageAddCol = imageAddColIndex !== null ? indexToColumnLetter(imageAddColIndex) : null;
+      const readImageColIndex = getOriginalIndex('readImage');
+      const readImageCol = readImageColIndex !== null ? indexToColumnLetter(readImageColIndex) : null;
+      const colorColIndex = getOriginalIndex('colorName');
+      const colorCol = colorColIndex !== null ? indexToColumnLetter(colorColIndex) : null;
+      const categoryColIndex = getOriginalIndex('category');
+      const categoryCol = categoryColIndex !== null ? indexToColumnLetter(categoryColIndex) : null;
   
       const imageColumnImage = readImageCol || imageAddCol;
   
+      // Append data to FormData
       if (imageColumnImage) formData.append('imageColumnImage', imageColumnImage);
       formData.append('searchColImage', styleCol);
       formData.append('brandColImage', brandCol);
@@ -285,13 +306,9 @@ function CMSGoogleSerpForm() {
       if (categoryCol) formData.append('CategoryColImage', categoryCol);
       formData.append('header_index', String(headerRowIndex));
   
-      // Append manualBrand only if brandCol is 'MANUAL'
-      if (brandCol === 'MANUAL') {
-        formData.append('manualBrand', manualBrand);
+      if (isManualBrand) {
+        formData.append('manualBrand', manualBrand); // Send the manual brand value
       }
-  
-      // Optional: Log values for debugging
-      console.log("Submitting with brandCol:", brandCol, "manualBrand:", manualBrand);
   
       const response = await fetch(`${SERVER_URL}/submitImage`, {
         method: 'POST',
