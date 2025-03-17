@@ -222,24 +222,26 @@ function CMSGoogleSerpForm() {
   
     // Insert manual brand as the second column
     const newHeaders = [
-      excelData.headers[0], // First column (e.g., STYLE)
-      'BRAND (Manual)',     // Second column
-      ...excelData.headers.slice(1), // Rest of the columns
+      excelData.headers[0], // Keep the first column (e.g., SEARCH)
+      'BRAND (Manual)',     // Add manual brand as second column
+      ...excelData.headers.slice(1), // Shift the rest of the columns
     ];
   
     const newRows = excelData.rows.map(row => ({
       row: [
-        row.row[0], // First column
-        manualBrand, // Second column
-        ...row.row.slice(1), // Rest of the columns
+        row.row[0], // Keep the first column
+        manualBrand, // Insert manual brand
+        ...row.row.slice(1), // Shift the rest of the row
       ],
     }));
   
     // Update column mappings
     const newColumnMapping = { ...columnMapping };
+
+    // Shift mappings for columns originally at index 1 or higher (but not 'search')
     Object.keys(newColumnMapping).forEach(key => {
-      if (newColumnMapping[key] >= 1) {
-        newColumnMapping[key] += 1; // Shift mappings after index 0
+      if (key !== 'search' && newColumnMapping[key] >= 1) {
+        newColumnMapping[key] += 1; // Shift by 1
       }
     });
     newColumnMapping.brand = 1; // Set brand to the second column
