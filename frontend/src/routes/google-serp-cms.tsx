@@ -457,72 +457,66 @@ function CMSGoogleSerpForm() {
             )}
           </Box>
         )}
-
-        {/* Mapping Modal with Top 100 Rows */}
-        <Modal isOpen={isMappingModalOpen} onClose={() => setIsMappingModalOpen(false)}>
-          <ModalOverlay />
-          <ModalContent bg="white" sx={{ backgroundColor: 'white !important' }} maxW="80vw">
-            <ModalHeader color="black">Map Column</ModalHeader>
-            <ModalBody>
-              <Text color="black">
-                Map "{selectedColumn !== null ? excelData.headers[selectedColumn] || `Column ${selectedColumn + 1}` : ''}" to:
-              </Text>
-              <Select
-                value={selectedField}
-                onChange={(e) => setSelectedField(e.target.value)}
-                mt={2}
-                bg="white"
-                color="black"
-                borderColor="gray.300"
-                _focus={{ borderColor: 'blue.500', boxShadow: '0 0 0 1px blue.500' }}
-                _hover={{ borderColor: 'gray.500' }}
-              >
-                <option value="" style={{ backgroundColor: 'white', color: 'black' }}>
-                  None (Reset Mapping)
-                </option>
-                {allColumns.map(col => (
-                  <option
-                    key={col}
-                    value={col}
-                    style={{ backgroundColor: 'white', color: 'black' }}
-                  >
-                    {col}
-                  </option>
-                ))}
-              </Select>
-              {selectedColumn !== null && mappingPreviewRows.length > 0 && (
-                <Box mt={4} maxH="30vh" overflowY="auto">
-                  <Text color="black" fontWeight="bold" mb={2}>Column Preview (Top 100 Rows):</Text>
-                  <Table size="sm" variant="simple">
-                    <Tbody>
-                      {mappingPreviewRows.slice(0, 50).map((row, rowIndex) => (
-                        <Tr key={rowIndex}>
-                          <Td color="black" borderColor="gray.200">
-                            {getDisplayValue(row[selectedColumn])}
-                          </Td>
-                        </Tr>
-                      ))}
-                    </Tbody>
-                  </Table>
-                </Box>
-              )}
-            </ModalBody>
-            <ModalFooter>
-              <Button colorScheme="blue" mr={3} onClick={() => handleMappingConfirm(true)}>
-                Confirm
-              </Button>
-              <Button
-                variant="outline"
-                color="gray.700"
-                borderColor="gray.300"
-                _hover={{ bg: 'gray.100', borderColor: 'gray.500' }}
-                onClick={() => setIsMappingModalOpen(false)}
-              >
-                Cancel
-              </Button>
-            </ModalFooter>
-          </ModalContent>
-        </Modal>
+<Modal isOpen={isMappingModalOpen} onClose={() => setIsMappingModalOpen(false)}>
+  <ModalOverlay />
+  <ModalContent bg="white" sx={{ backgroundColor: 'white !important' }} maxW="80vw">
+    <ModalHeader color="black">Map Column</ModalHeader>
+    <ModalBody>
+      <Text color="black">
+        Map "{selectedColumn !== null ? excelData.headers[selectedColumn] || `Column ${selectedColumn + 1}` : ''}" to:
+      </Text>
+      <Select
+        value={selectedField}
+        onChange={(e) => setSelectedField(e.target.value)}
+        mt={2}
+        bg="white"
+        color="black"
+        borderColor="gray.300"
+        _focus={{ borderColor: 'blue.500', boxShadow: '0 0 0 1px blue.500' }}
+        _hover={{ borderColor: 'gray.500' }}
+      >
+        <option value="" style={{ backgroundColor: 'white', color: 'black' }}>
+          None (Reset Mapping)
+        </option>
+        {allColumns.map(col => (
+          <option key={col} value={col} style={{ backgroundColor: 'white', color: 'black' }}>
+            {col}
+          </option>
+        ))}
+      </Select>
+      {selectedColumn !== null && mappingPreviewRows.length > 0 && (
+        <Box mt={4} maxH="30vh" overflowY="auto">
+          <Text color="black" fontWeight="bold" mb={2}>Column Preview (First 20 Rows):</Text>
+          <Table size="sm" variant="simple">
+            <Tbody>
+              {mappingPreviewRows.slice(0, 20).map((row, rowIndex) => (
+                <Tr key={rowIndex}>
+                  <Td color="black" borderColor="gray.200">
+                    {getDisplayValue(row[selectedColumn])}
+                  </Td>
+                </Tr>
+              ))}
+            </Tbody>
+          </Table>
+        </Box>
+      )}
+    </ModalBody>
+    <ModalFooter>
+      <Button colorScheme="blue" mr={3} onClick={() => handleMappingConfirm(true)}>
+        Confirm
+      </Button>
+      <Button
+        variant="outline"
+        color="gray.700"
+        borderColor="gray.300"
+        _hover={{ bg: 'gray.100', borderColor: 'gray.500' }}
+        onClick={() => setIsMappingModalOpen(false)}
+      >
+        Cancel
+      </Button>
+    </ModalFooter>
+  </ModalContent>
+</Modal>
 
         {/* Header Selection Modal */}
         <Modal isOpen={isHeaderModalOpen} onClose={() => setIsHeaderModalOpen(false)}>
