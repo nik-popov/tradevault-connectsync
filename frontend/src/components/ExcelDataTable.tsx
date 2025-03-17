@@ -16,7 +16,9 @@ interface ExcelDataTableProps {
   columnMapping: ColumnMapping;
   setColumnMapping?: React.Dispatch<React.SetStateAction<ColumnMapping>>;
   onColumnClick: (columnIndex: number) => void;
-  isManualBrand?: boolean; // Indicates if the brand column is manually added
+  isManualBrand?: boolean;
+  textColor?: string;
+  fontWeight?: string;
 }
 
 const ExcelDataTable: React.FC<ExcelDataTableProps> = ({
@@ -24,20 +26,19 @@ const ExcelDataTable: React.FC<ExcelDataTableProps> = ({
   columnMapping,
   onColumnClick,
   isManualBrand = false,
+  textColor = 'black', // Default to black
+  fontWeight = 'normal', // Default to normal
 }) => {
-  // Check if a column is mapped to any field
   const isColumnMapped = (index: number) =>
     Object.values(columnMapping).some(value => value === index && value !== null);
 
-  // Determine header background color based on mapping and manual brand status
   const getHeaderBgColor = (index: number) => {
     if (isManualBrand && columnMapping.brand === index) {
-      return 'orange.200'; // Distinct color for manually added brand
+      return 'orange.200';
     }
     return isColumnMapped(index) ? 'teal.100' : 'transparent';
   };
 
-  // Determine the maximum number of columns from headers or rows
   const maxColumns = Math.max(
     excelData.headers.length,
     ...excelData.rows.map(row => row.row.length)
@@ -45,7 +46,7 @@ const ExcelDataTable: React.FC<ExcelDataTableProps> = ({
 
   return (
     <Box overflowX="auto">
-      <Table size="sm">
+      <Table size="sm" bg="white">
         <Thead>
           <Tr>
             {Array.from({ length: maxColumns }, (_, index) => (
@@ -55,6 +56,9 @@ const ExcelDataTable: React.FC<ExcelDataTableProps> = ({
                 cursor="pointer"
                 bg={getHeaderBgColor(index)}
                 _hover={{ bg: 'gray.100' }}
+                color={textColor} // Apply textColor prop
+                fontWeight={fontWeight} // Apply fontWeight prop
+                sx={{ color: textColor + ' !important' }} // Force text color with !important
               >
                 {excelData.headers[index] || `Column ${index + 1}`}
               </Th>
@@ -65,7 +69,13 @@ const ExcelDataTable: React.FC<ExcelDataTableProps> = ({
           {excelData.rows.map((row, rowIndex) => (
             <Tr key={rowIndex}>
               {Array.from({ length: maxColumns }, (_, cellIndex) => (
-                <Td key={cellIndex}>
+                <Td
+                  key={cellIndex}
+                  color={textColor} // Apply textColor prop
+                  fontWeight={fontWeight} // Apply fontWeight prop
+                  bg="white"
+                  sx={{ color: textColor + ' !important' }} // Force text color with !important
+                >
                   {row.row[cellIndex] !== undefined ? String(row.row[cellIndex]) : ''}
                 </Td>
               ))}

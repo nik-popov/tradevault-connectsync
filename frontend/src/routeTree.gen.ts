@@ -15,6 +15,7 @@ import { Route as SignupImport } from './routes/signup'
 import { Route as ResetPasswordImport } from './routes/reset-password'
 import { Route as RecoverPasswordImport } from './routes/recover-password'
 import { Route as LoginImport } from './routes/login'
+import { Route as GoogleSerpCmsImport } from './routes/google-serp-cms'
 import { Route as LayoutImport } from './routes/_layout'
 import { Route as LayoutIndexImport } from './routes/_layout/index'
 import { Route as LayoutSettingsImport } from './routes/_layout/settings'
@@ -55,6 +56,12 @@ const RecoverPasswordRoute = RecoverPasswordImport.update({
 const LoginRoute = LoginImport.update({
   id: '/login',
   path: '/login',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const GoogleSerpCmsRoute = GoogleSerpCmsImport.update({
+  id: '/google-serp-cms',
+  path: '/google-serp-cms',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -171,6 +178,13 @@ declare module '@tanstack/react-router' {
       path: ''
       fullPath: ''
       preLoaderRoute: typeof LayoutImport
+      parentRoute: typeof rootRoute
+    }
+    '/google-serp-cms': {
+      id: '/google-serp-cms'
+      path: '/google-serp-cms'
+      fullPath: '/google-serp-cms'
+      preLoaderRoute: typeof GoogleSerpCmsImport
       parentRoute: typeof rootRoute
     }
     '/login': {
@@ -357,6 +371,7 @@ const LayoutRouteWithChildren =
 
 export interface FileRoutesByFullPath {
   '': typeof LayoutRouteWithChildren
+  '/google-serp-cms': typeof GoogleSerpCmsRoute
   '/login': typeof LoginRoute
   '/recover-password': typeof RecoverPasswordRoute
   '/reset-password': typeof ResetPasswordRoute
@@ -379,6 +394,7 @@ export interface FileRoutesByFullPath {
 }
 
 export interface FileRoutesByTo {
+  '/google-serp-cms': typeof GoogleSerpCmsRoute
   '/login': typeof LoginRoute
   '/recover-password': typeof RecoverPasswordRoute
   '/reset-password': typeof ResetPasswordRoute
@@ -403,6 +419,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRoute
   '/_layout': typeof LayoutRouteWithChildren
+  '/google-serp-cms': typeof GoogleSerpCmsRoute
   '/login': typeof LoginRoute
   '/recover-password': typeof RecoverPasswordRoute
   '/reset-password': typeof ResetPasswordRoute
@@ -428,6 +445,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | ''
+    | '/google-serp-cms'
     | '/login'
     | '/recover-password'
     | '/reset-password'
@@ -449,6 +467,7 @@ export interface FileRouteTypes {
     | '/scraping-api/scraping-jobs'
   fileRoutesByTo: FileRoutesByTo
   to:
+    | '/google-serp-cms'
     | '/login'
     | '/recover-password'
     | '/reset-password'
@@ -471,6 +490,7 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/_layout'
+    | '/google-serp-cms'
     | '/login'
     | '/recover-password'
     | '/reset-password'
@@ -495,6 +515,7 @@ export interface FileRouteTypes {
 
 export interface RootRouteChildren {
   LayoutRoute: typeof LayoutRouteWithChildren
+  GoogleSerpCmsRoute: typeof GoogleSerpCmsRoute
   LoginRoute: typeof LoginRoute
   RecoverPasswordRoute: typeof RecoverPasswordRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
@@ -503,6 +524,7 @@ export interface RootRouteChildren {
 
 const rootRouteChildren: RootRouteChildren = {
   LayoutRoute: LayoutRouteWithChildren,
+  GoogleSerpCmsRoute: GoogleSerpCmsRoute,
   LoginRoute: LoginRoute,
   RecoverPasswordRoute: RecoverPasswordRoute,
   ResetPasswordRoute: ResetPasswordRoute,
@@ -520,6 +542,7 @@ export const routeTree = rootRoute
       "filePath": "__root.tsx",
       "children": [
         "/_layout",
+        "/google-serp-cms",
         "/login",
         "/recover-password",
         "/reset-password",
@@ -545,6 +568,9 @@ export const routeTree = rootRoute
         "/_layout/scraping-api/endpoints/",
         "/_layout/scraping-api/scraping-jobs/"
       ]
+    },
+    "/google-serp-cms": {
+      "filePath": "google-serp-cms.tsx"
     },
     "/login": {
       "filePath": "login.tsx"
