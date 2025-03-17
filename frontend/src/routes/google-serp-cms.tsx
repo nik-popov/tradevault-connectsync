@@ -132,7 +132,7 @@ function CMSGoogleSerpForm() {
           const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: true, defval: '', raw: true });
           const allRows = jsonData; // Full dataset
           const preview = allRows; // All rows for table display
-          const mappingPreview = allRows.slice(0, 100); // Top 100 rows for column mapping
+          const mappingPreview = allRows.slice(0, 50); // Top 100 rows for column mapping
           setPreviewRows(preview);
           setMappingPreviewRows(mappingPreview);
 
