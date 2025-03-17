@@ -155,8 +155,8 @@ const GoogleSerpForm: React.FC = () => {
 
   const detectHeaderRow = (rows: any[]): number | null => {
     for (let i = 0; i < Math.min(10, rows.length); i++) {
-      const rowValues = (rows[i] as any[]).map(cell => String(cell || "").toUpperCase().trim());
-      const matchedHeaders = rowValues.filter(value => TARGET_HEADERS.includes(value));
+      const rowValues = (rows[i] as any[]).map(cell => String(cell || "").toUpperCase().trim() as 'BRAND' | 'STYLE' | string);
+      const matchedHeaders = rowValues.filter(value => TARGET_HEADERS.includes(value as 'BRAND' | 'STYLE'));
       if (matchedHeaders.length >= 2) return i;
     }
     return null;
@@ -450,8 +450,8 @@ const ControlSection: React.FC<ControlSectionProps> = ({
           </VStack>
         ) : (
           <VStack align="start" spacing={0} flexDirection="column-reverse">
-            {mappedColumns.map((mapping, index) => (
-              <Text key={index} fontSize="sm" color="teal.300">{mapping}</Text>
+            {mappedColumns.map((columnMapping, index) => (
+              <Text key={index} fontSize="sm" color="teal.300">{columnMapping}</Text>
             ))}
             <Text fontSize="sm" color="teal.300">Mapped:</Text>
           </VStack>
@@ -531,7 +531,6 @@ const DataTableSection: React.FC<DataTableSectionProps> = ({
           <ExcelDataTableMemo
             excelData={excelData}
             columnMapping={columnMapping}
-            setColumnMapping={(mapping: ColumnMapping) => {}} // Assuming this is handled internally
             onColumnClick={onColumnClick}
             isManualBrand={isManualBrand}
           />
@@ -595,8 +594,6 @@ const MappingModal: React.FC<MappingModalProps> = ({
 );
 
 const getOptionalMappings = () => {
-  // This should be computed based on columnMapping, but since it's not in scope here,
-  // you'll need to pass it as a prop or compute it differently
   return ''; // Placeholder
 };
 
