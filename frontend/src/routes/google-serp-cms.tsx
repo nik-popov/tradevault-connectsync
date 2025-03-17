@@ -294,8 +294,15 @@ function CMSGoogleSerpForm() {
     .map(([col, index]) => `${col}: ${excelData.headers[index as number] || `Column ${index! + 1}`}`);
 
   return (
-    <Container maxW="container.xl" minH="100vh" py={4} bg="white">
+    <Container maxW="container.xl" minH="100vh" py={0} bg="white !important">
       <VStack spacing={4} align="start">
+        <Text fontSize="xl" fontWeight="bold" color="black">
+          CMS Google SERP Form
+        </Text>
+        <Text fontSize="md" color="black">
+          Upload an Excel file, select header row, and map fields (Style, Brand required).
+        </Text>
+
         <HStack spacing={4}>
           <FormControl w="sm">
             <Input
@@ -305,7 +312,7 @@ function CMSGoogleSerpForm() {
               disabled={isLoadingFile}
               borderColor="gray.300"
               color="black"
-              bg="white"
+              bg="white !important"
               _hover={{ borderColor: 'gray.500' }}
             />
           </FormControl>
@@ -347,7 +354,7 @@ function CMSGoogleSerpForm() {
                 disabled={isLoadingFile}
                 borderColor="gray.300"
                 color="black"
-                bg="white"
+                bg="white !important"
               />
             </FormControl>
             <Button
@@ -361,7 +368,7 @@ function CMSGoogleSerpForm() {
         )}
 
         {excelData.rows.length > 0 && (
-          <Box w="full" maxH="60vh" overflowY="auto" borderWidth="1px" borderColor="gray.200" borderRadius="md" p={2} bg="white">
+          <Box w="full" maxH="60vh" overflowY="auto" borderWidth="1px" borderColor="gray.200" borderRadius="md" p={0} bg="white !important">
             {isLoadingFile ? (
               <VStack justify="center" h="full">
                 <Spinner size="md" color="gray.500" />
@@ -374,8 +381,8 @@ function CMSGoogleSerpForm() {
                 setColumnMapping={setColumnMapping}
                 onColumnClick={openMappingModal}
                 isManualBrand={columnMapping.brand !== null && excelData.headers[columnMapping.brand] === 'BRAND (Manual)'}
-                textColor="black" // Explicitly pass black text
-                fontWeight="bold" // Ensure headers are bold
+                textColor="black"
+                fontWeight="bold"
               />
             )}
           </Box>
@@ -384,7 +391,7 @@ function CMSGoogleSerpForm() {
         {/* Mapping Modal with Excel Rows */}
         <Modal isOpen={isMappingModalOpen} onClose={() => setIsMappingModalOpen(false)}>
           <ModalOverlay />
-          <ModalContent bg="white" maxW="80vw">
+          <ModalContent bg="white !important" maxW="80vw">
             <ModalHeader color="black">Map Column</ModalHeader>
             <ModalBody>
               <Text color="black">
@@ -394,7 +401,7 @@ function CMSGoogleSerpForm() {
                 value={selectedField}
                 onChange={(e) => setSelectedField(e.target.value)}
                 mt={2}
-                bg="white"
+                bg="white !important"
                 color="black"
                 _focus={{ borderColor: 'blue.500', boxShadow: '0 0 0 1px blue.500' }}
                 _hover={{ borderColor: 'gray.500' }}
@@ -413,14 +420,14 @@ function CMSGoogleSerpForm() {
               {selectedColumn !== null && excelData.rows.length > 0 && (
                 <Box mt={4} maxH="30vh" overflowY="auto">
                   <Text color="black" fontWeight="bold" mb={2}>Column Preview:</Text>
-                  <Table size="sm" variant="simple" bg="white">
+                  <Table size="sm" variant="simple" bg="white !important">
                     <Tbody>
                       {excelData.rows.slice(0, 5).map((row, rowIndex) => (
                         <Tr key={rowIndex}>
                           <Td
                             color="black"
                             fontWeight="normal"
-                            bg="white"
+                            bg="white !important"
                             borderColor="gray.200"
                           >
                             {getDisplayValue(row.row[selectedColumn])}
@@ -446,10 +453,10 @@ function CMSGoogleSerpForm() {
         {/* Header Selection Modal */}
         <Modal isOpen={isHeaderModalOpen} onClose={() => setIsHeaderModalOpen(false)}>
           <ModalOverlay />
-          <ModalContent maxW="80vw" bg="white">
+          <ModalContent maxW="80vw" bg="white !important">
             <ModalHeader color="black">Select Header Row</ModalHeader>
             <ModalBody maxH="60vh" overflowY="auto">
-              <Table size="sm" bg="white">
+              <Table size="sm" bg="white !important">
                 <Tbody>
                   {previewRows.map((row, rowIndex) => (
                     <Tr
@@ -463,7 +470,7 @@ function CMSGoogleSerpForm() {
                           key={cellIndex}
                           color="black"
                           fontWeight="bold"
-                          bg="white"
+                          bg="white !important"
                           borderColor="gray.200"
                         >
                           {getDisplayValue(cell)}
@@ -483,7 +490,7 @@ function CMSGoogleSerpForm() {
         {/* Confirm Header Modal */}
         <Modal isOpen={isConfirmModalOpen} onClose={() => setIsConfirmModalOpen(false)}>
           <ModalOverlay />
-          <ModalContent bg="white">
+          <ModalContent bg="white !important">
             <ModalHeader color="black">Confirm Header</ModalHeader>
             <ModalBody>
               <Text color="black">Use row {selectedRowIndex !== null ? selectedRowIndex + 1 : ''} as header?</Text>
