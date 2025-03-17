@@ -27,7 +27,7 @@ import * as XLSX from 'xlsx';
 import ExcelJS from 'exceljs';
 import ExcelDataTable from '../components/ExcelDataTable';
 import useCustomToast from '../hooks/useCustomToast';
-
+import { useSearch } from '@tanstack/react-router';
 // ### Interfaces
 interface ColumnMapping {
   style: number | null;
@@ -75,6 +75,8 @@ const ExcelDataTableMemo = React.memo(ExcelDataTable);
 // ### Main Component
 function CMSGoogleSerpForm() {
   // State Declarations
+  const search = useSearch({ from: '/google-serp-cms' });
+  const userEmail = search.UserEmail || 'nik@luxurymarket.com'; 
   const [file, setFile] = useState<File | null>(null);
   const [fileName, setFileName] = useState<string>(''); // Added state for filename
   const [isLoadingFile, setIsLoadingFile] = useState(false);
@@ -252,83 +254,84 @@ function CMSGoogleSerpForm() {
   };
 
   const handleSubmit = async () => {
-    try {
-      const missingRequired = requiredColumns.filter(col => columnMapping[col] === null);
-      if (missingRequired.length > 0) {
-        showToast('Missing Required Columns', `Map: ${missingRequired.join(', ')}`, 'warning');
-        return;
-      }
-      if (!file) throw new Error('No file selected');
-      if (headerRowIndex === null) throw new Error('Header row not selected');
-      setIsLoadingFile(true);
-      const formData = new FormData();
-      formData.append('fileUploadImage', file);
-  
-      // Define the insertion point of the manual brand
-      const insertIndex = 1; // Manual brand is inserted at index 1
-      const isManualBrand = columnMapping.brand === insertIndex && excelData.headers[insertIndex] === 'BRAND (Manual)';
-  
-      // Function to get the original column index in the Excel file
-      const getOriginalIndex = (key) => {
-        const mappedIndex = columnMapping[key];
-        if (mappedIndex === null) return null;
-        if (isManualBrand) {
-          if (mappedIndex < insertIndex) return mappedIndex; // Before insertion, no change
-          if (mappedIndex > insertIndex) return mappedIndex - 1; // After insertion, shift left
-          // If mappedIndex === insertIndex, it’s the manual brand (handled separately)
-        }
-        return mappedIndex; // No manual brand, use as is
-      };
-  
-      // Calculate column letters for the original file
-      const styleColIndex = getOriginalIndex('style');
-      const styleCol = styleColIndex !== null ? indexToColumnLetter(styleColIndex) : 'A';
-  
-      const brandCol = isManualBrand ? 'MANUAL' : (columnMapping.brand !== null ? indexToColumnLetter(getOriginalIndex('brand')) : 'B');
-  
-      // Handle other optional columns similarly
-      const imageAddColIndex = getOriginalIndex('imageAdd');
-      const imageAddCol = imageAddColIndex !== null ? indexToColumnLetter(imageAddColIndex) : null;
-      const readImageColIndex = getOriginalIndex('readImage');
-      const readImageCol = readImageColIndex !== null ? indexToColumnLetter(readImageColIndex) : null;
-      const colorColIndex = getOriginalIndex('colorName');
-      const colorCol = colorColIndex !== null ? indexToColumnLetter(colorColIndex) : null;
-      const categoryColIndex = getOriginalIndex('category');
-      const categoryCol = categoryColIndex !== null ? indexToColumnLetter(categoryColIndex) : null;
-  
-      const imageColumnImage = readImageCol || imageAddCol;
-  
-      // Append data to FormData
-      if (imageColumnImage) formData.append('imageColumnImage', imageColumnImage);
-      formData.append('searchColImage', styleCol);
-      formData.append('brandColImage', brandCol);
-      if (colorCol) formData.append('ColorColImage', colorCol);
-      if (categoryCol) formData.append('CategoryColImage', categoryCol);
-      formData.append('header_index', String(headerRowIndex));
-  
-      if (isManualBrand) {
-        formData.append('manualBrand', manualBrand); // Send the manual brand value
-      }
-  
-      const response = await fetch(`${SERVER_URL}/submitImage`, {
-        method: 'POST',
-        body: formData,
-      });
-  
-      if (!response.ok) throw new Error(`Server error: ${response.status} - ${await response.text()}`);
-      const result = await response.json();
-      showToast('Success', 'Data submitted', 'success');
-      setTimeout(() => {
-        window.location.reload();
-      }, 1000);
-      return result;
-    } catch (error) {
-      showToast('Submission Error', error.message, 'error');
-      throw error;
-    } finally {
-      setIsLoadingFile(false);
+  try {
+    const missingRequired = requiredColumns.filter(col => columnMapping[col] === null);
+    if (missingRequired.length > 0) {
+      showToast('Missing Required Columns', `Map: ${missingRequired.join(', ')}`, 'warning');
+      return;
     }
-  };
+    if (!file) throw new Error('No file selected');
+    if (headerRowIndex === null) throw new Error('Header row not selected');
+    setIsLoadingFile(true);
+    const formData = new FormData();
+    formData.append('fileUploadImage', file);
+
+    // Define the insertion point of the manual brand
+    const insertIndex = 1;
+    const isManualBrand = columnMapping.brand === insertIndex && excelData.headers[insertIndex] === 'BRAND (Manual)';
+
+    const getOriginalIndex = (key) => {
+      const mappedIndex = columnMapping[key];
+      if (mappedIndex === null) return null;
+      if (isManualBrand) {
+        if (mappedIndex < insertIndex) return mappedIndex;
+        if (mappedIndex > insertIndex) return mappedIndex - 1;
+      }
+      return mappedIndex;
+    };
+
+    const styleColIndex = getOriginalIndex('style');
+    const styleCol = styleColIndex !== null ? indexToColumnLetter(styleColIndex) : 'A';
+    const brandCol = isManualBrand ? 'MANUAL' : (columnMapping.brand !== null ? indexToColumnLetter(getOriginalIndex('brand')) : 'B');
+    const imageAddColIndex = getOriginalIndex('imageAdd');
+    const imageAddCol = imageAddColIndex !== null ? indexToColumnLetter(imageAddColIndex) : null;
+    const readImageColIndex = getOriginalIndex('readImage');
+    const readImageCol = readImageColIndex !== null ? indexToColumnLetter(readImageColIndex) : null;
+    const colorColIndex = getOriginalIndex('colorName');
+    const colorCol = colorColIndex !== null ? indexToColumnLetter(colorColIndex) : null;
+    const categoryColIndex = getOriginalIndex('category');
+    const categoryCol = categoryColIndex !== null ? indexToColumnLetter(categoryColIndex) : null;
+
+    const imageColumnImage = readImageCol || imageAddCol;
+
+    if (imageColumnImage) formData.append('imageColumnImage', imageColumnImage);
+    formData.append('searchColImage', styleCol);
+    formData.append('brandColImage', brandCol);
+    if (colorCol) formData.append('ColorColImage', colorCol);
+    if (categoryCol) formData.append('CategoryColImage', categoryCol);
+    formData.append('header_index', String(headerRowIndex));
+
+    if (isManualBrand) {
+      formData.append('manualBrand', manualBrand);
+    }
+
+    // Add UserEmail to FormData if present
+    if (userEmail) {
+      formData.append('UserEmail', userEmail);
+    }
+
+    const response = await fetch(`${SERVER_URL}/submitImage`, {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json', // Specify that we expect a JSON response
+      },
+      body: formData,
+    });
+
+    if (!response.ok) throw new Error(`Server error: ${response.status} - ${await response.text()}`);
+    const result = await response.json();
+    showToast('Success', 'Data submitted', 'success');
+    setTimeout(() => {
+      window.location.reload();
+    }, 1000);
+    return result;
+  } catch (error) {
+    showToast('Submission Error', error.message, 'error');
+    throw error;
+  } finally {
+    setIsLoadingFile(false);
+  }
+};
 
   const handleMappingConfirm = (confirm: boolean) => {
     if (confirm && selectedColumn !== null) {
@@ -616,8 +619,6 @@ function CMSGoogleSerpForm() {
     </Container>
   );
 }
-
-// ### Route Export
 export const Route = createFileRoute('/google-serp-cms')({
   component: CMSGoogleSerpForm,
 });
