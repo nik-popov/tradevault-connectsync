@@ -228,20 +228,35 @@ function CMSGoogleSerpForm() {
       setIsLoadingFile(true);
       const formData = new FormData();
       formData.append('fileUploadImage', file);
+  
+      // Column mappings to letters
       const styleCol = columnMapping.style !== null ? indexToColumnLetter(columnMapping.style) : 'A';
       const brandCol = columnMapping.brand !== null ? indexToColumnLetter(columnMapping.brand) : 'B';
       const imageAddCol = columnMapping.imageAdd !== null ? indexToColumnLetter(columnMapping.imageAdd) : null;
       const readImageCol = columnMapping.readImage !== null ? indexToColumnLetter(columnMapping.readImage) : null;
       const colorCol = columnMapping.colorName !== null ? indexToColumnLetter(columnMapping.colorName) : null;
       const categoryCol = columnMapping.category !== null ? indexToColumnLetter(columnMapping.category) : null;
+  
       const imageColumnImage = readImageCol || imageAddCol;
+  
+      // Append column mappings to formData
       if (imageColumnImage) formData.append('imageColumnImage', imageColumnImage);
       formData.append('searchColImage', styleCol);
       formData.append('brandColImage', brandCol);
       if (colorCol) formData.append('ColorColImage', colorCol);
       if (categoryCol) formData.append('CategoryColImage', categoryCol);
       formData.append('header_index', String(headerRowIndex));
-      const response = await fetch(`${SERVER_URL}/submitImage`, { method: 'POST', body: formData });
+  
+      // If manual brand is used, ensure it's explicitly communicated to the backend
+      if (columnMapping.brand !== null && excelData.headers[columnMapping.brand] === 'BRAND (Manual)') {
+        formData.append('manualBrand', manualBrand); // Add manual brand value to payload
+      }
+  
+      const response = await fetch(`${SERVER_URL}/submitImage`, {
+        method: 'POST',
+        body: formData,
+      });
+  
       if (!response.ok) throw new Error(`Server error: ${response.status} - ${await response.text()}`);
       const result = await response.json();
       showToast('Success', 'Data submitted', 'success');
