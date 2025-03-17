@@ -23,7 +23,6 @@ input:focus, textarea:focus, select:focus { outline: none; border-color: var(--c
 .chakra-alert {
   display: flex;
   top: 20px;
-  left: 20px;
   position: relative;
   background: var(--chakra-colors-white); /* Bright white background */
   padding-inline-start: var(--chakra-space-4);
