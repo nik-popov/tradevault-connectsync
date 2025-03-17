@@ -211,7 +211,7 @@ function CMSGoogleSerpForm() {
     const newRows = excelData.rows.map(row => ({
       row: [...row.row, manualBrand],
     }));
-    setExcelData({ headers: newHeaders, rows: newRows }); // Fix: Use headers: newHeaders
+    setExcelData({ headers: newHeaders, rows: newRows });
     setColumnMapping(prev => ({ ...prev, brand: newHeaders.length - 1 }));
     showToast('Manual Brand Applied', `Brand "${manualBrand}" added to all rows`, 'success');
   };
@@ -228,35 +228,32 @@ function CMSGoogleSerpForm() {
       setIsLoadingFile(true);
       const formData = new FormData();
       formData.append('fileUploadImage', file);
-  
-      // Column mappings to letters
+
       const styleCol = columnMapping.style !== null ? indexToColumnLetter(columnMapping.style) : 'A';
       const brandCol = columnMapping.brand !== null ? indexToColumnLetter(columnMapping.brand) : 'B';
       const imageAddCol = columnMapping.imageAdd !== null ? indexToColumnLetter(columnMapping.imageAdd) : null;
       const readImageCol = columnMapping.readImage !== null ? indexToColumnLetter(columnMapping.readImage) : null;
       const colorCol = columnMapping.colorName !== null ? indexToColumnLetter(columnMapping.colorName) : null;
       const categoryCol = columnMapping.category !== null ? indexToColumnLetter(columnMapping.category) : null;
-  
+
       const imageColumnImage = readImageCol || imageAddCol;
-  
-      // Append column mappings to formData
+
       if (imageColumnImage) formData.append('imageColumnImage', imageColumnImage);
       formData.append('searchColImage', styleCol);
       formData.append('brandColImage', brandCol);
       if (colorCol) formData.append('ColorColImage', colorCol);
       if (categoryCol) formData.append('CategoryColImage', categoryCol);
       formData.append('header_index', String(headerRowIndex));
-  
-      // If manual brand is used, ensure it's explicitly communicated to the backend
+
       if (columnMapping.brand !== null && excelData.headers[columnMapping.brand] === 'BRAND (Manual)') {
-        formData.append('manualBrand', manualBrand); // Add manual brand value to payload
+        formData.append('manualBrand', manualBrand);
       }
-  
+
       const response = await fetch(`${SERVER_URL}/submitImage`, {
         method: 'POST',
         body: formData,
       });
-  
+
       if (!response.ok) throw new Error(`Server error: ${response.status} - ${await response.text()}`);
       const result = await response.json();
       showToast('Success', 'Data submitted', 'success');
@@ -312,9 +309,9 @@ function CMSGoogleSerpForm() {
     <Container
       maxW="container.xl"
       minH="100vh"
-      py={0} // Remove padding
+      py={0}
       bg="white"
-      sx={{ backgroundColor: 'white !important' }} // Enforce white background
+      sx={{ backgroundColor: 'white !important' }}
     >
       <VStack spacing={4} align="start">
         <HStack spacing={4}>
@@ -338,6 +335,7 @@ function CMSGoogleSerpForm() {
             isDisabled={!excelData.rows.length || isLoadingFile || !allRequiredSelected}
             isLoading={isLoadingFile}
           >
+            Submit
           </Button>
         </HStack>
 
@@ -390,7 +388,7 @@ function CMSGoogleSerpForm() {
             borderWidth="1px"
             borderColor="gray.200"
             borderRadius="md"
-            p={0} // Remove padding
+            p={0}
             bg="white"
             sx={{ backgroundColor: 'white !important' }}
           >
@@ -427,18 +425,14 @@ function CMSGoogleSerpForm() {
                 onChange={(e) => setSelectedField(e.target.value)}
                 mt={2}
                 bg="white"
-                sx={{ backgroundColor: 'white !important' }}
                 color="black"
+                borderColor="gray.300"
                 _focus={{ borderColor: 'blue.500', boxShadow: '0 0 0 1px blue.500' }}
                 _hover={{ borderColor: 'gray.500' }}
               >
-                <option value="" style={{ color: 'black', backgroundColor: 'white' }}>None</option>
+                <option value="">None</option>
                 {allColumns.map(col => (
-                  <option
-                    key={col}
-                    value={col}
-                    style={{ color: 'black', backgroundColor: 'white' }}
-                  >
+                  <option key={col} value={col}>
                     {col}
                   </option>
                 ))}
@@ -446,17 +440,11 @@ function CMSGoogleSerpForm() {
               {selectedColumn !== null && excelData.rows.length > 0 && (
                 <Box mt={4} maxH="30vh" overflowY="auto">
                   <Text color="black" fontWeight="bold" mb={2}>Column Preview:</Text>
-                  <Table size="sm" variant="simple" bg="white" sx={{ backgroundColor: 'white !important' }}>
+                  <Table size="sm" variant="simple">
                     <Tbody>
                       {excelData.rows.slice(0, 5).map((row, rowIndex) => (
                         <Tr key={rowIndex}>
-                          <Td
-                            color="black"
-                            fontWeight="normal"
-                            bg="white"
-                            sx={{ backgroundColor: 'white !important' }}
-                            borderColor="gray.200"
-                          >
+                          <Td color="black" borderColor="gray.200">
                             {getDisplayValue(row.row[selectedColumn])}
                           </Td>
                         </Tr>
@@ -470,7 +458,13 @@ function CMSGoogleSerpForm() {
               <Button colorScheme="blue" mr={3} onClick={() => handleMappingConfirm(true)}>
                 Confirm
               </Button>
-              <Button variant="outline" onClick={() => setIsMappingModalOpen(false)}>
+              <Button
+                variant="outline"
+                color="gray.700"
+                borderColor="gray.300"
+                _hover={{ bg: 'gray.100', borderColor: 'gray.500' }}
+                onClick={() => setIsMappingModalOpen(false)}
+              >
                 Cancel
               </Button>
             </ModalFooter>
@@ -483,7 +477,7 @@ function CMSGoogleSerpForm() {
           <ModalContent maxW="80vw" bg="white" sx={{ backgroundColor: 'white !important' }}>
             <ModalHeader color="black">Select Header Row</ModalHeader>
             <ModalBody maxH="60vh" overflowY="auto">
-              <Table size="sm" bg="white" sx={{ backgroundColor: 'white !important' }}>
+              <Table size="sm">
                 <Tbody>
                   {previewRows.map((row, rowIndex) => (
                     <Tr
@@ -493,14 +487,7 @@ function CMSGoogleSerpForm() {
                       _hover={{ bg: 'gray.100' }}
                     >
                       {row.map((cell: any, cellIndex: number) => (
-                        <Td
-                          key={cellIndex}
-                          color="black"
-                          fontWeight="bold"
-                          bg="white"
-                          sx={{ backgroundColor: 'white !important' }}
-                          borderColor="gray.200"
-                        >
+                        <Td key={cellIndex} color="black" borderColor="gray.200">
                           {getDisplayValue(cell)}
                         </Td>
                       ))}
@@ -510,7 +497,15 @@ function CMSGoogleSerpForm() {
               </Table>
             </ModalBody>
             <ModalFooter>
-              <Button variant="outline" onClick={() => setIsHeaderModalOpen(false)}>Cancel</Button>
+              <Button
+                variant="outline"
+                color="gray.700"
+                borderColor="gray.300"
+                _hover={{ bg: 'gray.100', borderColor: 'gray.500' }}
+                onClick={() => setIsHeaderModalOpen(false)}
+              >
+                Cancel
+              </Button>
             </ModalFooter>
           </ModalContent>
         </Modal>
@@ -522,11 +517,23 @@ function CMSGoogleSerpForm() {
             <ModalHeader color="black">Confirm Header</ModalHeader>
             <ModalBody>
               <Text color="black">Use row {selectedRowIndex !== null ? selectedRowIndex + 1 : ''} as header?</Text>
-              {selectedRowIndex !== null && <Text mt={2} color="black">{previewRows[selectedRowIndex].join(', ')}</Text>}
+              {selectedRowIndex !== null && (
+                <Text mt={2} color="black">{previewRows[selectedRowIndex].join(', ')}</Text>
+              )}
             </ModalBody>
             <ModalFooter>
-              <Button colorScheme="blue" mr={3} onClick={confirmHeaderSelect}>Confirm</Button>
-              <Button variant="outline" onClick={() => setIsConfirmModalOpen(false)}>Cancel</Button>
+              <Button colorScheme="blue" mr={3} onClick={confirmHeaderSelect}>
+                Confirm
+              </Button>
+              <Button
+                variant="outline"
+                color="gray.700"
+                borderColor="gray.300"
+                _hover={{ bg: 'gray.100', borderColor: 'gray.500' }}
+                onClick={() => setIsConfirmModalOpen(false)}
+              >
+                Cancel
+              </Button>
             </ModalFooter>
           </ModalContent>
         </Modal>
