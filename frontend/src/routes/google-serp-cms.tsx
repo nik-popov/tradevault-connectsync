@@ -95,7 +95,7 @@ function CMSGoogleSerpForm() {
   const showToast = useCustomToast();
 
   const requiredColumns = ['style', 'brand'];
-  const optionalColumns = ['category', 'colorName', 'readImage', 'imageAdd'];
+  const optionalColumns = ['category', 'colorName', 'readImage'];
   const allColumns = [...requiredColumns, ...optionalColumns];
   const targetHeaders = ['BRAND', 'STYLE'];
   const SERVER_URL = 'https://backend-dev.iconluxury.group';
