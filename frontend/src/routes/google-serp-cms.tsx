@@ -296,13 +296,6 @@ function CMSGoogleSerpForm() {
   return (
     <Container maxW="container.xl" minH="100vh" py={0} bg="white !important">
       <VStack spacing={4} align="start">
-        <Text fontSize="xl" fontWeight="bold" color="black">
-          CMS Google SERP Form
-        </Text>
-        <Text fontSize="md" color="black">
-          Upload an Excel file, select header row, and map fields (Style, Brand required).
-        </Text>
-
         <HStack spacing={4}>
           <FormControl w="sm">
             <Input
@@ -323,7 +316,6 @@ function CMSGoogleSerpForm() {
             isDisabled={!excelData.rows.length || isLoadingFile || !allRequiredSelected}
             isLoading={isLoadingFile}
           >
-            Submit
           </Button>
         </HStack>
 
