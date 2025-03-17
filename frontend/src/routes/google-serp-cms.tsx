@@ -71,7 +71,12 @@ function indexToColumnLetter(index: number): string {
 
 // Memoize the ExcelDataTable component
 const ExcelDataTableMemo = React.memo(ExcelDataTable);
+import { z } from 'zod';
 
+// Define the search schema
+const searchSchema = z.object({
+  UserEmail: z.string().optional(),
+});
 // ### Main Component
 function CMSGoogleSerpForm() {
   // State Declarations
