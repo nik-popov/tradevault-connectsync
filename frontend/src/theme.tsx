@@ -1,10 +1,9 @@
 import { extendTheme, ThemeConfig } from "@chakra-ui/react";
 
 const config: ThemeConfig = {
-  initialColorMode: "dark", // Default to dark mode
+  initialColorMode: "light", // Changed to light mode as the default
   useSystemColorMode: false,
 };
-
 
 const theme = extendTheme({
   config,
@@ -13,22 +12,22 @@ const theme = extendTheme({
       "html, body": {
         fontFamily: '"42dot Sans", sans-serif',
         lineHeight: "1.7",
-        bg: props.colorMode === "dark" ? "gray.900" : "gray.100",
-        color: props.colorMode === "dark" ? "gray.200" : "gray.800",
+        bg: props.colorMode === "dark" ? "gray.900" : "gray.50", // Light gray background for light mode
+        color: props.colorMode === "dark" ? "gray.200" : "gray.800", // Dark text for readability in light mode
         padding: "20px",
       },
     }),
   },
   colors: {
     ui: {
-      main: "#0A2540", // Primary blue
-      secondary: "#EDF2F7", // Light gray-blue
-      success: "#48BB78", // Green success
-      danger: "#E53E3E", // Red error
-      light: "#FAFAFA", // Off-white
-      dark: "#1A202C", // Dark background
-      darkSlate: "#252D3D", // Darker gray-blue
-      dim: "#A0AEC0", // Muted gray
+      main: "#2C7A7B", // Teal as the primary accent color
+      secondary: "#E6FFFA", // Light teal for secondary elements
+      success: "#38A169", // Green for success states
+      danger: "#E53E3E", // Red for errors (unchanged)
+      light: "#FFFFFF", // White for backgrounds
+      dark: "#1A202C", // Dark background for dark mode (unchanged)
+      darkSlate: "#2D3748", // Darker gray for contrast
+      dim: "#A0AEC0", // Muted gray for secondary text (unchanged)
     },
   },
   components: {
@@ -39,13 +38,13 @@ const theme = extendTheme({
     },
     Text: {
       baseStyle: (props) => ({
-        color: props.colorMode === "dark" ? "gray.200" : "gray.200", // Lighter subtext
+        color: props.colorMode === "dark" ? "gray.200" : "gray.700", // Darker text for light mode readability
       }),
     },
     Code: {
       baseStyle: (props) => ({
-        bg: props.colorMode === "dark" ? "gray.700" : "gray.700", // Grey background
-        color: props.colorMode === "dark" ? "gray.100" : "gray.900", // Dark text in dark mode
+        bg: props.colorMode === "dark" ? "gray.700" : "gray.100", // Light background for light mode
+        color: props.colorMode === "dark" ? "gray.100" : "gray.800", // Dark text in light mode
         fontSize: "sm",
         p: 3,
         borderRadius: "md",
@@ -58,10 +57,10 @@ const theme = extendTheme({
       },
       variants: {
         primary: {
-          backgroundColor: "ui.main",
-          color: "ui.light",
+          backgroundColor: "ui.main", // Teal accent
+          color: "ui.light", // White text
           _hover: {
-            backgroundColor: "#082135",
+            backgroundColor: "#234E52", // Darker teal on hover
           },
           _disabled: {
             backgroundColor: "ui.main",
@@ -69,10 +68,10 @@ const theme = extendTheme({
           },
         },
         danger: {
-          backgroundColor: "ui.danger",
-          color: "ui.light",
+          backgroundColor: "ui.danger", // Red (unchanged)
+          color: "ui.light", // White text
           _hover: {
-            backgroundColor: "#E32727",
+            backgroundColor: "#E32727", // Darker red (unchanged)
           },
         },
       },
@@ -86,13 +85,13 @@ const theme = extendTheme({
           tab: {
             color: "ui.dim",
             _selected: {
-              color: "ui.light",
+              color: "ui.main", // Teal for selected tab
               fontWeight: "bold",
-              borderBottomColor: "ui.main",
+              borderBottomColor: "ui.main", // Teal underline
               borderBottomWidth: "2px",
             },
             _hover: {
-              color: "ui.secondary",
+              color: "ui.secondary", // Light teal on hover
             },
           },
         },
@@ -101,8 +100,8 @@ const theme = extendTheme({
     Toast: {
       baseStyle: {
         container: {
-          bg: "white", // Bright white background
-          color: "gray.900", // Dark text
+          bg: "white", // Bright white background (unchanged)
+          color: "gray.900", // Dark text (unchanged)
           borderRadius: "md",
           boxShadow: "lg",
           padding: "16px",

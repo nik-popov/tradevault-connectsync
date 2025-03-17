@@ -211,7 +211,7 @@ function CMSGoogleSerpForm() {
     const newRows = excelData.rows.map(row => ({
       row: [...row.row, manualBrand],
     }));
-    setExcelData({ headers, newHeaders, rows: newRows });
+    setExcelData({ headers: newHeaders, rows: newRows }); // Fix: Use headers: newHeaders
     setColumnMapping(prev => ({ ...prev, brand: newHeaders.length - 1 }));
     showToast('Manual Brand Applied', `Brand "${manualBrand}" added to all rows`, 'success');
   };
