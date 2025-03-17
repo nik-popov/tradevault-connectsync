@@ -384,7 +384,8 @@ function CMSGoogleSerpForm() {
           <Box
             w="full"
             maxH="60vh"
-            overflowY="auto"
+            overflowX="auto" // Enable horizontal scrolling
+            overflowY="auto" // Keep vertical scrolling
             borderWidth="1px"
             borderColor="gray.200"
             borderRadius="md"
@@ -398,15 +399,17 @@ function CMSGoogleSerpForm() {
                 <Text color="gray.600">Loading...</Text>
               </VStack>
             ) : (
-              <ExcelDataTableMemo
-                excelData={excelData}
-                columnMapping={columnMapping}
-                setColumnMapping={setColumnMapping}
-                onColumnClick={openMappingModal}
-                isManualBrand={columnMapping.brand !== null && excelData.headers[columnMapping.brand] === 'BRAND (Manual)'}
-                textColor="black"
-                fontWeight="bold"
-              />
+              <Box minW="max-content"> {/* Ensure content doesn’t shrink */}
+                <ExcelDataTableMemo
+                  excelData={excelData}
+                  columnMapping={columnMapping}
+                  setColumnMapping={setColumnMapping}
+                  onColumnClick={openMappingModal}
+                  isManualBrand={columnMapping.brand !== null && excelData.headers[columnMapping.brand] === 'BRAND (Manual)'}
+                  textColor="black"
+                  fontWeight="bold"
+                />
+              </Box>
             )}
           </Box>
         )}
