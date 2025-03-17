@@ -312,7 +312,7 @@ function CMSGoogleSerpForm() {
 
     // Add UserEmail to FormData if present
     if (userEmail) {
-      formData.append('UserEmail', userEmail);
+      formData.append('sendToEmail', userEmail);
     }
 
     const response = await fetch(`${SERVER_URL}/submitImage`, {
