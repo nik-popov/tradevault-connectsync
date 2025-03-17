@@ -271,11 +271,11 @@ function CMSGoogleSerpForm() {
       const newMapping = { ...columnMapping };
       Object.keys(newMapping).forEach(key => {
         if (newMapping[key] === selectedColumn) {
-          newMapping[key] = null;
+          newMapping[key] = null; // Reset any existing mapping for this column
         }
       });
       if (selectedField && selectedField !== '') {
-        newMapping[selectedField] = selectedColumn;
+        newMapping[selectedField] = selectedColumn; // Set new mapping
       }
       setColumnMapping(newMapping);
     }
@@ -384,8 +384,8 @@ function CMSGoogleSerpForm() {
           <Box
             w="full"
             maxH="60vh"
-            overflowX="auto" // Enable horizontal scrolling
-            overflowY="auto" // Keep vertical scrolling
+            overflowX="auto"
+            overflowY="auto"
             borderWidth="1px"
             borderColor="gray.200"
             borderRadius="md"
@@ -399,7 +399,7 @@ function CMSGoogleSerpForm() {
                 <Text color="gray.600">Loading...</Text>
               </VStack>
             ) : (
-              <Box minW="max-content"> {/* Ensure content doesn’t shrink */}
+              <Box minW="max-content">
                 <ExcelDataTableMemo
                   excelData={excelData}
                   columnMapping={columnMapping}
@@ -433,9 +433,15 @@ function CMSGoogleSerpForm() {
                 _focus={{ borderColor: 'blue.500', boxShadow: '0 0 0 1px blue.500' }}
                 _hover={{ borderColor: 'gray.500' }}
               >
-                <option value="">None</option>
+                <option value="" style={{ backgroundColor: 'white', color: 'black' }}>
+                  None (Reset Mapping)
+                </option>
                 {allColumns.map(col => (
-                  <option key={col} value={col}>
+                  <option
+                    key={col}
+                    value={col}
+                    style={{ backgroundColor: 'white', color: 'black' }}
+                  >
                     {col}
                   </option>
                 ))}
