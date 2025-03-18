@@ -224,14 +224,14 @@ const ProxyPage = memo(() => {
   const providerCategories = ["all", ...new Set(allProxies.map((proxy) => proxy.provider))];
 
   return (
-    <Container maxW="full" py={6} color="white">
+    <Container maxW="full" py={6} bg="white" color="gray.800">
       <Flex direction="column" gap={4}>
         <Flex align="center" justify="space-between" flexWrap="wrap" gap={4}>
           <Box textAlign="left" flex="1">
-            <Text fontSize="xl" fontWeight="bold">
+            <Text fontSize="xl" fontWeight="bold" color="black">
               Search Proxies Dashboard
             </Text>
-            <Text fontSize="sm" color="gray.500">
+            <Text fontSize="sm" color="gray.600">
               View and manage search proxies for scraping operations.
             </Text>
           </Box>
@@ -242,7 +242,7 @@ const ProxyPage = memo(() => {
           mb={4}
           position="sticky"
           top="0"
-          bg="transparent"
+          bg="white"
           zIndex="10"
           py={5}
           borderBottom="1px solid"
@@ -257,10 +257,15 @@ const ProxyPage = memo(() => {
             onChange={(e) => setSearchTerm(e.target.value)}
             w={{ base: "100%", md: "250px" }}
             aria-label="Search proxies"
-            color="white"
-            borderColor="gray.600"
-            _hover={{ borderColor: "gray.500" }}
-            _focus={{ borderColor: "blue.400" }}
+            borderColor="green.300"
+            _hover={{ borderColor: "green.400" }}
+            _focus={{ borderColor: "green.500", boxShadow: "0 0 0 1px green.500" }}
+            bg="white"
+            color="gray.800"
+            _placeholder={{ color: "gray.500" }}
+            borderRadius="md"
+            px={3}
+            py={2}
           />
           <HStack spacing={4} ml={{ md: "auto" }} align="center" flexWrap="wrap">
             {providerCategories.map((provider) => (
@@ -269,7 +274,7 @@ const ProxyPage = memo(() => {
                 size="sm"
                 fontWeight="bold"
                 borderRadius="full"
-                colorScheme={providerFilter === provider ? "blue" : "gray"}
+                colorScheme={providerFilter === provider ? "green" : "gray"}
                 variant={providerFilter === provider ? "solid" : "outline"}
                 onClick={() => setProviderFilter(provider)}
               >
@@ -281,10 +286,21 @@ const ProxyPage = memo(() => {
               onChange={(e) => setHealthFilter(e.target.value)}
               size="sm"
               w={{ base: "100%", md: "150px" }}
-              color="white"
-              borderColor="gray.600"
-              _hover={{ borderColor: "gray.500" }}
-              _focus={{ borderColor: "blue.400" }}
+              borderColor="green.300"
+              _hover={{ borderColor: "green.400" }}
+              _focus={{ borderColor: "green.500", boxShadow: "0 0 0 1px green.500" }}
+              bg="white"
+              color="gray.700"
+              borderRadius="md"
+              px={3}
+              py={2}
+              sx={{
+                "& option": {
+                  color: "gray.700",
+                  backgroundColor: "white",
+                  _hover: { backgroundColor: "green.50" },
+                },
+              }}
             >
               <option value="all">All Health</option>
               <option value="healthy">Healthy</option>
@@ -295,10 +311,21 @@ const ProxyPage = memo(() => {
               onChange={(e) => setRegionFilter(e.target.value)}
               size="sm"
               w={{ base: "100%", md: "220px" }}
-              color="white"
-              borderColor="gray.600"
-              _hover={{ borderColor: "gray.500" }}
-              _focus={{ borderColor: "blue.400" }}
+              borderColor="green.300"
+              _hover={{ borderColor: "green.400" }}
+              _focus={{ borderColor: "green.500", boxShadow: "0 0 0 1px green.500" }}
+              bg="white"
+              color="gray.700"
+              borderRadius="md"
+              px={3}
+              py={2}
+              sx={{
+                "& option": {
+                  color: "gray.700",
+                  backgroundColor: "white",
+                  _hover: { backgroundColor: "green.50" },
+                },
+              }}
             >
               <option value="all">All Regions</option>
               <option value="us">US</option>
@@ -309,7 +336,7 @@ const ProxyPage = memo(() => {
               <option value="middleeast">Middle East</option>
             </Select>
             <Button
-              colorScheme="blue"
+              colorScheme="green"
               onClick={handleRefresh}
               isLoading={isRefreshing}
               isDisabled={isRefreshing}
@@ -329,7 +356,7 @@ const ProxyPage = memo(() => {
 
         {isLoading ? (
           <Flex justify="center" align="center" h="200px">
-            <Spinner size="xl" color="blue.500" />
+            <Spinner size="xl" color="green.500" />
           </Flex>
         ) : (
           <VStack spacing={showDetails ? 4 : 2} align="stretch">
@@ -339,6 +366,8 @@ const ProxyPage = memo(() => {
                 p={showDetails ? "4" : "2"} 
                 borderWidth="1px" 
                 borderRadius="lg"
+                borderColor="gray.200"
+                bg="white"
               >
                 {showDetails ? (
                   <Flex justify="space-between" align="center" wrap="wrap" gap={2}>
@@ -346,7 +375,7 @@ const ProxyPage = memo(() => {
                       <Text
                         display="inline"
                         fontWeight="bold"
-                        color="blue.400"
+                        color="green.500"
                         cursor="pointer"
                         onClick={() => handleTitleClick(proxy.region)}
                         _hover={{ textDecoration: "underline" }}
@@ -360,19 +389,19 @@ const ProxyPage = memo(() => {
                       >
                         {proxy.status.includes("reachable") ? "Healthy" : "Unhealthy"}
                       </Badge>
-                      <Text fontSize="sm" color="gray.300" mt={1}>
+                      <Text fontSize="sm" color="gray.600" mt={1}>
                         <strong>Public IP:</strong> {proxy.public_ip || "N/A"}, <strong>Status:</strong>{" "}
                         {proxy.status}, <strong>Last Checked:</strong> {proxy.lastChecked}
                       </Text>
-                      <Text fontSize="sm" color="gray.300" mt={1} wordBreak="break-word">
+                      <Text fontSize="sm" color="gray.600" mt={1} wordBreak="break-word">
                         <strong>URL:</strong> {proxy.url}
                       </Text>
                     </Box>
                     <Box textAlign="right">
-                      <Text fontSize="sm" fontWeight="semibold" color="gray.400">
+                      <Text fontSize="sm" fontWeight="semibold" color="gray.700">
                         {proxy.provider}
                       </Text>
-                      <Text fontSize="sm" color="gray.300" mt={1}>
+                      <Text fontSize="sm" color="gray.600" mt={1}>
                         <strong>Batch:</strong> {proxy.region.split("-")[1] || proxy.region}
                       </Text>
                     </Box>
@@ -386,7 +415,7 @@ const ProxyPage = memo(() => {
                   >
                     <Text
                       fontWeight="bold"
-                      color="blue.400"
+                      color="green.500"
                       cursor="pointer"
                       onClick={() => handleTitleClick(proxy.region)}
                       _hover={{ textDecoration: "underline" }}
@@ -398,14 +427,14 @@ const ProxyPage = memo(() => {
                     <Badge
                       colorScheme={proxy.status.includes("reachable") ? "green" : "red"}
                       variant="solid"
-                      minW="80px" // Fixed minimum width for consistency
+                      minW="80px"
                       textAlign="center"
                     >
                       {proxy.status.includes("reachable") ? "Healthy" : "Unhealthy"}
                     </Badge>
                     <Text 
                       fontSize="sm" 
-                      color="gray.400"
+                      color="gray.700"
                       flex="1"
                       textAlign="right"
                       isTruncated
