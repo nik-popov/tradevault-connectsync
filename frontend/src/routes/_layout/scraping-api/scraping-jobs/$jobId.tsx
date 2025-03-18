@@ -113,7 +113,6 @@ const LogDisplay: React.FC<LogDisplayProps> = ({ logUrl }) => {
         if (!response.ok) throw new Error('Failed to fetch log');
         const text = await response.text();
         setLogContent(text);
-        showToast("Log Fetched", "Log content loaded successfully", "success");
       } catch (err) {
         const errorMessage = err instanceof Error ? err.message : 'An unknown error occurred';
         setError(errorMessage);
@@ -1324,7 +1323,6 @@ const JobsDetailPage = () => {
         throw new Error(`Failed to fetch job data: ${response.status} - ${response.statusText}`);
       }
       const data: JobDetails = await response.json();
-      showToast("Job Data Loaded", `Fetched data for job ${jobId}`, "success");
       setJobData(data);
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : "An unknown error occurred";
