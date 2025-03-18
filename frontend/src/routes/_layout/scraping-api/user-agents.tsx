@@ -135,7 +135,6 @@ const UserAgentDashboard = () => {
             value={searchTerm}
             onChange={(e) => {
               setSearchTerm(e.target.value);
-              showToast("Search Updated", `Searching for: ${e.target.value}`, "info");
             }}
             w={{ base: "100%", md: "250px" }}
             aria-label="Search user agents"
@@ -155,7 +154,6 @@ const UserAgentDashboard = () => {
                 variant={browserFilter === browser ? "solid" : "outline"}
                 onClick={() => {
                   setBrowserFilter(browser);
-                  showToast("Browser Filter", `Filtered by browser: ${browser}`, "info");
                 }}
               >
                 {browser === "all" ? "All" : browser}
@@ -169,29 +167,35 @@ const UserAgentDashboard = () => {
               variant="solid"
               onClick={() => {
                 setIsActive(!isActive);
-                showToast("Activity Filter", `Showing ${isActive ? "inactive" : "active"} agents`, "info");
               }}
             >
               {isActive ? "Active" : "Inactive"}
             </Button>
             <Select
-              value={sortBy}
-              onChange={(e) => {
-                setSortBy(e.target.value);
-                showToast("Sort Applied", `Sorted by: ${e.target.value}`, "info");
-              }}
-              size="sm"
-              w={{ base: "100%", md: "220px" }}
-              color="white"
-              borderColor="gray.600"
-              _hover={{ borderColor: "gray.500" }}
-              _focus={{ borderColor: "blue.400" }}
-            >
-              <option value="lastUsed">Last Used</option>
-              <option value="percentage">Percentage</option>
-              <option value="timeUsed">Time Used</option>
-              <option value="name">Name</option>
-            </Select>
+  value={sortBy}
+  onChange={(e) => {
+    setSortBy(e.target.value);
+    showToast("Sort Applied", `Sorted by: ${e.target.value}`, "info");
+  }}
+  size="sm"
+  w={{ base: "100%", md: "220px" }}
+  borderColor="gray.600"
+  _hover={{ borderColor: "gray.500" }}
+  _focus={{ borderColor: "blue.400" }}
+  bg="gray.800" // Dark background for dropdown
+  color="white" // White text for dark background
+  sx={{
+    "> option": {
+      bg: "gray.700", // Background for dropdown options
+      color: "white", // Text color for dropdown options
+    },
+  }}
+>
+  <option value="lastUsed">Last Used</option>
+  <option value="percentage">Percentage</option>
+  <option value="timeUsed">Time Used</option>
+  <option value="name">Name</option>
+</Select>
           </HStack>
         </Flex>
 

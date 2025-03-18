@@ -186,7 +186,7 @@ function CMSGoogleSerpForm() {
             });
             setColumnMapping(newColumnMapping);
             setHeaderRowIndex(headerRowIndex);
-            showToast('Header Auto-Detected', `Row ${headerRowIndex + 1} selected`, 'info');
+            showToast('Header auto selected', `Row ${headerRowIndex + 1} selected`, 'info');
           } else {
             setIsHeaderModalOpen(true);
           }

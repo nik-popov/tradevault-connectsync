@@ -27,7 +27,6 @@ import {
   Tr,
   Th,
   Td,
-  Progress,
   Badge,
   Accordion,
   AccordionItem,
@@ -41,7 +40,6 @@ import {
   ModalHeader,
   ModalBody,
 } from "@chakra-ui/react";
-import { BsRecord } from "react-icons/bs";
 import useCustomToast from "../../../../hooks/useCustomToast"; // Import the custom toast hook
 
 // Interfaces remain unchanged
@@ -171,6 +169,7 @@ const OverviewTab: React.FC<OverviewTabProps> = ({
   job,
   sortBy,
   setSortBy,
+  fetchJobData,
   setSearchQuery,
   setActiveTab,
 }) => {
@@ -248,7 +247,6 @@ const OverviewTab: React.FC<OverviewTabProps> = ({
   const handleDomainClick = (domain: string) => {
     setSearchQuery(domain);
     setActiveTab(2);
-    showToast("Filter Applied", `Filtering results by domain: ${domain}`, "info");
   };
 
   const handleDevRestart = () => {
@@ -257,6 +255,7 @@ const OverviewTab: React.FC<OverviewTabProps> = ({
     setTimeout(() => {
       setIsRestarting(false);
       showToast("Restart Complete", "Job restarted successfully", "success");
+      fetchJobData(); // Refresh data after restart
     }, 2000);
   };
 
@@ -270,15 +269,15 @@ const OverviewTab: React.FC<OverviewTabProps> = ({
   };
 
   return (
-    <Box p={4} bg="white" color="gray.800">
+    <Box p={4} bg="gray.900" color="white">
       <Flex justify="space-between" align="center" mb={4} flexWrap="wrap" gap={3}>
-        <Text fontSize="lg" fontWeight="bold" color="black">Job Overview</Text>
+        <Text fontSize="lg" fontWeight="bold">Job Overview</Text>
         <Flex gap={3}>
           <Button size="sm" colorScheme="red" onClick={handleDevRestart} isLoading={isRestarting}>
             Dev Restart
           </Button>
           <Button size="sm" colorScheme="green" onClick={handleCreateXLS} isLoading={isCreatingXLS}>
-            Click Here To Create XLS File
+            Create XLS File
           </Button>
           <Button
             size="sm"
@@ -292,19 +291,19 @@ const OverviewTab: React.FC<OverviewTabProps> = ({
 
       <Box mb={6}>
         <Stat>
-          <StatLabel color="gray.600">Job ID</StatLabel>
+          <StatLabel color="gray.400">Job ID</StatLabel>
           <StatNumber>{job.id}</StatNumber>
         </Stat>
         <Stat mt={4}>
-          <StatLabel color="gray.600">Input File</StatLabel>
+          <StatLabel color="gray.400">Input File</StatLabel>
           <StatHelpText wordBreak="break-all">
-            <Link href={job.fileLocationUrl} isExternal color="green.500">
+            <Link href={job.fileLocationUrl} isExternal color="green.300">
               {job.inputFile}
             </Link>
           </StatHelpText>
         </Stat>
         <Stat mt={4}>
-          <StatLabel color="gray.600">Status</StatLabel>
+          <StatLabel color="gray.400">Status</StatLabel>
           <StatNumber>
             <Badge colorScheme={job.fileEnd ? "green" : "yellow"}>
               {job.fileEnd ? "Completed" : "Pending"}
@@ -313,8 +312,8 @@ const OverviewTab: React.FC<OverviewTabProps> = ({
         </Stat>
         {job.fileEnd && (
           <Stat mt={4}>
-            <StatLabel color="gray.600">Processing Duration</StatLabel>
-          <StatNumber color="gray.800">
+            <StatLabel color="gray.400">Processing Duration</StatLabel>
+            <StatNumber>
               {(
                 (new Date(job.fileEnd).getTime() - new Date(job.fileStart).getTime()) /
                 1000 /
@@ -325,46 +324,46 @@ const OverviewTab: React.FC<OverviewTabProps> = ({
           </Stat>
         )}
         <Stat mt={4}>
-          <StatLabel color="gray.600">API Used</StatLabel>
+          <StatLabel color="gray.400">API Used</StatLabel>
           <StatHelpText>{job.apiUsed}</StatHelpText>
         </Stat>
         <Stat mt={4}>
-          <StatLabel color="gray.600">Total Results</StatLabel>
+          <StatLabel color="gray.400">Total Results</StatLabel>
           <StatNumber>{job.results.length}</StatNumber>
         </Stat>
       </Box>
 
       {job.results.length > 0 && (
         <Box mt={6}>
-          <Text fontSize="md" fontWeight="semibold" mb={2} color="black">
+          <Text fontSize="md" fontWeight="semibold" mb={2}>
             Top Domains by Positive Sort Orders (Top 20)
           </Text>
           <Table variant="simple" size="sm" colorScheme="green">
-            <Thead bg="green.50">
+            <Thead bg="gray.800">
               <Tr>
-                <Th onClick={() => handleSort("domain")} cursor="pointer" color="gray.800">
+                <Th onClick={() => handleSort("domain")} cursor="pointer" color="white">
                   Domain{" "}
                   {sortConfig.key === "domain" &&
                     (sortConfig.direction === "ascending" ? "↑" : "↓")}
                 </Th>
-                <Th onClick={() => handleSort("totalResults")} cursor="pointer" color="gray.800">
+                <Th onClick={() => handleSort("totalResults")} cursor="pointer" color="white">
                   Total Results{" "}
                   {sortConfig.key === "totalResults" &&
                     (sortConfig.direction === "ascending" ? "↑" : "↓")}
                 </Th>
-                <Th onClick={() => handleSort("positiveSortOrderCount")} cursor="pointer" color="gray.800">
+                <Th onClick={() => handleSort("positiveSortOrderCount")} cursor="pointer" color="white">
                   Positive Sort Orders Count{" "}
                   {sortConfig.key === "positiveSortOrderCount" &&
                     (sortConfig.direction === "ascending" ? "↑" : "↓")}
                 </Th>
               </Tr>
             </Thead>
-            <Tbody color="gray.800">
+            <Tbody>
               {sortedTopDomains.map(({ domain, totalResults, positiveSortOrderCount }) => (
                 <Tr key={domain}>
                   <Td>
                     <Text
-                      color="green.500"
+                      color="green.300"
                       cursor="pointer"
                       onClick={() => handleDomainClick(domain)}
                       _hover={{ textDecoration: "underline" }}
@@ -387,13 +386,13 @@ const OverviewTab: React.FC<OverviewTabProps> = ({
 // UsageTab Component
 const UsageTab = ({ job }: { job: JobDetails }) => {
   const totalRecords = job.records.length;
-  const completedRecords = job.records.filter(record => record.completeTime).length;
+  const completedRecords = job.records.filter((record) => record.completeTime).length;
   const pendingRecords = totalRecords - completedRecords;
   const totalImages = job.results.length;
   const imagesPerRecord = totalRecords > 0 ? Math.round(totalImages / totalRecords) : 'N/A';
   const totalRequests = totalRecords;
-  const successfulRequests = job.records.filter(record =>
-    job.results.some(result => result.entryId === record.entryId)
+  const successfulRequests = job.records.filter((record) =>
+    job.results.some((result) => result.entryId === record.entryId)
   ).length;
   const successRate = totalRequests > 0 ? `${((successfulRequests / totalRequests) * 100).toFixed(1)}%` : 'N/A';
 
@@ -413,48 +412,48 @@ const UsageTab = ({ job }: { job: JobDetails }) => {
   const avgResponseTime = calculateAvgResponseTime();
 
   return (
-    <Box p={4} bg="white" color="gray.800">
-      <Text fontSize="lg" fontWeight="bold" mb={4} color="black">Usage Statistics</Text>
+    <Box p={4} bg="gray.900" color="white">
+      <Text fontSize="lg" fontWeight="bold" mb={4}>Usage Statistics</Text>
       <Flex direction="column" gap={6}>
-        <Card shadow="md" borderWidth="1px" bg="white">
+        <Card shadow="md" borderWidth="1px" bg="gray.800" color="white">
           <CardBody>
             <Stat>
-              <StatLabel color="gray.600">Total Records</StatLabel>
+              <StatLabel color="gray.400">Total Records</StatLabel>
               <StatNumber>{totalRecords}</StatNumber>
             </Stat>
             <Stat mt={4}>
-              <StatLabel color="gray.600">Completed Records</StatLabel>
+              <StatLabel color="gray.400">Completed Records</StatLabel>
               <StatNumber>{completedRecords}</StatNumber>
             </Stat>
             <Stat mt={4}>
-              <StatLabel color="gray.600">Pending Records</StatLabel>
+              <StatLabel color="gray.400">Pending Records</StatLabel>
               <StatNumber>{pendingRecords}</StatNumber>
             </Stat>
           </CardBody>
         </Card>
-        <Card shadow="md" borderWidth="1px" bg="white">
+        <Card shadow="md" borderWidth="1px" bg="gray.800" color="white">
           <CardBody>
             <Stat>
-              <StatLabel color="gray.600">Total Images Scraped</StatLabel>
+              <StatLabel color="gray.400">Total Images Scraped</StatLabel>
               <StatNumber>{totalImages}</StatNumber>
             </Stat>
             <Stat mt={4}>
-              <StatLabel color="gray.600">Average Images per Record</StatLabel>
+              <StatLabel color="gray.400">Average Images per Record</StatLabel>
               <StatNumber>{imagesPerRecord}</StatNumber>
             </Stat>
           </CardBody>
         </Card>
-        <Card shadow="md" borderWidth="1px" bg="white">
+        <Card shadow="md" borderWidth="1px" bg="gray.800" color="white">
           <CardBody>
-            <Text fontSize="md" fontWeight="semibold" mb={2} color="black">Scraping Metrics</Text>
+            <Text fontSize="md" fontWeight="semibold" mb={2}>Scraping Metrics</Text>
             <Table variant="simple" size="sm" colorScheme="green">
-              <Thead bg="green.50">
+              <Thead bg="gray.700">
                 <Tr>
-                  <Th color="gray.800">Metric</Th>
-                  <Th color="gray.800">Value</Th>
+                  <Th color="white">Metric</Th>
+                  <Th color="white">Value</Th>
                 </Tr>
               </Thead>
-              <Tbody color="gray.800">
+              <Tbody>
                 <Tr>
                   <Td>Total Requests</Td>
                   <Td>{totalRequests}</Td>
@@ -490,12 +489,6 @@ interface ResultsTabProps {
 
 const ResultsTab: React.FC<ResultsTabProps> = ({ job, sortBy, searchQuery, setSearchQuery }) => {
   const showToast = useCustomToast();
-
-  if (!job || !job.results || !job.records || typeof setSearchQuery !== "function") {
-    showToast("Invalid Props", "Invalid job data or configuration in ResultsTab", "error");
-    return <Box p={4}><Text color="red.500">Invalid job data or configuration</Text></Box>;
-  }
-
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 500;
 
@@ -548,26 +541,25 @@ const ResultsTab: React.FC<ResultsTabProps> = ({ job, sortBy, searchQuery, setSe
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
-    showToast("Page Changed", `Navigated to page ${page}`, "info");
   };
 
   return (
-    <Box p={4} bg="white" color="gray.800">
+    <Box p={4} bg="gray.900" color="white">
       <Flex
         justify="space-between"
         align="center"
         mb={4}
         position="sticky"
         top="0"
-        bg="white"
+        bg="gray.900"
         zIndex="10"
         py={5}
         borderBottom="1px solid"
-        borderColor="gray.200"
+        borderColor="gray.700"
         flexWrap="wrap"
         gap={3}
       >
-        <Text fontSize="lg" fontWeight="bold" color="black">Job Results</Text>
+        <Text fontSize="lg" fontWeight="bold">Job Results</Text>
         <Input
           placeholder="Search by description, source, model, brand, etc..."
           value={searchQuery}
@@ -575,26 +567,27 @@ const ResultsTab: React.FC<ResultsTabProps> = ({ job, sortBy, searchQuery, setSe
           onPaste={(e) => {
             const pastedText = e.clipboardData.getData("text");
             setSearchQuery(pastedText);
-            showToast("Search Pasted", `Pasted search query: ${pastedText}`, "info");
             e.preventDefault();
           }}
           width="300px"
           borderColor="green.300"
           _focus={{ borderColor: "green.500" }}
+          color="white"
+          bg="gray.800"
         />
       </Flex>
       <Flex direction="column" gap={6}>
-        <Card shadow="md" borderWidth="1px" bg="white">
+        <Card shadow="md" borderWidth="1px" bg="gray.800" color="white">
           <CardBody>
             {query ? (
               <Box>
                 <Stat>
-                  <StatLabel color="gray.600">Filtered Results</StatLabel>
+                  <StatLabel color="gray.400">Filtered Results</StatLabel>
                   <StatNumber>{totalResults} images</StatNumber>
                   <StatHelpText color="gray.500">out of {totalImages} total</StatHelpText>
                 </Stat>
                 <Stat mt={4}>
-                  <StatLabel color="gray.600">Filtered Records</StatLabel>
+                  <StatLabel color="gray.400">Filtered Records</StatLabel>
                   <StatNumber>{totalRecords} records</StatNumber>
                   <StatHelpText color="gray.500">out of {totalAllRecords} total</StatHelpText>
                 </Stat>
@@ -602,46 +595,46 @@ const ResultsTab: React.FC<ResultsTabProps> = ({ job, sortBy, searchQuery, setSe
             ) : (
               <>
                 <Stat>
-                  <StatLabel color="gray.600">Result File</StatLabel>
-                  <Link href={job.resultFile} isExternal color="green.500">
+                  <StatLabel color="gray.400">Result File</StatLabel>
+                  <Link href={job.resultFile} isExternal color="green.300">
                     {job.inputFile}
                   </Link>
                 </Stat>
                 <Stat mt={4}>
-                  <StatLabel color="gray.600">Total Records</StatLabel>
+                  <StatLabel color="gray.400">Total Records</StatLabel>
                   <StatNumber>{totalAllRecords}</StatNumber>
                 </Stat>
                 <Stat mt={4}>
-                  <StatLabel color="gray.600">Total Images</StatLabel>
+                  <StatLabel color="gray.400">Total Images</StatLabel>
                   <StatNumber>{totalImages}</StatNumber>
                 </Stat>
               </>
             )}
           </CardBody>
         </Card>
-        <Card shadow="md" borderWidth="1px" bg="white">
+        <Card shadow="md" borderWidth="1px" bg="gray.800" color="white">
           <CardBody>
-            <Text fontSize="md" fontWeight="semibold" mb={2} color="black">Details</Text>
+            <Text fontSize="md" fontWeight="semibold" mb={2}>Details</Text>
             <Accordion allowToggle defaultIndex={[0, 1]}>
               <AccordionItem>
-                <AccordionButton bg="green.50" _expanded={{ bg: "green.100" }}>
-                  <Box flex="1" textAlign="left" color="green.700">Results ({totalResults})</Box>
-                  <AccordionIcon color="green.500" />
+                <AccordionButton bg="gray.700" _expanded={{ bg: "gray.600" }}>
+                  <Box flex="1" textAlign="left" color="green.300">Results ({totalResults})</Box>
+                  <AccordionIcon color="green.300" />
                 </AccordionButton>
                 <AccordionPanel pb={4}>
                   <Table variant="simple" size="sm" colorScheme="green">
-                    <Thead bg="green.50">
+                    <Thead bg="gray.700">
                       <Tr>
-                        <Th w="60px" color="gray.800">Preview</Th>
-                        <Th w="80px" color="gray.800">Result ID</Th>
-                        <Th w="80px" color="gray.800">Entry ID</Th>
-                        <Th w="120px" color="gray.800">Image URL</Th>
-                        <Th w="120px" color="gray.800">Description</Th>
-                        <Th w="120px" color="gray.800">Source</Th>
-                        <Th w="80px" color="gray.800">Sort Order</Th>
+                        <Th w="60px" color="white">Preview</Th>
+                        <Th w="80px" color="white">Result ID</Th>
+                        <Th w="80px" color="white">Entry ID</Th>
+                        <Th w="120px" color="white">Image URL</Th>
+                        <Th w="120px" color="white">Description</Th>
+                        <Th w="120px" color="white">Source</Th>
+                        <Th w="80px" color="white">Sort Order</Th>
                       </Tr>
                     </Thead>
-                    <Tbody color="gray.800">
+                    <Tbody>
                       {paginatedResults.map((result) => (
                         <Tr key={result.resultId}>
                           <Td w="60px">
@@ -658,13 +651,13 @@ const ResultsTab: React.FC<ResultsTabProps> = ({ job, sortBy, searchQuery, setSe
                           <Td w="80px">{result.entryId || "N/A"}</Td>
                           <Td w="120px">
                             <a href={result.imageUrl || "#"} target="_blank" rel="noopener noreferrer">
-                              <Text color="green.500">{shortenUrl(result.imageUrl)}</Text>
+                              <Text color="green.300">{shortenUrl(result.imageUrl)}</Text>
                             </a>
                           </Td>
                           <Td w="120px">{result.imageDesc || "N/A"}</Td>
                           <Td w="120px">
                             <a href={result.imageSource || "#"} target="_blank" rel="noopener noreferrer">
-                              <Text color="green.500">{shortenUrl(result.imageSource)}</Text>
+                              <Text color="green.300">{shortenUrl(result.imageSource)}</Text>
                             </a>
                           </Td>
                           <Td w="80px">{result.sortOrder || "0"}</Td>
@@ -682,23 +675,23 @@ const ResultsTab: React.FC<ResultsTabProps> = ({ job, sortBy, searchQuery, setSe
                 </AccordionPanel>
               </AccordionItem>
               <AccordionItem>
-                <AccordionButton bg="green.50" _expanded={{ bg: "green.100" }}>
-                  <Box flex="1" textAlign="left" color="green.700">Records ({totalRecords})</Box>
-                  <AccordionIcon color="green.500" />
+                <AccordionButton bg="gray.700" _expanded={{ bg: "gray.600" }}>
+                  <Box flex="1" textAlign="left" color="green.300">Records ({totalRecords})</Box>
+                  <AccordionIcon color="green.300" />
                 </AccordionButton>
                 <AccordionPanel pb={4}>
                   <Table variant="simple" size="sm" colorScheme="green">
-                    <Thead bg="green.50">
+                    <Thead bg="gray.700">
                       <Tr>
-                        {hasThumbnails && <Th w="60px" color="gray.800">Excel Picture</Th>}
-                        <Th w="80px" color="gray.800">Entry ID</Th>
-                        <Th w="80px" color="gray.800">File ID</Th>
-                        <Th w="80px" color="gray.800">Excel Row ID</Th>
-                        <Th w="120px" color="gray.800">Style #</Th>
-                        <Th w="120px" color="gray.800">Brand</Th>
+                        {hasThumbnails && <Th w="60px" color="white">Excel Picture</Th>}
+                        <Th w="80px" color="white">Entry ID</Th>
+                        <Th w="80px" color="white">File ID</Th>
+                        <Th w="80px" color="white">Excel Row ID</Th>
+                        <Th w="120px" color="white">Style #</Th>
+                        <Th w="120px" color="white">Brand</Th>
                       </Tr>
                     </Thead>
-                    <Tbody color="gray.800">
+                    <Tbody>
                       {filteredRecords.map((record) => (
                         <Tr key={record.entryId}>
                           {hasThumbnails && (
@@ -714,7 +707,6 @@ const ResultsTab: React.FC<ResultsTabProps> = ({ job, sortBy, searchQuery, setSe
                                   onClick={() => {
                                     if (record.excelRowImageRef) {
                                       window.open(record.excelRowImageRef, "_blank");
-                                      showToast("Image Opened", `Opened thumbnail for record ${record.entryId}`, "info");
                                     }
                                   }}
                                   onError={(e) => {
@@ -724,11 +716,8 @@ const ResultsTab: React.FC<ResultsTabProps> = ({ job, sortBy, searchQuery, setSe
                                       "warning"
                                     );
                                     e.currentTarget.style.display = "none";
-                                    if (e.currentTarget.nextSibling) {
-                                      (e.currentTarget.nextSibling as HTMLElement).style.display = "block";
-                                    }
                                   }}
-                                  fallback={<Text fontSize="xs" display="none" color="red.500">Load failed</Text>}
+                                  fallback={<Text fontSize="xs" color="gray.500">No picture</Text>}
                                   loading="lazy"
                                 />
                               ) : (
@@ -784,7 +773,7 @@ const ResultsTab: React.FC<ResultsTabProps> = ({ job, sortBy, searchQuery, setSe
                 >
                   Next
                 </Button>
-                <Text fontSize="sm" color="gray.600">
+                <Text fontSize="sm" color="gray.400">
                   Page {currentPage} of {totalPages}
                 </Text>
               </Flex>
@@ -799,9 +788,9 @@ const ResultsTab: React.FC<ResultsTabProps> = ({ job, sortBy, searchQuery, setSe
 // LogsTab Component
 const LogsTab = ({ job }: { job: JobDetails }) => {
   return (
-    <Box p={4} bg="white" color="gray.800">
+    <Box p={4} bg="gray.900" color="white">
       <Flex justify="space-between" align="center" mb={4}>
-        <Text fontSize="lg" fontWeight="bold" color="black">Logs</Text>
+        <Text fontSize="lg" fontWeight="bold">Logs</Text>
         {job.logFileUrl && (
           <Button
             size="sm"
@@ -813,29 +802,44 @@ const LogsTab = ({ job }: { job: JobDetails }) => {
         )}
       </Flex>
       <Flex direction="column" gap={6}>
-        <Card shadow="md" borderWidth="1px" bg="white">
+        <Card shadow="md" borderWidth="1px" bg="gray.800" color="white">
           <CardBody>
-            <Text fontSize="md" fontWeight="semibold" mb={2} color="black">Timeline Events</Text>
+            <Text fontSize="md" fontWeight="semibold" mb={2}>Timeline Events</Text>
             <Table variant="simple" size="sm" colorScheme="green">
-              <Thead bg="green.50">
+              <Thead bg="gray.700">
                 <Tr>
-                  {/* Placeholder for table headers if content is added later */}
-                  <Th color="gray.800">Event</Th>
-                  <Th color="gray.800">Details</Th>
+                  <Th color="white">Event</Th>
+                  <Th color="white">Details</Th>
                 </Tr>
               </Thead>
-              <Tbody color="gray.800">
-                {/* Placeholder for table rows if content is added later */}
+              <Tbody>
                 <Tr>
-                  <Td colSpan={2}>No timeline events available</Td>
+                  <Td>File Start</Td>
+                  <Td>{new Date(job.fileStart).toLocaleString()}</Td>
                 </Tr>
+                {job.fileEnd && (
+                  <Tr>
+                    <Td>File End</Td>
+                    <Td>{new Date(job.fileEnd).toLocaleString()}</Td>
+                  </Tr>
+                )}
+                <Tr>
+                  <Td>Image Start</Td>
+                  <Td>{new Date(job.imageStart).toLocaleString()}</Td>
+                </Tr>
+                {job.imageEnd && (
+                  <Tr>
+                    <Td>Image End</Td>
+                    <Td>{new Date(job.imageEnd).toLocaleString()}</Td>
+                  </Tr>
+                )}
               </Tbody>
             </Table>
           </CardBody>
         </Card>
-        <Card shadow="md" borderWidth="1px" bg="white">
+        <Card shadow="md" borderWidth="1px" bg="gray.800" color="white">
           <CardBody>
-            <Text fontSize="md" fontWeight="semibold" mb={2} color="black">Log File Preview</Text>
+            <Text fontSize="md" fontWeight="semibold" mb={2}>Log File Preview</Text>
             <LogDisplay logUrl={job.logFileUrl} />
           </CardBody>
         </Card>
@@ -851,8 +855,6 @@ interface SearchRowsTabProps {
 
 const SearchRowsTab: React.FC<SearchRowsTabProps> = ({ job }) => {
   const showToast = useCustomToast();
-
-  const [debugMode, setDebugMode] = useState(false);
   const [showFileDetails, setShowFileDetails] = useState(true);
   const [showResultDetails, setShowResultDetails] = useState(false);
   const [numImages, setNumImages] = useState(1);
@@ -864,7 +866,7 @@ const SearchRowsTab: React.FC<SearchRowsTabProps> = ({ job }) => {
 
   useEffect(() => {
     const maxImages = showResultDetails ? 1 : 5;
-    if (numImages > maxImages) setNumImages(maxImages);
+    setNumImages((prev) => (prev > maxImages ? maxImages : prev));
   }, [showResultDetails]);
 
   const getImagesForEntry = (entryId: number, limit: number): ResultItem[] => {
@@ -889,6 +891,7 @@ const SearchRowsTab: React.FC<SearchRowsTabProps> = ({ job }) => {
     else
       return `${cleanedUrl.slice(0, 20)}...${cleanedUrl.slice(-20)}`;
   };
+
   const googleSearch = (model: string): string =>
     `https://www.google.com/search?q=${encodeURIComponent(model || "")}&udm=2`;
   const googleSearchBrandModelUrl = (model: string, brand: string): string =>
@@ -897,38 +900,27 @@ const SearchRowsTab: React.FC<SearchRowsTabProps> = ({ job }) => {
   const handleLinkClick = (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>, url: string) => {
     e.preventDefault();
     window.open(url, "_blank", "noopener,noreferrer");
-    showToast("Link Opened", `Opened URL: ${shortenUrl(url)}`, "info");
   };
 
   const handleIncreaseImages = () => {
     setShowResultDetails(false);
     const maxImages = showResultDetails ? 1 : 5;
-    setNumImages((prev) => {
-      const newValue = Math.min(prev + 1, maxImages);
-      showToast("Images Increased", `Number of images set to ${newValue}`, "info");
-      return newValue;
-    });
+    setNumImages((prev) => Math.min(prev + 1, maxImages));
   };
 
   const handleDecreaseImages = () => {
-    setNumImages((prev) => {
-      const newValue = Math.max(prev - 1, 1);
-      showToast("Images Decreased", `Number of images set to ${newValue}`, "info");
-      return newValue;
-    });
+    setNumImages((prev) => Math.max(prev - 1, 1));
   };
 
   const handleRowIdClick = (e: React.MouseEvent<HTMLElement, MouseEvent>, productModel: string) => {
     e.preventDefault();
     const url = `${window.location.pathname}?activeTab=2&search=${encodeURIComponent(productModel || "")}`;
     window.open(url, "_blank", "noopener,noreferrer");
-    showToast("Row Clicked", `Opened results for model: ${productModel}`, "info");
   };
 
   const handleSort = (key: string) => {
     setSortConfig((prev) => {
       const newDirection = prev.key === key && prev.direction === "ascending" ? "descending" : "ascending";
-      showToast("Sort Applied", `Sorted by ${key} (${newDirection})`, "info");
       return { key, direction: newDirection };
     });
   };
@@ -958,23 +950,22 @@ const SearchRowsTab: React.FC<SearchRowsTabProps> = ({ job }) => {
   });
 
   const hasThumbnails = sortedRecords.some((record) => record.excelRowImageRef);
-  const fileId = job.records[0]?.fileId || "N/A";
 
   return (
-    <Box p={4} bg="white" color="gray.800">
+    <Box p={4} bg="gray.900" color="white">
       <Flex
         justify="space-between"
         align="center"
         mb={4}
         position="sticky"
         top="0"
-        bg="white"
+        bg="gray.900"
         zIndex="10"
         py={5}
         borderBottom="1px solid"
-        borderColor="gray.200"
+        borderColor="gray.700"
       >
-        <Text fontSize="lg" fontWeight="bold" color="black">File Rows ({sortedRecords.length})</Text>
+        <Text fontSize="lg" fontWeight="bold">File Rows ({sortedRecords.length})</Text>
         <Flex gap={3}>
           <Button
             borderBottom="2px solid"
@@ -984,8 +975,8 @@ const SearchRowsTab: React.FC<SearchRowsTabProps> = ({ job }) => {
             onClick={() => {
               setShowResultDetails(!showResultDetails);
               showToast(
-                "Toggle Result Details",
-                `Result details ${showResultDetails ? "hidden" : "shown"}`,
+                "Toggle Picture Details",
+                `Picture details ${!showResultDetails ? "shown" : "hidden"}`,
                 "info"
               );
             }}
@@ -1001,7 +992,7 @@ const SearchRowsTab: React.FC<SearchRowsTabProps> = ({ job }) => {
               setShowFileDetails(!showFileDetails);
               showToast(
                 "Toggle File Details",
-                `File details ${showFileDetails ? "hidden" : "shown"}`,
+                `File details ${!showFileDetails ? "shown" : "hidden"}`,
                 "info"
               );
             }}
@@ -1015,7 +1006,7 @@ const SearchRowsTab: React.FC<SearchRowsTabProps> = ({ job }) => {
                 setHideEmptyRows(!hideEmptyRows);
                 showToast(
                   "Toggle Empty Rows",
-                  hideEmptyRows ? "Showing all rows" : "Hiding empty rows",
+                  `${!hideEmptyRows ? "Hiding" : "Showing"} empty rows`,
                   "info"
                 );
               }
@@ -1033,339 +1024,275 @@ const SearchRowsTab: React.FC<SearchRowsTabProps> = ({ job }) => {
             <Button
               size="sm"
               onClick={handleIncreaseImages}
-              isDisabled={numImages >= (showResultDetails ? 2 : 5)}
+              isDisabled={numImages >= (showResultDetails ? 1 : 5)}
               colorScheme="green"
             >
               +
             </Button>
           </Flex>
-          <Button
-            size="sm"
-            colorScheme="gray"
-            onClick={() => {
-              setDebugMode(true);
-              showToast("Debug Mode", "Entered debug mode", "info");
-            }}
-          >
-            Debug
-          </Button>
         </Flex>
       </Flex>
 
-      {!debugMode ? (
-        <Card shadow="md" borderWidth="1px" bg="white">
-          <CardBody p={0}>
-            <Table
-              variant="simple"
-              size="sm"
-              borderWidth="1px"
-              borderColor="gray.200"
-              colorScheme="green"
-              sx={{
-                "td, th": {
-                  border: "1px solid",
-                  borderColor: "gray.200",
-                  p: 2,
-                  verticalAlign: "middle",
-                },
-              }}
-            >
-              <Thead bg="green.50">
-                <Tr>
-                  {showFileDetails && hasThumbnails && (
-                    <Th w="80px" bg="green.100" color="gray.800">
-                      Excel Picture
-                    </Th>
-                  )}
-                  {Array.from({ length: numImages }).map((_, index) => (
-                    <React.Fragment key={index}>
-                      <Th w="100px" color="gray.800">Picture {index + 1}</Th>
-                      {showResultDetails && (
-                        <Th w="200px" bg="green.100" color="gray.800">
-                          Picture Detail {index + 1}
-                        </Th>
-                      )}
-                    </React.Fragment>
-                  ))}
-                  <Th w="90px" onClick={() => handleSort("excelRowId")} cursor="pointer" color="gray.800">
-                    Row #{" "}
-                    {sortConfig.key === "excelRowId" &&
-                      (sortConfig.direction === "ascending" ? "↑" : "↓")}
+      <Card shadow="md" borderWidth="1px" bg="gray.800" color="white">
+        <CardBody p={0}>
+          <Table
+            variant="simple"
+            size="sm"
+            borderWidth="1px"
+            borderColor="gray.700"
+            colorScheme="green"
+            sx={{
+              "td, th": {
+                border: "1px solid",
+                borderColor: "gray.700",
+                p: 2,
+                verticalAlign: "middle",
+              },
+            }}
+          >
+            <Thead bg="gray.700">
+              <Tr>
+                {showFileDetails && hasThumbnails && (
+                  <Th w="80px" bg="gray.600" color="white">
+                    Excel Picture
                   </Th>
-                  <Th w="150px" onClick={() => handleSort("productModel")} cursor="pointer" color="gray.800">
-                    Style #{" "}
-                    {sortConfig.key === "productModel" &&
-                      (sortConfig.direction === "ascending" ? "↑" : "↓")}
-                  </Th>
-                  <Th w="150px" onClick={() => handleSort("productBrand")} cursor="pointer" color="gray.800">
-                    Brand{" "}
-                    {sortConfig.key === "productBrand" &&
-                      (sortConfig.direction === "ascending" ? "↑" : "↓")}
-                  </Th>
-                  {showFileDetails && (
-                    <>
-                      <Th
-                        w="120px"
-                        bg="green.100"
-                        color="gray.800"
-                        onClick={() => handleSort("productColor")}
-                        cursor="pointer"
-                      >
-                        Color Name{" "}
-                        {sortConfig.key === "productColor" &&
-                          (sortConfig.direction === "ascending" ? "↑" : "↓")}
+                )}
+                {Array.from({ length: numImages }).map((_, index) => (
+                  <React.Fragment key={`header-${index}`}>
+                    <Th w="100px" color="white">Picture {index + 1}</Th>
+                    {showResultDetails && (
+                      <Th w="200px" bg="gray.600" color="white">
+                        Picture Detail {index + 1}
                       </Th>
-                      <Th
-                        w="120px"
-                        bg="green.100"
-                        color="gray.800"
-                        onClick={() => handleSort("productCategory")}
-                        cursor="pointer"
-                      >
-                        Category{" "}
-                        {sortConfig.key === "productCategory" &&
-                          (sortConfig.direction === "ascending" ? "↑" : "↓")}
-                      </Th>
-                    </>
-                  )}
-                  <Th
-                    w="100px"
-                    onClick={() => handleSort("totalImageCount")}
-                    cursor="pointer"
-                    color="gray.800"
-                  >
-                    Total Image{" "}
-                    {sortConfig.key === "totalImageCount" &&
-                      (sortConfig.direction === "ascending" ? "↑" : "↓")}
-                  </Th>
-                  <Th
-                    w="100px"
-                    onClick={() => handleSort("positiveSortCount")}
-                    cursor="pointer"
-                    color="gray.800"
-                  >
-                    Positive Count{" "}
-                    {sortConfig.key === "positiveSortCount" &&
-                      (sortConfig.direction === "ascending" ? "↑" : "↓")}
-                  </Th>
-                </Tr>
-              </Thead>
-              <Tbody color="gray.800">
-                {sortedRecords.map((record) => {
-                  const imagedetails = getImagesForEntry(record.entryId, numImages);
-                  const totalImageCount = getTotalImageCountForEntry(record.entryId);
-                  const positiveSortCount = getPositiveSortCountForEntry(record.entryId);
-                  return (
-                    <Tr
-                      key={record.entryId}
-                      _hover={{ bg: "green.50" }}
-                      opacity={positiveSortCount === 0 && !hideEmptyRows ? 0.8 : 1}
+                    )}
+                  </React.Fragment>
+                ))}
+                <Th w="90px" onClick={() => handleSort("excelRowId")} cursor="pointer" color="white">
+                  Row #{" "}
+                  {sortConfig.key === "excelRowId" &&
+                    (sortConfig.direction === "ascending" ? "↑" : "↓")}
+                </Th>
+                <Th w="150px" onClick={() => handleSort("productModel")} cursor="pointer" color="white">
+                  Style #{" "}
+                  {sortConfig.key === "productModel" &&
+                    (sortConfig.direction === "ascending" ? "↑" : "↓")}
+                </Th>
+                <Th w="150px" onClick={() => handleSort("productBrand")} cursor="pointer" color="white">
+                  Brand{" "}
+                  {sortConfig.key === "productBrand" &&
+                    (sortConfig.direction === "ascending" ? "↑" : "↓")}
+                </Th>
+                {showFileDetails && (
+                  <>
+                    <Th
+                      w="120px"
+                      bg="gray.600"
+                      color="white"
+                      onClick={() => handleSort("productColor")}
+                      cursor="pointer"
                     >
-                      {showFileDetails && hasThumbnails && (
-                        <Td w="80px" bg="green.50">
-                          {record.excelRowImageRef ? (
-                            <Image
-                              src={record.excelRowImageRef}
-                              alt={`Pic of ${record.productModel || "Record"}`}
-                              maxW="80px"
-                              maxH="80px"
-                              fallback={<Text fontSize="xs" color="red.500">Failed</Text>}
-                              objectFit="cover"
-                              onError={() => showToast("Thumbnail Error", `Failed to load thumbnail for record ${record.entryId}`, "error")}
-                            />
-                          ) : (
-                            <Text fontSize="xs" color="gray.500">No image</Text>
-                          )}
+                      Color Name{" "}
+                      {sortConfig.key === "productColor" &&
+                        (sortConfig.direction === "ascending" ? "↑" : "↓")}
+                    </Th>
+                    <Th
+                      w="120px"
+                      bg="gray.600"
+                      color="white"
+                      onClick={() => handleSort("productCategory")}
+                      cursor="pointer"
+                    >
+                      Category{" "}
+                      {sortConfig.key === "productCategory" &&
+                        (sortConfig.direction === "ascending" ? "↑" : "↓")}
+                    </Th>
+                  </>
+                )}
+                <Th
+                  w="100px"
+                  onClick={() => handleSort("totalImageCount")}
+                  cursor="pointer"
+                  color="white"
+                >
+                  Total Image{" "}
+                  {sortConfig.key === "totalImageCount" &&
+                    (sortConfig.direction === "ascending" ? "↑" : "↓")}
+                </Th>
+                <Th
+                  w="100px"
+                  onClick={() => handleSort("positiveSortCount")}
+                  cursor="pointer"
+                  color="white"
+                >
+                  Positive Count{" "}
+                  {sortConfig.key === "positiveSortCount" &&
+                    (sortConfig.direction === "ascending" ? "↑" : "↓")}
+                </Th>
+              </Tr>
+            </Thead>
+            <Tbody>
+              {sortedRecords.map((record) => {
+                const imagedetails = getImagesForEntry(record.entryId, numImages);
+                const totalImageCount = getTotalImageCountForEntry(record.entryId);
+                const positiveSortCount = getPositiveSortCountForEntry(record.entryId);
+                return (
+                  <Tr
+                    key={record.entryId}
+                    _hover={{ bg: "gray.700" }}
+                    opacity={positiveSortCount === 0 && !hideEmptyRows ? 0.8 : 1}
+                  >
+                    {showFileDetails && hasThumbnails && (
+                      <Td w="80px" bg="gray.600">
+                        {record.excelRowImageRef ? (
+                          <Image
+                            src={record.excelRowImageRef}
+                            alt={`Pic of ${record.productModel || "Record"}`}
+                            maxW="80px"
+                            maxH="80px"
+                            fallback={<Text fontSize="xs" color="gray.500">Failed</Text>}
+                            objectFit="cover"
+                            onError={() => showToast("Thumbnail Error", `Failed to load thumbnail for record ${record.entryId}`, "error")}
+                          />
+                        ) : (
+                          <Text fontSize="xs" color="gray.500">No image</Text>
+                        )}
+                      </Td>
+                    )}
+                    {imagedetails.map((image, index) => (
+                      <React.Fragment key={index}>
+                        <Td w="100px">
+                          <Image
+                            src={image.imageUrlThumbnail}
+                            alt={image.imageDesc || "No description"}
+                            maxW="80px"
+                            maxH="80px"
+                            objectFit="cover"
+                            fallback={<Text fontSize="xs" color="gray.500">No image</Text>}
+                            onError={() => showToast("Image Error", `Failed to load image ${index + 1} for record ${record.entryId}`, "error")}
+                          />
                         </Td>
-                      )}
-                      {imagedetails.map((image, index) => (
-                        <React.Fragment key={index}>
-                          <Td w="100px">
-                            <Image
-                              src={image.imageUrlThumbnail}
-                              alt={image.imageDesc || "No description"}
-                              maxW="80px"
-                              maxH="80px"
-                              objectFit="cover"
-                              fallback={<Text fontSize="xs" color="gray.500">No image</Text>}
-                              onError={() => showToast("Image Error", `Failed to load image ${index + 1} for record ${record.entryId}`, "error")}
-                            />
+                        {showResultDetails && (
+                          <Td w="200px" bg="gray.600">
+                            <Box wordBreak="break-all">
+                              <Text fontSize="xs">
+                                <a
+                                  href={googleSearch(image.imageDesc)}
+                                  onClick={(e) => handleLinkClick(e, googleSearch(image.imageDesc))}
+                                  style={{ color: "#90EE90" }}
+                                >
+                                  {image.imageDesc || "N/A"}
+                                </a>
+                              </Text>
+                              <Text fontSize="xs" color="green.300">
+                                <a
+                                  href={image.imageSource}
+                                  onClick={(e) => handleLinkClick(e, image.imageSource)}
+                                >
+                                  {shortenUrl(image.imageSource)}
+                                </a>
+                              </Text>
+                              <Text fontSize="xs" color="green.300">
+                                <a
+                                  href={image.imageUrl}
+                                  onClick={(e) => handleLinkClick(e, image.imageUrl)}
+                                >
+                                  {shortenUrl(image.imageUrl)}
+                                </a>
+                              </Text>
+                              {image.aiCaption && (
+                                <Text fontSize="xs" color="gray.400">
+                                  AI Caption: {image.aiCaption}
+                                </Text>
+                              )}
+                              {image.aiLabel && (
+                                <Text fontSize="xs" color="gray.400">
+                                  AI Label: {image.aiLabel}
+                                </Text>
+                              )}
+                            </Box>
                           </Td>
-                          {showResultDetails && (
-                            <Td w="200px" bg="green.50">
-                              <Box wordBreak="break-all">
-                                <Text fontSize="xs" color="gray.800">
-                                  <a
-                                    href={googleSearch(image.imageDesc)}
-                                    onClick={(e) => handleLinkClick(e, googleSearch(image.imageDesc))}
-                                  >
-                                    {image.imageDesc || "N/A"}
-                                  </a>
-                                </Text>
-                                <Text fontSize="xs" color="green.500">
-                                  <a
-                                    href={image.imageSource}
-                                    onClick={(e) => handleLinkClick(e, image.imageSource)}
-                                  >
-                                    {shortenUrl(image.imageSource)}
-                                  </a>
-                                </Text>
-                                <Text fontSize="xs" color="green.500">
-                                  <a
-                                    href={image.imageUrl}
-                                    onClick={(e) => handleLinkClick(e, image.imageUrl)}
-                                  >
-                                    {shortenUrl(image.imageUrl)}
-                                  </a>
-                                </Text>
-                                {image.aiCaption && (
-                                  <Text fontSize="xs" color="gray.500">
-                                    AI Caption: {image.aiCaption}
-                                  </Text>
-                                )}
-                                {image.aiLabel && (
-                                  <Text fontSize="xs" color="gray.500">
-                                    AI Label: {image.aiLabel}
-                                  </Text>
-                                )}
-                              </Box>
-                            </Td>
-                          )}
-                        </React.Fragment>
-                      ))}
-                      {Array.from({ length: numImages - imagedetails.length }).map((_, index) => (
-                        <React.Fragment key={`empty-${index}`}>
-                          <Td w="100px">
-                            <Text fontSize="xs" color="gray.500">No picture</Text>
+                        )}
+                      </React.Fragment>
+                    ))}
+                    {Array.from({ length: numImages - imagedetails.length }).map((_, index) => (
+                      <React.Fragment key={`empty-${record.entryId}-${index}`}>
+                        <Td w="100px">
+                          <Text fontSize="xs" color="gray.500">No picture</Text>
+                        </Td>
+                        {showResultDetails && (
+                          <Td w="200px" bg="gray.600">
+                            <Text fontSize="xs" color="gray.500">No picture detail</Text>
                           </Td>
-                          {showResultDetails && (
-                            <Td w="200px" bg="green.50">
-                              <Text fontSize="xs" color="gray.500">No picture detail</Text>
-                            </Td>
-                          )}
-                        </React.Fragment>
-                      ))}
-                      <Td w="90px">
-                        <Text
-                          cursor="pointer"
-                          color="green.500"
-                          _hover={{ textDecoration: "underline" }}
-                          onClick={(e) => handleRowIdClick(e, record.productModel)}
+                        )}
+                      </React.Fragment>
+                    ))}
+                    <Td w="90px">
+                      <Text
+                        cursor="pointer"
+                        color="green.300"
+                        _hover={{ textDecoration: "underline" }}
+                        onClick={(e) => handleRowIdClick(e, record.productModel)}
+                      >
+                        {record.excelRowId}
+                      </Text>
+                    </Td>
+                    <Td w="150px">
+                      {record.productModel ? (
+                        <a
+                          href={googleSearch(record.productModel)}
+                          onClick={(e) => handleLinkClick(e, googleSearch(record.productModel))}
                         >
-                          {record.excelRowId}
-                        </Text>
-                      </Td>
-                      <Td w="150px">
-                        {record.productModel ? (
-                          <a
-                            href={googleSearch(record.productModel)}
-                            onClick={(e) => handleLinkClick(e, googleSearch(record.productModel))}
-                          >
-                            <Text color="green.500">{record.productModel}</Text>
-                          </a>
-                        ) : (
-                          <Text fontSize="xs" color="gray.500">No style</Text>
-                        )}
-                      </Td>
-                      <Td w="150px">
-                        {record.productBrand ? (
-                          <a
-                            href={googleSearchBrandModelUrl(record.productModel, record.productBrand)}
-                            onClick={(e) =>
-                              handleLinkClick(e, googleSearchBrandModelUrl(record.productModel, record.productBrand))
-                            }
-                          >
-                            <Text color="green.500">{record.productBrand}</Text>
-                          </a>
-                        ) : (
-                          <Text fontSize="xs" color="gray.500">No brand</Text>
-                        )}
-                      </Td>
-                      {showFileDetails && (
-                        <>
-                          <Td w="120px" bg="green.50" color="gray.700">
-                            {record.productColor || <Text fontSize="xs" color="gray.500">No color</Text>}
-                          </Td>
-                          <Td w="120px" bg="green.50" color="gray.700">
-                            {record.productCategory || <Text fontSize="xs" color="gray.500">No category</Text>}
-                          </Td>
-                        </>
+                          <Text color="green.300">{record.productModel}</Text>
+                        </a>
+                      ) : (
+                        <Text fontSize="xs" color="gray.500">No style</Text>
                       )}
-                      <Td w="100px">
-                        {totalImageCount === 0 ? (
-                          <Text fontSize="xs" color="gray.500">0</Text>
-                        ) : (
-                          totalImageCount
-                        )}
-                      </Td>
-                      <Td w="100px">
-                        {positiveSortCount === 0 ? (
-                          <Text fontSize="xs" color="gray.500">0</Text>
-                        ) : (
-                          positiveSortCount
-                        )}
-                      </Td>
-                    </Tr>
-                  );
-                })}
-              </Tbody>
-            </Table>
-          </CardBody>
-        </Card>
-      ) : (
-        <Modal isOpen={debugMode} onClose={() => {
-          setDebugMode(false);
-          showToast("Debug Mode Closed", "Exited debug mode", "info");
-        }} size="full">
-          <ModalOverlay />
-          <ModalContent bg="white">
-            <ModalHeader>
-              <Flex justify="space-between" align="center">
-                <Text color="black">Debug Mode - Search Rows (File ID: {fileId})</Text>
-                <Flex gap={3}>
-                  <Button
-                    colorScheme="green"
-                    size="sm"
-                    onClick={() => {
-                      setShowFileDetails(!showFileDetails);
-                      showToast(
-                        "Toggle File Details",
-                        `File details ${showFileDetails ? "hidden" : "shown"} in debug mode`,
-                        "info"
-                      );
-                    }}
-                  >
-                    {showFileDetails ? "Hide File Details" : "Show File Details"}
-                  </Button>
-                  <Button
-                    colorScheme="green"
-                    size="sm"
-                    onClick={() => {
-                      setShowResultDetails(!showResultDetails);
-                      showToast(
-                        "Toggle Result Details",
-                        `Result details ${showResultDetails ? "hidden" : "shown"} in debug mode`,
-                        "info"
-                      );
-                    }}
-                  >
-                    {showResultDetails ? "Hide Image Details" : "Show Image Details"}
-                  </Button>
-                  <Button size="sm" variant="ghost" onClick={() => {
-                    setDebugMode(false);
-                    showToast("Debug Mode Closed", "Exited debug mode", "info");
-                  }}>
-                    Close
-                  </Button>
-                </Flex>
-              </Flex>
-            </ModalHeader>
-            <ModalBody overflowX="auto" color="gray.800">
-              <Text>Debug mode content placeholder</Text>
-            </ModalBody>
-          </ModalContent>
-        </Modal>
-      )}
+                    </Td>
+                    <Td w="150px">
+                      {record.productBrand ? (
+                        <a
+                          href={googleSearchBrandModelUrl(record.productModel, record.productBrand)}
+                          onClick={(e) =>
+                            handleLinkClick(e, googleSearchBrandModelUrl(record.productModel, record.productBrand))
+                          }
+                        >
+                          <Text color="green.300">{record.productBrand}</Text>
+                        </a>
+                      ) : (
+                        <Text fontSize="xs" color="gray.500">No brand</Text>
+                      )}
+                    </Td>
+                    {showFileDetails && (
+                      <>
+                        <Td w="120px" bg="gray.600">
+                          {record.productColor || <Text fontSize="xs" color="gray.500">No color</Text>}
+                        </Td>
+                        <Td w="120px" bg="gray.600">
+                          {record.productCategory || <Text fontSize="xs" color="gray.500">No category</Text>}
+                        </Td>
+                      </>
+                    )}
+                    <Td w="100px">
+                      {totalImageCount === 0 ? (
+                        <Text fontSize="xs" color="gray.500">0</Text>
+                      ) : (
+                        totalImageCount
+                      )}
+                    </Td>
+                    <Td w="100px">
+                      {positiveSortCount === 0 ? (
+                        <Text fontSize="xs" color="gray.500">0</Text>
+                      ) : (
+                        positiveSortCount
+                      )}
+                    </Td>
+                  </Tr>
+                );
+              })}
+            </Tbody>
+          </Table>
+        </CardBody>
+      </Card>
     </Box>
   );
 };
@@ -1415,7 +1342,7 @@ const JobsDetailPage = () => {
 
   if (isLoading) {
     return (
-      <Container maxW="full" py={6} bg="white">
+      <Container maxW="full" py={6} bg="gray.900">
         <Flex justify="center" align="center" h="200px">
           <Spinner size="xl" color="green.500" />
         </Flex>
@@ -1425,7 +1352,7 @@ const JobsDetailPage = () => {
 
   if (error || !jobData) {
     return (
-      <Container maxW="full" py={6} bg="white">
+      <Container maxW="full" py={6} bg="gray.900">
         <Text color="red.500">{error || "Job data not available"}</Text>
       </Container>
     );
@@ -1462,11 +1389,11 @@ const JobsDetailPage = () => {
   ];
 
   return (
-    <Container maxW="full" bg="white" color="gray.800">
+    <Container maxW="full" bg="gray.900" color="white">
       <Flex align="center" justify="space-between" py={6} flexWrap="wrap" gap={4}>
         <Box textAlign="left" flex="1">
-          <Text fontSize="xl" fontWeight="bold" color="black">Job: {jobId}</Text>
-          <Text fontSize="sm" color="gray.600">Details and results for scraping job {jobData.inputFile}.</Text>
+          <Text fontSize="xl" fontWeight="bold">Job: {jobId}</Text>
+          <Text fontSize="sm" color="gray.400">Details and results for scraping job {jobData.inputFile}.</Text>
         </Box>
       </Flex>
       <Tabs
@@ -1480,8 +1407,8 @@ const JobsDetailPage = () => {
           {tabsConfig.map((tab) => (
             <Tab
               key={tab.title}
-              _selected={{ bg: "green.100", color: "green.700", borderColor: "green.500" }}
-              color="gray.600"
+              _selected={{ bg: "gray.700", color: "green.300", borderColor: "green.500" }}
+              color="gray.400"
             >
               {tab.title}
             </Tab>

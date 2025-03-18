@@ -398,7 +398,6 @@ const MapUpdater: React.FC<{ hops: TracerouteHop[]; map: google.maps.Map | null 
       const bounds = new google.maps.LatLngBounds();
       hops.forEach((hop) => bounds.extend({ lat: hop.latitude, lng: hop.longitude }));
       map.fitBounds(bounds, 50);
-      showToast("Map Updated", `Map bounds set with ${hops.length} hops`, "info");
     }
   }, [hops, map, showToast]);
 
@@ -417,9 +416,7 @@ const LoadScriptOnce: React.FC<{ children: React.ReactNode }> = ({ children }) =
         if (!loaded) {
           showToast("Google Maps Loaded", "Google Maps API loaded successfully", "success");
           setLoaded(true);
-        } else {
-          showToast("Google Maps Already Loaded", "Google Maps API was already loaded", "info");
-        }
+        } 
       }}
       onError={(e) => {
         showToast("Google Maps Error", `Failed to load Google Maps API: ${e.message}`, "error");
@@ -566,7 +563,6 @@ const EndpointDetailPage = () => {
                       }}
                       onUnmount={() => {
                         setMap(null);
-                        showToast("Map Unmounted", "Google Map instance unmounted", "info");
                       }}
                     >
                       <MapUpdater hops={tracerouteData} map={map} />

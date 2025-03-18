@@ -159,7 +159,6 @@ const LogsDetails: React.FC = () => {
             value={filter}
             onChange={(e) => {
               setFilter(e.target.value as "all" | "success" | "error");
-              showToast("Filter Applied", `Showing ${e.target.value} logs`, "info");
             }}
             width="150px"
           >
