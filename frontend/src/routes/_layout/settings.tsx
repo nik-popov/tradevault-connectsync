@@ -9,7 +9,7 @@ import {
   Tabs,
   Text,
   Box,
-  Divider
+  Divider,
 } from "@chakra-ui/react";
 
 import { useQueryClient } from "@tanstack/react-query";
@@ -20,13 +20,13 @@ import Appearance from "../../components/UserSettings/Appearance";
 import ChangePassword from "../../components/UserSettings/ChangePassword";
 import DeleteAccount from "../../components/UserSettings/DeleteAccount";
 import UserInformation from "../../components/UserSettings/UserInformation";
-import SubscriptionManagement from "../../components/UserSettings/SubscriptionManagement"; // ✅ Corrected Importsub
+import SubscriptionManagement from "../../components/UserSettings/SubscriptionManagement";
 
 const tabsConfig = [
   { title: "My profile", component: UserInformation },
   { title: "Password", component: ChangePassword },
   { title: "Appearance", component: Appearance },
-  { title: "State Management", component: () =><SubscriptionManagement />},
+  { title: "State Management", component: () => <SubscriptionManagement /> },
   { title: "Close Account", component: DeleteAccount },
 ];
 
@@ -39,32 +39,48 @@ function UserSettings() {
   const currentUser = queryClient.getQueryData<UserPublic>(["currentUser"]);
 
   if (!currentUser) {
-    return <p>Loading user data...</p>;
+    return (
+      <Container maxW="full" bg="gray.50" py={6}>
+        <Text color="gray.600">Loading user data...</Text>
+      </Container>
+    );
   }
 
   const finalTabs = currentUser?.is_superuser
-  ? tabsConfig // All tabs for superusers
-  : tabsConfig; // All tabs for non-superusers (or adjust as needed)
+    ? tabsConfig // All tabs for superusers
+    : tabsConfig; // All tabs for non-superusers (or adjust as needed)
+
   return (
-    <Container maxW="full">
+    <Container maxW="full" bg="gray.50" color="gray.800">
       <Flex align="center" justify="space-between" py={6} flexWrap="wrap" gap={4}>
         <Box textAlign="left" flex="1">
-          <Text fontSize="xl" fontWeight="bold">Settings</Text>
-          <Text fontSize="sm">Manage system & user settings</Text>
+          <Text fontSize="xl" fontWeight="bold" color="black">
+            Settings
+          </Text>
+          <Text fontSize="sm" color="gray.600">
+            Manage system & user settings
+          </Text>
         </Box>
       </Flex>
 
-      <Divider my={4} />
+      <Divider my={4} borderColor="gray.200" />
 
-      <Tabs variant="enclosed">
-        <TabList>
+      <Tabs variant="enclosed" colorScheme="green">
+        <TabList borderBottom="2px solid" borderColor="green.200">
           {finalTabs.map((tab, index) => (
-            <Tab key={index}>{tab.title}</Tab>
+            <Tab
+              key={index}
+              _selected={{ bg: "green.100", color: "green.700", borderColor: "green.500" }}
+              color="gray.600"
+              _hover={{ bg: "gray.100" }}
+            >
+              {tab.title}
+            </Tab>
           ))}
         </TabList>
         <TabPanels>
           {finalTabs.map((tab, index) => (
-            <TabPanel key={index}>
+            <TabPanel key={index} bg="gray.50" p={4}>
               {React.createElement(tab.component)}
             </TabPanel>
           ))}
