@@ -26,12 +26,12 @@ const Appearance: React.FC = () => {
           {/* If you have configured your theme to use a custom color scheme (for example, "ui"),
               you can either update the Radio props below or remove the explicit scheme so that
               the theme defaults apply. */}
-          <Radio value="light">
-            Light Mode
-          </Radio>
           <Radio value="dark">
             Dark Mode
-                <Badge ml="1">
+          </Radio>
+          <Radio value="light">
+            Light Mode
+            <Badge ml="1">
               Default
             </Badge>
           </Radio>
