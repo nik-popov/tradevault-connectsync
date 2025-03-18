@@ -57,10 +57,11 @@ interface SidebarItemsProps {
 
 const SidebarItems = ({ onClose }: SidebarItemsProps) => {
   const queryClient = useQueryClient();
-  const textColor = "gray.800"  // Dark text for light background
-  const disabledColor = "gray.400"  // Medium gray for disabled items
+  const textColor = "gray.800"  // Dark text for enabled items
+  const disabledColor = "gray.600"  // Darker gray for disabled items (was gray.400)
   const hoverColor = "green.600"  // Green accent for hover
   const bgActive = "green.100"  // Light green for active state
+  const activeTextColor = "green.800"  // Darker green for active text
   const currentUser = queryClient.getQueryData<UserPublic>(["currentUser"]);
 
   const finalSidebarStructure = [...sidebarStructure];
@@ -99,10 +100,10 @@ const SidebarItems = ({ onClose }: SidebarItemsProps) => {
                 w="100%"
                 p={2}
                 activeProps={{
-                  style: { background: bgActive, borderRadius: "12px" },
+                  style: { background: bgActive, borderRadius: "12px", color: activeTextColor },
                 }}
                 color={textColor}
-                _hover={{ color: hoverColor }}  // Green on hover
+                _hover={{ color: hoverColor }}
                 onClick={onClose}
               >
                 {icon && <Icon as={icon} alignSelf="center" />}
