@@ -592,14 +592,43 @@ const MappingModal: React.FC<MappingModalProps> = ({
           onChange={(e) => setSelectedField(e.target.value)}
           mt={2}
           bg="white"
+          color="gray.800"  // Dark text for options
           borderColor="gray.300"
-          color="gray.800"
           _hover={{ borderColor: 'green.500' }}
-          _focus={{ borderColor: 'green.500', boxShadow: '0 0 0 2px green.200' }}
+          _focus={{ 
+            borderColor: 'green.500', 
+            boxShadow: '0 0 0 2px rgba(16, 185, 129, 0.2)' 
+          }}
+          sx={{
+            // Style the dropdown options
+            '& option': {
+              background: 'white',
+              color: 'gray.800',
+            },
+            '& optgroup': {
+              background: 'white',
+              color: 'gray.800',
+            },
+            // Style the dropdown menu
+            '& > option': {
+              background: 'white',
+              color: 'gray.800',
+            },
+            // Ensure visibility when menu is open
+            '&:focus-within': {
+              borderColor: 'green.500',
+            }
+          }}
         >
-          <option value="">None</option>
+          <option value="" style={{ background: 'white', color: 'gray.800' }}>None</option>
           {allColumns.map(col => (
-            <option key={col} value={col}>{col}</option>
+            <option 
+              key={col} 
+              value={col}
+              style={{ background: 'white', color: 'gray.800' }}
+            >
+              {col}
+            </option>
           ))}
         </Select>
         {optionalMappings && (
@@ -607,17 +636,28 @@ const MappingModal: React.FC<MappingModalProps> = ({
         )}
       </ModalBody>
       <ModalFooter>
-        <Button bg="green.500" color="white" mr={3} onClick={onConfirm} _hover={{ bg: 'green.600' }}>
+        <Button 
+          bg="green.500" 
+          color="white" 
+          mr={3} 
+          onClick={onConfirm} 
+          _hover={{ bg: 'green.600' }}
+        >
           Confirm
         </Button>
-        <Button variant="outline" borderColor="gray.300" color="gray.800" onClick={onClose} _hover={{ bg: 'gray.100' }}>
+        <Button 
+          variant="outline" 
+          borderColor="gray.300" 
+          color="gray.800" 
+          onClick={onClose} 
+          _hover={{ bg: 'gray.100' }}
+        >
           Cancel
         </Button>
       </ModalFooter>
     </ModalContent>
   </Modal>
 );
-
 interface HeaderSelectionModalProps {
   isOpen: boolean;
   onClose: () => void;
