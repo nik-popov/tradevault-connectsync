@@ -321,7 +321,7 @@ const GoogleSerpForm: React.FC = () => {
 
   // Render
   return (
-    <Container maxW="full" h="100vh" p={4}>
+    <Container maxW="full" h="100vh" p={4} bg="gray.50">
       <VStack spacing={1} align="stretch" h="full">
         <HeaderSection />
         <ControlSection
@@ -356,7 +356,7 @@ const GoogleSerpForm: React.FC = () => {
           setSelectedField={setSelectedField}
           onConfirm={() => handleMappingConfirm(true)}
           allColumns={ALL_COLUMNS}
-          optionalMappings={getOptionalMappings()}
+          optionalMappings={OPTIONAL_COLUMNS.join(', ')} // Full list of optional mappings
         />
         <HeaderSelectionModal
           isOpen={isHeaderModalOpen}
@@ -379,11 +379,11 @@ const GoogleSerpForm: React.FC = () => {
 // Sub-components
 const HeaderSection: React.FC = () => (
   <>
-    <Text fontSize="2xl" fontWeight="bold" color="white">Submit Form</Text>
-    <Text fontSize="md" color="gray.300">
+    <Text fontSize="2xl" fontWeight="bold" color="gray.800">Submit Form</Text>
+    <Text fontSize="md" color="gray.600">
       Upload an Excel file, select header row, and map required fields (Style, Brand).
     </Text>
-    <Text fontSize="md" color="gray.300">Up to {MAX_ROWS} rows.</Text>
+    <Text fontSize="md" color="gray.600">Up to {MAX_ROWS} rows.</Text>
   </>
 );
 
@@ -415,51 +415,60 @@ const ControlSection: React.FC<ControlSectionProps> = ({
         onChange={onFileChange}
         disabled={isLoading}
         mt={2}
+        bg="white"
+        borderColor="gray.300"
+        color="gray.800"
+        _hover={{ borderColor: 'green.500' }}
         css={{
           '&::-webkit-file-upload-button': {
             padding: '4px 12px',
             borderRadius: 'md',
             marginTop: '-8px',
-            backgroundColor: 'transparent',
+            backgroundColor: 'green.500',
             border: 'none',
-            color: 'gray.500',
+            color: 'white',
             fontSize: 'md',
             cursor: 'pointer',
+            _hover: { bg: 'green.600' },
           },
-          '&:focus': { outline: 'none', boxShadow: 'outline' },
+          '&:focus': { outline: 'none', boxShadow: '0 0 0 2px green.200' },
         }}
       />
     </FormControl>
     <Button
-      colorScheme="green"
+      bg="green.500"
+      color="white"
       leftIcon={<FiSend />}
       onClick={onSubmit}
       isDisabled={!canSubmit || isLoading}
       isLoading={isLoading}
       mt={2}
       mb={0}
-    />
+      _hover={{ bg: 'green.600' }}
+    >
+      Submit
+    </Button>
     {rowCount > 0 && (
       <VStack align="start" spacing={0} mb={0}>
         {missingRequired.length > 0 ? (
           <VStack align="start" spacing={0} flexDirection="column-reverse">
             {missingRequired.map(col => (
-              <Text key={col} fontSize="sm" color="red.300">{col}</Text>
+              <Text key={col} fontSize="sm" color="red.500">{col}</Text>
             ))}
-            <Text fontSize="sm" color="red.300">Missing:</Text>
+            <Text fontSize="sm" color="red.500">Missing:</Text>
           </VStack>
         ) : (
           <VStack align="start" spacing={0} flexDirection="column-reverse">
             {mappedColumns.map((columnMapping, index) => (
-              <Text key={index} fontSize="sm" color="teal.300">{columnMapping}</Text>
+              <Text key={index} fontSize="sm" color="green.600">{columnMapping}</Text>
             ))}
-            <Text fontSize="sm" color="teal.300">Mapped:</Text>
+            <Text fontSize="sm" color="green.600">Mapped:</Text>
           </VStack>
         )}
-        <Text fontSize="sm" color="gray.400">Rows: {rowCount}</Text>
+        <Text fontSize="sm" color="gray.600">Rows: {rowCount}</Text>
       </VStack>
     )}
-    {isLoading && <Text color="gray.400" mt={2} mb={0}>Processing...</Text>}
+    {isLoading && <Text color="gray.600" mt={2} mb={0}>Processing...</Text>}
   </HStack>
 );
 
@@ -488,19 +497,26 @@ const ManualBrandSection: React.FC<ManualBrandSectionProps> = ({
             onChange={(e) => setManualBrand(e.target.value)}
             disabled={isLoading}
             mt={1}
+            bg="white"
+            borderColor="gray.300"
+            color="gray.800"
+            _hover={{ borderColor: 'green.500' }}
+            _focus={{ borderColor: 'green.500', boxShadow: '0 0 0 2px green.200' }}
           />
         </FormControl>
         <Button
-          colorScheme="orange"
+          bg="green.500"
+          color="white"
           onClick={onApply}
           isDisabled={!manualBrand || isLoading}
           mt={1}
+          _hover={{ bg: 'green.600' }}
         >
           Apply
         </Button>
       </HStack>
     )}
-    <Box borderBottomWidth="1px" borderColor="gray.600" my={2} />
+    <Box borderBottomWidth="1px" borderColor="gray.200" my={2} />
   </>
 );
 
@@ -521,11 +537,11 @@ const DataTableSection: React.FC<DataTableSectionProps> = ({
 }) => (
   <>
     {excelData.rows.length > 0 && (
-      <Box flex="1" overflowY="auto" maxH="60vh" borderWidth="1px" borderRadius="md" p={4}>
+      <Box flex="1" overflowY="auto" maxH="60vh" borderWidth="1px" borderRadius="md" p={4} borderColor="gray.200" bg="white">
         {isLoading ? (
           <VStack justify="center" h="full">
-            <Spinner size="lg" color="gray.400" />
-            <Text color="gray.400">Loading table data...</Text>
+            <Spinner size="lg" color="green.500" />
+            <Text color="gray.600">Loading table data...</Text>
           </VStack>
         ) : (
           <ExcelDataTableMemo
@@ -565,16 +581,21 @@ const MappingModal: React.FC<MappingModalProps> = ({
 }) => (
   <Modal isOpen={isOpen} onClose={onClose}>
     <ModalOverlay />
-    <ModalContent>
-      <ModalHeader>Map Column</ModalHeader>
+    <ModalContent bg="white">
+      <ModalHeader color="gray.800">Map Column</ModalHeader>
       <ModalBody>
-        <Text>
+        <Text color="gray.800">
           Map "{selectedColumn !== null ? headers[selectedColumn] || `Column ${selectedColumn + 1}` : 'Select a column'}" to:
         </Text>
         <Select 
           value={selectedField} 
           onChange={(e) => setSelectedField(e.target.value)}
           mt={2}
+          bg="white"
+          borderColor="gray.300"
+          color="gray.800"
+          _hover={{ borderColor: 'green.500' }}
+          _focus={{ borderColor: 'green.500', boxShadow: '0 0 0 2px green.200' }}
         >
           <option value="">None</option>
           {allColumns.map(col => (
@@ -582,20 +603,20 @@ const MappingModal: React.FC<MappingModalProps> = ({
           ))}
         </Select>
         {optionalMappings && (
-          <Text fontSize="sm" color="gray.500" mt={2}>Optional mappings: {optionalMappings}</Text>
+          <Text fontSize="sm" color="gray.600" mt={2}>Optional mappings: {optionalMappings}</Text>
         )}
       </ModalBody>
       <ModalFooter>
-        <Button colorScheme="green" mr={3} onClick={onConfirm}>Confirm</Button>
-        <Button variant="ghost" onClick={onClose}>Cancel</Button>
+        <Button bg="green.500" color="white" mr={3} onClick={onConfirm} _hover={{ bg: 'green.600' }}>
+          Confirm
+        </Button>
+        <Button variant="outline" borderColor="gray.300" color="gray.800" onClick={onClose} _hover={{ bg: 'gray.100' }}>
+          Cancel
+        </Button>
       </ModalFooter>
     </ModalContent>
   </Modal>
 );
-
-const getOptionalMappings = () => {
-  return ''; // Placeholder
-};
 
 interface HeaderSelectionModalProps {
   isOpen: boolean;
@@ -612,15 +633,15 @@ const HeaderSelectionModal: React.FC<HeaderSelectionModalProps> = ({
 }) => (
   <Modal isOpen={isOpen} onClose={onClose} size="xl">
     <ModalOverlay />
-    <ModalContent alignSelf="left" ml={4} mt={16}>
-      <ModalHeader>Select Header Row (Click a row) - {previewRows.length} Rows</ModalHeader>
+    <ModalContent alignSelf="left" ml={4} mt={16} bg="white">
+      <ModalHeader color="gray.800">Select Header Row (Click a row) - {previewRows.length} Rows</ModalHeader>
       <ModalBody maxH="60vh" overflowY="auto">
-        <Table size="sm">
+        <Table size="sm" colorScheme="gray">
           <Tbody>
             {previewRows.map((row, rowIndex) => (
-              <Tr key={rowIndex} onClick={() => onRowSelect(rowIndex)} cursor="pointer" _hover={{ bg: 'gray.100' }}>
+              <Tr key={rowIndex} onClick={() => onRowSelect(rowIndex)} cursor="pointer" _hover={{ bg: 'green.50' }}>
                 {row.map((cell: any, cellIndex: number) => (
-                  <Td key={cellIndex} py={2} px={3}>{getDisplayValue(cell)}</Td>
+                  <Td key={cellIndex} py={2} px={3} color="gray.800">{getDisplayValue(cell)}</Td>
                 ))}
               </Tr>
             ))}
@@ -628,7 +649,9 @@ const HeaderSelectionModal: React.FC<HeaderSelectionModalProps> = ({
         </Table>
       </ModalBody>
       <ModalFooter>
-        <Button size="sm" onClick={onClose}>Cancel</Button>
+        <Button size="sm" variant="outline" borderColor="gray.300" color="gray.800" onClick={onClose} _hover={{ bg: 'gray.100' }}>
+          Cancel
+        </Button>
       </ModalFooter>
     </ModalContent>
   </Modal>
@@ -651,15 +674,19 @@ const ConfirmHeaderModal: React.FC<ConfirmHeaderModalProps> = ({
 }) => (
   <Modal isOpen={isOpen} onClose={onClose}>
     <ModalOverlay />
-    <ModalContent>
-      <ModalHeader>Confirm Header Selection</ModalHeader>
+    <ModalContent bg="white">
+      <ModalHeader color="gray.800">Confirm Header Selection</ModalHeader>
       <ModalBody>
-        <Text>Use row {selectedRowIndex !== null ? selectedRowIndex + 1 : ''} as header?</Text>
-        {selectedRowIndex !== null && <Text mt={2}>{previewRows[selectedRowIndex].join(', ')}</Text>}
+        <Text color="gray.800">Use row {selectedRowIndex !== null ? selectedRowIndex + 1 : ''} as header?</Text>
+        {selectedRowIndex !== null && <Text mt={2} color="gray.600">{previewRows[selectedRowIndex].join(', ')}</Text>}
       </ModalBody>
       <ModalFooter>
-        <Button colorScheme="green" mr={3} onClick={onConfirm}>Confirm</Button>
-        <Button variant="ghost" onClick={onClose}>Cancel</Button>
+        <Button bg="green.500" color="white" mr={3} onClick={onConfirm} _hover={{ bg: 'green.600' }}>
+          Confirm
+        </Button>
+        <Button variant="outline" borderColor="gray.300" color="gray.800" onClick={onClose} _hover={{ bg: 'gray.100' }}>
+          Cancel
+        </Button>
       </ModalFooter>
     </ModalContent>
   </Modal>
