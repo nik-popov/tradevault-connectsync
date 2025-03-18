@@ -58,7 +58,7 @@ interface SidebarItemsProps {
 const SidebarItems = ({ onClose }: SidebarItemsProps) => {
   const queryClient = useQueryClient();
   const textColor = "gray.800"  // Dark text for enabled items
-  const disabledColor = "gray.600"  // Darker gray for disabled items (was gray.400)
+  const disabledColor = "gray.300"  // Darker gray for disabled items (was gray.400)
   const hoverColor = "green.600"  // Green accent for hover
   const bgActive = "green.100"  // Light green for active state
   const activeTextColor = "green.800"  // Darker green for active text
