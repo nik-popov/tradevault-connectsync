@@ -95,7 +95,6 @@ const LogsDetails: React.FC = () => {
     });
     setLogFiles(initialLogFiles);
     setIsLoading(false);
-    showToast("Log Files Initialized", `Loaded ${initialLogFiles.length} log files`, "success");
     // Fetch entries for the first log file immediately
     if (initialLogFiles.length > 0) {
       fetchLogEntries(initialLogFiles[0]);
@@ -116,7 +115,6 @@ const LogsDetails: React.FC = () => {
           f.fileId === file.fileId ? { ...f, entries } : f
         )
       );
-      showToast("Log Entries Loaded", `Fetched entries for ${file.fileName}`, "success");
     } catch (err) {
       showToast(
         "Log Fetch Error",

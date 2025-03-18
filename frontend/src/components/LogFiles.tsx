@@ -74,7 +74,6 @@ const LogFiles: React.FC = () => {
     });
     setLogFiles(initialLogFiles);
     setIsLoading(false);
-    showToast("Log Files Initialized", `Loaded ${initialLogFiles.length} log files`, "success");
   };
 
   const debouncedFetchLogFiles = useCallback(

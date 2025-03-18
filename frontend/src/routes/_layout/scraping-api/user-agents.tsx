@@ -13,7 +13,7 @@ import {
   Select,
 } from "@chakra-ui/react";
 import { createFileRoute } from "@tanstack/react-router";
-import useCustomToast from "../../../hooks/useCustomToast"; // Import the custom toast hook
+import useCustomToast from "../../../hooks/useCustomToast";
 
 interface UserAgent {
   id: string;
@@ -22,8 +22,8 @@ interface UserAgent {
   browser: string;
   os: string;
   percentage: number;
-  lastUsed?: string; // ISO timestamp, e.g., "2025-03-07T12:00:00Z"
-  timeUsed?: number; // Duration in seconds
+  lastUsed?: string;
+  timeUsed?: number;
 }
 
 const UserAgentDashboard = () => {
@@ -32,10 +32,9 @@ const UserAgentDashboard = () => {
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [browserFilter, setBrowserFilter] = useState<string>("all");
   const [sortBy, setSortBy] = useState<string>("lastUsed");
-  const [isActive, setIsActive] = useState<boolean>(true); // true = Active, false = Inactive
-  const showToast = useCustomToast(); // Use custom toast
+  const [isActive, setIsActive] = useState<boolean>(true);
+  const showToast = useCustomToast();
 
-  // Fetch user agents
   const fetchUserAgents = async () => {
     setLoading(true);
     try {
@@ -45,13 +44,11 @@ const UserAgentDashboard = () => {
       );
       if (!response.ok) throw new Error("Failed to fetch user agents");
       const data = await response.json();
-      showToast("User Agents Fetched", `Loaded ${data.data.length} user agents`, "success");
-
-      // Simulate lastUsed and timeUsed since API doesn't provide them
+     
       const enhancedData = (Array.isArray(data.data) ? data.data : []).map((agent: UserAgent, index: number) => ({
         ...agent,
-        lastUsed: new Date(Date.now() - index * 3600000).toISOString(), // Hours ago (for testing variety)
-        timeUsed: Math.floor(Math.random() * 600), // Random 0-600s (for display only)
+        lastUsed: new Date(Date.now() - index * 3600000).toISOString(),
+        timeUsed: Math.floor(Math.random() * 600),
       }));
       setUserAgents(enhancedData);
     } catch (err) {
@@ -63,15 +60,12 @@ const UserAgentDashboard = () => {
     }
   };
 
-  // Initial fetch
   useEffect(() => {
     fetchUserAgents();
   }, []);
 
-  // Unique browsers for filter buttons
   const browserCategories = useMemo(() => ["all", ...new Set(userAgents.map((agent) => agent.browser))], [userAgents]);
 
-  // Filter and sort user agents
   const filteredAndSortedUserAgents = useMemo(() => {
     return userAgents
       .filter((agent) => {
@@ -116,7 +110,6 @@ const UserAgentDashboard = () => {
   return (
     <Container maxW="full" py={6} color="white">
       <Flex direction="column" gap={4}>
-        {/* Title Section */}
         <Flex align="center" justify="space-between" py={2} flexWrap="wrap" gap={4}>
           <Box textAlign="left" flex="1">
             <Text fontSize="xl" fontWeight="bold">
@@ -128,7 +121,6 @@ const UserAgentDashboard = () => {
           </Box>
         </Flex>
 
-        {/* Search and Filters Section */}
         <Flex gap={4} justify="space-between" align="center" flexWrap="wrap">
           <Input
             placeholder="Search user agents..."
@@ -172,34 +164,32 @@ const UserAgentDashboard = () => {
               {isActive ? "Active" : "Inactive"}
             </Button>
             <Select
-  value={sortBy}
-  onChange={(e) => {
-    setSortBy(e.target.value);
-    showToast("Sort Applied", `Sorted by: ${e.target.value}`, "info");
-  }}
-  size="sm"
-  w={{ base: "100%", md: "220px" }}
-  borderColor="gray.600"
-  _hover={{ borderColor: "gray.500" }}
-  _focus={{ borderColor: "blue.400" }}
-  bg="gray.800" // Dark background for dropdown
-  color="white" // White text for dark background
-  sx={{
-    "> option": {
-      bg: "gray.700", // Background for dropdown options
-      color: "white", // Text color for dropdown options
-    },
-  }}
->
-  <option value="lastUsed">Last Used</option>
-  <option value="percentage">Percentage</option>
-  <option value="timeUsed">Time Used</option>
-  <option value="name">Name</option>
-</Select>
+              value={sortBy}
+              onChange={(e) => {
+                setSortBy(e.target.value);
+              }}
+              size="sm"
+              w={{ base: "100%", md: "220px" }}
+              borderColor="green.500"
+              _hover={{ borderColor: "green.600" }}
+              _focus={{ borderColor: "green.700", boxShadow: "0 0 0 1px green.700" }}
+              bg="white"
+              color="gray.800"
+              sx={{
+                "> option": {
+                  bg: "white",
+                  color: "gray.800",
+                },
+              }}
+            >
+              <option value="lastUsed">Last Used</option>
+              <option value="percentage">Percentage</option>
+              <option value="timeUsed">Time Used</option>
+              <option value="name">Name</option>
+            </Select>
           </HStack>
         </Flex>
 
-        {/* User Agents List */}
         <VStack spacing={4} align="stretch">
           {filteredAndSortedUserAgents.length === 0 ? (
             <Text color="gray.500" textAlign="center">

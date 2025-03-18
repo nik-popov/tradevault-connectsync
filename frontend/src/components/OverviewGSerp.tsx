@@ -200,7 +200,7 @@ const OverviewGSerp: React.FC = () => {
         { name: "Success Rate", value: overallSuccessRate * 100 },
         { name: "Endpoints", value: enhancedData.length },
       ];
-      showToast("Data Load","Fetched Data" , "success");
+    
       setChartData({
         requestsOverTime,
         categoryDistribution,
