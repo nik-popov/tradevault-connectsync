@@ -44,6 +44,7 @@ import {
 import { BsRecord } from "react-icons/bs";
 import useCustomToast from "../../../../hooks/useCustomToast"; // Import the custom toast hook
 
+// Interfaces remain unchanged
 interface JobDetails {
   id: number;
   inputFile: string;
@@ -94,7 +95,7 @@ interface RecordItem {
   excelRowImageRef: string | null;
 }
 
-// Component to fetch and display log content
+// LogDisplay Component
 interface LogDisplayProps {
   logUrl: string | null;
 }
@@ -103,7 +104,7 @@ const LogDisplay: React.FC<LogDisplayProps> = ({ logUrl }) => {
   const [logContent, setLogContent] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const showToast = useCustomToast(); // Use custom toast
+  const showToast = useCustomToast();
 
   useEffect(() => {
     const fetchLog = async () => {
@@ -126,26 +127,28 @@ const LogDisplay: React.FC<LogDisplayProps> = ({ logUrl }) => {
     fetchLog();
   }, [logUrl, showToast]);
 
-  if (isLoading) return <Spinner />;
+  if (isLoading) return <Spinner color="green.500" />;
   if (error) return <Text color="red.500">{error}</Text>;
-  if (!logContent) return <Text>No log content available</Text>;
+  if (!logContent) return <Text color="gray.600">No log content available</Text>;
 
   return (
     <Box
       maxH="300px"
-      w="full" // Matches the full width of the parent (CardBody)
+      w="full"
       overflowY="auto"
-      overflowX="auto" // Fallback for any unwrapped content
-      bg="gray.800"
-      color="white"
+      overflowX="auto"
+      bg="gray.100"
+      color="gray.800"
       p={2}
       borderRadius="md"
+      border="1px solid"
+      borderColor="gray.200"
     >
       <pre
         style={{
-          whiteSpace: "pre-wrap", // Wraps long lines
-          wordBreak: "break-word", // Breaks long words if needed
-          margin: 0, // Removes default <pre> margin for tight fit
+          whiteSpace: "pre-wrap",
+          wordBreak: "break-word",
+          margin: 0,
         }}
       >
         {logContent}
@@ -154,6 +157,7 @@ const LogDisplay: React.FC<LogDisplayProps> = ({ logUrl }) => {
   );
 };
 
+// OverviewTab Component
 interface OverviewTabProps {
   job: JobDetails;
   sortBy: "match" | "linesheet" | null;
@@ -172,9 +176,8 @@ const OverviewTab: React.FC<OverviewTabProps> = ({
 }) => {
   const [isRestarting, setIsRestarting] = useState(false);
   const [isCreatingXLS, setIsCreatingXLS] = useState(false);
-  const showToast = useCustomToast(); // Use custom toast
+  const showToast = useCustomToast();
 
-  // State to manage sorting configuration
   const [sortConfig, setSortConfig] = useState<{
     key: "domain" | "totalResults" | "positiveSortOrderCount";
     direction: "ascending" | "descending";
@@ -183,7 +186,6 @@ const OverviewTab: React.FC<OverviewTabProps> = ({
     direction: "descending",
   });
 
-  // Function to extract domain from URL
   const getDomain = (url: string): string => {
     try {
       const hostname = new URL(url).hostname;
@@ -193,23 +195,16 @@ const OverviewTab: React.FC<OverviewTabProps> = ({
     }
   };
 
-  // Aggregate domain data, excluding average sort order
   const domainData = job.results.reduce((acc, result) => {
     const domain = getDomain(result.imageSource);
     if (!acc[domain]) {
-      acc[domain] = {
-        totalResults: 0,
-        positiveSortOrderCount: 0,
-      };
+      acc[domain] = { totalResults: 0, positiveSortOrderCount: 0 };
     }
     acc[domain].totalResults += 1;
-    if (result.sortOrder > 0) {
-      acc[domain].positiveSortOrderCount += 1;
-    }
+    if (result.sortOrder > 0) acc[domain].positiveSortOrderCount += 1;
     return acc;
   }, {} as Record<string, { totalResults: number; positiveSortOrderCount: number }>);
 
-  // Get top 20 domains based on positive sort order count
   const topDomains = Object.entries(domainData)
     .map(([domain, data]) => ({
       domain,
@@ -217,9 +212,8 @@ const OverviewTab: React.FC<OverviewTabProps> = ({
       positiveSortOrderCount: data.positiveSortOrderCount,
     }))
     .sort((a, b) => b.positiveSortOrderCount - a.positiveSortOrderCount)
-    .slice(0, 20); // Updated to top 20
+    .slice(0, 20);
 
-  // Apply sorting based on sortConfig
   const sortedTopDomains = [...topDomains].sort((a, b) => {
     if (sortConfig.key === "domain") {
       const aValue = a.domain.toLowerCase();
@@ -239,7 +233,6 @@ const OverviewTab: React.FC<OverviewTabProps> = ({
     return 0;
   });
 
-  // Handle column header clicks for sorting
   const handleSort = (key: "domain" | "totalResults" | "positiveSortOrderCount") => {
     setSortConfig((prev) => {
       if (prev.key === key) {
@@ -252,45 +245,39 @@ const OverviewTab: React.FC<OverviewTabProps> = ({
     });
   };
 
-  // Handle domain click to filter results
   const handleDomainClick = (domain: string) => {
     setSearchQuery(domain);
-    setActiveTab(2); // Switch to Results tab
+    setActiveTab(2);
     showToast("Filter Applied", `Filtering results by domain: ${domain}`, "info");
   };
 
-  // Placeholder for restart logic with toast
   const handleDevRestart = () => {
     setIsRestarting(true);
     showToast("Restart Initiated", "Restarting job in development mode", "info");
-    // Add restart logic here
     setTimeout(() => {
       setIsRestarting(false);
       showToast("Restart Complete", "Job restarted successfully", "success");
-    }, 2000); // Simulate async operation
+    }, 2000);
   };
 
-  // Placeholder for file generation logic with toast
   const handleCreateXLS = () => {
     setIsCreatingXLS(true);
     showToast("XLS Creation Started", "Generating XLS file", "info");
-    // Add file generation logic here
     setTimeout(() => {
       setIsCreatingXLS(false);
       showToast("XLS Created", "XLS file generated successfully", "success");
-    }, 2000); // Simulate async operation
+    }, 2000);
   };
 
   return (
-    <Box p={4}>
-      {/* Title and Buttons */}
+    <Box p={4} bg="white" color="gray.800">
       <Flex justify="space-between" align="center" mb={4} flexWrap="wrap" gap={3}>
-        <Text fontSize="lg" fontWeight="bold">Job Overview</Text>
+        <Text fontSize="lg" fontWeight="bold" color="black">Job Overview</Text>
         <Flex gap={3}>
           <Button size="sm" colorScheme="red" onClick={handleDevRestart} isLoading={isRestarting}>
             Dev Restart
           </Button>
-          <Button size="sm" colorScheme="blue" onClick={handleCreateXLS} isLoading={isCreatingXLS}>
+          <Button size="sm" colorScheme="green" onClick={handleCreateXLS} isLoading={isCreatingXLS}>
             Click Here To Create XLS File
           </Button>
           <Button
@@ -303,22 +290,21 @@ const OverviewTab: React.FC<OverviewTabProps> = ({
         </Flex>
       </Flex>
 
-      {/* Job Overview Stats */}
       <Box mb={6}>
         <Stat>
-          <StatLabel>Job ID</StatLabel>
+          <StatLabel color="gray.600">Job ID</StatLabel>
           <StatNumber>{job.id}</StatNumber>
         </Stat>
         <Stat mt={4}>
-          <StatLabel>Input File</StatLabel>
+          <StatLabel color="gray.600">Input File</StatLabel>
           <StatHelpText wordBreak="break-all">
-            <Link href={job.fileLocationUrl} isExternal color="blue.500">
+            <Link href={job.fileLocationUrl} isExternal color="green.500">
               {job.inputFile}
             </Link>
           </StatHelpText>
         </Stat>
         <Stat mt={4}>
-          <StatLabel>Status</StatLabel>
+          <StatLabel color="gray.600">Status</StatLabel>
           <StatNumber>
             <Badge colorScheme={job.fileEnd ? "green" : "yellow"}>
               {job.fileEnd ? "Completed" : "Pending"}
@@ -327,8 +313,8 @@ const OverviewTab: React.FC<OverviewTabProps> = ({
         </Stat>
         {job.fileEnd && (
           <Stat mt={4}>
-            <StatLabel>Processing Duration</StatLabel>
-            <StatNumber>
+            <StatLabel color="gray.600">Processing Duration</StatLabel>
+          <StatNumber color="gray.800">
               {(
                 (new Date(job.fileEnd).getTime() - new Date(job.fileStart).getTime()) /
                 1000 /
@@ -339,47 +325,46 @@ const OverviewTab: React.FC<OverviewTabProps> = ({
           </Stat>
         )}
         <Stat mt={4}>
-          <StatLabel>API Used</StatLabel>
+          <StatLabel color="gray.600">API Used</StatLabel>
           <StatHelpText>{job.apiUsed}</StatHelpText>
         </Stat>
         <Stat mt={4}>
-          <StatLabel>Total Results</StatLabel>
+          <StatLabel color="gray.600">Total Results</StatLabel>
           <StatNumber>{job.results.length}</StatNumber>
         </Stat>
       </Box>
 
-      {/* Top Domains Table */}
       {job.results.length > 0 && (
         <Box mt={6}>
-          <Text fontSize="md" fontWeight="semibold" mb={2}>
+          <Text fontSize="md" fontWeight="semibold" mb={2} color="black">
             Top Domains by Positive Sort Orders (Top 20)
           </Text>
-          <Table variant="simple" size="sm">
-            <Thead>
+          <Table variant="simple" size="sm" colorScheme="green">
+            <Thead bg="green.50">
               <Tr>
-                <Th onClick={() => handleSort("domain")} cursor="pointer">
+                <Th onClick={() => handleSort("domain")} cursor="pointer" color="gray.800">
                   Domain{" "}
                   {sortConfig.key === "domain" &&
                     (sortConfig.direction === "ascending" ? "↑" : "↓")}
                 </Th>
-                <Th onClick={() => handleSort("totalResults")} cursor="pointer">
+                <Th onClick={() => handleSort("totalResults")} cursor="pointer" color="gray.800">
                   Total Results{" "}
                   {sortConfig.key === "totalResults" &&
                     (sortConfig.direction === "ascending" ? "↑" : "↓")}
                 </Th>
-                <Th onClick={() => handleSort("positiveSortOrderCount")} cursor="pointer">
+                <Th onClick={() => handleSort("positiveSortOrderCount")} cursor="pointer" color="gray.800">
                   Positive Sort Orders Count{" "}
                   {sortConfig.key === "positiveSortOrderCount" &&
                     (sortConfig.direction === "ascending" ? "↑" : "↓")}
                 </Th>
               </Tr>
             </Thead>
-            <Tbody>
+            <Tbody color="gray.800">
               {sortedTopDomains.map(({ domain, totalResults, positiveSortOrderCount }) => (
                 <Tr key={domain}>
                   <Td>
                     <Text
-                      color="blue.500"
+                      color="green.500"
                       cursor="pointer"
                       onClick={() => handleDomainClick(domain)}
                       _hover={{ textDecoration: "underline" }}
@@ -399,6 +384,7 @@ const OverviewTab: React.FC<OverviewTabProps> = ({
   );
 };
 
+// UsageTab Component
 const UsageTab = ({ job }: { job: JobDetails }) => {
   const totalRecords = job.records.length;
   const completedRecords = job.records.filter(record => record.completeTime).length;
@@ -413,16 +399,13 @@ const UsageTab = ({ job }: { job: JobDetails }) => {
 
   const calculateAvgResponseTime = (): string => {
     const completedRecordsWithTimes = job.records.filter(
-      (record) => record.createTime && record.completeTime // Ensure both are non-null
+      (record) => record.createTime && record.completeTime
     );
     if (completedRecordsWithTimes.length === 0) return 'N/A';
     const totalDuration = completedRecordsWithTimes.reduce((sum, record) => {
-      const start = new Date(record.createTime!).getTime(); // Non-null assertion after filter
-      const end = new Date(record.completeTime!).getTime(); // Non-null assertion after filter
-      if (!isNaN(start) && !isNaN(end) && end >= start) {
-        return sum + (end - start);
-      }
-      return sum;
+      const start = new Date(record.createTime!).getTime();
+      const end = new Date(record.completeTime!).getTime();
+      return sum + (end - start);
     }, 0);
     const avgDurationSec = (totalDuration / completedRecordsWithTimes.length / 1000).toFixed(2);
     return `${avgDurationSec} seconds`;
@@ -430,48 +413,48 @@ const UsageTab = ({ job }: { job: JobDetails }) => {
   const avgResponseTime = calculateAvgResponseTime();
 
   return (
-    <Box p={4}>
-      <Text fontSize="lg" fontWeight="bold" mb={4}>Usage Statistics</Text>
+    <Box p={4} bg="white" color="gray.800">
+      <Text fontSize="lg" fontWeight="bold" mb={4} color="black">Usage Statistics</Text>
       <Flex direction="column" gap={6}>
-        <Card shadow="md" borderWidth="1px">
+        <Card shadow="md" borderWidth="1px" bg="white">
           <CardBody>
             <Stat>
-              <StatLabel>Total Records</StatLabel>
+              <StatLabel color="gray.600">Total Records</StatLabel>
               <StatNumber>{totalRecords}</StatNumber>
             </Stat>
             <Stat mt={4}>
-              <StatLabel>Completed Records</StatLabel>
+              <StatLabel color="gray.600">Completed Records</StatLabel>
               <StatNumber>{completedRecords}</StatNumber>
             </Stat>
             <Stat mt={4}>
-              <StatLabel>Pending Records</StatLabel>
+              <StatLabel color="gray.600">Pending Records</StatLabel>
               <StatNumber>{pendingRecords}</StatNumber>
             </Stat>
           </CardBody>
         </Card>
-        <Card shadow="md" borderWidth="1px">
+        <Card shadow="md" borderWidth="1px" bg="white">
           <CardBody>
             <Stat>
-              <StatLabel>Total Images Scraped</StatLabel>
+              <StatLabel color="gray.600">Total Images Scraped</StatLabel>
               <StatNumber>{totalImages}</StatNumber>
             </Stat>
             <Stat mt={4}>
-              <StatLabel>Average Images per Record</StatLabel>
+              <StatLabel color="gray.600">Average Images per Record</StatLabel>
               <StatNumber>{imagesPerRecord}</StatNumber>
             </Stat>
           </CardBody>
         </Card>
-        <Card shadow="md" borderWidth="1px">
+        <Card shadow="md" borderWidth="1px" bg="white">
           <CardBody>
-            <Text fontSize="md" fontWeight="semibold" mb={2}>Scraping Metrics</Text>
-            <Table variant="simple" size="sm">
-              <Thead>
+            <Text fontSize="md" fontWeight="semibold" mb={2} color="black">Scraping Metrics</Text>
+            <Table variant="simple" size="sm" colorScheme="green">
+              <Thead bg="green.50">
                 <Tr>
-                  <Th>Metric</Th>
-                  <Th>Value</Th>
+                  <Th color="gray.800">Metric</Th>
+                  <Th color="gray.800">Value</Th>
                 </Tr>
               </Thead>
-              <Tbody>
+              <Tbody color="gray.800">
                 <Tr>
                   <Td>Total Requests</Td>
                   <Td>{totalRequests}</Td>
@@ -497,6 +480,7 @@ const UsageTab = ({ job }: { job: JobDetails }) => {
   );
 };
 
+// ResultsTab Component
 interface ResultsTabProps {
   job: JobDetails;
   sortBy: "match" | "linesheet" | null;
@@ -505,14 +489,10 @@ interface ResultsTabProps {
 }
 
 const ResultsTab: React.FC<ResultsTabProps> = ({ job, sortBy, searchQuery, setSearchQuery }) => {
-  const showToast = useCustomToast(); // Use custom toast
+  const showToast = useCustomToast();
 
   if (!job || !job.results || !job.records || typeof setSearchQuery !== "function") {
-    showToast(
-      "Invalid Props",
-      "Invalid job data or configuration in ResultsTab",
-      "error"
-    );
+    showToast("Invalid Props", "Invalid job data or configuration in ResultsTab", "error");
     return <Box p={4}><Text color="red.500">Invalid job data or configuration</Text></Box>;
   }
 
@@ -553,7 +533,6 @@ const ResultsTab: React.FC<ResultsTabProps> = ({ job, sortBy, searchQuery, setSe
   const totalImages = job.results.length;
   const totalAllRecords = job.records.length;
 
-  // Check for thumbnails (adjust key to match API)
   const hasThumbnails = filteredRecords.some((record) => record.excelRowImageRef);
 
   const shortenUrl = (url: string) => {
@@ -573,23 +552,22 @@ const ResultsTab: React.FC<ResultsTabProps> = ({ job, sortBy, searchQuery, setSe
   };
 
   return (
-    <Box p={4}>
+    <Box p={4} bg="white" color="gray.800">
       <Flex
         justify="space-between"
         align="center"
         mb={4}
         position="sticky"
         top="0"
-        bg="transparent"
+        bg="white"
         zIndex="10"
         py={5}
         borderBottom="1px solid"
         borderColor="gray.200"
         flexWrap="wrap"
         gap={3}
-        id="input-search"
       >
-        <Text fontSize="lg" fontWeight="bold">Job Results</Text>
+        <Text fontSize="lg" fontWeight="bold" color="black">Job Results</Text>
         <Input
           placeholder="Search by description, source, model, brand, etc..."
           value={searchQuery}
@@ -601,67 +579,69 @@ const ResultsTab: React.FC<ResultsTabProps> = ({ job, sortBy, searchQuery, setSe
             e.preventDefault();
           }}
           width="300px"
+          borderColor="green.300"
+          _focus={{ borderColor: "green.500" }}
         />
       </Flex>
       <Flex direction="column" gap={6}>
-        <Card shadow="md" borderWidth="1px">
+        <Card shadow="md" borderWidth="1px" bg="white">
           <CardBody>
             {query ? (
               <Box>
                 <Stat>
-                  <StatLabel>Filtered Results</StatLabel>
+                  <StatLabel color="gray.600">Filtered Results</StatLabel>
                   <StatNumber>{totalResults} images</StatNumber>
-                  <StatHelpText>out of {totalImages} total</StatHelpText>
+                  <StatHelpText color="gray.500">out of {totalImages} total</StatHelpText>
                 </Stat>
                 <Stat mt={4}>
-                  <StatLabel>Filtered Records</StatLabel>
+                  <StatLabel color="gray.600">Filtered Records</StatLabel>
                   <StatNumber>{totalRecords} records</StatNumber>
-                  <StatHelpText>out of {totalAllRecords} total</StatHelpText>
+                  <StatHelpText color="gray.500">out of {totalAllRecords} total</StatHelpText>
                 </Stat>
               </Box>
             ) : (
               <>
                 <Stat>
-                  <StatLabel>Result File</StatLabel>
-                  <Link href={job.resultFile} isExternal color="blue.500">
+                  <StatLabel color="gray.600">Result File</StatLabel>
+                  <Link href={job.resultFile} isExternal color="green.500">
                     {job.inputFile}
                   </Link>
                 </Stat>
                 <Stat mt={4}>
-                  <StatLabel>Total Records</StatLabel>
+                  <StatLabel color="gray.600">Total Records</StatLabel>
                   <StatNumber>{totalAllRecords}</StatNumber>
                 </Stat>
                 <Stat mt={4}>
-                  <StatLabel>Total Images</StatLabel>
+                  <StatLabel color="gray.600">Total Images</StatLabel>
                   <StatNumber>{totalImages}</StatNumber>
                 </Stat>
               </>
             )}
           </CardBody>
         </Card>
-        <Card shadow="md" borderWidth="1px">
+        <Card shadow="md" borderWidth="1px" bg="white">
           <CardBody>
-            <Text fontSize="md" fontWeight="semibold" mb={2}>Details</Text>
+            <Text fontSize="md" fontWeight="semibold" mb={2} color="black">Details</Text>
             <Accordion allowToggle defaultIndex={[0, 1]}>
               <AccordionItem>
-                <AccordionButton>
-                  <Box flex="1" textAlign="left">Results ({totalResults})</Box>
-                  <AccordionIcon />
+                <AccordionButton bg="green.50" _expanded={{ bg: "green.100" }}>
+                  <Box flex="1" textAlign="left" color="green.700">Results ({totalResults})</Box>
+                  <AccordionIcon color="green.500" />
                 </AccordionButton>
                 <AccordionPanel pb={4}>
-                  <Table variant="simple" size="sm" border="none">
-                    <Thead>
+                  <Table variant="simple" size="sm" colorScheme="green">
+                    <Thead bg="green.50">
                       <Tr>
-                        <Th w="60px">Preview</Th>
-                        <Th w="80px">Result ID</Th>
-                        <Th w="80px">Entry ID</Th>
-                        <Th w="120px">Image URL</Th>
-                        <Th w="120px">Description</Th>
-                        <Th w="120px">Source</Th>
-                        <Th w="80px">Sort Order</Th>
+                        <Th w="60px" color="gray.800">Preview</Th>
+                        <Th w="80px" color="gray.800">Result ID</Th>
+                        <Th w="80px" color="gray.800">Entry ID</Th>
+                        <Th w="120px" color="gray.800">Image URL</Th>
+                        <Th w="120px" color="gray.800">Description</Th>
+                        <Th w="120px" color="gray.800">Source</Th>
+                        <Th w="80px" color="gray.800">Sort Order</Th>
                       </Tr>
                     </Thead>
-                    <Tbody>
+                    <Tbody color="gray.800">
                       {paginatedResults.map((result) => (
                         <Tr key={result.resultId}>
                           <Td w="60px">
@@ -671,20 +651,20 @@ const ResultsTab: React.FC<ResultsTabProps> = ({ job, sortBy, searchQuery, setSe
                               maxW="80px"
                               maxH="80px"
                               objectFit="cover"
-                              fallback={<Text fontSize="xs">No image</Text>}
+                              fallback={<Text fontSize="xs" color="gray.500">No image</Text>}
                             />
                           </Td>
                           <Td w="80px">{result.resultId || "N/A"}</Td>
                           <Td w="80px">{result.entryId || "N/A"}</Td>
                           <Td w="120px">
                             <a href={result.imageUrl || "#"} target="_blank" rel="noopener noreferrer">
-                              {shortenUrl(result.imageUrl)}
+                              <Text color="green.500">{shortenUrl(result.imageUrl)}</Text>
                             </a>
                           </Td>
                           <Td w="120px">{result.imageDesc || "N/A"}</Td>
                           <Td w="120px">
                             <a href={result.imageSource || "#"} target="_blank" rel="noopener noreferrer">
-                              {shortenUrl(result.imageSource)}
+                              <Text color="green.500">{shortenUrl(result.imageSource)}</Text>
                             </a>
                           </Td>
                           <Td w="80px">{result.sortOrder || "0"}</Td>
@@ -692,7 +672,7 @@ const ResultsTab: React.FC<ResultsTabProps> = ({ job, sortBy, searchQuery, setSe
                       ))}
                       {paginatedResults.length === 0 && (
                         <Tr>
-                          <Td colSpan={7} textAlign="center">
+                          <Td colSpan={7} textAlign="center" color="gray.500">
                             No results match your search query.
                           </Td>
                         </Tr>
@@ -702,23 +682,23 @@ const ResultsTab: React.FC<ResultsTabProps> = ({ job, sortBy, searchQuery, setSe
                 </AccordionPanel>
               </AccordionItem>
               <AccordionItem>
-                <AccordionButton>
-                  <Box flex="1" textAlign="left">Records ({totalRecords})</Box>
-                  <AccordionIcon />
+                <AccordionButton bg="green.50" _expanded={{ bg: "green.100" }}>
+                  <Box flex="1" textAlign="left" color="green.700">Records ({totalRecords})</Box>
+                  <AccordionIcon color="green.500" />
                 </AccordionButton>
                 <AccordionPanel pb={4}>
-                  <Table variant="simple" size="sm" border="none">
-                    <Thead>
+                  <Table variant="simple" size="sm" colorScheme="green">
+                    <Thead bg="green.50">
                       <Tr>
-                        {hasThumbnails && <Th w="60px">Excel Picture</Th>}
-                        <Th w="80px">Entry ID</Th>
-                        <Th w="80px">File ID</Th>
-                        <Th w="80px">Excel Row ID</Th>
-                        <Th w="120px">Style #</Th>
-                        <Th w="120px">Brand</Th>
+                        {hasThumbnails && <Th w="60px" color="gray.800">Excel Picture</Th>}
+                        <Th w="80px" color="gray.800">Entry ID</Th>
+                        <Th w="80px" color="gray.800">File ID</Th>
+                        <Th w="80px" color="gray.800">Excel Row ID</Th>
+                        <Th w="120px" color="gray.800">Style #</Th>
+                        <Th w="120px" color="gray.800">Brand</Th>
                       </Tr>
                     </Thead>
-                    <Tbody>
+                    <Tbody color="gray.800">
                       {filteredRecords.map((record) => (
                         <Tr key={record.entryId}>
                           {hasThumbnails && (
@@ -748,7 +728,6 @@ const ResultsTab: React.FC<ResultsTabProps> = ({ job, sortBy, searchQuery, setSe
                                       (e.currentTarget.nextSibling as HTMLElement).style.display = "block";
                                     }
                                   }}
-                                
                                   fallback={<Text fontSize="xs" display="none" color="red.500">Load failed</Text>}
                                   loading="lazy"
                                 />
@@ -766,7 +745,7 @@ const ResultsTab: React.FC<ResultsTabProps> = ({ job, sortBy, searchQuery, setSe
                       ))}
                       {filteredRecords.length === 0 && (
                         <Tr>
-                          <Td colSpan={hasThumbnails ? 6 : 5} textAlign="center">
+                          <Td colSpan={hasThumbnails ? 6 : 5} textAlign="center" color="gray.500">
                             No records match your search query.
                           </Td>
                         </Tr>
@@ -782,6 +761,7 @@ const ResultsTab: React.FC<ResultsTabProps> = ({ job, sortBy, searchQuery, setSe
                   size="sm"
                   onClick={() => handlePageChange(currentPage - 1)}
                   isDisabled={currentPage === 1}
+                  colorScheme="green"
                 >
                   Previous
                 </Button>
@@ -790,6 +770,7 @@ const ResultsTab: React.FC<ResultsTabProps> = ({ job, sortBy, searchQuery, setSe
                     key={page}
                     size="sm"
                     variant={currentPage === page ? "solid" : "outline"}
+                    colorScheme="green"
                     onClick={() => handlePageChange(page)}
                   >
                     {page}
@@ -799,10 +780,11 @@ const ResultsTab: React.FC<ResultsTabProps> = ({ job, sortBy, searchQuery, setSe
                   size="sm"
                   onClick={() => handlePageChange(currentPage + 1)}
                   isDisabled={currentPage === totalPages}
+                  colorScheme="green"
                 >
                   Next
                 </Button>
-                <Text fontSize="sm">
+                <Text fontSize="sm" color="gray.600">
                   Page {currentPage} of {totalPages}
                 </Text>
               </Flex>
@@ -814,14 +796,16 @@ const ResultsTab: React.FC<ResultsTabProps> = ({ job, sortBy, searchQuery, setSe
   );
 };
 
+// LogsTab Component
 const LogsTab = ({ job }: { job: JobDetails }) => {
   return (
-    <Box p={4}>
+    <Box p={4} bg="white" color="gray.800">
       <Flex justify="space-between" align="center" mb={4}>
-        <Text fontSize="lg" fontWeight="bold">Logs</Text>
+        <Text fontSize="lg" fontWeight="bold" color="black">Logs</Text>
         {job.logFileUrl && (
           <Button
             size="sm"
+            colorScheme="green"
             onClick={() => window.open(job.logFileUrl as string, '_blank')}
           >
             Download Log File
@@ -829,17 +813,29 @@ const LogsTab = ({ job }: { job: JobDetails }) => {
         )}
       </Flex>
       <Flex direction="column" gap={6}>
-        <Card shadow="md" borderWidth="1px">
+        <Card shadow="md" borderWidth="1px" bg="white">
           <CardBody>
-            <Text fontSize="md" fontWeight="semibold" mb={2}>Timeline Events</Text>
-            <Table variant="simple" size="sm">
-              {/* Table content */}
+            <Text fontSize="md" fontWeight="semibold" mb={2} color="black">Timeline Events</Text>
+            <Table variant="simple" size="sm" colorScheme="green">
+              <Thead bg="green.50">
+                <Tr>
+                  {/* Placeholder for table headers if content is added later */}
+                  <Th color="gray.800">Event</Th>
+                  <Th color="gray.800">Details</Th>
+                </Tr>
+              </Thead>
+              <Tbody color="gray.800">
+                {/* Placeholder for table rows if content is added later */}
+                <Tr>
+                  <Td colSpan={2}>No timeline events available</Td>
+                </Tr>
+              </Tbody>
             </Table>
           </CardBody>
         </Card>
-        <Card shadow="md" borderWidth="1px">
+        <Card shadow="md" borderWidth="1px" bg="white">
           <CardBody>
-            <Text fontSize="md" fontWeight="semibold" mb={2}>Log File Preview</Text>
+            <Text fontSize="md" fontWeight="semibold" mb={2} color="black">Log File Preview</Text>
             <LogDisplay logUrl={job.logFileUrl} />
           </CardBody>
         </Card>
@@ -848,14 +844,14 @@ const LogsTab = ({ job }: { job: JobDetails }) => {
   );
 };
 
+// SearchRowsTab Component
 interface SearchRowsTabProps {
   job: JobDetails;
 }
 
 const SearchRowsTab: React.FC<SearchRowsTabProps> = ({ job }) => {
-  const showToast = useCustomToast(); // Use custom toast
+  const showToast = useCustomToast();
 
-  // State management
   const [debugMode, setDebugMode] = useState(false);
   const [showFileDetails, setShowFileDetails] = useState(true);
   const [showResultDetails, setShowResultDetails] = useState(false);
@@ -866,13 +862,11 @@ const SearchRowsTab: React.FC<SearchRowsTabProps> = ({ job }) => {
     direction: "ascending" | "descending";
   }>({ key: null, direction: "ascending" });
 
-  // Adjust max images based on showResultDetails
   useEffect(() => {
     const maxImages = showResultDetails ? 1 : 5;
     if (numImages > maxImages) setNumImages(maxImages);
   }, [showResultDetails]);
 
-  // Utility Functions
   const getImagesForEntry = (entryId: number, limit: number): ResultItem[] => {
     const filteredResults = job.results.filter((r) => r.entryId === entryId && r.sortOrder > 0);
     return [...filteredResults].sort((a, b) => a.sortOrder - b.sortOrder).slice(0, limit);
@@ -931,7 +925,6 @@ const SearchRowsTab: React.FC<SearchRowsTabProps> = ({ job }) => {
     showToast("Row Clicked", `Opened results for model: ${productModel}`, "info");
   };
 
-  // Sorting Logic
   const handleSort = (key: string) => {
     setSortConfig((prev) => {
       const newDirection = prev.key === key && prev.direction === "ascending" ? "descending" : "ascending";
@@ -940,10 +933,8 @@ const SearchRowsTab: React.FC<SearchRowsTabProps> = ({ job }) => {
     });
   };
 
-  // Check if any record has positive sort images
   const hasPositiveSortImages = job.records.some((record) => getPositiveSortCountForEntry(record.entryId) > 0);
 
-  // Filter and sort records
   const displayedRecords = hideEmptyRows && hasPositiveSortImages
     ? job.records.filter((record) => getPositiveSortCountForEntry(record.entryId) > 0)
     : job.records;
@@ -970,27 +961,26 @@ const SearchRowsTab: React.FC<SearchRowsTabProps> = ({ job }) => {
   const fileId = job.records[0]?.fileId || "N/A";
 
   return (
-    <Box p={4}>
-      {/* Header with Controls */}
+    <Box p={4} bg="white" color="gray.800">
       <Flex
         justify="space-between"
         align="center"
         mb={4}
         position="sticky"
         top="0"
-        bg="transparent"
+        bg="white"
         zIndex="10"
         py={5}
         borderBottom="1px solid"
         borderColor="gray.200"
       >
-        <Text fontSize="lg" fontWeight="bold">File Rows ({sortedRecords.length})</Text>
+        <Text fontSize="lg" fontWeight="bold" color="black">File Rows ({sortedRecords.length})</Text>
         <Flex gap={3}>
           <Button
             borderBottom="2px solid"
-            borderColor="purple.200"
+            borderColor="green.200"
             size="sm"
-            colorScheme="purple"
+            colorScheme="green"
             onClick={() => {
               setShowResultDetails(!showResultDetails);
               showToast(
@@ -1004,9 +994,9 @@ const SearchRowsTab: React.FC<SearchRowsTabProps> = ({ job }) => {
           </Button>
           <Button
             borderBottom="2px solid"
-            borderColor="blue.300"
+            borderColor="green.200"
             size="sm"
-            colorScheme="blue"
+            colorScheme="green"
             onClick={() => {
               setShowFileDetails(!showFileDetails);
               showToast(
@@ -1030,13 +1020,13 @@ const SearchRowsTab: React.FC<SearchRowsTabProps> = ({ job }) => {
                 );
               }
             }}
-            colorScheme={job.records.length === 0 ? "gray" : "blue"}
+            colorScheme={job.records.length === 0 ? "gray" : "green"}
             variant={job.records.length === 0 ? "outline" : "solid"}
           >
             {hideEmptyRows ? "Show All Rows" : "Hide Empty Rows"}
           </Button>
           <Flex align="center" gap={2}>
-            <Button size="sm" onClick={handleDecreaseImages} isDisabled={numImages <= 1}>
+            <Button size="sm" onClick={handleDecreaseImages} isDisabled={numImages <= 1} colorScheme="green">
               -
             </Button>
             <Text>{numImages}</Text>
@@ -1044,6 +1034,7 @@ const SearchRowsTab: React.FC<SearchRowsTabProps> = ({ job }) => {
               size="sm"
               onClick={handleIncreaseImages}
               isDisabled={numImages >= (showResultDetails ? 2 : 5)}
+              colorScheme="green"
             >
               +
             </Button>
@@ -1061,52 +1052,52 @@ const SearchRowsTab: React.FC<SearchRowsTabProps> = ({ job }) => {
         </Flex>
       </Flex>
 
-      {/* Main Content */}
       {!debugMode ? (
-        <Card shadow="md" borderWidth="1px" bg="rgba(113, 128, 150, 0.2)">
+        <Card shadow="md" borderWidth="1px" bg="white">
           <CardBody p={0}>
             <Table
               variant="simple"
               size="sm"
               borderWidth="1px"
-              borderColor="gray.100"
+              borderColor="gray.200"
+              colorScheme="green"
               sx={{
                 "td, th": {
                   border: "1px solid",
-                  borderColor: "gray.100",
-                  p: 2, // Consistent padding
-                  verticalAlign: "middle", // Center content vertically
+                  borderColor: "gray.200",
+                  p: 2,
+                  verticalAlign: "middle",
                 },
               }}
             >
-              <Thead>
+              <Thead bg="green.50">
                 <Tr>
                   {showFileDetails && hasThumbnails && (
-                    <Th w="80px" bg="blue.300" color="white">
+                    <Th w="80px" bg="green.100" color="gray.800">
                       Excel Picture
                     </Th>
                   )}
                   {Array.from({ length: numImages }).map((_, index) => (
                     <React.Fragment key={index}>
-                      <Th w="100px">Picture {index + 1}</Th>
+                      <Th w="100px" color="gray.800">Picture {index + 1}</Th>
                       {showResultDetails && (
-                        <Th w="200px" bg="purple.300" color="white">
+                        <Th w="200px" bg="green.100" color="gray.800">
                           Picture Detail {index + 1}
                         </Th>
                       )}
                     </React.Fragment>
                   ))}
-                  <Th w="90px" onClick={() => handleSort("excelRowId")} cursor="pointer">
+                  <Th w="90px" onClick={() => handleSort("excelRowId")} cursor="pointer" color="gray.800">
                     Row #{" "}
                     {sortConfig.key === "excelRowId" &&
                       (sortConfig.direction === "ascending" ? "↑" : "↓")}
                   </Th>
-                  <Th w="150px" onClick={() => handleSort("productModel")} cursor="pointer">
+                  <Th w="150px" onClick={() => handleSort("productModel")} cursor="pointer" color="gray.800">
                     Style #{" "}
                     {sortConfig.key === "productModel" &&
                       (sortConfig.direction === "ascending" ? "↑" : "↓")}
                   </Th>
-                  <Th w="150px" onClick={() => handleSort("productBrand")} cursor="pointer">
+                  <Th w="150px" onClick={() => handleSort("productBrand")} cursor="pointer" color="gray.800">
                     Brand{" "}
                     {sortConfig.key === "productBrand" &&
                       (sortConfig.direction === "ascending" ? "↑" : "↓")}
@@ -1115,8 +1106,8 @@ const SearchRowsTab: React.FC<SearchRowsTabProps> = ({ job }) => {
                     <>
                       <Th
                         w="120px"
-                        bg="blue.300"
-                        color="white"
+                        bg="green.100"
+                        color="gray.800"
                         onClick={() => handleSort("productColor")}
                         cursor="pointer"
                       >
@@ -1126,8 +1117,8 @@ const SearchRowsTab: React.FC<SearchRowsTabProps> = ({ job }) => {
                       </Th>
                       <Th
                         w="120px"
-                        bg="blue.300"
-                        color="white"
+                        bg="green.100"
+                        color="gray.800"
                         onClick={() => handleSort("productCategory")}
                         cursor="pointer"
                       >
@@ -1141,6 +1132,7 @@ const SearchRowsTab: React.FC<SearchRowsTabProps> = ({ job }) => {
                     w="100px"
                     onClick={() => handleSort("totalImageCount")}
                     cursor="pointer"
+                    color="gray.800"
                   >
                     Total Image{" "}
                     {sortConfig.key === "totalImageCount" &&
@@ -1150,6 +1142,7 @@ const SearchRowsTab: React.FC<SearchRowsTabProps> = ({ job }) => {
                     w="100px"
                     onClick={() => handleSort("positiveSortCount")}
                     cursor="pointer"
+                    color="gray.800"
                   >
                     Positive Count{" "}
                     {sortConfig.key === "positiveSortCount" &&
@@ -1157,7 +1150,7 @@ const SearchRowsTab: React.FC<SearchRowsTabProps> = ({ job }) => {
                   </Th>
                 </Tr>
               </Thead>
-              <Tbody>
+              <Tbody color="gray.800">
                 {sortedRecords.map((record) => {
                   const imagedetails = getImagesForEntry(record.entryId, numImages);
                   const totalImageCount = getTotalImageCountForEntry(record.entryId);
@@ -1165,11 +1158,11 @@ const SearchRowsTab: React.FC<SearchRowsTabProps> = ({ job }) => {
                   return (
                     <Tr
                       key={record.entryId}
-                      _hover={{ bg: "gray.800", opacity: 1 }}
+                      _hover={{ bg: "green.50" }}
                       opacity={positiveSortCount === 0 && !hideEmptyRows ? 0.8 : 1}
                     >
                       {showFileDetails && hasThumbnails && (
-                        <Td w="80px" bg="blue.100">
+                        <Td w="80px" bg="green.50">
                           {record.excelRowImageRef ? (
                             <Image
                               src={record.excelRowImageRef}
@@ -1178,7 +1171,6 @@ const SearchRowsTab: React.FC<SearchRowsTabProps> = ({ job }) => {
                               maxH="80px"
                               fallback={<Text fontSize="xs" color="red.500">Failed</Text>}
                               objectFit="cover"
-  
                               onError={() => showToast("Thumbnail Error", `Failed to load thumbnail for record ${record.entryId}`, "error")}
                             />
                           ) : (
@@ -1200,9 +1192,9 @@ const SearchRowsTab: React.FC<SearchRowsTabProps> = ({ job }) => {
                             />
                           </Td>
                           {showResultDetails && (
-                            <Td w="200px" bg="purple.100">
+                            <Td w="200px" bg="green.50">
                               <Box wordBreak="break-all">
-                                <Text fontSize="xs" color="gray.900">
+                                <Text fontSize="xs" color="gray.800">
                                   <a
                                     href={googleSearch(image.imageDesc)}
                                     onClick={(e) => handleLinkClick(e, googleSearch(image.imageDesc))}
@@ -1210,7 +1202,7 @@ const SearchRowsTab: React.FC<SearchRowsTabProps> = ({ job }) => {
                                     {image.imageDesc || "N/A"}
                                   </a>
                                 </Text>
-                                <Text fontSize="xs" color="blue.500">
+                                <Text fontSize="xs" color="green.500">
                                   <a
                                     href={image.imageSource}
                                     onClick={(e) => handleLinkClick(e, image.imageSource)}
@@ -1218,7 +1210,7 @@ const SearchRowsTab: React.FC<SearchRowsTabProps> = ({ job }) => {
                                     {shortenUrl(image.imageSource)}
                                   </a>
                                 </Text>
-                                <Text fontSize="xs" color="gray.600">
+                                <Text fontSize="xs" color="green.500">
                                   <a
                                     href={image.imageUrl}
                                     onClick={(e) => handleLinkClick(e, image.imageUrl)}
@@ -1227,12 +1219,12 @@ const SearchRowsTab: React.FC<SearchRowsTabProps> = ({ job }) => {
                                   </a>
                                 </Text>
                                 {image.aiCaption && (
-                                  <Text fontSize="xs" color="gray.400">
+                                  <Text fontSize="xs" color="gray.500">
                                     AI Caption: {image.aiCaption}
                                   </Text>
                                 )}
                                 {image.aiLabel && (
-                                  <Text fontSize="xs" color="gray.400">
+                                  <Text fontSize="xs" color="gray.500">
                                     AI Label: {image.aiLabel}
                                   </Text>
                                 )}
@@ -1241,14 +1233,13 @@ const SearchRowsTab: React.FC<SearchRowsTabProps> = ({ job }) => {
                           )}
                         </React.Fragment>
                       ))}
-                      {/* Empty Image Slots */}
                       {Array.from({ length: numImages - imagedetails.length }).map((_, index) => (
                         <React.Fragment key={`empty-${index}`}>
                           <Td w="100px">
                             <Text fontSize="xs" color="gray.500">No picture</Text>
                           </Td>
                           {showResultDetails && (
-                            <Td w="200px" bg="purple.50">
+                            <Td w="200px" bg="green.50">
                               <Text fontSize="xs" color="gray.500">No picture detail</Text>
                             </Td>
                           )}
@@ -1257,7 +1248,7 @@ const SearchRowsTab: React.FC<SearchRowsTabProps> = ({ job }) => {
                       <Td w="90px">
                         <Text
                           cursor="pointer"
-                          color="white"
+                          color="green.500"
                           _hover={{ textDecoration: "underline" }}
                           onClick={(e) => handleRowIdClick(e, record.productModel)}
                         >
@@ -1270,7 +1261,7 @@ const SearchRowsTab: React.FC<SearchRowsTabProps> = ({ job }) => {
                             href={googleSearch(record.productModel)}
                             onClick={(e) => handleLinkClick(e, googleSearch(record.productModel))}
                           >
-                            {record.productModel}
+                            <Text color="green.500">{record.productModel}</Text>
                           </a>
                         ) : (
                           <Text fontSize="xs" color="gray.500">No style</Text>
@@ -1284,7 +1275,7 @@ const SearchRowsTab: React.FC<SearchRowsTabProps> = ({ job }) => {
                               handleLinkClick(e, googleSearchBrandModelUrl(record.productModel, record.productBrand))
                             }
                           >
-                            {record.productBrand}
+                            <Text color="green.500">{record.productBrand}</Text>
                           </a>
                         ) : (
                           <Text fontSize="xs" color="gray.500">No brand</Text>
@@ -1292,10 +1283,10 @@ const SearchRowsTab: React.FC<SearchRowsTabProps> = ({ job }) => {
                       </Td>
                       {showFileDetails && (
                         <>
-                          <Td w="120px" bg="blue.50" color="gray.700">
+                          <Td w="120px" bg="green.50" color="gray.700">
                             {record.productColor || <Text fontSize="xs" color="gray.500">No color</Text>}
                           </Td>
-                          <Td w="120px" bg="blue.50" color="gray.700">
+                          <Td w="120px" bg="green.50" color="gray.700">
                             {record.productCategory || <Text fontSize="xs" color="gray.500">No category</Text>}
                           </Td>
                         </>
@@ -1327,13 +1318,13 @@ const SearchRowsTab: React.FC<SearchRowsTabProps> = ({ job }) => {
           showToast("Debug Mode Closed", "Exited debug mode", "info");
         }} size="full">
           <ModalOverlay />
-          <ModalContent>
+          <ModalContent bg="white">
             <ModalHeader>
               <Flex justify="space-between" align="center">
-                <Text>Debug Mode - Search Rows (File ID: {fileId})</Text>
+                <Text color="black">Debug Mode - Search Rows (File ID: {fileId})</Text>
                 <Flex gap={3}>
                   <Button
-                    colorScheme="blue"
+                    colorScheme="green"
                     size="sm"
                     onClick={() => {
                       setShowFileDetails(!showFileDetails);
@@ -1347,7 +1338,7 @@ const SearchRowsTab: React.FC<SearchRowsTabProps> = ({ job }) => {
                     {showFileDetails ? "Hide File Details" : "Show File Details"}
                   </Button>
                   <Button
-                    colorScheme="purple"
+                    colorScheme="green"
                     size="sm"
                     onClick={() => {
                       setShowResultDetails(!showResultDetails);
@@ -1369,7 +1360,7 @@ const SearchRowsTab: React.FC<SearchRowsTabProps> = ({ job }) => {
                 </Flex>
               </Flex>
             </ModalHeader>
-            <ModalBody overflowX="auto">
+            <ModalBody overflowX="auto" color="gray.800">
               <Text>Debug mode content placeholder</Text>
             </ModalBody>
           </ModalContent>
@@ -1379,12 +1370,13 @@ const SearchRowsTab: React.FC<SearchRowsTabProps> = ({ job }) => {
   );
 };
 
+// Main JobsDetailPage Component
 const JobsDetailPage = () => {
   const { jobId } = useParams({ from: "/_layout/scraping-api/scraping-jobs/$jobId" }) as { jobId: string };
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [jobData, setJobData] = useState<JobDetails | null>(null);
-  const showToast = useCustomToast(); // Use custom toast
+  const showToast = useCustomToast();
 
   const searchParams = useSearch({ from: "/_layout/scraping-api/scraping-jobs/$jobId" }) as { search?: string; activeTab?: string };
   const initialTab = searchParams.activeTab ? parseInt(searchParams.activeTab, 10) : 4;
@@ -1416,15 +1408,16 @@ const JobsDetailPage = () => {
       setIsLoading(false);
     }
   };
-    useEffect(() => {
+
+  useEffect(() => {
     fetchJobData();
   }, [jobId]);
 
   if (isLoading) {
     return (
-      <Container maxW="full" py={6}>
+      <Container maxW="full" py={6} bg="white">
         <Flex justify="center" align="center" h="200px">
-          <Spinner size="xl" color="blue.500" />
+          <Spinner size="xl" color="green.500" />
         </Flex>
       </Container>
     );
@@ -1432,7 +1425,7 @@ const JobsDetailPage = () => {
 
   if (error || !jobData) {
     return (
-      <Container maxW="full" py={6}>
+      <Container maxW="full" py={6} bg="white">
         <Text color="red.500">{error || "Job data not available"}</Text>
       </Container>
     );
@@ -1469,24 +1462,29 @@ const JobsDetailPage = () => {
   ];
 
   return (
-    <Container maxW="full">
+    <Container maxW="full" bg="white" color="gray.800">
       <Flex align="center" justify="space-between" py={6} flexWrap="wrap" gap={4}>
         <Box textAlign="left" flex="1">
-          <Text fontSize="xl" fontWeight="bold">Job: {jobId}</Text>
-          <Text fontSize="sm">Details and results for scraping job {jobData.inputFile}.</Text>
+          <Text fontSize="xl" fontWeight="bold" color="black">Job: {jobId}</Text>
+          <Text fontSize="sm" color="gray.600">Details and results for scraping job {jobData.inputFile}.</Text>
         </Box>
       </Flex>
       <Tabs
         variant="enclosed"
         isLazy
         index={activeTab}
-        onChange={(index) => {
-          setActiveTab(index);
-        }}
+        onChange={(index) => setActiveTab(index)}
+        colorScheme="green"
       >
-        <TabList>
+        <TabList borderBottom="2px solid" borderColor="green.200">
           {tabsConfig.map((tab) => (
-            <Tab key={tab.title}>{tab.title}</Tab>
+            <Tab
+              key={tab.title}
+              _selected={{ bg: "green.100", color: "green.700", borderColor: "green.500" }}
+              color="gray.600"
+            >
+              {tab.title}
+            </Tab>
           ))}
         </TabList>
         <TabPanels>

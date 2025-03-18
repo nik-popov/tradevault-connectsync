@@ -93,21 +93,21 @@ function Explore() {
   const handleLoadMore = () => setPage((prev) => prev + 1);
 
   return (
-    <Container maxW="full">
+    <Container maxW="full" bg="white" color="gray.800">
       <Flex align="center" justify="space-between" py={6} flexWrap="wrap" gap={4}>
         <Box textAlign="left" flex="1">
           <Text fontSize="xl" fontWeight="bold">Scraping Jobs</Text>
-          <Text fontSize="sm" color="gray.500">View and manage scraping jobs</Text>
+          <Text fontSize="sm" color="gray.600">View and manage scraping jobs</Text>
         </Box>
       </Flex>
 
-      <Divider my={4} />
+      <Divider my={4} borderColor="gray.200" />
 
       {isLocked ? (
         <PromoSERP />
       ) : isFullyDeactivated ? (
         <Flex justify="space-between" align="center" w="full" p={4} bg="red.50" borderRadius="md">
-          <Text>Your subscription has been deactivated.</Text>
+          <Text color="gray.800">Your subscription has been deactivated.</Text>
           <Button colorScheme="red" onClick={() => navigate({ to: "/proxies/pricing" })}>
             Reactivate Now
           </Button>
@@ -121,11 +121,17 @@ function Explore() {
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 w={{ base: "100%", md: "250px" }}
+                borderColor="green.300"
+                _focus={{ borderColor: "green.500" }}
+                bg="white"
               />
               <Select
                 value={statusFilter}
                 onChange={(e) => setStatusFilter(e.target.value as "all" | "completed" | "pending")}
                 w={{ base: "100%", md: "200px" }}
+                borderColor="green.300"
+                _focus={{ borderColor: "green.500" }}
+                bg="white"
               >
                 <option value="all">All</option>
                 <option value="completed">Completed</option>
@@ -134,14 +140,14 @@ function Explore() {
             </Flex>
             <VStack spacing={4} align="stretch">
               {filteredJobs.map((job) => (
-                <Box key={job.id} p="4" borderWidth="1px" borderRadius="lg">
+                <Box key={job.id} p="4" borderWidth="1px" borderRadius="lg" borderColor="gray.200" bg="white">
                   <Flex justify="space-between" align="center">
                     <Box>
                       <Text fontSize="sm" fontWeight="bold" color="gray.600">
                         Job ID: {job.id}
                       </Text>
                       <Text fontWeight="medium">{job.inputFile}</Text>
-                      <Text fontSize="sm" color="gray.300">
+                      <Text fontSize="sm" color="gray.500">
                         {job.rec} records, {job.img} images
                       </Text>
                       <Text fontSize="sm" color={job.fileEnd ? "green.500" : "yellow.500"}>
@@ -150,6 +156,7 @@ function Explore() {
                     </Box>
                     <Button
                       size="sm"
+                      colorScheme="green"
                       onClick={() =>
                         navigate({
                           to: "/scraping-api/scraping-jobs/$jobId",
@@ -170,7 +177,7 @@ function Explore() {
               ) : (
                 filteredJobs.length > 0 && (
                   <Button
-                    colorScheme="blue"
+                    colorScheme="green"
                     size="sm"
                     onClick={handleLoadMore}
                     mt={4}
@@ -183,31 +190,33 @@ function Explore() {
             </VStack>
           </Box>
 
-          <Box w={{ base: "100%", md: "250px" }} p="4" borderLeft={{ md: "1px solid #E2E8F0" }}>
-          <VStack spacing="4" align="stretch">
-  <Box p="4" shadow="sm" borderWidth="1px" borderRadius="lg">
-    <Text fontWeight="bold">Quick Actions</Text>
-    <Button
-      as="a"
-      href="/scraping-api/submit-form/google-serp"
-      variant="outline"
-      size="sm"
-      mt="2"
-    >
-      Submit Form
-    </Button>
-    <Button
-      as="a"
-      href="https://github.com/iconluxurygroup"
-      leftIcon={<FiGithub />}
-      variant="outline"
-      size="sm"
-      mt="2"
-    >
-      GitHub
-    </Button>
-  </Box>
-</VStack>
+          <Box w={{ base: "100%", md: "250px" }} p="4" borderLeft={{ md: "1px solid" }} borderColor="gray.200">
+            <VStack spacing="4" align="stretch">
+              <Box p="4" shadow="sm" borderWidth="1px" borderRadius="lg" borderColor="gray.200" bg="white">
+                <Text fontWeight="bold" color="gray.800">Quick Actions</Text>
+                <Button
+                  as="a"
+                  href="/scraping-api/submit-form/google-serp"
+                  variant="outline"
+                  size="sm"
+                  mt="2"
+                  colorScheme="green"
+                >
+                  Submit Form
+                </Button>
+                <Button
+                  as="a"
+                  href="https://github.com/iconluxurygroup"
+                  leftIcon={<FiGithub />}
+                  variant="outline"
+                  size="sm"
+                  mt="2"
+                  colorScheme="green"
+                >
+                  GitHub
+                </Button>
+              </Box>
+            </VStack>
           </Box>
         </Flex>
       )}
