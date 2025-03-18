@@ -128,8 +128,6 @@ function Explore() {
                 color="gray.800"
                 _placeholder={{ color: "gray.500" }}
                 borderRadius="md"
-                px={3}
-                py={2}
               />
               <Select
                 value={statusFilter}
@@ -141,8 +139,6 @@ function Explore() {
                 bg="white"
                 color="gray.700" // Lighter text for selected value and options
                 borderRadius="md"
-                px={3}
-                py={2}
                 sx={{
                   // Custom CSS to style the dropdown options
                   "& option": {
