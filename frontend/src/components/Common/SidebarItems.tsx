@@ -57,18 +57,19 @@ interface SidebarItemsProps {
 
 const SidebarItems = ({ onClose }: SidebarItemsProps) => {
   const queryClient = useQueryClient();
-  const textColor = useColorModeValue("ui.main", "ui.light");
-  const disabledColor = useColorModeValue("gray.400", "gray.600");
-  const hoverColor = useColorModeValue("gray.500", "gray.500"); // Slightly darker/lighter on hover
-  const bgActive = useColorModeValue("#E2E8F0", "#4A5568");
+  const textColor = "gray.800"  // Dark text for light background
+  const disabledColor = "gray.400"  // Medium gray for disabled items
+  const hoverColor = "green.600"  // Green accent for hover
+  const bgActive = "green.100"  // Light green for active state
   const currentUser = queryClient.getQueryData<UserPublic>(["currentUser"]);
 
   const finalSidebarStructure = [...sidebarStructure];
   if (currentUser?.is_superuser && !finalSidebarStructure.some(item => item.title === "Admin")) {
     finalSidebarStructure.push({ title: "Admin", icon: FiUsers, path: "/admin" });
   }
+
   const isEnabled = (title: string) =>
-    ["Dashboard", "Scraping","Admin"].includes(title) ||
+    ["Dashboard", "Scraping", "Admin"].includes(title) ||
     (title === "Jobs" && 
       finalSidebarStructure.some(item => 
         item.title === "Scraping" && 
@@ -78,13 +79,13 @@ const SidebarItems = ({ onClose }: SidebarItemsProps) => {
       finalSidebarStructure.some(item => 
         item.title === "Scraping" && 
         item.subItems?.some(sub => sub.title === "Proxies")
-      ))
-      ||
-      (title === "User Agents" && 
-        finalSidebarStructure.some(item => 
-          item.title === "Scraping" && 
-          item.subItems?.some(sub => sub.title === "User Agents")
-        ));;
+      )) ||
+    (title === "User Agents" && 
+      finalSidebarStructure.some(item => 
+        item.title === "Scraping" && 
+        item.subItems?.some(sub => sub.title === "User Agents")
+      ));
+
   const renderItems = (items: SidebarItem[]) =>
     items.map(({ icon, title, path, subItems }) => {
       const enabled = isEnabled(title);
@@ -101,6 +102,7 @@ const SidebarItems = ({ onClose }: SidebarItemsProps) => {
                   style: { background: bgActive, borderRadius: "12px" },
                 }}
                 color={textColor}
+                _hover={{ color: hoverColor }}  // Green on hover
                 onClick={onClose}
               >
                 {icon && <Icon as={icon} alignSelf="center" />}

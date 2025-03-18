@@ -23,9 +23,9 @@ import SidebarItems from "./SidebarItems"
 
 const Sidebar = () => {
   const queryClient = useQueryClient()
-  const bgColor = useColorModeValue("ui.light", "ui.dark")
-  const textColor = useColorModeValue("ui.dark", "ui.light")
-  const secBgColor = useColorModeValue("ui.secondary", "ui.darkSlate")
+  const bgColor = "white"  // Changed to fixed light background
+  const textColor = "gray.800"  // Dark text for visibility
+  const secBgColor = "gray.100"  // Light gray secondary background
   const currentUser = queryClient.getQueryData<UserPublic>(["currentUser"])
   const { isOpen, onOpen, onClose } = useDisclosure()
   const { logout } = useAuth()
@@ -33,6 +33,7 @@ const Sidebar = () => {
   const handleLogout = async () => {
     logout()
   }
+  
   return (
     <>
       {/* Mobile */}
@@ -43,24 +44,25 @@ const Sidebar = () => {
         position="absolute"
         fontSize="20px"
         m={4}
+        color="green.600"  // Green accent
         icon={<FiMenu />}
       />
       <Drawer isOpen={isOpen} placement="left" onClose={onClose}>
         <DrawerOverlay />
         <DrawerContent maxW="250px">
-          <DrawerCloseButton />
-          <DrawerBody py={8}>
+          <DrawerCloseButton color="gray.800" />  // Dark close button
+          <DrawerBody py={8} bg="white">  // Light background
             <Flex flexDir="column" justify="space-between" h="100%">
               <Box>
-              <Link href="https://dashboard.iconluxury.group">
-                <Image src={Logo} alt="Logo" p={6} />
+                <Link href="https://dashboard.iconluxury.group">
+                  <Image src={Logo} alt="Logo" p={6} />
                 </Link>
                 <SidebarItems onClose={onClose} />
                 <Flex
                   as="button"
                   onClick={handleLogout}
                   p={2}
-                  color="ui.danger"
+                  color="green.600"  // Green accent for logout
                   fontWeight="bold"
                   alignItems="center"
                 >
@@ -91,14 +93,14 @@ const Sidebar = () => {
           w="250px"
         >
           <Box>
-          <Link href="https://dashboard.iconluxury.group">
-            <Image src={Logo} alt="Logo" w="180px" maxW="2xs" p={6} />
+            <Link href="https://dashboard.iconluxury.group">
+              <Image src={Logo} alt="Logo" w="180px" maxW="2xs" p={6} />
             </Link>
             <SidebarItems />
           </Box>
           <Box>
             {currentUser?.email && (
-              <Text color={textColor} noOfLines={2} fontSize="sm" p={2} maxW="180px">
+              <Text color="gray.800" noOfLines={2} fontSize="sm" p={2} maxW="180px">
                 Logged in as: {currentUser.email}
               </Text>
             )}
