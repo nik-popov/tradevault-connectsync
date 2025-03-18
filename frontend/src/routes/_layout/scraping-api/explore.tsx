@@ -96,7 +96,7 @@ function Explore() {
     <Container maxW="full" bg="white" color="gray.800">
       <Flex align="center" justify="space-between" py={6} flexWrap="wrap" gap={4}>
         <Box textAlign="left" flex="1">
-          <Text fontSize="xl" fontWeight="bold">Scraping Jobs</Text>
+          <Text fontSize="xl" fontWeight="bold" color="black">Scraping Jobs</Text>
           <Text fontSize="sm" color="gray.600">View and manage scraping jobs</Text>
         </Box>
       </Flex>
@@ -122,16 +122,35 @@ function Explore() {
                 onChange={(e) => setSearchQuery(e.target.value)}
                 w={{ base: "100%", md: "250px" }}
                 borderColor="green.300"
-                _focus={{ borderColor: "green.500" }}
+                _focus={{ borderColor: "green.500", boxShadow: "0 0 0 1px green.500" }}
+                _hover={{ borderColor: "green.400" }}
                 bg="white"
+                color="gray.800"
+                _placeholder={{ color: "gray.500" }}
+                borderRadius="md"
+                px={3}
+                py={2}
               />
               <Select
                 value={statusFilter}
                 onChange={(e) => setStatusFilter(e.target.value as "all" | "completed" | "pending")}
                 w={{ base: "100%", md: "200px" }}
                 borderColor="green.300"
-                _focus={{ borderColor: "green.500" }}
+                _focus={{ borderColor: "green.500", boxShadow: "0 0 0 1px green.500" }}
+                _hover={{ borderColor: "green.400" }}
                 bg="white"
+                color="gray.700" // Lighter text for selected value and options
+                borderRadius="md"
+                px={3}
+                py={2}
+                sx={{
+                  // Custom CSS to style the dropdown options
+                  "& option": {
+                    color: "gray.700", // Lighter text for options
+                    backgroundColor: "white",
+                    _hover: { backgroundColor: "green.50" }, // Optional hover effect
+                  },
+                }}
               >
                 <option value="all">All</option>
                 <option value="completed">Completed</option>
@@ -146,7 +165,7 @@ function Explore() {
                       <Text fontSize="sm" fontWeight="bold" color="gray.600">
                         Job ID: {job.id}
                       </Text>
-                      <Text fontWeight="medium">{job.inputFile}</Text>
+                      <Text fontWeight="medium" color="gray.800">{job.inputFile}</Text>
                       <Text fontSize="sm" color="gray.500">
                         {job.rec} records, {job.img} images
                       </Text>
@@ -193,7 +212,7 @@ function Explore() {
           <Box w={{ base: "100%", md: "250px" }} p="4" borderLeft={{ md: "1px solid" }} borderColor="gray.200">
             <VStack spacing="4" align="stretch">
               <Box p="4" shadow="sm" borderWidth="1px" borderRadius="lg" borderColor="gray.200" bg="white">
-                <Text fontWeight="bold" color="gray.800">Quick Actions</Text>
+                <Text fontWeight="bold" color="black">Quick Actions</Text>
                 <Button
                   as="a"
                   href="/scraping-api/submit-form/google-serp"
