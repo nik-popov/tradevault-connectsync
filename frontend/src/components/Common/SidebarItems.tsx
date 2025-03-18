@@ -107,7 +107,7 @@ const SidebarItems = ({ onClose }: SidebarItemsProps) => {
                 onClick={onClose}
               >
                 {icon && <Icon as={icon} alignSelf="center" />}
-                <Text ml={2}>{title}</Text>
+                <Text color={textColor} ml={2}>{title}</Text>
               </Flex>
             ) : (
               <Tooltip label="Restricted" placement="right">
@@ -125,7 +125,7 @@ const SidebarItems = ({ onClose }: SidebarItemsProps) => {
             )
           ) : (
             <Box>
-              <Flex p={2} color={enabled ? textColor : disabledColor} fontWeight="bold">
+              <Flex p={2} color={enabled ? textColor : disabledColor}>
                 {icon && <Icon as={icon} alignSelf="center" color={enabled ? textColor : disabledColor} />}
                 <Text ml={2} color={enabled ? textColor : disabledColor}>{title}</Text>
               </Flex>
