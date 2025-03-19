@@ -13,60 +13,44 @@ import {
   ModalFooter,
   ModalHeader,
   ModalOverlay,
-} from "@chakra-ui/react"
-import { useMutation, useQueryClient } from "@tanstack/react-query"
-import { type SubmitHandler, useForm } from "react-hook-form"
+  Text,
+} from "@chakra-ui/react";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { type SubmitHandler, useForm } from "react-hook-form";
+import { UsersService, type ApiError, type UserPublic, type UserUpdate as BaseUserUpdate } from "../../client";
+import useCustomToast from "../../hooks/useCustomToast";
+import { emailPattern, handleError } from "../../utils";
 
-import {
-  type ApiError,
-  type UserPublic,
-  type UserUpdate as BaseUserUpdate,
-  UsersService,
-} from "../../client"
-import useCustomToast from "../../hooks/useCustomToast"
-import { emailPattern, handleError } from "../../utils"
-
-// Define subscription settings structure
-interface SubscriptionSettings {
-  serp?: {
-    hasSubscription: boolean;
-    isTrial: boolean;
-    isDeactivated: boolean;
-  }
-}
-
-// Extend the base UserUpdate type
 interface UserUpdate extends BaseUserUpdate {
-  subscription_settings?: SubscriptionSettings;
-}
-
-// Extend UserPublic for the component props
-interface ExtendedUserPublic extends UserPublic {
-  subscription_settings?: SubscriptionSettings;
+  has_subscription?: boolean;
+  is_trial?: boolean;
+  is_deactivated?: boolean;
+  expiry_date?: string; // Backend expects ISO string
 }
 
 interface EditUserProps {
-  user: ExtendedUserPublic;
+  user: UserPublic; // UserPublic now has flat subscription fields
   isOpen: boolean;
   onClose: () => void;
 }
 
 interface UserUpdateForm extends UserUpdate {
   confirm_password: string;
-  has_serp_subscription?: boolean;
-  is_serp_trial?: boolean;
-  is_serp_deactivated?: boolean;
 }
 
 const EditUser = ({ user, isOpen, onClose }: EditUserProps) => {
   const queryClient = useQueryClient();
   const showToast = useCustomToast();
 
+  const isExpired = user.expiry_date ? new Date(user.expiry_date) < new Date() : false;
+
   const defaultValues = {
     ...user,
-    has_serp_subscription: user.subscription_settings?.serp?.hasSubscription || false,
-    is_serp_trial: user.subscription_settings?.serp?.isTrial || false,
-    is_serp_deactivated: user.subscription_settings?.serp?.isDeactivated || false,
+    has_subscription: user.has_subscription || false,
+    is_trial: user.is_trial || false,
+    is_deactivated: user.is_deactivated || false,
+    expiry_date: user.expiry_date || "",
+    confirm_password: "",
   };
 
   const {
@@ -83,26 +67,11 @@ const EditUser = ({ user, isOpen, onClose }: EditUserProps) => {
 
   const mutation = useMutation({
     mutationFn: (data: UserUpdateForm) => {
-      // Transform form data into the expected API structure
-      const requestData: UserUpdate = {
-        ...data,
-        subscription_settings: {
-          serp: {
-            hasSubscription: data.has_serp_subscription || false,
-            isTrial: data.is_serp_trial || false,
-            isDeactivated: data.is_serp_deactivated || false,
-          }
-        }
-      };
-      // Remove form-specific fields that shouldn't go to the API
-      delete (requestData as any).confirm_password;
-      delete (requestData as any).has_serp_subscription;
-      delete (requestData as any).is_serp_trial;
-      delete (requestData as any).is_serp_deactivated;
-
-      return UsersService.updateUser({ 
-        userId: user.id, 
-        requestBody: requestData 
+      const requestData: UserUpdate = { ...data };
+      delete (requestData as any).confirm_password; // Remove confirm_password before sending
+      return UsersService.updateUser({
+        userId: user.id,
+        requestBody: requestData,
       });
     },
     onSuccess: () => {
@@ -119,7 +88,7 @@ const EditUser = ({ user, isOpen, onClose }: EditUserProps) => {
 
   const onSubmit: SubmitHandler<UserUpdateForm> = async (data) => {
     if (data.password === "") {
-      data.password = undefined;
+      data.password = undefined; // Avoid sending empty password
     }
     mutation.mutate(data);
   };
@@ -130,126 +99,99 @@ const EditUser = ({ user, isOpen, onClose }: EditUserProps) => {
   };
 
   return (
-    <>
-      <Modal
-        isOpen={isOpen}
-        onClose={onClose}
-        size={{ base: "sm", md: "md" }}
-        isCentered
-      >
-        <ModalOverlay />
-        <ModalContent as="form" onSubmit={handleSubmit(onSubmit)}>
-          <ModalHeader>Edit User</ModalHeader>
-          <ModalCloseButton />
-          <ModalBody pb={6}>
-            <FormControl isInvalid={!!errors.email}>
-              <FormLabel htmlFor="email">Email</FormLabel>
-              <Input
-                id="email"
-                {...register("email", {
-                  required: "Email is required",
-                  pattern: emailPattern,
-                })}
-                placeholder="Email"
-                type="email"
-              />
-              {errors.email && (
-                <FormErrorMessage>{errors.email.message}</FormErrorMessage>
-              )}
+    <Modal isOpen={isOpen} onClose={onClose} size={{ base: "sm", md: "md" }} isCentered>
+      <ModalOverlay />
+      <ModalContent as="form" onSubmit={handleSubmit(onSubmit)}>
+        <ModalHeader>Edit User</ModalHeader>
+        <ModalCloseButton />
+        <ModalBody pb={6}>
+          <FormControl isInvalid={!!errors.email}>
+            <FormLabel htmlFor="email">Email</FormLabel>
+            <Input
+              id="email"
+              {...register("email", {
+                required: "Email is required",
+                pattern: emailPattern,
+              })}
+              placeholder="Email"
+              type="email"
+            />
+            {errors.email && <FormErrorMessage>{errors.email.message}</FormErrorMessage>}
+          </FormControl>
+          <FormControl mt={4}>
+            <FormLabel htmlFor="name">Full Name</FormLabel>
+            <Input id="name" {...register("full_name")} type="text" />
+          </FormControl>
+          <FormControl mt={4} isInvalid={!!errors.password}>
+            <FormLabel htmlFor="password">Set Password</FormLabel>
+            <Input
+              id="password"
+              {...register("password", {
+                minLength: { value: 8, message: "Password must be at least 8 characters" },
+              })}
+              placeholder="Password"
+              type="password"
+            />
+            {errors.password && <FormErrorMessage>{errors.password.message}</FormErrorMessage>}
+          </FormControl>
+          <FormControl mt={4} isInvalid={!!errors.confirm_password}>
+            <FormLabel htmlFor="confirm_password">Confirm Password</FormLabel>
+            <Input
+              id="confirm_password"
+              {...register("confirm_password", {
+                validate: (value) => value === getValues().password || "The passwords do not match",
+              })}
+              placeholder="Password"
+              type="password"
+            />
+            {errors.confirm_password && (
+              <FormErrorMessage>{errors.confirm_password.message}</FormErrorMessage>
+            )}
+          </FormControl>
+          <Flex gap={4} mt={4}>
+            <FormControl>
+              <Checkbox {...register("is_superuser")} colorScheme="teal">
+                Is Superuser?
+              </Checkbox>
             </FormControl>
-            <FormControl mt={4}>
-              <FormLabel htmlFor="name">Full name</FormLabel>
-              <Input id="name" {...register("full_name")} type="text" />
+            <FormControl>
+              <Checkbox {...register("is_active")} colorScheme="teal">
+                Is Active?
+              </Checkbox>
             </FormControl>
-            <FormControl mt={4} isInvalid={!!errors.password}>
-              <FormLabel htmlFor="password">Set Password</FormLabel>
-              <Input
-                id="password"
-                {...register("password", {
-                  minLength: {
-                    value: 8,
-                    message: "Password must be at least 8 characters",
-                  },
-                })}
-                placeholder="Password"
-                type="password"
-              />
-              {errors.password && (
-                <FormErrorMessage>{errors.password.message}</FormErrorMessage>
-              )}
+          </Flex>
+          <Flex direction="column" mt={4} gap={2}>
+            <FormControl>
+              <Checkbox {...register("has_subscription")} colorScheme="teal">
+                Has Subscription
+              </Checkbox>
             </FormControl>
-            <FormControl mt={4} isInvalid={!!errors.confirm_password}>
-              <FormLabel htmlFor="confirm_password">Confirm Password</FormLabel>
-              <Input
-                id="confirm_password"
-                {...register("confirm_password", {
-                  validate: (value) =>
-                    value === getValues().password ||
-                    "The passwords do not match",
-                })}
-                placeholder="Password"
-                type="password"
-              />
-              {errors.confirm_password && (
-                <FormErrorMessage>
-                  {errors.confirm_password.message}
-                </FormErrorMessage>
-              )}
+            <FormControl>
+              <Checkbox {...register("is_trial")} colorScheme="teal">
+                Is Trial
+              </Checkbox>
             </FormControl>
-            <Flex gap={4} mt={4}>
-              <FormControl>
-                <Checkbox {...register("is_superuser")} colorScheme="teal">
-                  Is superuser?
-                </Checkbox>
-              </FormControl>
-              <FormControl>
-                <Checkbox {...register("is_active")} colorScheme="teal">
-                  Is active?
-                </Checkbox>
-              </FormControl>
-            </Flex>
-            <Flex direction="column" mt={4} gap={2}>
-              <FormControl>
-                <Checkbox 
-                  {...register("has_serp_subscription")} 
-                  colorScheme="teal"
-                >
-                  Has SERP Tool
-                </Checkbox>
-              </FormControl>
-              <FormControl>
-                <Checkbox 
-                  {...register("is_serp_trial")} 
-                  colorScheme="teal"
-                >
-                  Is SERP Trial
-                </Checkbox>
-              </FormControl>
-              <FormControl>
-                <Checkbox 
-                  {...register("is_serp_deactivated")} 
-                  colorScheme="teal"
-                >
-                  Is SERP Deactivated
-                </Checkbox>
-              </FormControl>
-            </Flex>
-          </ModalBody>
-
-          <ModalFooter gap={3}>
-            <Button
-              variant="primary"
-              type="submit"
-              isLoading={isSubmitting}
-              isDisabled={!isDirty}
-            >
-              Save
-            </Button>
-            <Button onClick={onCancel}>Cancel</Button>
-          </ModalFooter>
-        </ModalContent>
-      </Modal>
-    </>
+            <FormControl>
+              <Checkbox {...register("is_deactivated")} colorScheme="teal">
+                Is Deactivated
+              </Checkbox>
+            </FormControl>
+            {user.expiry_date && (
+              <Text fontSize="sm" color={isExpired ? "red.500" : "gray.500"}>
+                Subscription {isExpired ? "Expired" : "Expires"}:{" "}
+                {new Date(user.expiry_date).toLocaleDateString()}
+              </Text>
+            )}
+          </Flex>
+        </ModalBody>
+        <ModalFooter gap={3}>
+          <Button variant="primary" type="submit" isLoading={isSubmitting} isDisabled={!isDirty}>
+            Save
+          </Button>
+          <Button onClick={onCancel}>Cancel</Button>
+        </ModalFooter>
+      </ModalContent>
+    </Modal>
   );
 };
 
