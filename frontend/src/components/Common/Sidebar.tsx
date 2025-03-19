@@ -16,7 +16,7 @@ import {
 import { useQueryClient } from "@tanstack/react-query"
 import { FiLogOut, FiMenu } from "react-icons/fi"
 
-import Logo from "/assets/images/icon-luxury-logo.svg"
+import Logo from "/assets/images/data-proxy-logo.png"
 import type { UserPublic } from "../../client"
 import useAuth from "../../hooks/useAuth"
 import SidebarItems from "./SidebarItems"
