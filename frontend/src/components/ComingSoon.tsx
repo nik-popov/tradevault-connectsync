@@ -19,7 +19,7 @@ const ComingSoon: React.FC = () => {
         >
           <AlertIcon color="blue.500" /> 
           <Text fontSize="sm">
-            Upcoming internal features are in development. We welcome your feedback to help shape them.
+           Features are in development. 
           </Text>
         </Alert>
       </VStack>
