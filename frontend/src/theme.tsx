@@ -101,7 +101,7 @@ const theme = extendTheme({
       baseStyle: {
         container: {
           bg: "white", // Bright white background (unchanged)
-          color: "gray.900", // Dark text (unchanged)
+          color: "gray.100", // Dark text (unchanged)
           borderRadius: "md",
           boxShadow: "lg",
           padding: "16px",

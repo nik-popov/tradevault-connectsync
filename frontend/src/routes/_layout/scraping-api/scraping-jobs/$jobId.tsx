@@ -268,7 +268,7 @@ const OverviewTab: React.FC<OverviewTabProps> = ({
   };
 
   return (
-    <Box p={4} bg="gray.900" color="white">
+    <Box p={4} bg="gray.100" color="white">
       <Flex justify="space-between" align="center" mb={4} flexWrap="wrap" gap={3}>
         <Text fontSize="lg" fontWeight="bold">Job Overview</Text>
         <Flex gap={3}>
@@ -411,7 +411,7 @@ const UsageTab = ({ job }: { job: JobDetails }) => {
   const avgResponseTime = calculateAvgResponseTime();
 
   return (
-    <Box p={4} bg="gray.900" color="white">
+    <Box p={4} bg="gray.100" color="white">
       <Text fontSize="lg" fontWeight="bold" mb={4}>Usage Statistics</Text>
       <Flex direction="column" gap={6}>
         <Card shadow="md" borderWidth="1px" bg="gray.800" color="white">
@@ -543,14 +543,14 @@ const ResultsTab: React.FC<ResultsTabProps> = ({ job, sortBy, searchQuery, setSe
   };
 
   return (
-    <Box p={4} bg="gray.900" color="white">
+    <Box p={4} bg="gray.100" color="white">
       <Flex
         justify="space-between"
         align="center"
         mb={4}
         position="sticky"
         top="0"
-        bg="gray.900"
+        bg="gray.100"
         zIndex="10"
         py={5}
         borderBottom="1px solid"
@@ -787,7 +787,7 @@ const ResultsTab: React.FC<ResultsTabProps> = ({ job, sortBy, searchQuery, setSe
 // LogsTab Component
 const LogsTab = ({ job }: { job: JobDetails }) => {
   return (
-    <Box p={4} bg="gray.900" color="white">
+    <Box p={4} bg="gray.100" color="white">
       <Flex justify="space-between" align="center" mb={4}>
         <Text fontSize="lg" fontWeight="bold">Logs</Text>
         {job.logFileUrl && (
@@ -951,14 +951,14 @@ const SearchRowsTab: React.FC<SearchRowsTabProps> = ({ job }) => {
   const hasThumbnails = sortedRecords.some((record) => record.excelRowImageRef);
 
   return (
-    <Box p={4} bg="gray.900" color="white">
+    <Box p={4} bg="gray.100" color="white">
       <Flex
         justify="space-between"
         align="center"
         mb={4}
         position="sticky"
         top="0"
-        bg="gray.900"
+        bg="gray.100"
         zIndex="10"
         py={5}
         borderBottom="1px solid"
@@ -1340,7 +1340,7 @@ const JobsDetailPage = () => {
 
   if (isLoading) {
     return (
-      <Container maxW="full" py={6} bg="gray.900">
+      <Container maxW="full" py={6} bg="gray.100">
         <Flex justify="center" align="center" h="200px">
           <Spinner size="xl" color="green.500" />
         </Flex>
@@ -1350,7 +1350,7 @@ const JobsDetailPage = () => {
 
   if (error || !jobData) {
     return (
-      <Container maxW="full" py={6} bg="gray.900">
+      <Container maxW="full" py={6} bg="gray.100">
         <Text color="red.500">{error || "Job data not available"}</Text>
       </Container>
     );
@@ -1387,7 +1387,7 @@ const JobsDetailPage = () => {
   ];
 
   return (
-    <Container maxW="full" bg="gray.900" color="white">
+    <Container maxW="full" bg="gray.100" color="white">
       <Flex align="center" justify="space-between" py={6} flexWrap="wrap" gap={4}>
         <Box textAlign="left" flex="1">
           <Text fontSize="xl" fontWeight="bold">Job: {jobId}</Text>
