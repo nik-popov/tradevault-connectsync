@@ -134,7 +134,7 @@ const LogDisplay: React.FC<LogDisplayProps> = ({ logUrl }) => {
       w="full"
       overflowY="auto"
       overflowX="auto"
-      bg="gray.100"
+      bg="gray.50"
       color="gray.800"
       p={2}
       borderRadius="md"
@@ -268,7 +268,7 @@ const OverviewTab: React.FC<OverviewTabProps> = ({
   };
 
   return (
-    <Box p={4} bg="gray.100" color="white">
+    <Box p={4} bg="gray.50" color="white">
       <Flex justify="space-between" align="center" mb={4} flexWrap="wrap" gap={3}>
         <Text fontSize="lg" fontWeight="bold">Job Overview</Text>
         <Flex gap={3}>
@@ -411,7 +411,7 @@ const UsageTab = ({ job }: { job: JobDetails }) => {
   const avgResponseTime = calculateAvgResponseTime();
 
   return (
-    <Box p={4} bg="gray.100" color="white">
+    <Box p={4} bg="gray.50" color="white">
       <Text fontSize="lg" fontWeight="bold" mb={4}>Usage Statistics</Text>
       <Flex direction="column" gap={6}>
         <Card shadow="md" borderWidth="1px" bg="gray.800" color="white">
@@ -550,7 +550,7 @@ const ResultsTab: React.FC<ResultsTabProps> = ({ job, sortBy, searchQuery, setSe
         mb={4}
         position="sticky"
         top="0"
-        bg="gray.100"
+        bg="gray.50"
         zIndex="10"
         py={5}
         borderBottom="1px solid"
@@ -787,7 +787,7 @@ const ResultsTab: React.FC<ResultsTabProps> = ({ job, sortBy, searchQuery, setSe
 // LogsTab Component
 const LogsTab = ({ job }: { job: JobDetails }) => {
   return (
-    <Box p={4} bg="gray.100" color="white">
+    <Box p={4} bg="gray.50" color="white">
       <Flex justify="space-between" align="center" mb={4}>
         <Text fontSize="lg" fontWeight="bold">Logs</Text>
         {job.logFileUrl && (
@@ -951,14 +951,14 @@ const SearchRowsTab: React.FC<SearchRowsTabProps> = ({ job }) => {
   const hasThumbnails = sortedRecords.some((record) => record.excelRowImageRef);
 
   return (
-    <Box p={4} bg="gray.100" color="white">
+    <Box p={4} bg="gray.50" color="white">
       <Flex
         justify="space-between"
         align="center"
         mb={4}
         position="sticky"
         top="0"
-        bg="gray.100"
+        bg="gray.50"
         zIndex="10"
         py={5}
         borderBottom="1px solid"
