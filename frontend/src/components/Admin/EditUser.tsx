@@ -214,7 +214,7 @@ const EditUser = ({ user, isOpen, onClose }: EditUserProps) => {
                   {...register("has_serp_subscription")} 
                   colorScheme="teal"
                 >
-                  Has SERP Subscription
+                  Has SERP Tool
                 </Checkbox>
               </FormControl>
               <FormControl>
