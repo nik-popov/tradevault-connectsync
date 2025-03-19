@@ -96,7 +96,7 @@ function Explore() {
   if (isSubLoading) {
     return (
       <Container maxW="full" bg="white" color="gray.800">
-        <Text>Loading subscription status...</Text>
+        <Text>Loading your data...</Text>
       </Container>
     );
   }
