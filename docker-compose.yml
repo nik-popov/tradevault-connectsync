@@ -110,7 +110,7 @@ services:
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD?Variable not set}
       - SENTRY_DSN=${SENTRY_DSN}
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://backend:8000/api/v1/utils/health-check/"]  # Use service name
+      test: ["CMD", "curl", "-f", "http://backend:/api/v1/utils/health-check/"]  # Use service name
       interval: 10s
       timeout: 5s
       retries: 5
