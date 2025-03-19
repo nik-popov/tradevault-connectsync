@@ -20,30 +20,24 @@ import { type SubmitHandler, useForm } from "react-hook-form";
 
 import {
   type ApiError,
-  type UserPublic,
+  type UserPublic as BaseUserPublic, // Rename to avoid conflict
   type UserUpdate as BaseUserUpdate,
   UsersService,
 } from "../../client";
 import useCustomToast from "../../hooks/useCustomToast";
 import { emailPattern, handleError } from "../../utils";
 
-// Define subscription settings structure
-interface SubscriptionSettings {
-  serp?: {
-    hasSubscription: boolean;
-    isTrial: boolean;
-    isDeactivated: boolean;
-  };
+// Extend UserPublic to match database schema
+interface ExtendedUserPublic extends BaseUserPublic {
+  has_subscription?: boolean;
+  is_trial?: boolean;
+  is_deactivated?: boolean;
 }
 
-// Extend the base UserUpdate type
 interface UserUpdate extends BaseUserUpdate {
-  subscription_settings?: SubscriptionSettings;
-}
-
-// Extend UserPublic for the component props
-interface ExtendedUserPublic extends UserPublic {
-  subscription_settings?: SubscriptionSettings;
+  has_subscription?: boolean;
+  is_trial?: boolean;
+  is_deactivated?: boolean;
 }
 
 interface EditUserProps {
@@ -54,16 +48,13 @@ interface EditUserProps {
 
 interface UserUpdateForm extends UserUpdate {
   confirm_password: string;
-  has_serp_subscription?: boolean;
-  is_serp_trial?: boolean;
-  is_serp_deactivated?: boolean;
 }
 
 const EditUser = ({ user, isOpen, onClose }: EditUserProps) => {
   const queryClient = useQueryClient();
   const showToast = useCustomToast();
 
-  console.log("Initial user prop:", user); // Debug: Log the incoming user prop
+  console.log("Initial user prop:", JSON.stringify(user, null, 2));
 
   const {
     register,
@@ -76,20 +67,19 @@ const EditUser = ({ user, isOpen, onClose }: EditUserProps) => {
     criteriaMode: "all",
     defaultValues: {
       ...user,
-      has_serp_subscription: user.subscription_settings?.serp?.hasSubscription || false,
-      is_serp_trial: user.subscription_settings?.serp?.isTrial || false,
-      is_serp_deactivated: user.subscription_settings?.serp?.isDeactivated || false,
+      has_subscription: user.has_subscription || false,
+      is_trial: user.is_trial || false,
+      is_deactivated: user.is_deactivated || false,
     },
   });
 
-  // Sync form with user prop changes
   useEffect(() => {
-    console.log("Resetting form with user:", user); // Debug: Log when form resets
+    console.log("Resetting form with user:", JSON.stringify(user, null, 2));
     reset({
       ...user,
-      has_serp_subscription: user.subscription_settings?.serp?.hasSubscription || false,
-      is_serp_trial: user.subscription_settings?.serp?.isTrial || false,
-      is_serp_deactivated: user.subscription_settings?.serp?.isDeactivated || false,
+      has_subscription: user.has_subscription || false,
+      is_trial: user.is_trial || false,
+      is_deactivated: user.is_deactivated || false,
     });
   }, [user, reset]);
 
@@ -97,37 +87,29 @@ const EditUser = ({ user, isOpen, onClose }: EditUserProps) => {
     mutationFn: (data: UserUpdateForm) => {
       const requestData: UserUpdate = {
         ...data,
-        subscription_settings: {
-          serp: {
-            hasSubscription: data.has_serp_subscription || false,
-            isTrial: data.is_serp_trial || false,
-            isDeactivated: data.is_serp_deactivated || false,
-          },
-        },
+        has_subscription: data.has_subscription || false,
+        is_trial: data.is_trial || false,
+        is_deactivated: data.is_deactivated || false,
       };
       delete (requestData as any).confirm_password;
-      delete (requestData as any).has_serp_subscription;
-      delete (requestData as any).is_serp_trial;
-      delete (requestData as any).is_serp_deactivated;
-
-      console.log("Sending to API:", requestData); // Debug: Log the data sent to the API
+      console.log("Sending to API:", JSON.stringify(requestData, null, 2));
       return UsersService.updateUser({
         userId: user.id,
         requestBody: requestData,
       });
     },
     onSuccess: (response) => {
-      console.log("API response:", response); // Debug: Log the API response
+      console.log("API response:", JSON.stringify(response, null, 2));
       showToast("Success!", "User updated successfully.", "success");
-      queryClient.refetchQueries({ queryKey: ["users"] }); // Force refetch for reliability
+      queryClient.refetchQueries({ queryKey: ["users"] });
       onClose();
     },
     onError: (err: ApiError) => {
-      console.log("Mutation error:", err); // Debug: Log any errors
+      console.log("Mutation error:", err);
       handleError(err, showToast);
     },
     onSettled: () => {
-      console.log("Invalidating users query"); // Debug: Log when query is invalidated
+      console.log("Invalidating users query");
       queryClient.invalidateQueries({ queryKey: ["users"] });
     },
   });
@@ -136,12 +118,12 @@ const EditUser = ({ user, isOpen, onClose }: EditUserProps) => {
     if (data.password === "") {
       data.password = undefined;
     }
-    console.log("Form submitted with data:", data); // Debug: Log form data on submit
+    console.log("Form submitted with data:", JSON.stringify(data, null, 2));
     mutation.mutate(data);
   };
 
   const onCancel = () => {
-    console.log("Cancel clicked, resetting form"); // Debug: Log cancel action
+    console.log("Cancel clicked, resetting form");
     reset();
     onClose();
   };
@@ -223,17 +205,17 @@ const EditUser = ({ user, isOpen, onClose }: EditUserProps) => {
           </Flex>
           <Flex direction="column" mt={4} gap={2}>
             <FormControl>
-              <Checkbox {...register("has_serp_subscription")} colorScheme="teal">
+              <Checkbox {...register("has_subscription")} colorScheme="teal">
                 Has SERP Tool
               </Checkbox>
             </FormControl>
             <FormControl>
-              <Checkbox {...register("is_serp_trial")} colorScheme="teal">
+              <Checkbox {...register("is_trial")} colorScheme="teal">
                 Is SERP Trial
               </Checkbox>
             </FormControl>
             <FormControl>
-              <Checkbox {...register("is_serp_deactivated")} colorScheme="teal">
+              <Checkbox {...register("is_deactivated")} colorScheme="teal">
                 Is SERP Deactivated
               </Checkbox>
             </FormControl>

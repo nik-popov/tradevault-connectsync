@@ -14,10 +14,9 @@ import EditUser from "../Admin/EditUser";
 import EditItem from "../Items/EditItem";
 import Delete from "./DeleteAlert";
 
-// Define specific prop types for each case
 interface UserActionsMenuProps {
   type: "User";
-  value: UserPublic; // Use UserPublic or ExtendedUserPublic based on your needs
+  value: UserPublic;
   disabled?: boolean;
 }
 
@@ -27,11 +26,10 @@ interface ItemActionsMenuProps {
   disabled?: boolean;
 }
 
-// Union type for ActionsMenuProps
 type ActionsMenuProps = UserActionsMenuProps | ItemActionsMenuProps;
 
 const ActionsMenu = ({ type, value, disabled }: ActionsMenuProps) => {
-  const editModal = useDisclosure(); // Renamed for clarity
+  const editModal = useDisclosure();
   const deleteModal = useDisclosure();
 
   return (
@@ -44,10 +42,7 @@ const ActionsMenu = ({ type, value, disabled }: ActionsMenuProps) => {
           variant="unstyled"
         />
         <MenuList>
-          <MenuItem
-            onClick={editModal.onOpen}
-            icon={<FiEdit fontSize="16px" />}
-          >
+          <MenuItem onClick={editModal.onOpen} icon={<FiEdit fontSize="16px" />}>
             Edit {type}
           </MenuItem>
           <MenuItem
@@ -59,24 +54,11 @@ const ActionsMenu = ({ type, value, disabled }: ActionsMenuProps) => {
           </MenuItem>
         </MenuList>
         {type === "User" ? (
-          <EditUser
-            user={value} // TypeScript knows value is UserPublic
-            isOpen={editModal.isOpen}
-            onClose={editModal.onClose}
-          />
+          <EditUser user={value} isOpen={editModal.isOpen} onClose={editModal.onClose} />
         ) : (
-          <EditItem
-            item={value} // TypeScript knows value is ItemPublic
-            isOpen={editModal.isOpen}
-            onClose={editModal.onClose}
-          />
+          <EditItem item={value} isOpen={editModal.isOpen} onClose={editModal.onClose} />
         )}
-        <Delete
-          type={type}
-          id={value.id}
-          isOpen={deleteModal.isOpen}
-          onClose={deleteModal.onClose}
-        />
+        <Delete type={type} id={value.id} isOpen={deleteModal.isOpen} onClose={deleteModal.onClose} />
       </Menu>
     </>
   );
