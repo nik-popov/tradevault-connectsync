@@ -1,4 +1,3 @@
-// EditUser.tsx
 import {
   Button,
   Checkbox,
@@ -28,36 +27,18 @@ import useCustomToast from "../../hooks/useCustomToast"
 import { emailPattern, handleError } from "../../utils"
 
 interface EditUserProps {
-  user: UserPublic & {
-    subscription_settings?: {
-      serp?: {
-        hasSubscription: boolean;
-        isTrial: boolean;
-        isDeactivated: boolean;
-      }
-    }
-  }
+  user: UserPublic
   isOpen: boolean
   onClose: () => void
 }
 
 interface UserUpdateForm extends UserUpdate {
   confirm_password: string
-  has_serp_subscription?: boolean
-  is_serp_trial?: boolean
-  is_serp_deactivated?: boolean
 }
 
 const EditUser = ({ user, isOpen, onClose }: EditUserProps) => {
   const queryClient = useQueryClient()
   const showToast = useCustomToast()
-
-  const defaultValues = {
-    ...user,
-    has_serp_subscription: user.subscription_settings?.serp?.hasSubscription || false,
-    is_serp_trial: user.subscription_settings?.serp?.isTrial || false,
-    is_serp_deactivated: user.subscription_settings?.serp?.isDeactivated || false,
-  }
 
   const {
     register,
@@ -68,21 +49,12 @@ const EditUser = ({ user, isOpen, onClose }: EditUserProps) => {
   } = useForm<UserUpdateForm>({
     mode: "onBlur",
     criteriaMode: "all",
-    defaultValues,
+    defaultValues: user,
   })
 
   const mutation = useMutation({
     mutationFn: (data: UserUpdateForm) =>
-      UsersService.updateUser({ userId: user.id, requestBody: {
-        ...data,
-        subscription_settings: {
-          serp: {
-            hasSubscription: data.has_serp_subscription,
-            isTrial: data.is_serp_trial,
-            isDeactivated: data.is_serp_deactivated,
-          }
-        }
-      }}),
+      UsersService.updateUser({ userId: user.id, requestBody: data }),
     onSuccess: () => {
       showToast("Success!", "User updated successfully.", "success")
       onClose()
@@ -174,41 +146,15 @@ const EditUser = ({ user, isOpen, onClose }: EditUserProps) => {
                 </FormErrorMessage>
               )}
             </FormControl>
-            <Flex gap={4} mt={4}>
-              <FormControl>
+            <Flex>
+              <FormControl mt={4}>
                 <Checkbox {...register("is_superuser")} colorScheme="teal">
                   Is superuser?
                 </Checkbox>
               </FormControl>
-              <FormControl>
+              <FormControl mt={4}>
                 <Checkbox {...register("is_active")} colorScheme="teal">
                   Is active?
-                </Checkbox>
-              </FormControl>
-            </Flex>
-            <Flex direction="column" mt={4} gap={2}>
-              <FormControl>
-                <Checkbox 
-                  {...register("has_serp_subscription")} 
-                  colorScheme="teal"
-                >
-                  Has SERP Tool
-                </Checkbox>
-              </FormControl>
-              <FormControl>
-                <Checkbox 
-                  {...register("is_serp_trial")} 
-                  colorScheme="teal"
-                >
-                  Is SERP Trial
-                </Checkbox>
-              </FormControl>
-              <FormControl>
-                <Checkbox 
-                  {...register("is_serp_deactivated")} 
-                  colorScheme="teal"
-                >
-                  Is SERP Deactivated
                 </Checkbox>
               </FormControl>
             </Flex>
