@@ -1,3 +1,4 @@
+// Explore.tsx
 import React, { useState, useEffect } from "react";
 import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
 import { useQuery, keepPreviousData } from "@tanstack/react-query";
@@ -16,9 +17,6 @@ import {
 import { FiGithub } from "react-icons/fi";
 import PromoSERP from "../../../components/ComingSoon";
 
-const STORAGE_KEY = "subscriptionSettings";
-const PRODUCT = "serp";
-
 export const Route = createFileRoute("/_layout/scraping-api/explore")({
   component: Explore,
 });
@@ -32,12 +30,27 @@ interface JobSummary {
   img: number;
 }
 
+interface SubscriptionStatus {
+  hasSubscription: boolean;
+  isTrial: boolean;
+  isDeactivated: boolean;
+}
+
 async function fetchJobs(page: number): Promise<JobSummary[]> {
   const response = await fetch(`https://backend-dev.iconluxury.group/api/scraping-jobs?page=${page}&page_size=10`, {
     method: "GET",
     headers: { "Content-Type": "application/json" },
   });
   if (!response.ok) throw new Error(`Failed to fetch jobs: ${response.status}`);
+  return response.json();
+}
+
+async function fetchSubscriptionStatus(): Promise<SubscriptionStatus> {
+  const response = await fetch(`https://backend-dev.iconluxury.group/api/subscription-status/serp`, {
+    method: "GET",
+    headers: { "Content-Type": "application/json" },
+  });
+  if (!response.ok) throw new Error(`Failed to fetch subscription status: ${response.status}`);
   return response.json();
 }
 
@@ -48,29 +61,17 @@ function Explore() {
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState<"all" | "completed" | "pending">("all");
 
-  const { data: subscriptionSettings } = useQuery({
-    queryKey: ["subscriptionSettings"],
-    queryFn: () => {
-      const storedSettings = localStorage.getItem(STORAGE_KEY);
-      return storedSettings ? JSON.parse(storedSettings) : {};
-    },
-    staleTime: Infinity,
+  const { data: subscriptionStatus, isLoading: isSubLoading } = useQuery({
+    queryKey: ["subscriptionStatus", "serp"],
+    queryFn: fetchSubscriptionStatus,
+    staleTime: 5 * 60 * 1000, // Refresh every 5 minutes
   });
-
-  const settings = subscriptionSettings?.[PRODUCT] || {
-    hasSubscription: false,
-    isTrial: false,
-    isDeactivated: false,
-  };
-
-  const { hasSubscription, isTrial, isDeactivated } = settings;
-  const isLocked = !hasSubscription && !isTrial;
-  const isFullyDeactivated = isDeactivated && !hasSubscription;
 
   const { data: freshJobs, isFetching } = useQuery({
     queryKey: ["scraperJobs", page],
     queryFn: () => fetchJobs(page),
     placeholderData: keepPreviousData,
+    enabled: !!subscriptionStatus?.hasSubscription || !!subscriptionStatus?.isTrial,
   });
 
   useEffect(() => {
@@ -91,6 +92,22 @@ function Explore() {
   });
 
   const handleLoadMore = () => setPage((prev) => prev + 1);
+
+  if (isSubLoading) {
+    return (
+      <Container maxW="full" bg="white" color="gray.800">
+        <Text>Loading subscription status...</Text>
+      </Container>
+    );
+  }
+
+  const { hasSubscription, isTrial, isDeactivated } = subscriptionStatus || {
+    hasSubscription: false,
+    isTrial: false,
+    isDeactivated: false,
+  };
+  const isLocked = !hasSubscription && !isTrial;
+  const isFullyDeactivated = isDeactivated && !hasSubscription;
 
   return (
     <Container maxW="full" bg="white" color="gray.800">
@@ -137,14 +154,13 @@ function Explore() {
                 _focus={{ borderColor: "green.500", boxShadow: "0 0 0 1px green.500" }}
                 _hover={{ borderColor: "green.400" }}
                 bg="white"
-                color="gray.700" // Lighter text for selected value and options
+                color="gray.700"
                 borderRadius="md"
                 sx={{
-                  // Custom CSS to style the dropdown options
                   "& option": {
-                    color: "gray.700", // Lighter text for options
+                    color: "gray.700",
                     backgroundColor: "white",
-                    _hover: { backgroundColor: "green.50" }, // Optional hover effect
+                    _hover: { backgroundColor: "green.50" },
                   },
                 }}
               >
