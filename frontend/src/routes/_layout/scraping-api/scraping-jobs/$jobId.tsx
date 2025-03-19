@@ -1340,7 +1340,7 @@ const JobsDetailPage = () => {
 
   if (isLoading) {
     return (
-      <Container maxW="full" py={6} bg="gray.100">
+      <Container maxW="full" py={6} bg="gray.50">
         <Flex justify="center" align="center" h="200px">
           <Spinner size="xl" color="green.500" />
         </Flex>
@@ -1350,7 +1350,7 @@ const JobsDetailPage = () => {
 
   if (error || !jobData) {
     return (
-      <Container maxW="full" py={6} bg="gray.100">
+      <Container maxW="full" py={6} bg="gray.50">
         <Text color="red.500">{error || "Job data not available"}</Text>
       </Container>
     );
@@ -1387,7 +1387,7 @@ const JobsDetailPage = () => {
   ];
 
   return (
-    <Container maxW="full" bg="gray.100" color="white">
+    <Container maxW="full" bg="gray.50" color="white">
       <Flex align="center" justify="space-between" py={6} flexWrap="wrap" gap={4}>
         <Box textAlign="left" flex="1">
           <Text fontSize="xl" fontWeight="bold">Job: {jobId}</Text>
