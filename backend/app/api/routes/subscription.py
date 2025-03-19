@@ -1,9 +1,9 @@
-# app/api/endpoints/subscription.py
 from fastapi import APIRouter
 from app.models import SubscriptionStatus, User
 from typing import Annotated
 from fastapi import Depends
 from app.api.deps import get_current_user
+
 router = APIRouter()
 
 @router.get("/subscription-status/serp", response_model=SubscriptionStatus)
