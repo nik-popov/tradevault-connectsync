@@ -206,6 +206,11 @@ def read_user_by_id(
             detail="The user doesn't have enough privileges",
         )
     return user
+@router.patch(
+    "/{user_id}",
+    dependencies=[Depends(get_current_active_superuser)],
+    response_model=UserPublic,
+)
 
 @router.patch(
     "/{user_id}",
@@ -245,7 +250,6 @@ def update_user(
     db_user = crud.update_user(session=session, db_user=db_user, user_in=user_in)
     background_tasks.add_task(check_subscription_expirations, session)
     return db_user
-
 @router.delete("/{user_id}", dependencies=[Depends(get_current_active_superuser)])
 def delete_user(
     session: SessionDep, 
