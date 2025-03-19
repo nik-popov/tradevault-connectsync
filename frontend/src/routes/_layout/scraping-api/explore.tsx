@@ -73,7 +73,7 @@ async function fetchSubscriptionStatus(): Promise<SubscriptionStatus> {
     if (response.status === 401 || response.status === 403) {
       throw new Error("Unauthorized: Please log in again.");
     }
-    throw new Error(`Failed to fetch subscription status: ${response.status}`);
+    throw new Error(`Failed to fetch tools: ${response.status}`);
   }
   return response.json();
 }
@@ -136,7 +136,7 @@ function Explore() {
         <Text color="red.500">
           {subError.message === "Unauthorized: Please log in again."
             ? "Session expired. Please log in again."
-            : "Error loading subscription status. Please try again later."}
+            : "Error loading status. Please try again later."}
         </Text>
         {subError.message.includes("Unauthorized") && (
           <Button mt={4} colorScheme="blue" onClick={() => navigate({ to: "/login" })}>
@@ -170,7 +170,7 @@ function Explore() {
         <PromoSERP />
       ) : isFullyDeactivated ? (
         <Flex justify="space-between" align="center" w="full" p={4} bg="red.50" borderRadius="md">
-          <Text color="gray.800">Your subscription has been deactivated.</Text>
+          <Text color="gray.800">Your tools have been deactivated.</Text>
           <Button colorScheme="red" onClick={() => navigate({ to: "/proxies/pricing" })}>
             Reactivate Now
           </Button>
