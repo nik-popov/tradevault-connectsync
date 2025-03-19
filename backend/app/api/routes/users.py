@@ -206,11 +206,6 @@ def read_user_by_id(
             detail="The user doesn't have enough privileges",
         )
     return user
-@router.patch(
-    "/{user_id}",
-    dependencies=[Depends(get_current_active_superuser)],
-    response_model=UserPublic,
-)
 
 @router.patch(
     "/{user_id}",
@@ -224,30 +219,36 @@ def update_user(
     user_in: UserUpdate,
     background_tasks: BackgroundTasks
 ) -> Any:
-    """
-    Update a user.
-    """
+    logger.debug(f"Starting update_user for user_id: {user_id}, input: {user_in.dict()}")
     db_user = session.get(User, user_id)
     if not db_user:
+        logger.info(f"User {user_id} not found")
         raise HTTPException(
             status_code=404,
             detail="The user with this id does not exist in the system",
         )
+    logger.debug(f"Found user: {db_user.id}")
+    
     if user_in.email:
         existing_user = crud.get_user_by_email(session=session, email=user_in.email)
         if existing_user and existing_user.id != user_id:
+            logger.info(f"Email conflict: {user_in.email}")
             raise HTTPException(
                 status_code=409, 
                 detail="User with this email already exists"
             )
 
-    # Handle subscription expiration logic
     if user_in.is_trial and not db_user.expiry_date:
         user_in.expiry_date = datetime.utcnow() + timedelta(days=30)
+        logger.debug(f"Set trial expiry: {user_in.expiry_date}")
     if user_in.has_subscription is False:
         user_in.expiry_date = None
+        logger.debug("Cleared expiry date due to no subscription")
 
+    logger.debug("Calling crud.update_user")
     db_user = crud.update_user(session=session, db_user=db_user, user_in=user_in)
+    logger.debug("crud.update_user completed")
+    
     background_tasks.add_task(check_subscription_expirations, session)
     return db_user
 @router.delete("/{user_id}", dependencies=[Depends(get_current_active_superuser)])
