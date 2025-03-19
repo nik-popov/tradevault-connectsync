@@ -1,4 +1,4 @@
-import { useEffect } from "react"; // Added import for useEffect
+import { useEffect } from "react";
 import {
   Button,
   Checkbox,
@@ -63,6 +63,8 @@ const EditUser = ({ user, isOpen, onClose }: EditUserProps) => {
   const queryClient = useQueryClient();
   const showToast = useCustomToast();
 
+  console.log("Initial user prop:", user); // Debug: Log the incoming user prop
+
   const {
     register,
     handleSubmit,
@@ -82,6 +84,7 @@ const EditUser = ({ user, isOpen, onClose }: EditUserProps) => {
 
   // Sync form with user prop changes
   useEffect(() => {
+    console.log("Resetting form with user:", user); // Debug: Log when form resets
     reset({
       ...user,
       has_serp_subscription: user.subscription_settings?.serp?.hasSubscription || false,
@@ -107,19 +110,24 @@ const EditUser = ({ user, isOpen, onClose }: EditUserProps) => {
       delete (requestData as any).is_serp_trial;
       delete (requestData as any).is_serp_deactivated;
 
+      console.log("Sending to API:", requestData); // Debug: Log the data sent to the API
       return UsersService.updateUser({
         userId: user.id,
         requestBody: requestData,
       });
     },
-    onSuccess: () => {
+    onSuccess: (response) => {
+      console.log("API response:", response); // Debug: Log the API response
       showToast("Success!", "User updated successfully.", "success");
+      queryClient.refetchQueries({ queryKey: ["users"] }); // Force refetch for reliability
       onClose();
     },
     onError: (err: ApiError) => {
+      console.log("Mutation error:", err); // Debug: Log any errors
       handleError(err, showToast);
     },
     onSettled: () => {
+      console.log("Invalidating users query"); // Debug: Log when query is invalidated
       queryClient.invalidateQueries({ queryKey: ["users"] });
     },
   });
@@ -128,10 +136,12 @@ const EditUser = ({ user, isOpen, onClose }: EditUserProps) => {
     if (data.password === "") {
       data.password = undefined;
     }
+    console.log("Form submitted with data:", data); // Debug: Log form data on submit
     mutation.mutate(data);
   };
 
   const onCancel = () => {
+    console.log("Cancel clicked, resetting form"); // Debug: Log cancel action
     reset();
     onClose();
   };
