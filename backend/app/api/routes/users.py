@@ -240,11 +240,12 @@ def update_user(
                 detail="User with this email already exists"
             )
 
+    # Handle subscription expiration logic on db_user
     if user_in.is_trial and not db_user.expiry_date:
-        user_in.expiry_date = datetime.utcnow() + timedelta(days=30)
-        logger.debug(f"Set trial expiry: {user_in.expiry_date}")
+        db_user.expiry_date = datetime.utcnow() + timedelta(days=30)
+        logger.debug(f"Set trial expiry: {db_user.expiry_date}")
     if user_in.has_subscription is False:
-        user_in.expiry_date = None
+        db_user.expiry_date = None
         logger.debug("Cleared expiry date due to no subscription")
 
     logger.debug("Calling crud.update_user")
@@ -253,6 +254,7 @@ def update_user(
     
     background_tasks.add_task(check_subscription_expirations, session)
     return db_user
+
 @router.delete("/{user_id}", dependencies=[Depends(get_current_active_superuser)])
 def delete_user(
     session: SessionDep, 

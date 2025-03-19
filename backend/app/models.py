@@ -2,7 +2,7 @@ import uuid
 
 from pydantic import EmailStr
 from sqlmodel import Field, Relationship, SQLModel
-
+import datetime
 # Shared properties
 class UserAgentBase(SQLModel):
     user_agent: str = Field(unique=True, index=True, max_length=512)
@@ -80,6 +80,7 @@ class UpdatePassword(SQLModel):
 class User(UserBase, table=True):
     id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
     hashed_password: str
+    expiry_date: datetime.datetime | None = Field(default=None)  # Add this
     items: list["Item"] = Relationship(back_populates="owner", cascade_delete=True)
 # Properties to return via API, id is always required
 class UserPublic(UserBase):
