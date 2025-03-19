@@ -4,7 +4,7 @@ from typing import Annotated
 from fastapi import Depends
 from app.api.deps import get_current_user
 
-router = APIRouter(tags=["subscriptions"])
+router = APIRouter(tags=["subscription"])
 
 @router.get("/subscription-status/serp", response_model=SubscriptionStatus)
 async def get_subscription_status(current_user: Annotated[User, Depends(get_current_user)]):
