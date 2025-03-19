@@ -17,19 +17,27 @@ import {
 } from "@chakra-ui/react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { type SubmitHandler, useForm } from "react-hook-form";
-import { UsersService, type ApiError, type UserPublic, type UserUpdate as BaseUserUpdate } from "../../client";
+import { UsersService, type ApiError, type UserPublic as BaseUserPublic, type UserUpdate as BaseUserUpdate } from "../../client";
 import useCustomToast from "../../hooks/useCustomToast";
 import { emailPattern, handleError } from "../../utils";
+
+// Extend UserPublic to include missing fields until client is regenerated
+interface UserPublic extends BaseUserPublic {
+  has_subscription: boolean;
+  is_trial: boolean;
+  is_deactivated: boolean;
+  expiry_date?: string | null;
+}
 
 interface UserUpdate extends BaseUserUpdate {
   has_subscription?: boolean;
   is_trial?: boolean;
   is_deactivated?: boolean;
-  expiry_date?: string; // Backend expects ISO string
+  expiry_date?: string;
 }
 
 interface EditUserProps {
-  user: UserPublic; // UserPublic now has flat subscription fields
+  user: UserPublic;
   isOpen: boolean;
   onClose: () => void;
 }
@@ -68,7 +76,7 @@ const EditUser = ({ user, isOpen, onClose }: EditUserProps) => {
   const mutation = useMutation({
     mutationFn: (data: UserUpdateForm) => {
       const requestData: UserUpdate = { ...data };
-      delete (requestData as any).confirm_password; // Remove confirm_password before sending
+      delete (requestData as any).confirm_password;
       return UsersService.updateUser({
         userId: user.id,
         requestBody: requestData,
@@ -88,7 +96,7 @@ const EditUser = ({ user, isOpen, onClose }: EditUserProps) => {
 
   const onSubmit: SubmitHandler<UserUpdateForm> = async (data) => {
     if (data.password === "") {
-      data.password = undefined; // Avoid sending empty password
+      data.password = undefined;
     }
     mutation.mutate(data);
   };
