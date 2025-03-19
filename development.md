@@ -68,7 +68,7 @@ cd backend
 fastapi dev app/main.py
 ```
 
-## Docker Compose in `localhost.iconluxury.group`
+## Docker Compose in `localhost.thedataproxy.com`
 
 When you start the Docker Compose stack, it uses `localhost` by default, with different ports for each service (backend, frontend, adminer, etc).
 
@@ -79,14 +79,14 @@ In the guide about [deployment](deployment.md) you can read about Traefik, the c
 If you want to test that it's all working locally, you can edit the local `.env` file, and change:
 
 ```dotenv
-DOMAIN=localhost.iconluxury.group
+DOMAIN=localhost.thedataproxy.com
 ```
 
 That will be used by the Docker Compose files to configure the base domain for the services.
 
-Traefik will use this to transmit traffic at `api.localhost.iconluxury.group` to the backend, and traffic at `dashboard.localhost.iconluxury.group` to the frontend.
+Traefik will use this to transmit traffic at `api.localhost.thedataproxy.com` to the backend, and traffic at `dashboard.localhost.thedataproxy.com` to the frontend.
 
-The domain `localhost.iconluxury.group` is a special domain that is configured (with all its subdomains) to point to `127.0.0.1`. This way you can use that for your local development.
+The domain `localhost.thedataproxy.com` is a special domain that is configured (with all its subdomains) to point to `127.0.0.1`. This way you can use that for your local development.
 
 After you update it, run again:
 
@@ -94,7 +94,7 @@ After you update it, run again:
 docker compose watch
 ```
 
-When deploying, for example in production, the main Traefik is configured outside of the Docker Compose files. For local development, there's an included Traefik in `docker-compose.override.yml`, just to let you test that the domains work as expected, for example with `api.localhost.iconluxury.group` and `dashboard.localhost.iconluxury.group`.
+When deploying, for example in production, the main Traefik is configured outside of the Docker Compose files. For local development, there's an included Traefik in `docker-compose.override.yml`, just to let you test that the domains work as expected, for example with `api.localhost.thedataproxy.com` and `dashboard.localhost.thedataproxy.com`.
 
 ## Docker Compose files and env vars
 
@@ -188,20 +188,20 @@ Traefik UI: http://localhost:8090
 
 MailCatcher: http://localhost:1080
 
-### Development URLs with `localhost.iconluxury.group` Configured
+### Development URLs with `localhost.thedataproxy.com` Configured
 
 Development URLs, for local development.
 
-Frontend: http://dashboard.localhost.iconluxury.group
+Frontend: http://dashboard.localhost.thedataproxy.com
 
-Backend: http://api.localhost.iconluxury.group
+Backend: http://api.localhost.thedataproxy.com
 
-Automatic Interactive Docs (Swagger UI): http://api.localhost.iconluxury.group/docs
+Automatic Interactive Docs (Swagger UI): http://api.localhost.thedataproxy.com/docs
 
-Automatic Alternative Docs (ReDoc): http://api.localhost.iconluxury.group/redoc
+Automatic Alternative Docs (ReDoc): http://api.localhost.thedataproxy.com/redoc
 
-Adminer: http://localhost.iconluxury.group:8080
+Adminer: http://localhost.thedataproxy.com:8080
 
-Traefik UI: http://localhost.iconluxury.group:8090
+Traefik UI: http://localhost.thedataproxy.com:8090
 
-MailCatcher: http://localhost.iconluxury.group:1080
+MailCatcher: http://localhost.thedataproxy.com:1080

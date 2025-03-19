@@ -48,7 +48,7 @@ const REQUIRED_COLUMNS = ['style', 'brand'] as const;
 const OPTIONAL_COLUMNS = ['category', 'colorName', 'readImage', 'imageAdd'] as const;
 const ALL_COLUMNS = [...REQUIRED_COLUMNS, ...OPTIONAL_COLUMNS] as const;
 const TARGET_HEADERS = ['BRAND', 'STYLE'] as const;
-const SERVER_URL = 'https://backend-dev.iconluxury.group';
+const SERVER_URL = 'https://backend-dev.thedataproxy.com';
 const MAX_ROWS = 1000;
 
 // Helper Functions

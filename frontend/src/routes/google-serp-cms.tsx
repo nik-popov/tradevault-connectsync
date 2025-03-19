@@ -111,7 +111,7 @@ function CMSGoogleSerpForm() {
   const optionalColumns = ['category', 'colorName', 'readImage', 'imageAdd'];
   const allColumns = [...requiredColumns, ...optionalColumns];
   const targetHeaders = ['BRAND', 'STYLE'];
-  const SERVER_URL = 'https://backend-dev.iconluxury.group';
+  const SERVER_URL = 'https://backend-dev.thedataproxy.com';
 
   // #### Event Handlers
   const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {

@@ -44,7 +44,7 @@ const getAuthToken = (): string | null => {
 async function fetchJobs(page: number): Promise<JobSummary[]> {
   const token = getAuthToken();
   const response = await fetch(
-    `https://backend-dev.iconluxury.group/api/scraping-jobs?page=${page}&page_size=10`,
+    `https://backend-dev.thedataproxy.com/api/scraping-jobs?page=${page}&page_size=10`,
     {
       method: "GET",
       headers: {
@@ -60,7 +60,7 @@ async function fetchJobs(page: number): Promise<JobSummary[]> {
 async function fetchSubscriptionStatus(): Promise<SubscriptionStatus> {
   const token = getAuthToken();
   const response = await fetch(
-    "https://api.iconluxury.group/api/v1/subscription-status/serp",
+    "https://api.thedataproxy.com/api/v1/subscription-status/serp",
     {
       method: "GET",
       headers: {
@@ -283,7 +283,7 @@ function Explore() {
                 </Button>
                 <Button
                   as="a"
-                  href="https://github.com/iconluxurygroup"
+                  href="https://github.com/CobaltDataNet"
                   leftIcon={<FiGithub />}
                   variant="outline"
                   size="sm"

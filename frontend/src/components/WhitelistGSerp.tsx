@@ -25,7 +25,7 @@ const WhitelistGSerp: React.FC = () => {
   useEffect(() => {
     const fetchDomains = async () => {
       try {
-        const response = await fetch("https://backend-dev.iconluxury.group/api/whitelist-domains", {
+        const response = await fetch("https://backend-dev.thedataproxy.com/api/whitelist-domains", {
           method: "GET",
           headers: { "Content-Type": "application/json" },
         });

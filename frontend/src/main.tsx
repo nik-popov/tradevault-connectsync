@@ -9,7 +9,7 @@ import { OpenAPI } from "./client";
 import theme from "./theme";
 import "./styles/global.css";
 
-OpenAPI.BASE = "https://api.iconluxury.group";
+OpenAPI.BASE = "https://api.thedataproxy.com";
 OpenAPI.TOKEN = async () => localStorage.getItem("access_token") || "";
 
 const queryClient = new QueryClient();

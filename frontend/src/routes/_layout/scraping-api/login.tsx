@@ -125,7 +125,7 @@ const XLogo = () => (
 
       <Image
         src={Logo}
-        alt=" logo"
+        alt="CobaltDataNet logo"
         height="auto"
         maxW="2xs"
         alignSelf="center"

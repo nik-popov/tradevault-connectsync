@@ -11,12 +11,12 @@ export default function IconGPT() {
           Our AI-powered assistant will soon be embedded directly in your dashboard.
           Currently, you can preview and get early access by visiting{" "}
           <Link
-            href="https://chat.iconluxury.group/"
+            href="https://chat.thedataproxy.com/"
             color="blue.500"
             fontWeight="semibold"
             isExternal
           >
-            chat.iconluxury.group
+            chat.thedataproxy.com
           </Link>
           .
           <br /><br />
@@ -24,7 +24,7 @@ export default function IconGPT() {
         </Text>
         <Button
           as={Link}
-          href="https://chat.iconluxury.group/"
+          href="https://chat.thedataproxy.com/"
           colorScheme="blue"
           size="lg"
           isExternal

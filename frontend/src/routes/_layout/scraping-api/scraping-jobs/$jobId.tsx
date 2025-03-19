@@ -1306,7 +1306,7 @@ const JobsDetailPage = () => {
     setIsLoading(true);
     setError(null);
     try {
-      const apiUrl = `https://backend-dev.iconluxury.group/api/scraping-jobs/${jobId}`;
+      const apiUrl = `https://backend-dev.thedataproxy.com/api/scraping-jobs/${jobId}`;
       const response = await fetch(apiUrl, {
         method: "GET",
         headers: { "Content-Type": "application/json" },
