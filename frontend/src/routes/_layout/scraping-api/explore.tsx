@@ -1,4 +1,3 @@
-// Explore.tsx
 import React, { useState, useEffect } from "react";
 import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
 import { useQuery, keepPreviousData } from "@tanstack/react-query";
@@ -36,21 +35,46 @@ interface SubscriptionStatus {
   isDeactivated: boolean;
 }
 
+// Helper function to get the token (adjust based on your auth setup)
+const getAuthToken = (): string | null => {
+  // Example: Retrieve token from localStorage; adjust based on your auth system
+  return localStorage.getItem("access_token");
+};
+
 async function fetchJobs(page: number): Promise<JobSummary[]> {
-  const response = await fetch(`https://backend-dev.iconluxury.group/api/scraping-jobs?page=${page}&page_size=10`, {
-    method: "GET",
-    headers: { "Content-Type": "application/json" },
-  });
+  const token = getAuthToken();
+  const response = await fetch(
+    `https://backend-dev.iconluxury.group/api/v1/scraping-jobs?page=${page}&page_size=10`,
+    {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        ...(token && { Authorization: `Bearer ${token}` }), // Add token if available
+      },
+    }
+  );
   if (!response.ok) throw new Error(`Failed to fetch jobs: ${response.status}`);
   return response.json();
 }
 
 async function fetchSubscriptionStatus(): Promise<SubscriptionStatus> {
-  const response = await fetch(`https://backend-dev.iconluxury.group/api/subscription-status/serp`, {
-    method: "GET",
-    headers: { "Content-Type": "application/json" },
-  });
-  if (!response.ok) throw new Error(`Failed to fetch subscription status: ${response.status}`);
+  const token = getAuthToken();
+  const response = await fetch(
+    "https://api.iconluxury.group/api/v1/subscription-status/serp",
+    {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        ...(token && { Authorization: `Bearer ${token}` }), // Add token if available
+      },
+    }
+  );
+  if (!response.ok) {
+    if (response.status === 401 || response.status === 403) {
+      throw new Error("Unauthorized: Please log in again.");
+    }
+    throw new Error(`Failed to fetch subscription status: ${response.status}`);
+  }
   return response.json();
 }
 
@@ -61,10 +85,15 @@ function Explore() {
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState<"all" | "completed" | "pending">("all");
 
-  const { data: subscriptionStatus, isLoading: isSubLoading } = useQuery({
+  const { data: subscriptionStatus, isLoading: isSubLoading, error: subError } = useQuery({
     queryKey: ["subscriptionStatus", "serp"],
     queryFn: fetchSubscriptionStatus,
     staleTime: 5 * 60 * 1000, // Refresh every 5 minutes
+    retry: (failureCount, error) => {
+      // Don't retry on 401/403; handle in UI
+      if (error.message.includes("Unauthorized")) return false;
+      return failureCount < 3; // Retry up to 3 times for other errors
+    },
   });
 
   const { data: freshJobs, isFetching } = useQuery({
@@ -97,6 +126,23 @@ function Explore() {
     return (
       <Container maxW="full" bg="white" color="gray.800">
         <Text>Loading your data...</Text>
+      </Container>
+    );
+  }
+
+  if (subError) {
+    return (
+      <Container maxW="full" bg="white" color="gray.800">
+        <Text color="red.500">
+          {subError.message === "Unauthorized: Please log in again."
+            ? "Session expired. Please log in again."
+            : "Error loading subscription status. Please try again later."}
+        </Text>
+        {subError.message.includes("Unauthorized") && (
+          <Button mt={4} colorScheme="blue" onClick={() => navigate({ to: "/login" })}>
+            Log In
+          </Button>
+        )}
       </Container>
     );
   }
