@@ -206,7 +206,9 @@ def read_user_by_id(
             detail="The user doesn't have enough privileges",
         )
     return user
-
+import logging
+logging.basicConfig(level=logging.DEBUG)
+logger = logging.getLogger(__name__)
 @router.patch(
     "/{user_id}",
     dependencies=[Depends(get_current_active_superuser)],
