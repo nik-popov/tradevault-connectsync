@@ -113,7 +113,7 @@ const UserAgentDashboard = () => {
         <Flex align="center" justify="space-between" py={2} flexWrap="wrap" gap={4}>
           <Box textAlign="left" flex="1">
             <Text fontSize="xl" fontWeight="bold">
-              User Agents Dashboard
+              User Agents
             </Text>
             <Text fontSize="sm" color="gray.500">
               View and manage user agents for scraping operations.
