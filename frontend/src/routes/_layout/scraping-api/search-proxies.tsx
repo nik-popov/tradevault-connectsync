@@ -134,7 +134,7 @@ const ProxyPage = memo(() => {
       try {
         const updatedProxies = await Promise.all(
           allProxies.map(async (proxy) => {
-            const health = await fetchProxy—andHealth(proxy.url);
+            const health = await fetchProxyHealth(proxy.url); // This is around line 137
             return {
               id: proxy.id,
               provider: proxy.provider,
