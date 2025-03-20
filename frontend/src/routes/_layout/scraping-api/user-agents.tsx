@@ -170,9 +170,9 @@ const UserAgentDashboard = () => {
               }}
               size="sm"
               w={{ base: "100%", md: "220px" }}
-              borderColor="blue.500"
-              _hover={{ borderColor: "blue.600" }}
-              _focus={{ borderColor: "blue.700", boxShadow: "0 0 0 1px blue.700" }}
+              borderColor="green.500"
+              _hover={{ borderColor: "green.600" }}
+              _focus={{ borderColor: "green.700", boxShadow: "0 0 0 1px green.700" }}
               bg="white"
               color="gray.800"
               sx={{
@@ -209,7 +209,7 @@ const UserAgentDashboard = () => {
                       {agent.user_agent}
                     </Text>
                     <Badge
-                      colorScheme={agent.percentage > 0 ? "blue" : "red"}
+                      colorScheme={agent.percentage > 0 ? "green" : "red"}
                       variant="solid"
                       ml={2}
                     >

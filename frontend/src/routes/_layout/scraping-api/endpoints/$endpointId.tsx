@@ -495,7 +495,7 @@ const EndpointDetailPage = () => {
               <Flex direction="row-reverse" align="center" gap={2}>
                 <Button
                   size="sm"
-                  colorScheme={autoRefresh ? "blue" : "gray"}
+                  colorScheme={autoRefresh ? "green" : "gray"}
                   onClick={() => setAutoRefresh(!autoRefresh)}
                 >
                   {autoRefresh ? "Auto Refresh: On" : "Auto Refresh: Off"}
@@ -522,14 +522,14 @@ const EndpointDetailPage = () => {
               </Tooltip>
               <Button
                 size="sm"
-                colorScheme={showMarkers ? "blue" : "gray"}
+                colorScheme={showMarkers ? "green" : "gray"}
                 onClick={() => setShowMarkers(!showMarkers)}
               >
                 {showMarkers ? "Map Markers: On" : "Map Markers: Off"}
               </Button>
               <Button
                 size="sm"
-                colorScheme={showPolyline ? "blue" : "gray"}
+                colorScheme={showPolyline ? "green" : "gray"}
                 onClick={() => setShowPolyline(!showPolyline)}
               >
                 {showPolyline ? "Map Polyline: On" : "Map Polyline: Off"}

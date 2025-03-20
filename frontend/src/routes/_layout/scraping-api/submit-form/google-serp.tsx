@@ -418,25 +418,25 @@ const ControlSection: React.FC<ControlSectionProps> = ({
         bg="white"
         borderColor="gray.300"
         color="gray.800"
-        _hover={{ borderColor: 'blue.500' }}
+        _hover={{ borderColor: 'green.500' }}
         css={{
           '&::-webkit-file-upload-button': {
             padding: '4px 12px',
             borderRadius: 'md',
             marginTop: '-8px',
-            backgroundColor: 'blue.500',
+            backgroundColor: 'green.500',
             border: 'none',
             color: 'white',
             fontSize: 'md',
             cursor: 'pointer',
-            _hover: { bg: 'blue.600' },
+            _hover: { bg: 'green.600' },
           },
-          '&:focus': { outline: 'none', boxShadow: '0 0 0 2px blue.200' },
+          '&:focus': { outline: 'none', boxShadow: '0 0 0 2px green.200' },
         }}
       />
     </FormControl>
     <Button
-      bg="blue.500"
+      bg="green.500"
       color="white"
       leftIcon={<FiSend />}
       onClick={onSubmit}
@@ -444,7 +444,7 @@ const ControlSection: React.FC<ControlSectionProps> = ({
       isLoading={isLoading}
       mt={2}
       mb={0}
-      _hover={{ bg: 'blue.600' }}
+      _hover={{ bg: 'green.600' }}
     >
       Submit
     </Button>
@@ -460,9 +460,9 @@ const ControlSection: React.FC<ControlSectionProps> = ({
         ) : (
           <VStack align="start" spacing={0} flexDirection="column-reverse">
             {mappedColumns.map((columnMapping, index) => (
-              <Text key={index} fontSize="sm" color="blue.600">{columnMapping}</Text>
+              <Text key={index} fontSize="sm" color="green.600">{columnMapping}</Text>
             ))}
-            <Text fontSize="sm" color="blue.600">Mapped:</Text>
+            <Text fontSize="sm" color="green.600">Mapped:</Text>
           </VStack>
         )}
         <Text fontSize="sm" color="gray.600">Rows: {rowCount}</Text>
@@ -500,17 +500,17 @@ const ManualBrandSection: React.FC<ManualBrandSectionProps> = ({
             bg="white"
             borderColor="gray.300"
             color="gray.800"
-            _hover={{ borderColor: 'blue.500' }}
-            _focus={{ borderColor: 'blue.500', boxShadow: '0 0 0 2px blue.200' }}
+            _hover={{ borderColor: 'green.500' }}
+            _focus={{ borderColor: 'green.500', boxShadow: '0 0 0 2px green.200' }}
           />
         </FormControl>
         <Button
-          bg="blue.500"
+          bg="green.500"
           color="white"
           onClick={onApply}
           isDisabled={!manualBrand || isLoading}
           mt={1}
-          _hover={{ bg: 'blue.600' }}
+          _hover={{ bg: 'green.600' }}
         >
           Apply
         </Button>
@@ -540,7 +540,7 @@ const DataTableSection: React.FC<DataTableSectionProps> = ({
       <Box flex="1" overflowY="auto" maxH="60vh" borderWidth="1px" borderRadius="md" p={4} borderColor="gray.200" bg="white">
         {isLoading ? (
           <VStack justify="center" h="full">
-            <Spinner size="lg" color="blue.500" />
+            <Spinner size="lg" color="green.500" />
             <Text color="gray.600">Loading table data...</Text>
           </VStack>
         ) : (
@@ -594,9 +594,9 @@ const MappingModal: React.FC<MappingModalProps> = ({
           bg="white"
           color="gray.800"  // Dark text for options
           borderColor="gray.300"
-          _hover={{ borderColor: 'blue.500' }}
+          _hover={{ borderColor: 'green.500' }}
           _focus={{ 
-            borderColor: 'blue.500', 
+            borderColor: 'green.500', 
             boxShadow: '0 0 0 2px rgba(16, 185, 129, 0.2)' 
           }}
           sx={{
@@ -616,7 +616,7 @@ const MappingModal: React.FC<MappingModalProps> = ({
             },
             // Ensure visibility when menu is open
             '&:focus-within': {
-              borderColor: 'blue.500',
+              borderColor: 'green.500',
             }
           }}
         >
@@ -637,11 +637,11 @@ const MappingModal: React.FC<MappingModalProps> = ({
       </ModalBody>
       <ModalFooter>
         <Button 
-          bg="blue.500" 
+          bg="green.500" 
           color="white" 
           mr={3} 
           onClick={onConfirm} 
-          _hover={{ bg: 'blue.600' }}
+          _hover={{ bg: 'green.600' }}
         >
           Confirm
         </Button>
@@ -679,7 +679,7 @@ const HeaderSelectionModal: React.FC<HeaderSelectionModalProps> = ({
         <Table size="sm" colorScheme="gray">
           <Tbody>
             {previewRows.map((row, rowIndex) => (
-              <Tr key={rowIndex} onClick={() => onRowSelect(rowIndex)} cursor="pointer" _hover={{ bg: 'blue.50' }}>
+              <Tr key={rowIndex} onClick={() => onRowSelect(rowIndex)} cursor="pointer" _hover={{ bg: 'green.50' }}>
                 {row.map((cell: any, cellIndex: number) => (
                   <Td key={cellIndex} py={2} px={3} color="gray.800">{getDisplayValue(cell)}</Td>
                 ))}
@@ -721,7 +721,7 @@ const ConfirmHeaderModal: React.FC<ConfirmHeaderModalProps> = ({
         {selectedRowIndex !== null && <Text mt={2} color="gray.600">{previewRows[selectedRowIndex].join(', ')}</Text>}
       </ModalBody>
       <ModalFooter>
-        <Button bg="blue.500" color="white" mr={3} onClick={onConfirm} _hover={{ bg: 'blue.600' }}>
+        <Button bg="green.500" color="white" mr={3} onClick={onConfirm} _hover={{ bg: 'green.600' }}>
           Confirm
         </Button>
         <Button variant="outline" borderColor="gray.300" color="gray.800" onClick={onClose} _hover={{ bg: 'gray.100' }}>
