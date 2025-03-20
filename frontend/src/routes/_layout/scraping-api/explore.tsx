@@ -37,7 +37,6 @@ interface SubscriptionStatus {
 
 // Helper function to get the token (adjust based on your auth setup)
 const getAuthToken = (): string | null => {
-  // Example: Retrieve token from localStorage; adjust based on your auth system
   return localStorage.getItem("access_token");
 };
 
@@ -49,7 +48,7 @@ async function fetchJobs(page: number): Promise<JobSummary[]> {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
-        ...(token && { Authorization: `Bearer ${token}` }), // Add token if available
+        ...(token && { Authorization: `Bearer ${token}` }),
       },
     }
   );
@@ -65,7 +64,7 @@ async function fetchSubscriptionStatus(): Promise<SubscriptionStatus> {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
-        ...(token && { Authorization: `Bearer ${token}` }), // Add token if available
+        ...(token && { Authorization: `Bearer ${token}` }),
       },
     }
   );
@@ -88,11 +87,10 @@ function Explore() {
   const { data: subscriptionStatus, isLoading: isSubLoading, error: subError } = useQuery({
     queryKey: ["subscriptionStatus", "serp"],
     queryFn: fetchSubscriptionStatus,
-    staleTime: 5 * 60 * 1000, // Refresh every 5 minutes
+    staleTime: 5 * 60 * 1000,
     retry: (failureCount, error) => {
-      // Don't retry on 401/403; handle in UI
       if (error.message.includes("Unauthorized")) return false;
-      return failureCount < 3; // Retry up to 3 times for other errors
+      return failureCount < 3;
     },
   });
 
@@ -105,9 +103,7 @@ function Explore() {
 
   useEffect(() => {
     if (freshJobs) {
-      setJobs((prev: JobSummary[]) =>
-        page === 1 ? freshJobs : [...prev, ...freshJobs]
-      );
+      setJobs((prev) => (page === 1 ? freshJobs : [...prev, ...freshJobs]));
     }
   }, [freshJobs, page]);
 
@@ -159,8 +155,12 @@ function Explore() {
     <Container maxW="full" bg="white" color="gray.800">
       <Flex align="center" justify="space-between" py={6} flexWrap="wrap" gap={4}>
         <Box textAlign="left" flex="1">
-          <Text fontSize="xl" fontWeight="bold" color="black">Scraping Jobs</Text>
-          <Text fontSize="sm" color="gray.600">View and manage scraping jobs</Text>
+          <Text fontSize="xl" fontWeight="bold" color="black">
+            Scraping Jobs
+          </Text>
+          <Text fontSize="sm" color="gray.600">
+            View and manage scraping jobs
+          </Text>
         </Box>
       </Flex>
 
@@ -169,7 +169,14 @@ function Explore() {
       {isLocked ? (
         <PromoSERP />
       ) : isFullyDeactivated ? (
-        <Flex justify="space-between" align="center" w="full" p={4} bg="red.50" borderRadius="md">
+        <Flex
+          justify="space-between"
+          align="center"
+          w="full"
+          p={4}
+          bg="red.50"
+          borderRadius="md"
+        >
           <Text color="gray.800">Your tools have been deactivated.</Text>
           <Button colorScheme="red" onClick={() => navigate({ to: "/proxies/pricing" })}>
             Reactivate Now
@@ -194,7 +201,9 @@ function Explore() {
               />
               <Select
                 value={statusFilter}
-                onChange={(e) => setStatusFilter(e.target.value as "all" | "completed" | "pending")}
+                onChange={(e) =>
+                  setStatusFilter(e.target.value as "all" | "completed" | "pending")
+                }
                 w={{ base: "100%", md: "200px" }}
                 borderColor="blue.300"
                 _focus={{ borderColor: "blue.500", boxShadow: "0 0 0 1px blue.500" }}
@@ -217,23 +226,35 @@ function Explore() {
             </Flex>
             <VStack spacing={4} align="stretch">
               {filteredJobs.map((job) => (
-                <Box key={job.id} p="4" borderWidth="1px" borderRadius="lg" borderColor="gray.200" bg="white">
+                <Box
+                  key={job.id}
+                  p="4"
+                  borderWidth="1px"
+                  borderRadius="lg"
+                  borderColor="gray.200"
+                  bg="white"
+                >
                   <Flex justify="space-between" align="center">
                     <Box>
                       <Text fontSize="sm" fontWeight="bold" color="gray.600">
                         Job ID: {job.id}
                       </Text>
-                      <Text fontWeight="medium" color="gray.800">{job.inputFile}</Text>
+                      <Text fontWeight="medium" color="gray.800">
+                        {job.inputFile}
+                      </Text>
                       <Text fontSize="sm" color="gray.500">
                         {job.rec} records, {job.img} images
                       </Text>
-                      <Text fontSize="sm" color={job.fileEnd ? "blue500" : "yellow.500"}>
+                      <Text
+                        fontSize="sm"
+                        color={job.fileEnd ? "blue.500" : "yellow.500"}
+                      >
                         Status: {job.fileEnd ? "Completed" : "Pending"}
                       </Text>
                     </Box>
                     <Button
                       size="sm"
-                      colorScheme="blue
+                      colorScheme="blue" // Fixed missing quote here
                       onClick={() =>
                         navigate({
                           to: "/scraping-api/scraping-jobs/$jobId",
@@ -247,14 +268,18 @@ function Explore() {
                 </Box>
               ))}
               {filteredJobs.length === 0 && !isFetching && (
-                <Text fontSize="sm" color="gray.500">No jobs match your criteria</Text>
+                <Text fontSize="sm" color="gray.500">
+                  No jobs match your criteria
+                </Text>
               )}
               {isFetching ? (
-                <Text fontSize="sm" color="gray.500">Loading more...</Text>
+                <Text fontSize="sm" color="gray.500">
+                  Loading more...
+                </Text>
               ) : (
                 filteredJobs.length > 0 && (
                   <Button
-                    colorScheme="blue
+                    colorScheme="blue"
                     size="sm"
                     onClick={handleLoadMore}
                     mt={4}
@@ -267,10 +292,24 @@ function Explore() {
             </VStack>
           </Box>
 
-          <Box w={{ base: "100%", md: "250px" }} p="4" borderLeft={{ md: "1px solid" }} borderColor="gray.200">
+          <Box
+            w={{ base: "100%", md: "250px" }}
+            p="4"
+            borderLeft={{ md: "1px solid" }}
+            borderColor="gray.200"
+          >
             <VStack spacing="4" align="stretch">
-              <Box p="4" shadow="sm" borderWidth="1px" borderRadius="lg" borderColor="gray.200" bg="white">
-                <Text fontWeight="bold" color="black">Quick Actions</Text>
+              <Box
+                p="4"
+                shadow="sm"
+                borderWidth="1px"
+                borderRadius="lg"
+                borderColor="gray.200"
+                bg="white"
+              >
+                <Text fontWeight="bold" color="black">
+                  Quick Actions
+                </Text>
                 <Button
                   as="a"
                   href="/scraping-api/submit-form/google-serp"
