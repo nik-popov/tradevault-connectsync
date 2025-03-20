@@ -27,7 +27,6 @@ interface Proxy {
   batch?: string;
 }
 
-// Mock proxy data remains unchanged
 const proxyData: Record<string, { region: string; url: string }[]> = {
   "Google Cloud": [
     { region: "SOUTHAMERICA-WEST1", url: "https://southamerica-west1-image-scraper-451516.cloudfunctions.net/main" },
@@ -71,11 +70,10 @@ const proxyData: Record<string, { region: string; url: string }[]> = {
   ],
   "DigitalOcean": [
     { region: "nyc1", url: "https://nyc1-do-scraper.example.com" },
-    { region: "ams3", url: "https://ams3-do-scraper.unreachable" },
+    { region: "ams3", url: "https://ams3-do-scraper.un ASSERTive" },
   ],
 };
 
-// fetchProxyHealth remains unchanged
 const fetchProxyHealth = async (url: string, timeout: number = 10000): Promise<Proxy | null> => {
   const healthUrl = `${url}/health/google`;
   try {
@@ -136,7 +134,7 @@ const ProxyPage = memo(() => {
       try {
         const updatedProxies = await Promise.all(
           allProxies.map(async (proxy) => {
-            const health = await fetchProxyHealth(proxy.url);
+            const health = await fetchProxy—andHealth(proxy.url);
             return {
               id: proxy.id,
               provider: proxy.provider,
@@ -274,13 +272,13 @@ const ProxyPage = memo(() => {
                 size="sm"
                 fontWeight="bold"
                 borderRadius="full"
-                colorScheme={providerFilter === provider ? "blue : "gray"}
+                colorScheme={providerFilter === provider ? "blue" : "gray"} // Fixed syntax here
                 variant={providerFilter === provider ? "solid" : "outline"}
                 onClick={() => setProviderFilter(provider)}
                 color={providerFilter === provider ? "white" : "gray.800"}
-                borderColor={providerFilter === provider ? "blue500" : "gray.300"}
+                borderColor={providerFilter === provider ? "blue.500" : "gray.300"}
                 _hover={{
-                  bg: providerFilter === provider ? "blue600" : "gray.100",
+                  bg: providerFilter === provider ? "blue.600" : "gray.100",
                   borderColor: providerFilter === provider ? "green.600" : "gray.400",
                 }}
               >
@@ -300,13 +298,6 @@ const ProxyPage = memo(() => {
               borderRadius="md"
               px={3}
               py={2}
-              sx={{
-                "& option": {
-                  color: "gray.700",
-                  backgroundColor: "white",
-                  _hover: { backgroundColor: "green.50" },
-                },
-              }}
             >
               <option value="all">All Health</option>
               <option value="healthy">Healthy</option>
@@ -325,13 +316,6 @@ const ProxyPage = memo(() => {
               borderRadius="md"
               px={3}
               py={2}
-              sx={{
-                "& option": {
-                  color: "gray.700",
-                  backgroundColor: "white",
-                  _hover: { backgroundColor: "green.50" },
-                },
-              }}
             >
               <option value="all">All Regions</option>
               <option value="us">US</option>
@@ -367,10 +351,10 @@ const ProxyPage = memo(() => {
         ) : (
           <VStack spacing={showDetails ? 4 : 2} align="stretch">
             {filteredProxies.map((proxy) => (
-              <Box 
-                key={`${proxy.provider}-${proxy.region}`} 
-                p={showDetails ? "4" : "2"} 
-                borderWidth="1px" 
+              <Box
+                key={`${proxy.provider}-${proxy.region}`}
+                p={showDetails ? "4" : "2"}
+                borderWidth="1px"
                 borderRadius="lg"
                 borderColor="gray.200"
                 bg="white"
@@ -413,12 +397,7 @@ const ProxyPage = memo(() => {
                     </Box>
                   </Flex>
                 ) : (
-                  <Flex 
-                    align="center" 
-                    justify="space-between" 
-                    wrap="nowrap" 
-                    gap={2}
-                  >
+                  <Flex align="center" justify="space-between" wrap="nowrap" gap={2}>
                     <Text
                       fontWeight="bold"
                       color="green.500"
@@ -438,8 +417,8 @@ const ProxyPage = memo(() => {
                     >
                       {proxy.status.includes("reachable") ? "Healthy" : "Unhealthy"}
                     </Badge>
-                    <Text 
-                      fontSize="sm" 
+                    <Text
+                      fontSize="sm"
                       color="gray.700"
                       flex="1"
                       textAlign="right"
