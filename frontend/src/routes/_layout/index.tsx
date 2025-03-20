@@ -30,7 +30,8 @@ function Dashboard() {
   };
 
   const proxyProducts: Product[] = [
-    { id: "explore-serp", name: "📋 Scraper Jobs", type: "SERP", description: "View Scraper Files.", owned: true, path: "/scraping-api/explore" },
+    { id: "submit-form", name: "🧑‍💻 Batch Scrape Submit Form", type: "SERP", description: "Submit files to Dev Scraper.", owned: true, path: "/scraping-api/submit-form/google-serp" },
+    { id: "explore-serp", name: "📋 Batch Scrape Jobs", type: "SERP", description: "View Scraper Files.", owned: true, path: "/scraping-api/explore" },
     { id: "manage-proxy", name: "👺 Proxy Management", type: "SERP", description: "Manage Proxy Endpoints.", owned: true, path: "/scraping-api/search-proxies" },
     { id: "user-agents", name: "🕵️‍♂️ User Agents", type: "SERP", description: "Manage User Agents.", owned: true, path: "/scraping-api/user-agents" },
     { id: "google-serp", name: "🔍 Google SERP Management", type: "SERP", description: "Scrape real-time Google search results.", owned: true, path: "/scraping-api/google-serp" },
