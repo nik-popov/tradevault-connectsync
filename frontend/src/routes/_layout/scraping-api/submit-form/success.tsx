@@ -13,7 +13,7 @@ function SuccessPage() {
   return (
     <Container maxW="full" py={10}>
       <VStack spacing={6} align="center">
-        <Heading color="green.400">Success!</Heading>
+        <Heading color="blue.400">Success!</Heading>
         <Text fontSize="lg" color="gray.300">
           Your request has been submitted successfully.
         </Text>

@@ -170,9 +170,9 @@ const UserAgentDashboard = () => {
               }}
               size="sm"
               w={{ base: "100%", md: "220px" }}
-              borderColor="green.500"
-              _hover={{ borderColor: "green.600" }}
-              _focus={{ borderColor: "green.700", boxShadow: "0 0 0 1px green.700" }}
+              borderColor="blue.500"
+              _hover={{ borderColor: "blue.600" }}
+              _focus={{ borderColor: "blue.700", boxShadow: "0 0 0 1px blue.700" }}
               bg="white"
               color="gray.800"
               sx={{

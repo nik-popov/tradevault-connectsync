@@ -122,7 +122,7 @@ const LogDisplay: React.FC<LogDisplayProps> = ({ logUrl }) => {
     fetchLog();
   }, [logUrl, showToast]);
 
-  if (isLoading) return <Spinner color="green.300" />;
+  if (isLoading) return <Spinner color="blue.300" />;
   if (error) return <Text color="red.500">{error}</Text>;
   if (!logContent) return <Text color="gray.600">No log content available</Text>;
 
@@ -293,7 +293,7 @@ const OverviewTab: React.FC<OverviewTabProps> = ({
         <Stat mt={4}>
           <StatLabel color="gray.600">Input File</StatLabel>
           <StatHelpText wordBreak="break-all">
-            <Link href={job.fileLocationUrl} isExternal color="green.300">
+            <Link href={job.fileLocationUrl} isExternal color="blue.300">
               {job.inputFile}
             </Link>
           </StatHelpText>
@@ -359,7 +359,7 @@ const OverviewTab: React.FC<OverviewTabProps> = ({
                 <Tr key={domain}>
                   <Td>
                     <Text
-                      color="green.300"
+                      color="blue.300"
                       cursor="pointer"
                       onClick={() => handleDomainClick(domain)}
                       _hover={{ textDecoration: "underline" }}
@@ -564,8 +564,8 @@ const ResultsTab: React.FC<ResultsTabProps> = ({ job, sortBy, searchQuery, setSe
             e.preventDefault();
           }}
           width="300px"
-          borderColor="green.300"
-          _focus={{ borderColor: "green.300" }}
+          borderColor="blue.300"
+          _focus={{ borderColor: "blue.300" }}
           color="gray.800"
           bg="white"
         />
@@ -590,7 +590,7 @@ const ResultsTab: React.FC<ResultsTabProps> = ({ job, sortBy, searchQuery, setSe
               <>
                 <Stat>
                   <StatLabel color="gray.600">Result File</StatLabel>
-                  <Link href={job.resultFile} isExternal color="green.300">
+                  <Link href={job.resultFile} isExternal color="blue.300">
                     {job.inputFile}
                   </Link>
                 </Stat>
@@ -612,8 +612,8 @@ const ResultsTab: React.FC<ResultsTabProps> = ({ job, sortBy, searchQuery, setSe
             <Accordion allowToggle defaultIndex={[0, 1]}>
               <AccordionItem>
                 <AccordionButton bg="gray.100" _expanded={{ bg: "gray.200" }}>
-                  <Box flex="1" textAlign="left" color="green.300">Results ({totalResults})</Box>
-                  <AccordionIcon color="green.300" />
+                  <Box flex="1" textAlign="left" color="blue.300">Results ({totalResults})</Box>
+                  <AccordionIcon color="blue.300" />
                 </AccordionButton>
                 <AccordionPanel pb={4}>
                   <Table variant="simple" size="sm" colorScheme="blue">
@@ -645,13 +645,13 @@ const ResultsTab: React.FC<ResultsTabProps> = ({ job, sortBy, searchQuery, setSe
                           <Td w="80px" color="gray.800">{result.entryId || "N/A"}</Td>
                           <Td w="120px">
                             <a href={result.imageUrl || "#"} target="_blank" rel="noopener noreferrer">
-                              <Text color="green.300">{shortenUrl(result.imageUrl)}</Text>
+                              <Text color="blue.300">{shortenUrl(result.imageUrl)}</Text>
                             </a>
                           </Td>
                           <Td w="120px" color="gray.800">{result.imageDesc || "N/A"}</Td>
                           <Td w="120px">
                             <a href={result.imageSource || "#"} target="_blank" rel="noopener noreferrer">
-                              <Text color="green.300">{shortenUrl(result.imageSource)}</Text>
+                              <Text color="blue.300">{shortenUrl(result.imageSource)}</Text>
                             </a>
                           </Td>
                           <Td w="80px" color="gray.800">{result.sortOrder || "0"}</Td>
@@ -670,8 +670,8 @@ const ResultsTab: React.FC<ResultsTabProps> = ({ job, sortBy, searchQuery, setSe
               </AccordionItem>
               <AccordionItem>
                 <AccordionButton bg="gray.100" _expanded={{ bg: "gray.200" }}>
-                  <Box flex="1" textAlign="left" color="green.300">Records ({totalRecords})</Box>
-                  <AccordionIcon color="green.300" />
+                  <Box flex="1" textAlign="left" color="blue.300">Records ({totalRecords})</Box>
+                  <AccordionIcon color="blue.300" />
                 </AccordionButton>
                 <AccordionPanel pb={4}>
                   <Table variant="simple" size="sm" colorScheme="blue">
@@ -961,7 +961,7 @@ const SearchRowsTab: React.FC<SearchRowsTabProps> = ({ job }) => {
         <Flex gap={3}>
           <Button
             borderBottom="2px solid"
-            borderColor="green.200"
+            borderColor="blue.200"
             size="sm"
             colorScheme="blue"
             onClick={() => {
@@ -977,7 +977,7 @@ const SearchRowsTab: React.FC<SearchRowsTabProps> = ({ job }) => {
           </Button>
           <Button
             borderBottom="2px solid"
-            borderColor="green.200"
+            borderColor="blue.200"
             size="sm"
             colorScheme="blue"
             onClick={() => {
@@ -1175,7 +1175,7 @@ const SearchRowsTab: React.FC<SearchRowsTabProps> = ({ job }) => {
                                   {image.imageDesc || "N/A"}
                                 </a>
                               </Text>
-                              <Text fontSize="xs" color="green.300">
+                              <Text fontSize="xs" color="blue.300">
                                 <a
                                   href={image.imageSource}
                                   onClick={(e) => handleLinkClick(e, image.imageSource)}
@@ -1183,7 +1183,7 @@ const SearchRowsTab: React.FC<SearchRowsTabProps> = ({ job }) => {
                                   {shortenUrl(image.imageSource)}
                                 </a>
                               </Text>
-                              <Text fontSize="xs" color="green.300">
+                              <Text fontSize="xs" color="blue.300">
                                 <a
                                   href={image.imageUrl}
                                   onClick={(e) => handleLinkClick(e, image.imageUrl)}
@@ -1221,7 +1221,7 @@ const SearchRowsTab: React.FC<SearchRowsTabProps> = ({ job }) => {
                     <Td w="90px">
                       <Text
                         cursor="pointer"
-                        color="green.300"
+                        color="blue.300"
                         _hover={{ textDecoration: "underline" }}
                         onClick={(e) => handleRowIdClick(e, record.productModel)}
                       >
@@ -1234,7 +1234,7 @@ const SearchRowsTab: React.FC<SearchRowsTabProps> = ({ job }) => {
                           href={googleSearch(record.productModel)}
                           onClick={(e) => handleLinkClick(e, googleSearch(record.productModel))}
                         >
-                          <Text color="green.300">{record.productModel}</Text>
+                          <Text color="blue.300">{record.productModel}</Text>
                         </a>
                       ) : (
                         <Text fontSize="xs" color="gray.600">No style</Text>
@@ -1248,7 +1248,7 @@ const SearchRowsTab: React.FC<SearchRowsTabProps> = ({ job }) => {
                             handleLinkClick(e, googleSearchBrandModelUrl(record.productModel, record.productBrand))
                           }
                         >
-                          <Text color="green.300">{record.productBrand}</Text>
+                          <Text color="blue.300">{record.productBrand}</Text>
                         </a>
                       ) : (
                         <Text fontSize="xs" color="gray.600">No brand</Text>
@@ -1334,7 +1334,7 @@ const JobsDetailPage = () => {
     return (
       <Container maxW="full" py={6} bg="white">
         <Flex justify="center" align="center" h="200px">
-          <Spinner size="xl" color="green.300" />
+          <Spinner size="xl" color="blue.300" />
         </Flex>
       </Container>
     );
@@ -1393,11 +1393,11 @@ const JobsDetailPage = () => {
         onChange={(index) => setActiveTab(index)}
         colorScheme="blue"
       >
-        <TabList borderBottom="2px solid" borderColor="green.200">
+        <TabList borderBottom="2px solid" borderColor="blue.200">
           {tabsConfig.map((tab) => (
             <Tab
               key={tab.title}
-              _selected={{ bg: "white", color: "green.300", borderColor: "green.300" }}
+              _selected={{ bg: "white", color: "blue.300", borderColor: "blue.300" }}
               color="gray.600"
             >
               {tab.title}
