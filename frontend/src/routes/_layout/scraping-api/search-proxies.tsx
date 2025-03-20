@@ -278,9 +278,9 @@ const ProxyPage = memo(() => {
                 variant={providerFilter === provider ? "solid" : "outline"}
                 onClick={() => setProviderFilter(provider)}
                 color={providerFilter === provider ? "white" : "gray.800"}
-                borderColor={providerFilter === provider ? "blue.500" : "gray.300"}
+                borderColor={providerFilter === provider ? "blue500" : "gray.300"}
                 _hover={{
-                  bg: providerFilter === provider ? "green.600" : "gray.100",
+                  bg: providerFilter === provider ? "blue600" : "gray.100",
                   borderColor: providerFilter === provider ? "green.600" : "gray.400",
                 }}
               >
