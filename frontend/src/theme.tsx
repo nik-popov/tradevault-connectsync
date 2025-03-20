@@ -22,7 +22,7 @@ const theme = extendTheme({
     ui: {
       main: "#0047AB", // Cobalt blue as the primary accent color
       secondary: "#FFA500", // Orange for secondary elements (or "#FFFF00" for yellow if preferred)
-      success: "#38A169", // Green for success states
+      success: "#38A169", // blue for success states
       danger: "#E53E3E", // Red for errors (unchanged)
       light: "#FFFFFF", // White for backgrounds
       dark: "#1A202C", // Dark background for dark mode (unchanged)
@@ -123,10 +123,10 @@ const theme = extendTheme({
         },
         success: {
           container: {
-            bg: "green.100", // Light green for success
-            color: "green.900",
+            bg: "blue.100", // Light blue for success
+            color: "blue.900",
             border: "1px solid",
-            borderColor: "green.300",
+            borderColor: "blue.300",
           },
         },
         info: {

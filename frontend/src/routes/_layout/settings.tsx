@@ -63,12 +63,12 @@ function UserSettings() {
 
       <Divider my={4} borderColor="gray.200" />
 
-      <Tabs variant="enclosed" colorScheme="green">
-        <TabList borderBottom="2px solid" borderColor="green.200">
+      <Tabs variant="enclosed" colorScheme="blue">
+        <TabList borderBottom="2px solid" borderColor="blue.200">
           {finalTabs.map((tab, index) => (
             <Tab
               key={index}
-              _selected={{ bg: "green.100", color: "green.700", borderColor: "green.500" }}
+              _selected={{ bg: "blue.100", color: "blue.700", borderColor: "blue.500" }}
               color="gray.600"
               _hover={{ bg: "gray.100" }}
             >

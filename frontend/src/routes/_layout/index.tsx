@@ -56,7 +56,7 @@ function Dashboard() {
   <Switch 
     isChecked={ownedOnly} 
     onChange={() => setOwnedOnly((prev) => !prev)} 
-    colorScheme="green"
+    colorScheme="blue"
     mr={4}
   />
 </Flex>
@@ -70,7 +70,7 @@ function Dashboard() {
       borderRadius="full"
       colorScheme={
         activeFilter === type.toLowerCase() || 
-        (type === "All" && activeFilter === "all") ? "green" : "gray"
+        (type === "All" && activeFilter === "all") ? "blue" : "gray"
       }
       variant={
         activeFilter === type.toLowerCase() || 

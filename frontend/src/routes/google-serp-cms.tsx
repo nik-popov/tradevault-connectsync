@@ -436,7 +436,7 @@ function CMSGoogleSerpForm() {
                 Missing: {missingRequired.join(', ')}
               </Text>
             ) : (
-              <Text fontSize="sm" color="green.500">
+              <Text fontSize="sm" color="blue.500">
                 Mapped: {mappedColumns.join(', ')}
               </Text>
             )}

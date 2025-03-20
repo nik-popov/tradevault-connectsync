@@ -515,7 +515,7 @@ const OverviewGSerp: React.FC = () => {
           <Tooltip label="Toggle chart labels">
             <Button
               size="sm"
-              colorScheme={showLabels ? "green" : "gray"}
+              colorScheme={showLabels ? "blue" : "gray"}
               onClick={() => setShowLabels(!showLabels)}
             >
               {showLabels ? "Labels: On" : "Labels: Off"}

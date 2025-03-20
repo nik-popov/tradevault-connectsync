@@ -184,9 +184,9 @@ function Explore() {
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 w={{ base: "100%", md: "250px" }}
-                borderColor="green.300"
-                _focus={{ borderColor: "green.500", boxShadow: "0 0 0 1px green.500" }}
-                _hover={{ borderColor: "green.400" }}
+                borderColor="blue.300"
+                _focus={{ borderColor: "blue.500", boxShadow: "0 0 0 1px blue.500" }}
+                _hover={{ borderColor: "blue.400" }}
                 bg="white"
                 color="gray.800"
                 _placeholder={{ color: "gray.500" }}
@@ -196,9 +196,9 @@ function Explore() {
                 value={statusFilter}
                 onChange={(e) => setStatusFilter(e.target.value as "all" | "completed" | "pending")}
                 w={{ base: "100%", md: "200px" }}
-                borderColor="green.300"
-                _focus={{ borderColor: "green.500", boxShadow: "0 0 0 1px green.500" }}
-                _hover={{ borderColor: "green.400" }}
+                borderColor="blue.300"
+                _focus={{ borderColor: "blue.500", boxShadow: "0 0 0 1px blue.500" }}
+                _hover={{ borderColor: "blue.400" }}
                 bg="white"
                 color="gray.700"
                 borderRadius="md"
@@ -206,7 +206,7 @@ function Explore() {
                   "& option": {
                     color: "gray.700",
                     backgroundColor: "white",
-                    _hover: { backgroundColor: "green.50" },
+                    _hover: { backgroundColor: "blue.50" },
                   },
                 }}
               >
@@ -227,13 +227,13 @@ function Explore() {
                       <Text fontSize="sm" color="gray.500">
                         {job.rec} records, {job.img} images
                       </Text>
-                      <Text fontSize="sm" color={job.fileEnd ? "green.500" : "yellow.500"}>
+                      <Text fontSize="sm" color={job.fileEnd ? "blue500" : "yellow.500"}>
                         Status: {job.fileEnd ? "Completed" : "Pending"}
                       </Text>
                     </Box>
                     <Button
                       size="sm"
-                      colorScheme="green"
+                      colorScheme="blue
                       onClick={() =>
                         navigate({
                           to: "/scraping-api/scraping-jobs/$jobId",
@@ -254,7 +254,7 @@ function Explore() {
               ) : (
                 filteredJobs.length > 0 && (
                   <Button
-                    colorScheme="green"
+                    colorScheme="blue
                     size="sm"
                     onClick={handleLoadMore}
                     mt={4}
@@ -277,7 +277,7 @@ function Explore() {
                   variant="outline"
                   size="sm"
                   mt="2"
-                  colorScheme="green"
+                  colorScheme="blue"
                 >
                   Submit Form
                 </Button>
@@ -288,7 +288,7 @@ function Explore() {
                   variant="outline"
                   size="sm"
                   mt="2"
-                  colorScheme="green"
+                  colorScheme="blue"
                 >
                   GitHub
                 </Button>

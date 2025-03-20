@@ -257,9 +257,9 @@ const ProxyPage = memo(() => {
             onChange={(e) => setSearchTerm(e.target.value)}
             w={{ base: "100%", md: "250px" }}
             aria-label="Search proxies"
-            borderColor="green.300"
-            _hover={{ borderColor: "green.400" }}
-            _focus={{ borderColor: "green.500", boxShadow: "0 0 0 1px green.500" }}
+            borderColor="blue.300"
+            _hover={{ borderColor: "blue.400" }}
+            _focus={{ borderColor: "blue.500", boxShadow: "0 0 0 1px blue.500" }}
             bg="white"
             color="gray.800"
             _placeholder={{ color: "gray.500" }}
@@ -274,14 +274,14 @@ const ProxyPage = memo(() => {
                 size="sm"
                 fontWeight="bold"
                 borderRadius="full"
-                colorScheme={providerFilter === provider ? "green" : "gray"}
+                colorScheme={providerFilter === provider ? "blue : "gray"}
                 variant={providerFilter === provider ? "solid" : "outline"}
                 onClick={() => setProviderFilter(provider)}
                 color={providerFilter === provider ? "white" : "gray.800"}
-                borderColor={providerFilter === provider ? "green.500" : "gray.300"}
+                borderColor={providerFilter === provider ? "blue500" : "gray.300"}
                 _hover={{
-                  bg: providerFilter === provider ? "green.600" : "gray.100",
-                  borderColor: providerFilter === provider ? "green.600" : "gray.400",
+                  bg: providerFilter === provider ? "blue600" : "gray.100",
+                  borderColor: providerFilter === provider ? "blue600" : "gray.400",
                 }}
               >
                 {provider === "all" ? "All" : provider}
@@ -292,9 +292,9 @@ const ProxyPage = memo(() => {
               onChange={(e) => setHealthFilter(e.target.value)}
               size="sm"
               w={{ base: "100%", md: "150px" }}
-              borderColor="green.300"
-              _hover={{ borderColor: "green.400" }}
-              _focus={{ borderColor: "green.500", boxShadow: "0 0 0 1px green.500" }}
+              borderColor="blue300"
+              _hover={{ borderColor: "blue400" }}
+              _focus={{ borderColor: "blue00", boxShadow: "0 0 0 1px grblue00" }}
               bg="white"
               color="gray.700"
               borderRadius="md"
@@ -304,7 +304,7 @@ const ProxyPage = memo(() => {
                 "& option": {
                   color: "gray.700",
                   backgroundColor: "white",
-                  _hover: { backgroundColor: "green.50" },
+                  _hover: { backgroundColor: "blue.50" },
                 },
               }}
             >
@@ -317,9 +317,9 @@ const ProxyPage = memo(() => {
               onChange={(e) => setRegionFilter(e.target.value)}
               size="sm"
               w={{ base: "100%", md: "220px" }}
-              borderColor="green.300"
-              _hover={{ borderColor: "green.400" }}
-              _focus={{ borderColor: "green.500", boxShadow: "0 0 0 1px green.500" }}
+              borderColor="blue.300"
+              _hover={{ borderColor: "blue.400" }}
+              _focus={{ borderColor: "blue.500", boxShadow: "0 0 0 1px blue.500" }}
               bg="white"
               color="gray.700"
               borderRadius="md"
@@ -329,7 +329,7 @@ const ProxyPage = memo(() => {
                 "& option": {
                   color: "gray.700",
                   backgroundColor: "white",
-                  _hover: { backgroundColor: "green.50" },
+                  _hover: { backgroundColor: "blue.50" },
                 },
               }}
             >
@@ -342,7 +342,7 @@ const ProxyPage = memo(() => {
               <option value="middleeast">Middle East</option>
             </Select>
             <Button
-              colorScheme="green"
+              colorScheme="blue"
               onClick={handleRefresh}
               isLoading={isRefreshing}
               isDisabled={isRefreshing}
@@ -362,7 +362,7 @@ const ProxyPage = memo(() => {
 
         {isLoading ? (
           <Flex justify="center" align="center" h="200px">
-            <Spinner size="xl" color="green.500" />
+            <Spinner size="xl" color="blue.500" />
           </Flex>
         ) : (
           <VStack spacing={showDetails ? 4 : 2} align="stretch">
@@ -381,7 +381,7 @@ const ProxyPage = memo(() => {
                       <Text
                         display="inline"
                         fontWeight="bold"
-                        color="green.500"
+                        color="blue.500"
                         cursor="pointer"
                         onClick={() => handleTitleClick(proxy.region)}
                         _hover={{ textDecoration: "underline" }}
@@ -389,7 +389,7 @@ const ProxyPage = memo(() => {
                         {proxy.region}
                       </Text>
                       <Badge
-                        colorScheme={proxy.status.includes("reachable") ? "green" : "red"}
+                        colorScheme={proxy.status.includes("reachable") ? "blue" : "red"}
                         variant="solid"
                         ml={2}
                       >
@@ -421,7 +421,7 @@ const ProxyPage = memo(() => {
                   >
                     <Text
                       fontWeight="bold"
-                      color="green.500"
+                      color="blue.500"
                       cursor="pointer"
                       onClick={() => handleTitleClick(proxy.region)}
                       _hover={{ textDecoration: "underline" }}
@@ -431,7 +431,7 @@ const ProxyPage = memo(() => {
                       {proxy.region}
                     </Text>
                     <Badge
-                      colorScheme={proxy.status.includes("reachable") ? "green" : "red"}
+                      colorScheme={proxy.status.includes("reachable") ? "blue" : "red"}
                       variant="solid"
                       minW="80px"
                       textAlign="center"
