@@ -15,7 +15,7 @@ import {
 } from "@chakra-ui/react";
 import { useQueryClient } from "@tanstack/react-query";
 import { Link as RouterLink } from "@tanstack/react-router";
-import { FiLogOut, FiMenu, FiHome, FiUsers, FiGlobe, FiChevronDown } from "react-icons/fi";
+import { FiLogOut, FiMenu, FiHome, FiUsers, FiGlobe, FiChevronDown, FiUser } from "react-icons/fi";
 
 import Logo from "/assets/images/data-proxy-logo.png";
 import type { UserPublic } from "../../client";
@@ -29,8 +29,8 @@ interface NavItem {
 }
 
 interface NavItemsProps {
-  onClose?: () => void; // Define the onClose prop type
-  isMobile?: boolean;   // Add isMobile prop type
+  onClose?: () => void;
+  isMobile?: boolean;
 }
 
 const navStructure: NavItem[] = [
@@ -119,7 +119,7 @@ const NavItems = ({ onClose, isMobile = false }: NavItemsProps) => {
                   to={subItem.path}
                   color={textColor}
                   _hover={{ color: hoverColor, bg: "gray.100" }}
-                  onClick={onClose} // Pass onClose to close mobile menu on click
+                  onClick={onClose}
                 >
                   {subItem.title}
                 </MenuItem>
@@ -142,7 +142,7 @@ const NavItems = ({ onClose, isMobile = false }: NavItemsProps) => {
             style: { background: bgActive, color: activeTextColor },
           }}
           align="center"
-          onClick={onClose} // Pass onClose to close mobile menu on click
+          onClick={onClose}
         >
           {icon && <Icon as={icon} mr={2} />}
           <Text>{title}</Text>
@@ -167,7 +167,7 @@ const TopNav = () => {
 
   const handleLogout = async () => {
     logout();
-    onClose(); // Close mobile menu on logout
+    onClose();
   };
 
   return (
@@ -201,21 +201,39 @@ const TopNav = () => {
         {/* Desktop Navigation */}
         <Flex align="center" gap={4} display={{ base: "none", md: "flex" }}>
           <NavItems />
-          <Flex align="center" gap={4}>
-            {currentUser?.email && (
-              <Text color={textColor} fontSize="sm" maxW="200px" isTruncated>
-                {currentUser.email}
-              </Text>
-            )}
-            <IconButton
-              as="button"
-              onClick={handleLogout}
-              color="blue.600"
-              icon={<FiLogOut />}
-              aria-label="Log out"
-              variant="ghost"
-            />
-          </Flex>
+          {currentUser && (
+            <Menu>
+              <MenuButton
+                px={4}
+                py={2}
+                color={textColor}
+                _hover={{ color: hoverColor }}
+              >
+                <Flex align="center">
+                  <Icon as={FiUser} mr={2} />
+                  <Text maxW="200px" isTruncated>{currentUser.email}</Text>
+                  <Icon as={FiChevronDown} ml={1} />
+                </Flex>
+              </MenuButton>
+              <MenuList>
+                <MenuItem
+                  as={RouterLink}
+                  to="/profile" // Adjust path as needed
+                  color={textColor}
+                  _hover={{ color: hoverColor, bg: "gray.100" }}
+                >
+                  Profile
+                </MenuItem>
+                <MenuItem
+                  onClick={handleLogout}
+                  color={textColor}
+                  _hover={{ color: hoverColor, bg: "gray.100" }}
+                >
+                  Log out
+                </MenuItem>
+              </MenuList>
+            </Menu>
+          )}
         </Flex>
       </Flex>
 
@@ -232,22 +250,36 @@ const TopNav = () => {
       >
         <Flex flexDir="column" gap={4}>
           <NavItems onClose={onClose} isMobile={true} />
-          {currentUser?.email && (
-            <Text color={textColor} fontSize="sm">
-              Logged in as: {currentUser.email}
-            </Text>
+          {currentUser && (
+            <>
+              <Text color={textColor} fontSize="sm">
+                Logged in as: {currentUser.email}
+              </Text>
+              <Flex flexDir="column" gap={2}>
+                <Box
+                  as={RouterLink}
+                  to="/profile" // Adjust path as needed
+                  p={2}
+                  color={textColor}
+                  _hover={{ color: hoverColor }}
+                  onClick={onClose}
+                >
+                  Profile
+                </Box>
+                <Flex
+                  as="button"
+                  onClick={handleLogout}
+                  color={hoverColor}
+                  fontWeight="bold"
+                  alignItems="center"
+                  gap={2}
+                >
+                  <FiLogOut />
+                  <Text>Log out</Text>
+                </Flex>
+              </Flex>
+            </>
           )}
-          <Flex
-            as="button"
-            onClick={handleLogout}
-            color={hoverColor}
-            fontWeight="bold"
-            alignItems="center"
-            gap={2}
-          >
-            <FiLogOut />
-            <Text>Log out</Text>
-          </Flex>
         </Flex>
       </Box>
     </Box>
