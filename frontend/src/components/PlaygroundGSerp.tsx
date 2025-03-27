@@ -17,7 +17,7 @@ import {
   Image,
 } from "@chakra-ui/react";
 import { ExternalLinkIcon } from "@chakra-ui/icons";
-
+import { FiSend } from "react-icons/fi";
 const proxyData = {
     "DataProxy": [
       { region: "US-EAST4", url: "https://us-east4-proxy1-454912.cloudfunctions.net/main/fetch" },
@@ -186,7 +186,7 @@ const PlaygroundGSerp: React.FC = () => {
                   isLoading={isLoading}
                   isDisabled={!url.trim() || !selectedUrl}
                 >
-                  POST
+            <FiSend />
                 </Button>
               </Tooltip>
             </Box>
