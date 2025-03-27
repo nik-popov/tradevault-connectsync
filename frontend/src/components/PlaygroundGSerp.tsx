@@ -130,7 +130,6 @@ const PlaygroundGSerp: React.FC = () => {
   return (
     <Box p={4} width="100%">
       <Box mb={6}>
-        <Text fontSize="md" fontWeight="semibold" mb={2}>Test Parameters</Text>
         <Flex direction="column" gap={4}>
           <Flex gap={4} alignItems="flex-end">
             <FormControl flex="2">
