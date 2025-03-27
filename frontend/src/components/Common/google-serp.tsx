@@ -9,8 +9,7 @@ import ApiKeyGSerp from "../../../components/ApiKeyGSerp";
 import WhitelistGSerp from "../../../components/WhitelistGSerp";
 
 const GoogleSerpPage = () => {
-  const Https Proxy APIConfig = [
-    // { title: "Overview", component: () => <OverviewGSerp /> },
+  const TabsConfig = [
     { title: "API Keys", component: () => <ApiKeyGSerp /> },
     { title: "Playground", component: () => <PlaygroundGSerp /> },
   ];
@@ -24,12 +23,12 @@ const GoogleSerpPage = () => {
         </Flex>
         <Tabs>
           <TabList>
-            {Https Proxy APIConfig.map((tab, index) => (
+            {TabsConfig.map((tab, index) => (
               <Tab key={index}>{tab.title}</Tab>
             ))}
           </TabList>
           <TabPanels>
-            {Https Proxy APIConfig.map((tab, index) => (
+            {TabsConfig.map((tab, index) => (
               <TabPanel key={index}>{tab.component()}</TabPanel>
             ))}
           </TabPanels>
