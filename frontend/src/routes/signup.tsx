@@ -80,14 +80,14 @@ function SignUp() {
           alignItems="flex-start"
           borderRadius={{ md: "md 0 0 md" }}
         >
-          <Heading as="h1" size="xl" mb={6} color="gray.800">
-            Unlock Your Data’s Potential
+        <Heading as="h1" size="xl" mb={6} color="gray.800">
+            Access Your Data Insights
           </Heading>
           <Text fontSize="lg" color="gray.600" mb={4}>
-            Sign up to experience seamless data management and take control with confidence.
+            Sign up to wield cutting-edge tools and transform your data into pure power.
           </Text>
           <Text fontSize="md" color="gray.500">
-            Need a Boost? Our expert support team and comprehensive documentation are here to fuel your success.
+            Curious how far you can go? Our expert crew and secret knowledge base are your launchpad to greatness.
           </Text>
         </Box>
 
