@@ -2,9 +2,9 @@ import { Box, Flex, Icon, Text, useColorModeValue, Tooltip, Menu, MenuButton, Me
 import { useQueryClient } from "@tanstack/react-query";
 import { Link } from "@tanstack/react-router";
 import {
-  FiHome,
+  FiLayout ,
   FiUsers,
-  FiGlobe,
+  FiTool ,
   FiChevronDown,
 } from "react-icons/fi";
 import type { UserPublic } from "../../client";
@@ -17,7 +17,7 @@ interface SidebarItem {
 }
 
 const sidebarStructure: SidebarItem[] = [
-  { title: "Home", icon: FiHome, path: "/" },
+  { title: "Home", icon: FiLayout , path: "/" },
   {
     title: "Scraping API",
     subItems: [
@@ -25,7 +25,7 @@ const sidebarStructure: SidebarItem[] = [
       { title : 'Submit Batch', path: " /scraping-api/submit-form/google-serp" },
       { title: "Proxies", path: "/scraping-api/search-proxies" },
     ],
-    icon: FiGlobe,
+    icon: FiTool,
   },
 ];
 
