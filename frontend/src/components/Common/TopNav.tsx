@@ -58,17 +58,21 @@ const NavItems = ({ onClose, isMobile = false }: NavItemsProps) => {
   if (currentUser?.is_superuser && !finalNavStructure.some(item => item.title === "Admin")) {
     finalNavStructure.push({ title: "Admin", icon: FiUsers, path: "/admin" });
   }
-
   const isEnabled = (title: string) =>
-    ["Dashboard", "Scraping", "Admin"].includes(title) ||
-    (title === "Jobs" &&
-      finalNavStructure.some(item =>
-        item.title === "Scraping" &&
+    ["Home", "Scraping API", "Admin"].includes(title) ||
+    (title === "Jobs" && 
+      finalSidebarStructure.some(item => 
+        item.title === "Scraping API" && 
         item.subItems?.some(sub => sub.title === "Jobs")
       )) ||
-    (title === "Proxies" &&
-      finalNavStructure.some(item =>
-        item.title === "Scraping" &&
+      (title === "Submit Batch" &&   
+      finalSidebarStructure.some(item => 
+        item.title === "Scraping API" && 
+        item.subItems?.some(sub => sub.title === "Submit Batch")
+      )) ||
+    (title === "Proxies" && 
+      finalSidebarStructure.some(item => 
+        item.title === "Scraping API" && 
         item.subItems?.some(sub => sub.title === "Proxies")
       ));
 
