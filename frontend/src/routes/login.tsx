@@ -70,13 +70,13 @@ function Login() {
 
   const XLogo = () => (
     <Link href="https://twitter.com/cobaltdata" target="_blank" rel="noopener noreferrer">
-      <Image src="https://uxwing.com/wp-content/themes/uxwing/download/brands-and-social-media/x-social-media-round-icon.png" alt="XLogo" boxSize="32px" />
+      <Image src="https://images.freeimages.com/image/large-previews/f35/x-twitter-logo-on-black-circle-5694247.png" alt="XLogo" boxSize="32px" />
     </Link>
   )
 
   return (
     <Container maxW="container.xl" p={0} height="100vh">
-      <Flex height="100%" direction={{ base: "column", md: "row" }}>
+      <Flex height="100%" direction={{ base: "column", md: "row" }} align="flex-start">
         {/* Left Column - Text Section */}
         <Box
           flex="1"
@@ -84,7 +84,6 @@ function Login() {
           p={10}
           display="flex"
           flexDirection="column"
-          justifyContent="center"
           alignItems="flex-start"
         >
           <Heading as="h1" size="xl" mb={6} color="gray.800">
@@ -107,7 +106,6 @@ function Login() {
           display="flex"
           flexDirection="column"
           alignItems="center"
-          justifyContent="center"
           gap={6}
         >
           <Link href="https://thedataproxy.com" target="_blank" rel="noopener noreferrer">
