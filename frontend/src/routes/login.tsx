@@ -74,103 +74,112 @@ function Login() {
     </Link>
   )
 
-  return (
-    <Container maxW="container.xl" p={0} height="100vh">
-      <Flex height="100%" direction={{ base: "column", md: "row" }} align="flex-start">
-        {/* Left Column - Text Section */}
-        <Box
-          flex="1"
-          bg="gray.50"
-          p={10}
-          display="flex"
-          flexDirection="column"
-          alignItems="flex-start"
+
+    return (
+      <Container maxW="container.xl" p={0} height="100vh" display="flex" alignItems="center">
+        <Flex 
+          direction={{ base: "column", md: "row" }} 
+          width="100%"
+          maxW="container.xl"
+          bg="white"
+          boxShadow="md"
+          borderRadius="md"
         >
-          <Heading as="h1" size="xl" mb={6} color="gray.800">
-            Welcome Back
-          </Heading>
-          <Text fontSize="lg" color="gray.600" mb={4}>
-            Log in to access your account and continue managing your data with ease.
-          </Text>
-          <Text fontSize="md" color="gray.500">
-            Need help? Contact our support team or check out our documentation.
-          </Text>
-        </Box>
-
-        {/* Right Column - Form Section */}
-        <Box
-          flex="1"
-          as="form"
-          onSubmit={handleSubmit(onSubmit)}
-          p={10}
-          display="flex"
-          flexDirection="column"
-          alignItems="center"
-          gap={6}
-        >
-          <Link href="https://thedataproxy.com" target="_blank" rel="noopener noreferrer">
-            <Image src={Logo} alt="logo" height="auto" maxW="2xs" mb={4} />
-          </Link>
-
-          <FormControl id="username" isInvalid={!!errors.username || !!error}>
-            <Input
-              id="username"
-              {...register("username", {
-                required: "Username is required",
-                pattern: emailPattern,
-              })}
-              placeholder="Email"
-              type="email"
-              required
-            />
-            {errors.username && (
-              <FormErrorMessage>{errors.username.message}</FormErrorMessage>
-            )}
-          </FormControl>
-
-          <FormControl id="password" isInvalid={!!error}>
-            <InputGroup>
+          {/* Left Column - Text Section */}
+          <Box
+            flex="1"
+            bg="gray.50"
+            p={10}
+            display="flex"
+            flexDirection="column"
+            alignItems="flex-start"
+            borderRadius={{ md: "md 0 0 md" }}
+          >
+            <Heading as="h1" size="xl" mb={6} color="gray.800">
+              Welcome Back
+            </Heading>
+            <Text fontSize="lg" color="gray.600" mb={4}>
+              Log in to access your account and continue managing your data with ease.
+            </Text>
+            <Text fontSize="md" color="gray.500">
+              Need help? Contact our support team or check out our documentation.
+            </Text>
+          </Box>
+  
+          {/* Right Column - Form Section */}
+          <Box
+            flex="1"
+            as="form"
+            onSubmit={handleSubmit(onSubmit)}
+            p={10}
+            display="flex"
+            flexDirection="column"
+            alignItems="center"
+            gap={6}
+          >
+            <Link href="https://thedataproxy.com" target="_blank" rel="noopener noreferrer">
+              <Image src={Logo} alt="logo" height="auto" maxW="2xs" mb={4} />
+            </Link>
+  
+            <FormControl id="username" isInvalid={!!errors.username || !!error}>
               <Input
-                {...register("password", { required: "Password is required" })}
-                type={show ? "text" : "password"}
-                placeholder="Password"
+                id="username"
+                {...register("username", {
+                  required: "Username is required",
+                  pattern: emailPattern,
+                })}
+                placeholder="Email"
+                type="email"
                 required
               />
-              <InputRightElement color="ui.dim" _hover={{ cursor: "pointer" }}>
-                <Icon
-                  as={show ? ViewOffIcon : ViewIcon}
-                  onClick={setShow.toggle}
-                  aria-label={show ? "Hide password" : "Show password"}
+              {errors.username && (
+                <FormErrorMessage>{errors.username.message}</FormErrorMessage>
+              )}
+            </FormControl>
+  
+            <FormControl id="password" isInvalid={!!error}>
+              <InputGroup>
+                <Input
+                  {...register("password", { required: "Password is required" })}
+                  type={show ? "text" : "password"}
+                  placeholder="Password"
+                  required
                 />
-              </InputRightElement>
-            </InputGroup>
-            {error && <FormErrorMessage>{error}</FormErrorMessage>}
-          </FormControl>
-
-          <Link as={RouterLink} to="/recover-password" color="blue.500">
-            Forgot password?
-          </Link>
-
-          <Button variant="primary" type="submit" isLoading={isSubmitting} width="full">
-            Log In
-          </Button>
-
-          <Text>
-            Don't have an account?{" "}
-            <Link as={RouterLink} to="/signup" color="blue.500">
-              Sign up
+                <InputRightElement color。中国="ui.dim" _hover={{ cursor: "pointer" }}>
+                  <Icon
+                    as={show ? ViewOffIcon : ViewIcon}
+                    onClick={setShow.toggle}
+                    aria-label={show ? "Hide password" : "Show password"}
+                  />
+                </InputRightElement>
+              </InputGroup>
+              {error && <FormErrorMessage>{error}</FormErrorMessage>}
+            </FormControl>
+  
+            <Link as={RouterLink} to="/recover-password" color="blue.500">
+              Forgot password?
             </Link>
-          </Text>
-
-          <Flex direction="row" justify="center" align="center" gap={4} mt={6}>
-            <GitHubLogo />
-            <LinkedInLogo />
-            <XLogo />
-          </Flex>
-        </Box>
-      </Flex>
-    </Container>
-  )
-}
-
-export default Login
+  
+            <Button variant="primary" type="submit" isLoading={isSubmitting} width="full">
+              Log In
+            </Button>
+  
+            <Text>
+              Don't have an account?{" "}
+              <Link as={RouterLink} to="/signup" color="blue.500">
+                Sign up
+              </Link>
+            </Text>
+  
+            <Flex direction="row" justify="center" align="center" gap={4} mt={6}>
+              <GitHubLogo />
+              <LinkedInLogo />
+              <XLogo />
+            </Flex>
+          </Box>
+        </Flex>
+      </Container>
+    )
+  }
+  
+  export default Login
