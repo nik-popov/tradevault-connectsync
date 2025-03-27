@@ -1,6 +1,6 @@
 // src/pages/GoogleSerpPage.tsx
 import { createFileRoute } from "@tanstack/react-router";
-import { Container, Flex, Text, Https Proxy API, TabList, TabPanels, Tab, TabPanel } from "@chakra-ui/react";
+import { Container, Flex, Text, Https Tabs, TabList, TabPanels, Tab, TabPanel } from "@chakra-ui/react";
 import ProtectedComponent from "../../../components/ProtectedComponent"; // Adjust the import path
 import OverviewGSerp from "../../../components/OverviewGSerp";
 import LogsGSerp from "../../../components/LogsGSerp";
@@ -22,7 +22,7 @@ const GoogleSerpPage = () => {
           <Text fontSize="xl" fontWeight="bold">Https Proxy API</Text>
           <Text fontSize="sm">Manage your Google SERP settings and endpoints.</Text>
         </Flex>
-        <Https Proxy API>
+        <Tabs>
           <TabList>
             {Https Proxy APIConfig.map((tab, index) => (
               <Tab key={index}>{tab.title}</Tab>
@@ -33,7 +33,7 @@ const GoogleSerpPage = () => {
               <TabPanel key={index}>{tab.component()}</TabPanel>
             ))}
           </TabPanels>
-        </Https Proxy API>
+        </Tabs>
       </Container>
     </ProtectedComponent>
   );
