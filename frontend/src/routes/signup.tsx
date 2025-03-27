@@ -9,6 +9,8 @@ import {
   Input,
   Link,
   Text,
+  Box,
+  Heading,
 } from "@chakra-ui/react"
 import {
   Link as RouterLink,
@@ -16,7 +18,6 @@ import {
   redirect,
 } from "@tanstack/react-router"
 import { type SubmitHandler, useForm } from "react-hook-form"
-
 import Logo from "/assets/images/data-proxy-logo.png"
 import type { UserRegister } from "../client"
 import useAuth, { isLoggedIn } from "../hooks/useAuth"
@@ -60,26 +61,51 @@ function SignUp() {
   }
 
   return (
-    <>
-      <Flex flexDir={{ base: "column", md: "row" }} justify="center" h="100vh">
-        <Container
+    <Container maxW="container.xl" p={0} height="100vh" display="flex" alignItems="center">
+      <Flex 
+        direction={{ base: "column", md: "row" }} 
+        width="100%"
+        maxW="container.xl"
+        bg="white"
+        boxShadow="md"
+        borderRadius="md"
+      >
+        {/* Left Column - Text Section */}
+        <Box
+          flex="1"
+          bg="gray.50"
+          p={10}
+          display="flex"
+          flexDirection="column"
+          alignItems="flex-start"
+          borderRadius={{ md: "md 0 0 md" }}
+        >
+          <Heading as="h1" size="xl" mb={6} color="gray.800">
+            Unlock Your Data’s Potential
+          </Heading>
+          <Text fontSize="lg" color="gray.600" mb={4}>
+            Sign up to experience seamless data management and take control with confidence.
+          </Text>
+          <Text fontSize="md" color="gray.500">
+            Need a Boost? Our expert support team and comprehensive documentation are here to fuel your success.
+          </Text>
+        </Box>
+
+        {/* Right Column - Form Section */}
+        <Box
+          flex="1"
           as="form"
           onSubmit={handleSubmit(onSubmit)}
-          h="100vh"
-          maxW="sm"
-          alignItems="stretch"
-          justifyContent="center"
-          gap={4}
-          centerContent
+          p={10}
+          display="flex"
+          flexDirection="column"
+          alignItems="center"
+          gap={6}
         >
-          <Image
-            src={Logo}
-            alt="logo"
-            height="auto"
-            maxW="2xs"
-            alignSelf="center"
-            mb={4}
-          />
+          <Link href="https://thedataproxy.com" target="_blank" rel="noopener noreferrer">
+            <Image src={Logo} alt="logo" height="auto" maxW="2xs" mb={4} />
+          </Link>
+
           <FormControl id="full_name" isInvalid={!!errors.full_name}>
             <FormLabel htmlFor="full_name" srOnly>
               Full Name
@@ -95,6 +121,7 @@ function SignUp() {
               <FormErrorMessage>{errors.full_name.message}</FormErrorMessage>
             )}
           </FormControl>
+
           <FormControl id="email" isInvalid={!!errors.email}>
             <FormLabel htmlFor="email" srOnly>
               Email
@@ -112,6 +139,7 @@ function SignUp() {
               <FormErrorMessage>{errors.email.message}</FormErrorMessage>
             )}
           </FormControl>
+
           <FormControl id="password" isInvalid={!!errors.password}>
             <FormLabel htmlFor="password" srOnly>
               Password
@@ -126,14 +154,11 @@ function SignUp() {
               <FormErrorMessage>{errors.password.message}</FormErrorMessage>
             )}
           </FormControl>
-          <FormControl
-            id="confirm_password"
-            isInvalid={!!errors.confirm_password}
-          >
+
+          <FormControl id="confirm_password" isInvalid={!!errors.confirm_password}>
             <FormLabel htmlFor="confirm_password" srOnly>
               Confirm Password
             </FormLabel>
-
             <Input
               id="confirm_password"
               {...register("confirm_password", confirmPasswordRules(getValues))}
@@ -141,23 +166,23 @@ function SignUp() {
               type="password"
             />
             {errors.confirm_password && (
-              <FormErrorMessage>
-                {errors.confirm_password.message}
-              </FormErrorMessage>
+              <FormErrorMessage>{errors.confirm_password.message}</FormErrorMessage>
             )}
           </FormControl>
-          <Button variant="primary" type="submit" isLoading={isSubmitting}>
+
+          <Button variant="primary" type="submit" isLoading={isSubmitting} width="full">
             Sign Up
           </Button>
+
           <Text>
             Already have an account?{" "}
             <Link as={RouterLink} to="/login" color="blue.500">
               Log In
             </Link>
           </Text>
-        </Container>
+        </Box>
       </Flex>
-    </>
+    </Container>
   )
 }
 
