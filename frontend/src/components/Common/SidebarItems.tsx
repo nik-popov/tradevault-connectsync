@@ -22,7 +22,7 @@ const sidebarStructure: SidebarItem[] = [
     title: "Scraping API",
     subItems: [
       { title: "Jobs", path: "/scraping-api/explore" },
-      { title : 'Submit Batch', path: " /scraping-api/submit-form/google-serp" },
+      { title : "Submit Batch" , path: " /scraping-api/submit-form/google-serp" },
       { title: "Proxies", path: "/scraping-api/search-proxies" },
     ],
     icon: FiTool,
