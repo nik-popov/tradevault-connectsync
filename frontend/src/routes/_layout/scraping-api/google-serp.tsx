@@ -9,8 +9,7 @@ import WhitelistGSerp from "../../../components/WhitelistGSerp";
 
 const GoogleSerpPage = () => {
   const tabsConfig = [
-    { title: "Overview", component: () => <OverviewGSerp /> },
-    { title: "Logs", component: () => <LogsGSerp /> }, // Uses the tabbed LogsGSerp
+    // { title: "Overview", component: () => <OverviewGSerp /> },
     { title: "Playground", component: () => <PlaygroundGSerp /> },
     { title: "API Key", component: () => <ApiKeyGSerp /> },
     { title: "Whitelist", component: () => <WhitelistGSerp /> },
