@@ -47,16 +47,6 @@ function Dashboard() {
     <Container maxW="full" bg="gray.50" minH="100vh">
       {/* Filters & Toggle */}
       <Flex mt={6} gap={4} justify="space-between" align="center" flexWrap="wrap">
-      <Flex align="center">
-  <Text fontWeight="bold" mr={2} color="gray.800">Favorites</Text>
-  <Switch 
-    isChecked={ownedOnly} 
-    onChange={() => setOwnedOnly((prev) => !prev)} 
-    colorScheme="blue"
-    mr={4}
-  />
-</Flex>
-
         <Flex gap={2}>
   {["All", "Search API"].map((type) => (
     <Button
