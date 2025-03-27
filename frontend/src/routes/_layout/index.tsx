@@ -30,7 +30,7 @@ function Dashboard() {
   };
 
   const proxyProducts: Product[] = [
-    { id: "google-serp", name: "⚙️ Google Search API", type: "SERP", description: "Scrape real-time Google search results.", owned: true, path: "/scraping-api/google-serp" },
+    { id: "google-serp", name: "⚙️ Google Search API", type: "Search API", description: "Scrape real-time Google search results.", owned: true, path: "/scraping-api/google-serp" },
   ];
 
   const filteredProducts = useMemo(() => {
@@ -58,7 +58,7 @@ function Dashboard() {
 </Flex>
 
         <Flex gap={2}>
-  {["All", "SERP", "AI"].map((type) => (
+  {["All", "Search API"].map((type) => (
     <Button
       key={type}
       size="md"
