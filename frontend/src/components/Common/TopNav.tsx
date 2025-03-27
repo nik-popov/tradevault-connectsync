@@ -15,7 +15,7 @@ import {
 } from "@chakra-ui/react";
 import { useQueryClient } from "@tanstack/react-query";
 import { Link as RouterLink } from "@tanstack/react-router";
-import { FiLogOut, FiMenu, FiHome, FiUsers, FiGlobe, FiChevronDown, FiUser } from "react-icons/fi";
+import { FiLogOut, FiMenu,FiLayout  , FiUsers, FiSearch , FiChevronDown, FiUser } from "react-icons/fi";
 
 import Logo from "/assets/images/data-proxy-logo.png";
 import type { UserPublic } from "../../client";
@@ -34,11 +34,12 @@ interface NavItemsProps {
 }
 
 const navStructure: NavItem[] = [
-  { title: "Dashboard", icon: FiHome, path: "/" },
+  { title: "Home", icon: FiHome, path: "/" },
   {
-    title: "Scraping",
+    title: "Scraping API",
     subItems: [
       { title: "Jobs", path: "/scraping-api/explore" },
+      { title: "Submit Batch", path: "/scraping-api/submit-form/google-serp" },
       { title: "Proxies", path: "/scraping-api/search-proxies" },
     ],
     icon: FiGlobe,
@@ -61,17 +62,17 @@ const NavItems = ({ onClose, isMobile = false }: NavItemsProps) => {
   const isEnabled = (title: string) =>
     ["Home", "Scraping API", "Admin"].includes(title) ||
     (title === "Jobs" && 
-      finalSidebarStructure.some(item => 
+      finalNavStructure.some(item => 
         item.title === "Scraping API" && 
         item.subItems?.some(sub => sub.title === "Jobs")
       )) ||
       (title === "Submit Batch" &&   
-      finalSidebarStructure.some(item => 
+        finalNavStructure.some(item => 
         item.title === "Scraping API" && 
         item.subItems?.some(sub => sub.title === "Submit Batch")
       )) ||
     (title === "Proxies" && 
-      finalSidebarStructure.some(item => 
+      finalNavStructure.some(item => 
         item.title === "Scraping API" && 
         item.subItems?.some(sub => sub.title === "Proxies")
       ));
