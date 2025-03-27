@@ -15,7 +15,7 @@ import {
 } from "@chakra-ui/react";
 import { useQueryClient } from "@tanstack/react-query";
 import { Link as RouterLink } from "@tanstack/react-router";
-import { FiLogOut, FiMenu,FiLayout  , FiUsers, FiSearch , FiChevronDown, FiUser } from "react-icons/fi";
+import { FiLogOut, FiMenu  , FiUsers, FiSearch , FiChevronDown, FiUser } from "react-icons/fi";
 
 import Logo from "/assets/images/data-proxy-logo.png";
 import type { UserPublic } from "../../client";
@@ -34,7 +34,6 @@ interface NavItemsProps {
 }
 
 const navStructure: NavItem[] = [
-  { title: "Home", icon: FiLayout, path: "/" },
   {
     title: "Scraping API",
     subItems: [
