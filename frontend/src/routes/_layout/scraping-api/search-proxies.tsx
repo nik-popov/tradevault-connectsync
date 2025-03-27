@@ -236,7 +236,7 @@ const ProxyPage = memo(() => {
         <Flex align="center" justify="space-between" flexWrap="wrap" gap={4}>
           <Box textAlign="left" flex="1">
             <Text fontSize="xl" fontWeight="bold" color="black">
-              Search Proxies
+             Proxy Status
             </Text>
             <Text fontSize="sm" color="gray.600">
               View and manage search proxies for scraping operations.
