@@ -222,7 +222,7 @@ const TopNav = () => {
                   color={textColor}
                   _hover={{ color: hoverColor, bg: "gray.100" }}
                 >
-                  Profile
+                  Settings
                 </MenuItem>
                 <MenuItem
                   onClick={handleLogout}
