@@ -234,19 +234,13 @@ const ProxyPage = memo(() => {
   const providerCategories = ["all", ...new Set(allProxies.map((proxy) => proxy.provider))];
 
   return (
-    <Container maxW="full" py={6} color="gray.800">
+    <Container maxW="full">
+      
       <Flex direction="column" gap={4}>
-        <Flex align="center" justify="space-between" flexWrap="wrap" gap={4}>
-          <Box textAlign="left" flex="1">
-            <Text fontSize="xl" fontWeight="bold" color="black">
-              Proxy Status
-            </Text>
-            <Text fontSize="sm" color="gray.600">
-              View and manage search proxies for scraping operations.
-            </Text>
-          </Box>
-        </Flex>
-
+      <Flex align="center" justify="space-between" py={6}>
+        <Text fontSize="xl" fontWeight="bold">Proxy Status</Text>
+        <Text fontSize="sm">View search proxy status by region </Text>
+      </Flex>
         <Flex
           gap={4}
           mb={4}
