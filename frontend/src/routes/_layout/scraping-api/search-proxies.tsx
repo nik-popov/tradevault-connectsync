@@ -126,7 +126,7 @@ const ProxyPage = memo(() => {
   const [regionFilter, setRegionFilter] = useState<string>("all");
   const [providerFilter, setProviderFilter] = useState<string>("all");
   const [healthFilter, setHealthFilter] = useState<string>("all");
-  const [showDetails, setShowDetails] = useState<boolean>(true);
+  const [showDetails, setShowDetails] = useState<boolean>(false);
 
   const allProxies = Object.entries(proxyData).flatMap(([provider, regions], providerIndex) =>
     regions.map((proxy, index) => ({
@@ -255,22 +255,6 @@ const ProxyPage = memo(() => {
           align="center"
           flexWrap="wrap"
         >
-          <Input
-            placeholder="Search proxies..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            w={{ base: "100%", md: "250px" }}
-            aria-label="Search proxies"
-            borderColor="blue.300"
-            _hover={{ borderColor: "blue.400" }}
-            _focus={{ borderColor: "blue.500", boxShadow: "0 0 0 1px blue.500" }}
-            bg="white"
-            color="gray.800"
-            _placeholder={{ color: "gray.500" }}
-            borderRadius="md"
-            px={3}
-            py={2}
-          />
           <HStack spacing={4} ml={{ md: "auto" }} align="center" flexWrap="wrap">
             <Select
               value={healthFilter}
@@ -326,7 +310,7 @@ const ProxyPage = memo(() => {
               <option value="southamerica">South America</option>
               <option value="middleeast">Middle East</option>
             </Select>
-            <Button
+            {/* <Button
               colorScheme="green"
               onClick={handleRefresh}
               isLoading={isRefreshing}
@@ -334,14 +318,14 @@ const ProxyPage = memo(() => {
               size="sm"
             >
               Refresh Now
-            </Button>
-            <Button
+            </Button> */}
+            {/* <Button
               colorScheme="gray"
               onClick={() => setShowDetails(!showDetails)}
               size="sm"
             >
               {showDetails ? "Hide Details" : "Show Details"}
-            </Button>
+            </Button> */}
           </HStack>
         </Flex>
 
