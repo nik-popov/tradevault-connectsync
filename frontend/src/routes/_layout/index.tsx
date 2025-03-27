@@ -30,7 +30,7 @@ function Dashboard() {
   };
 
   const proxyProducts: Product[] = [
-    { id: "google-serp", name: "⚙️ Https Proxy API", type: "SearchAPI", description: "Scrape real-time Google search results.", owned: true, path: "/scraping-api/google-serp" },
+    { id: "google-serp", name: "⚙️ Https Proxy API", type: "SearchAPI", description: "Reroute any https request in any region", owned: true, path: "/scraping-api/google-serp" },
   ];
 
   const filteredProducts = useMemo(() => {
