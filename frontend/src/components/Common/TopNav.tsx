@@ -41,7 +41,7 @@ const navStructure: NavItem[] = [
       { title: "Https Request API", path: "/scraping-api/google-serp" },
  
       // { title: "Submit Batch", path: "/scraping-api/submit-form/google-serp" },
-      { title: "Proxies", path: "/scraping-api/search-proxies" },
+      { title: "Proxy Status", path: "/scraping-api/search-proxies" },
     ],
     icon: FiSearch,
   },
@@ -72,10 +72,10 @@ const NavItems = ({ onClose, isMobile = false }: NavItemsProps) => {
         item.title === "Scraping API" && 
         item.subItems?.some(sub => sub.title === "Https Request API")
       )) ||
-    (title === "Proxies" && 
+    (title === "Proxy Status" && 
       finalNavStructure.some(item => 
         item.title === "Scraping API" && 
-        item.subItems?.some(sub => sub.title === "Proxies")
+        item.subItems?.some(sub => sub.title === "Proxy Status")
       ));
 
   const renderNavItems = (items: NavItem[]) =>
