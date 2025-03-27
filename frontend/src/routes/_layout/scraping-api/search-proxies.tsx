@@ -9,9 +9,14 @@ import {
   Input,
   Button,
   Box,
-  VStack,
   Select,
   HStack,
+  Table,
+  Thead,
+  Tbody,
+  Tr,
+  Th,
+  Td,
 } from "@chakra-ui/react";
 import debounce from "lodash/debounce";
 import useCustomToast from "./../../../hooks/useCustomToast";
@@ -27,62 +32,60 @@ interface Proxy {
   batch?: string;
 }
 
-// Mock proxy data remains unchanged
 const proxyData: Record<string, { region: string; url: string }[]> = {
-    "DataProxy": [
-      // Proxy1 URLs
-      { region: "US-EAST4", url: "https://us-east4-proxy1-454912.cloudfunctions.net/main" },
-      { region: "SOUTHAMERICA-WEST1", url: "https://southamerica-west1-proxy1-454912.cloudfunctions.net/main" },
-      { region: "US-CENTRAL1", url: "https://us-central1-proxy1-454912.cloudfunctions.net/main" },
-      { region: "US-EAST1", url: "https://us-east1-proxy1-454912.cloudfunctions.net/main" },
-      { region: "US-EAST2", url: "https://us-east2-proxy1-454912.cloudfunctions.net/main" },
-      { region: "US-WEST1", url: "https://us-west1-proxy1-454912.cloudfunctions.net/main" },
-      { region: "US-WEST3", url: "https://us-west3-proxy1-454912.cloudfunctions.net/main" },
-      { region: "US-WEST4", url: "https://us-west4-proxy1-454912.cloudfunctions.net/main" },
-      { region: "NORTHAMERICA-NORTHEAST3", url: "https://northamerica-northeast3-proxy1-454912.cloudfunctions.net/main" },
-      // Proxy2 URLs
-      { region: "NORTHAMERICA-NORTHEAST2", url: "https://northamerica-northeast2-proxy2-455013.cloudfunctions.net/main" },
-      { region: "US-CENTRAL1", url: "https://us-central1-proxy2-455013.cloudfunctions.net/main" },
-      { region: "US-EAST5", url: "https://us-east5-proxy2-455013.cloudfunctions.net/main" },
-      { region: "US-WEST2", url: "https://us-west2-proxy2-455013.cloudfunctions.net/main" },
-      { region: "US-WEST6", url: "https://us-west6-proxy2-455013.cloudfunctions.net/main" },
-      { region: "ASIA-SOUTHEAST1", url: "https://asia-southeast1-proxy2-455013.cloudfunctions.net/main" },
-      // Proxy3 URLs
-      { region: "AUSTRALIA-SOUTHEAST1", url: "https://australia-southeast1-proxy3-455013.cloudfunctions.net/main" },
-      { region: "AUSTRALIA-SOUTHEAST2", url: "https://australia-southeast2-proxy3-455013.cloudfunctions.net/main" },
-      { region: "SOUTHAMERICA-EAST1", url: "https://southamerica-east1-proxy3-455013.cloudfunctions.net/main" },
-      { region: "SOUTHAMERICA-EAST2", url: "https://southamerica-east2-proxy3-455013.cloudfunctions.net/main" },
-      { region: "SOUTHAMERICA-WEST1", url: "https://southamerica-west1-proxy3-455013.cloudfunctions.net/main" },
-      { region: "US-SOUTH1", url: "https://us-south1-proxy3-455013.cloudfunctions.net/main" },
-      { region: "ASIA-SOUTH1", url: "https://asia-south1-proxy3-455013.cloudfunctions.net/main" },
-      // Proxy4 URLs
-      { region: "EUROPE-NORTH1", url: "https://europe-north1-proxy4-455014.cloudfunctions.net/main" },
-      { region: "EUROPE-SOUTHWEST1", url: "https://europe-southwest1-proxy4-455014.cloudfunctions.net/main" },
-      { region: "EUROPE-WEST1", url: "https://europe-west1-proxy4-455014.cloudfunctions.net/main" },
-      { region: "EUROPE-WEST4", url: "https://europe-west4-proxy4-455014.cloudfunctions.net/main" },
-      { region: "EUROPE-WEST5", url: "https://europe-west5-proxy4-455014.cloudfunctions.net/main" },
-      { region: "EUROPE-WEST6", url: "https://europe-west6-proxy4-455014.cloudfunctions.net/main" },
-      { region: "EUROPE-WEST8", url: "https://europe-west8-proxy4-455014.cloudfunctions.net/main" },
-      { region: "EUROPE-CENTRAL2", url: "https://europe-central2-proxy4-455014.cloudfunctions.net/main" },
-      // Proxy5 URLs
-      { region: "EUROPE-WEST12", url: "https://europe-west12-proxy5-455014.cloudfunctions.net/main" },
-      { region: "EUROPE-WEST2", url: "https://europe-west2-proxy5-455014.cloudfunctions.net/main" },
-      { region: "EUROPE-WEST3", url: "https://europe-west3-proxy5-455014.cloudfunctions.net/main" },
-      { region: "EUROPE-WEST6", url: "https://europe-west6-proxy5-455014.cloudfunctions.net/main" },
-      { region: "EUROPE-WEST9", url: "https://europe-west9-proxy5-455014.cloudfunctions.net/main" },
-      { region: "EUROPE-WEST11", url: "https://europe-west11-proxy5-455014.cloudfunctions.net/main" },
-      { region: "ASIA-NORTHEAST1", url: "https://asia-northeast1-proxy5-455014.cloudfunctions.net/main" },
-      // Proxy6 URLs
-      { region: "ASIA-EAST1", url: "https://asia-east1-proxy6-455014.cloudfunctions.net/main" },
-      { region: "ASIA-EAST2", url: "https://asia-east2-proxy6-455014.cloudfunctions.net/main" },
-      { region: "ASIA-NORTHEAST2", url: "https://asia-northeast2-proxy6-455014.cloudfunctions.net/main" },
-      { region: "EUROPE-WEST10", url: "https://europe-west10-proxy6-455014.cloudfunctions.net/main" },
-      { region: "MIDDLEEAST-CENTRAL1", url: "https://me-central1-proxy6-455014.cloudfunctions.net/main" },
-      { region: "MIDDLEEAST-CENTRAL2", url: "https://me-central2-proxy6-455014.cloudfunctions.net/main" },
-    ],
-  };
+  DataProxy: [
+    // Proxy1 URLs
+    { region: "US-EAST4", url: "https://us-east4-proxy1-454912.cloudfunctions.net/main" },
+    { region: "SOUTHAMERICA-WEST1", url: "https://southamerica-west1-proxy1-454912.cloudfunctions.net/main" },
+    { region: "US-CENTRAL1", url: "https://us-central1-proxy1-454912.cloudfunctions.net/main" },
+    { region: "US-EAST1", url: "https://us-east1-proxy1-454912.cloudfunctions.net/main" },
+    { region: "US-EAST2", url: "https://us-east2-proxy1-454912.cloudfunctions.net/main" },
+    { region: "US-WEST1", url: "https://us-west1-proxy1-454912.cloudfunctions.net/main" },
+    { region: "US-WEST3", url: "https://us-west3-proxy1-454912.cloudfunctions.net/main" },
+    { region: "US-WEST4", url: "https://us-west4-proxy1-454912.cloudfunctions.net/main" },
+    { region: "NORTHAMERICA-NORTHEAST3", url: "https://northamerica-northeast3-proxy1-454912.cloudfunctions.net/main" },
+    // Proxy2 URLs
+    { region: "NORTHAMERICA-NORTHEAST2", url: "https://northamerica-northeast2-proxy2-455013.cloudfunctions.net/main" },
+    { region: "US-CENTRAL1", url: "https://us-central1-proxy2-455013.cloudfunctions.net/main" },
+    { region: "US-EAST5", url: "https://us-east5-proxy2-455013.cloudfunctions.net/main" },
+    { region: "US-WEST2", url: "https://us-west2-proxy2-455013.cloudfunctions.net/main" },
+    { region: "US-WEST6", url: "https://us-west6-proxy2-455013.cloudfunctions.net/main" },
+    { region: "ASIA-SOUTHEAST1", url: "https://asia-southeast1-proxy2-455013.cloudfunctions.net/main" },
+    // Proxy3 URLs
+    { region: "AUSTRALIA-SOUTHEAST1", url: "https://australia-southeast1-proxy3-455013.cloudfunctions.net/main" },
+    { region: "AUSTRALIA-SOUTHEAST2", url: "https://australia-southeast2-proxy3-455013.cloudfunctions.net/main" },
+    { region: "SOUTHAMERICA-EAST1", url: "https://southamerica-east1-proxy3-455013.cloudfunctions.net/main" },
+    { region: "SOUTHAMERICA-EAST2", url: "https://southamerica-east2-proxy3-455013.cloudfunctions.net/main" },
+    { region: "SOUTHAMERICA-WEST1", url: "https://southamerica-west1-proxy3-455013.cloudfunctions.net/main" },
+    { region: "US-SOUTH1", url: "https://us-south1-proxy3-455013.cloudfunctions.net/main" },
+    { region: "ASIA-SOUTH1", url: "https://asia-south1-proxy3-455013.cloudfunctions.net/main" },
+    // Proxy4 URLs
+    { region: "EUROPE-NORTH1", url: "https://europe-north1-proxy4-455014.cloudfunctions.net/main" },
+    { region: "EUROPE-SOUTHWEST1", url: "https://europe-southwest1-proxy4-455014.cloudfunctions.net/main" },
+    { region: "EUROPE-WEST1", url: "https://europe-west1-proxy4-455014.cloudfunctions.net/main" },
+    { region: "EUROPE-WEST4", url: "https://europe-west4-proxy4-455014.cloudfunctions.net/main" },
+    { region: "EUROPE-WEST5", url: "https://europe-west5-proxy4-455014.cloudfunctions.net/main" },
+    { region: "EUROPE-WEST6", url: "https://europe-west6-proxy4-455014.cloudfunctions.net/main" },
+    { region: "EUROPE-WEST8", url: "https://europe-west8-proxy4-455014.cloudfunctions.net/main" },
+    { region: "EUROPE-CENTRAL2", url: "https://europe-central2-proxy4-455014.cloudfunctions.net/main" },
+    // Proxy5 URLs
+    { region: "EUROPE-WEST12", url: "https://europe-west12-proxy5-455014.cloudfunctions.net/main" },
+    { region: "EUROPE-WEST2", url: "https://europe-west2-proxy5-455014.cloudfunctions.net/main" },
+    { region: "EUROPE-WEST3", url: "https://europe-west3-proxy5-455014.cloudfunctions.net/main" },
+    { region: "EUROPE-WEST6", url: "https://europe-west6-proxy5-455014.cloudfunctions.net/main" },
+    { region: "EUROPE-WEST9", url: "https://europe-west9-proxy5-455014.cloudfunctions.net/main" },
+    { region: "EUROPE-WEST11", url: "https://europe-west11-proxy5-455014.cloudfunctions.net/main" },
+    { region: "ASIA-NORTHEAST1", url: "https://asia-northeast1-proxy5-455014.cloudfunctions.net/main" },
+    // Proxy6 URLs
+    { region: "ASIA-EAST1", url: "https://asia-east1-proxy6-455014.cloudfunctions.net/main" },
+    { region: "ASIA-EAST2", url: "https://asia-east2-proxy6-455014.cloudfunctions.net/main" },
+    { region: "ASIA-NORTHEAST2", url: "https://asia-northeast2-proxy6-455014.cloudfunctions.net/main" },
+    { region: "EUROPE-WEST10", url: "https://europe-west10-proxy6-455014.cloudfunctions.net/main" },
+    { region: "MIDDLEEAST-CENTRAL1", url: "https://me-central1-proxy6-455014.cloudfunctions.net/main" },
+    { region: "MIDDLEEAST-CENTRAL2", url: "https://me-central2-proxy6-455014.cloudfunctions.net/main" },
+  ],
+};
 
-// fetchProxyHealth remains unchanged
 const fetchProxyHealth = async (url: string, timeout: number = 10000): Promise<Proxy | null> => {
   const healthUrl = `${url}/health/google`;
   try {
@@ -236,7 +239,7 @@ const ProxyPage = memo(() => {
         <Flex align="center" justify="space-between" flexWrap="wrap" gap={4}>
           <Box textAlign="left" flex="1">
             <Text fontSize="xl" fontWeight="bold" color="black">
-             Proxy Status
+              Proxy Status
             </Text>
             <Text fontSize="sm" color="gray.600">
               View and manage search proxies for scraping operations.
@@ -372,22 +375,30 @@ const ProxyPage = memo(() => {
             <Spinner size="xl" color="blue.500" />
           </Flex>
         ) : (
-          <VStack spacing={showDetails ? 4 : 2} align="stretch">
-            {filteredProxies.map((proxy) => (
-              <Box 
-                key={`${proxy.provider}-${proxy.region}`} 
-                p={showDetails ? "4" : "2"} 
-                borderWidth="1px" 
-                borderRadius="lg"
-                borderColor="gray.200"
-                bg="white"
-              >
-                {showDetails ? (
-                  <Flex justify="space-between" align="center" wrap="wrap" gap={2}>
-                    <Box flex="1">
+          <Box overflowX="auto">
+            <Table variant="striped" colorScheme="gray">
+              <Thead>
+                <Tr>
+                  <Th>Provider</Th>
+                  <Th>Region</Th>
+                  {showDetails && (
+                    <>
+                      <Th>URL</Th>
+                      <Th>Status</Th>
+                      <Th>Last Checked</Th>
+                      <Th>Public IP</Th>
+                      <Th>Batch</Th>
+                    </>
+                  )}
+                  {!showDetails && <Th>Status</Th>}
+                </Tr>
+              </Thead>
+              <Tbody>
+                {filteredProxies.map((proxy) => (
+                  <Tr key={proxy.id}>
+                    <Td>{proxy.provider}</Td>
+                    <Td>
                       <Text
-                        display="inline"
-                        fontWeight="bold"
                         color="blue.500"
                         cursor="pointer"
                         onClick={() => handleTitleClick(proxy.region)}
@@ -395,70 +406,41 @@ const ProxyPage = memo(() => {
                       >
                         {proxy.region}
                       </Text>
-                      <Badge
-                        colorScheme={proxy.status.includes("reachable") ? "green" : "red"}
-                        variant="solid"
-                        ml={2}
-                      >
-                        {proxy.status.includes("reachable") ? "Healthy" : "Unhealthy"}
-                      </Badge>
-                      <Text fontSize="sm" color="gray.600" mt={1}>
-                        <strong>Public IP:</strong> {proxy.public_ip || "N/A"}, <strong>Status:</strong>{" "}
-                        {proxy.status}, <strong>Last Checked:</strong> {proxy.lastChecked}
-                      </Text>
-                      <Text fontSize="sm" color="gray.600" mt={1} wordBreak="break-word">
-                        <strong>URL:</strong> {proxy.url}
-                      </Text>
-                    </Box>
-                    <Box textAlign="right">
-                      <Text fontSize="sm" fontWeight="semibold" color="gray.700">
-                        {proxy.provider}
-                      </Text>
-                      <Text fontSize="sm" color="gray.600" mt={1}>
-                        <strong>Batch:</strong> {proxy.region.split("-")[1] || proxy.region}
-                      </Text>
-                    </Box>
-                  </Flex>
-                ) : (
-                  <Flex 
-                    align="center" 
-                    justify="space-between" 
-                    wrap="nowrap" 
-                    gap={2}
-                  >
-                    <Text
-                      fontWeight="bold"
-                      color="blue.500"
-                      cursor="pointer"
-                      onClick={() => handleTitleClick(proxy.region)}
-                      _hover={{ textDecoration: "underline" }}
-                      flex="1"
-                      isTruncated
-                    >
-                      {proxy.region}
-                    </Text>
-                    <Badge
-                      colorScheme={proxy.status.includes("reachable") ? "green" : "red"}
-                      variant="solid"
-                      minW="80px"
-                      textAlign="center"
-                    >
-                      {proxy.status.includes("reachable") ? "Healthy" : "Unhealthy"}
-                    </Badge>
-                    <Text 
-                      fontSize="sm" 
-                      color="gray.700"
-                      flex="1"
-                      textAlign="right"
-                      isTruncated
-                    >
-                      {proxy.provider}
-                    </Text>
-                  </Flex>
-                )}
-              </Box>
-            ))}
-          </VStack>
+                    </Td>
+                    {showDetails && (
+                      <>
+                        <Td>{proxy.url}</Td>
+                        <Td>
+                          <Badge
+                            colorScheme={proxy.status.includes("reachable") ? "green" : "red"}
+                            variant="solid"
+                          >
+                            {proxy.status.includes("reachable") ? "Healthy" : "Unhealthy"}
+                          </Badge>
+                          <Text fontSize="sm" color="gray.600">
+                            {proxy.status}
+                          </Text>
+                        </Td>
+                        <Td>{proxy.lastChecked}</Td>
+                        <Td>{proxy.public_ip || "N/A"}</Td>
+                        <Td>{proxy.batch}</Td>
+                      </>
+                    )}
+                    {!showDetails && (
+                      <Td>
+                        <Badge
+                          colorScheme={proxy.status.includes("reachable") ? "green" : "red"}
+                          variant="solid"
+                        >
+                          {proxy.status.includes("reachable") ? "Healthy" : "Unhealthy"}
+                        </Badge>
+                      </Td>
+                    )}
+                  </Tr>
+                ))}
+              </Tbody>
+            </Table>
+          </Box>
         )}
       </Flex>
     </Container>
