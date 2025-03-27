@@ -17,9 +17,9 @@ interface SidebarItem {
 }
 
 const sidebarStructure: SidebarItem[] = [
-  { title: "Dashboard", icon: FiHome, path: "/" },
+  { title: "Home", icon: FiHome, path: "/" },
   {
-    title: "Scraping",
+    title: "Scraping Api",
     subItems: [
       { title: "Jobs", path: "/scraping-api/explore" },
       {title : 'Submit Batch',path: " /scraping-api/submit-form/google-serp" },
