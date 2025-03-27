@@ -1,40 +1,178 @@
 import {
   Box,
   Flex,
+  Icon,
+  Text,
   IconButton,
   Image,
   Link,
   Menu,
   MenuButton,
-  MenuItem,
   MenuList,
-  Text,
-  useColorModeValue,
+  MenuItem,
+  Tooltip,
   useDisclosure,
-} from "@chakra-ui/react"
-import { useQueryClient } from "@tanstack/react-query"
-import { FiLogOut, FiMenu } from "react-icons/fi"
+} from "@chakra-ui/react";
+import { useQueryClient } from "@tanstack/react-query";
+import { Link as RouterLink } from "@tanstack/react-router";
+import { FiLogOut, FiMenu, FiHome, FiUsers, FiGlobe, FiChevronDown } from "react-icons/fi";
 
-import Logo from "/assets/images/data-proxy-logo.png"
-import type { UserPublic } from "../../client"
-import useAuth from "../../hooks/useAuth"
-import SidebarItems from "./SidebarItems" // Note: You'll need to modify this component too
+import Logo from "/assets/images/data-proxy-logo.png";
+import type { UserPublic } from "../../client";
+import useAuth from "../../hooks/useAuth";
+
+interface NavItem {
+  title: string;
+  icon?: any;
+  path?: string;
+  subItems?: NavItem[];
+}
+
+interface NavItemsProps {
+  onClose?: () => void; // Define the onClose prop type
+  isMobile?: boolean;   // Add isMobile prop type
+}
+
+const navStructure: NavItem[] = [
+  { title: "Dashboard", icon: FiHome, path: "/" },
+  {
+    title: "Scraping",
+    subItems: [
+      { title: "Jobs", path: "/scraping-api/explore" },
+      { title: "Proxies", path: "/scraping-api/search-proxies" },
+    ],
+    icon: FiGlobe,
+  },
+];
+
+const NavItems = ({ onClose, isMobile = false }: NavItemsProps) => {
+  const queryClient = useQueryClient();
+  const textColor = "gray.800";
+  const disabledColor = "gray.300";
+  const hoverColor = "blue.600";
+  const bgActive = "blue.100";
+  const activeTextColor = "blue.800";
+  const currentUser = queryClient.getQueryData<UserPublic>(["currentUser"]);
+
+  const finalNavStructure = [...navStructure];
+  if (currentUser?.is_superuser && !finalNavStructure.some(item => item.title === "Admin")) {
+    finalNavStructure.push({ title: "Admin", icon: FiUsers, path: "/admin" });
+  }
+
+  const isEnabled = (title: string) =>
+    ["Dashboard", "Scraping", "Admin"].includes(title) ||
+    (title === "Jobs" &&
+      finalNavStructure.some(item =>
+        item.title === "Scraping" &&
+        item.subItems?.some(sub => sub.title === "Jobs")
+      )) ||
+    (title === "Proxies" &&
+      finalNavStructure.some(item =>
+        item.title === "Scraping" &&
+        item.subItems?.some(sub => sub.title === "Proxies")
+      ));
+
+  const renderNavItems = (items: NavItem[]) =>
+    items.map(({ icon, title, path, subItems }) => {
+      const enabled = isEnabled(title);
+
+      if (!enabled) {
+        return (
+          <Tooltip key={title} label="Restricted" placement={isMobile ? "right" : "bottom"}>
+            <Flex
+              px={4}
+              py={2}
+              color={disabledColor}
+              cursor="not-allowed"
+              _hover={{ color: hoverColor }}
+              align="center"
+              flexDir={isMobile ? "row" : "column"}
+            >
+              {icon && <Icon as={icon} mr={isMobile ? 2 : 0} mb={isMobile ? 0 : 1} color={disabledColor} />}
+              <Text>{title}</Text>
+            </Flex>
+          </Tooltip>
+        );
+      }
+
+      if (subItems) {
+        return (
+          <Menu key={title}>
+            <MenuButton
+              px={4}
+              py={2}
+              color={textColor}
+              _hover={{ color: hoverColor }}
+              _active={{ bg: bgActive, color: activeTextColor }}
+            >
+              <Flex align="center" flexDir={isMobile ? "row" : "row"}>
+                {icon && <Icon as={icon} mr={2} />}
+                <Text>{title}</Text>
+                <Icon as={FiChevronDown} ml={1} />
+              </Flex>
+            </MenuButton>
+            <MenuList>
+              {subItems.map((subItem) => (
+                <MenuItem
+                  key={subItem.title}
+                  as={RouterLink}
+                  to={subItem.path}
+                  color={textColor}
+                  _hover={{ color: hoverColor, bg: "gray.100" }}
+                  onClick={onClose} // Pass onClose to close mobile menu on click
+                >
+                  {subItem.title}
+                </MenuItem>
+              ))}
+            </MenuList>
+          </Menu>
+        );
+      }
+
+      return (
+        <Flex
+          key={title}
+          as={RouterLink}
+          to={path}
+          px={4}
+          py={2}
+          color={textColor}
+          _hover={{ color: hoverColor }}
+          activeProps={{
+            style: { background: bgActive, color: activeTextColor },
+          }}
+          align="center"
+          onClick={onClose} // Pass onClose to close mobile menu on click
+        >
+          {icon && <Icon as={icon} mr={2} />}
+          <Text>{title}</Text>
+        </Flex>
+      );
+    });
+
+  return (
+    <Flex align="center" gap={2} flexDir={isMobile ? "column" : "row"}>
+      {renderNavItems(finalNavStructure)}
+    </Flex>
+  );
+};
 
 const TopNav = () => {
-  const queryClient = useQueryClient()
-  const bgColor = "white"  // Fixed light background
-  const textColor = "gray.800"  // Dark text for visibility
-  const currentUser = queryClient.getQueryData<UserPublic>(["currentUser"])
-  const { isOpen, onOpen, onClose } = useDisclosure()
-  const { logout } = useAuth()
+  const queryClient = useQueryClient();
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const { logout } = useAuth();
+  const currentUser = queryClient.getQueryData<UserPublic>(["currentUser"]);
+  const textColor = "gray.800";
+  const hoverColor = "blue.600";
 
   const handleLogout = async () => {
-    logout()
-  }
-  
+    logout();
+    onClose(); // Close mobile menu on logout
+  };
+
   return (
     <Box
-      bg={bgColor}
+      bg="white"
       px={4}
       py={2}
       position="sticky"
@@ -43,13 +181,8 @@ const TopNav = () => {
       boxShadow="sm"
       w="100%"
     >
-      <Flex
-        align="center"
-        justify="space-between"
-        maxW="1200px"
-        mx="auto"
-      >
-        {/* Left Section - Logo */}
+      <Flex align="center" justify="space-between" maxW="1200px" mx="auto">
+        {/* Logo */}
         <Link href="https://dashboard.thedataproxy.com">
           <Image src={Logo} alt="Logo" h="40px" />
         </Link>
@@ -66,17 +199,11 @@ const TopNav = () => {
         />
 
         {/* Desktop Navigation */}
-        <Flex
-          align="center"
-          gap={8}
-          display={{ base: "none", md: "flex" }}
-        >
-          <SidebarItems /> {/* Note: Modify this to render horizontally */}
-          
-          {/* User Info and Logout */}
+        <Flex align="center" gap={4} display={{ base: "none", md: "flex" }}>
+          <NavItems />
           <Flex align="center" gap={4}>
             {currentUser?.email && (
-              <Text color="gray.800" fontSize="sm" maxW="200px" isTruncated>
+              <Text color={textColor} fontSize="sm" maxW="200px" isTruncated>
                 {currentUser.email}
               </Text>
             )}
@@ -104,16 +231,16 @@ const TopNav = () => {
         p={4}
       >
         <Flex flexDir="column" gap={4}>
-          <SidebarItems onClose={onClose} />
+          <NavItems onClose={onClose} isMobile={true} />
           {currentUser?.email && (
-            <Text color="gray.800" fontSize="sm">
+            <Text color={textColor} fontSize="sm">
               Logged in as: {currentUser.email}
             </Text>
           )}
           <Flex
             as="button"
             onClick={handleLogout}
-            color="blue.600"
+            color={hoverColor}
             fontWeight="bold"
             alignItems="center"
             gap={2}
@@ -124,7 +251,7 @@ const TopNav = () => {
         </Flex>
       </Box>
     </Box>
-  )
-}
+  );
+};
 
-export default TopNav
+export default TopNav;
