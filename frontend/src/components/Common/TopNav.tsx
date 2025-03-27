@@ -34,7 +34,7 @@ interface NavItemsProps {
 }
 
 const navStructure: NavItem[] = [
-  { title: "Home", icon: FiHome, path: "/" },
+  { title: "Home", icon: FiLayout, path: "/" },
   {
     title: "Scraping API",
     subItems: [
@@ -42,7 +42,7 @@ const navStructure: NavItem[] = [
       { title: "Submit Batch", path: "/scraping-api/submit-form/google-serp" },
       { title: "Proxies", path: "/scraping-api/search-proxies" },
     ],
-    icon: FiGlobe,
+    icon: FiSearch,
   },
 ];
 
