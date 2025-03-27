@@ -218,7 +218,7 @@ const TopNav = () => {
               <MenuList>
                 <MenuItem
                   as={RouterLink}
-                  to="/profile" // Adjust path as needed
+                  to="/settings" // Adjust path as needed
                   color={textColor}
                   _hover={{ color: hoverColor, bg: "gray.100" }}
                 >
