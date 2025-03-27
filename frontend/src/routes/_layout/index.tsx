@@ -76,39 +76,36 @@ function Dashboard() {
 
       <Divider my={4} borderColor="gray.200" />
 
-      <Flex mt={6} gap={6} justify="space-between">
-        <Box flex="1">
-          <VStack spacing={6} mt={6} align="stretch">
-            {filteredProducts.length === 0 ? (
-              <Text textAlign="center" fontSize="lg" color="gray.600">No products match this filter.</Text>
-            ) : (
-              filteredProducts.map((product) => (
-                <Box 
-                  key={product.id} 
-                  p={5} 
-                  shadow="md" 
-                  borderWidth="1px" 
-                  borderRadius="lg" 
-                  bg="white"
-                  borderColor="gray.200"
-                >
-                  <Text fontWeight="bold" fontSize="lg" color="gray.800">{product.name}</Text>
-                  <Text fontSize="sm" color="gray.600">{product.description}</Text>
-                  <Button 
-                    mt={3} 
-                    size="sm" 
-                    colorScheme="blue" 
-                    borderRadius="full" 
-                    onClick={() => navigate({ to: product.path })}
-                  >
-                    Manage
-                  </Button>
-                </Box>
-              ))
-            )}
-          </VStack>
-        </Box>
-      </Flex>
+<Flex mt={6} gap={6} justify="space-between">
+  <Box flex="1">
+    <VStack spacing={6} mt={6} align="stretch">
+      {filteredProducts.length === 0 ? (
+        <Text textAlign="center" fontSize="lg" color="gray.600">No products match this filter.</Text>
+      ) : (
+        filteredProducts.map((product) => (
+          <Box
+            key={product.id}
+            p={5}
+            shadow="md"
+            borderWidth="1px"
+            borderRadius="lg"
+            bg="white"
+            borderColor="gray.200"
+            cursor="pointer"              // Add cursor pointer to indicate clickability
+            _hover={{                    // Add hover effect
+              bg: "gray.50",            // Slight shade change on hover
+              transition: "background-color 0.2s"  // Smooth transition
+            }}
+            onClick={() => navigate({ to: product.path })}  // Make entire box clickable
+          >
+            <Text fontWeight="bold" fontSize="lg" color="gray.800">{product.name}</Text>
+            <Text fontSize="sm" color="gray.600">{product.description}</Text>
+          </Box>
+        ))
+      )}
+    </VStack>
+  </Box>
+</Flex>
     </Container>
   );
 }
