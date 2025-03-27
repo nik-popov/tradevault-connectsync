@@ -79,7 +79,7 @@ const theme = extendTheme({
         variant: "primary",
       },
     },
-    Https Proxy API: {
+    Tabs: {
       variants: {
         subtle: {
           tab: {
