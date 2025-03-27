@@ -272,25 +272,6 @@ const ProxyPage = memo(() => {
             py={2}
           />
           <HStack spacing={4} ml={{ md: "auto" }} align="center" flexWrap="wrap">
-            {providerCategories.map((provider) => (
-              <Button
-                key={provider}
-                size="sm"
-                fontWeight="bold"
-                borderRadius="full"
-                colorScheme={providerFilter === provider ? "green" : "gray"}
-                variant={providerFilter === provider ? "solid" : "outline"}
-                onClick={() => setProviderFilter(provider)}
-                color={providerFilter === provider ? "white" : "gray.800"}
-                borderColor={providerFilter === provider ? "blue.500" : "gray.300"}
-                _hover={{
-                  bg: providerFilter === provider ? "blue.600" : "gray.100",
-                  borderColor: providerFilter === provider ? "blue.600" : "gray.400",
-                }}
-              >
-                {provider === "all" ? "All" : provider}
-              </Button>
-            ))}
             <Select
               value={healthFilter}
               onChange={(e) => setHealthFilter(e.target.value)}
