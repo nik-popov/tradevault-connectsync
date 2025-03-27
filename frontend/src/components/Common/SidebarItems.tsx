@@ -19,10 +19,10 @@ interface SidebarItem {
 const sidebarStructure: SidebarItem[] = [
   { title: "Home", icon: FiHome, path: "/" },
   {
-    title: "Scraping Api",
+    title: "Scraping API",
     subItems: [
       { title: "Jobs", path: "/scraping-api/explore" },
-      {title : 'Submit Batch',path: " /scraping-api/submit-form/google-serp" },
+      { title : 'Submit Batch', path: " /scraping-api/submit-form/google-serp" },
       { title: "Proxies", path: "/scraping-api/search-proxies" },
     ],
     icon: FiGlobe,
@@ -44,15 +44,20 @@ const NavItems = () => {  // Changed name from SidebarItems
   }
 
   const isEnabled = (title: string) =>
-    ["Dashboard", "Scraping", "Admin"].includes(title) ||
+    ["Home", "Scraping API", "Admin"].includes(title) ||
     (title === "Jobs" && 
       finalSidebarStructure.some(item => 
-        item.title === "Scraping" && 
+        item.title === "Scraping API" && 
+        item.subItems?.some(sub => sub.title === "Jobs")
+      )) ||
+      (title === "Submit Batch" &&   
+      finalSidebarStructure.some(item => 
+        item.title === "Scraping API" && 
         item.subItems?.some(sub => sub.title === "Jobs")
       )) ||
     (title === "Proxies" && 
       finalSidebarStructure.some(item => 
-        item.title === "Scraping" && 
+        item.title === "Scraping API" && 
         item.subItems?.some(sub => sub.title === "Proxies")
       ));
 
