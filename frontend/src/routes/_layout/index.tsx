@@ -48,7 +48,7 @@ function Dashboard() {
       {/* Filters & Toggle */}
       <Flex mt={6} gap={4} justify="space-between" align="center" flexWrap="wrap">
       <Flex align="center">
-  <Text fontWeight="bold" mr={2} color="gray.800">My Tools</Text>
+  <Text fontWeight="bold" mr={2} color="gray.800">Favorites</Text>
   <Switch 
     isChecked={ownedOnly} 
     onChange={() => setOwnedOnly((prev) => !prev)} 
