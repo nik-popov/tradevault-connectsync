@@ -12,7 +12,6 @@ const GoogleSerpPage = () => {
     // { title: "Overview", component: () => <OverviewGSerp /> },
     { title: "Playground", component: () => <PlaygroundGSerp /> },
     { title: "API Key", component: () => <ApiKeyGSerp /> },
-    { title: "Whitelist", component: () => <WhitelistGSerp /> },
   ];
 
   return (

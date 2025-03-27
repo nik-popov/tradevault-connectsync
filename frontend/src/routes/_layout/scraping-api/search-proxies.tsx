@@ -29,50 +29,6 @@ interface Proxy {
 
 // Mock proxy data remains unchanged
 const proxyData: Record<string, { region: string; url: string }[]> = {
-    "Google Cloud": [
-      { region: "SOUTHAMERICA-WEST1", url: "https://southamerica-west1-image-scraper-451516.cloudfunctions.net/main" },
-      { region: "US-CENTRAL1", url: "https://us-central1-image-scraper-451516.cloudfunctions.net/main" },
-      { region: "US-EAST1", url: "https://us-east1-image-scraper-451516.cloudfunctions.net/main" },
-      { region: "US-EAST4", url: "https://us-east4-image-scraper-451516.cloudfunctions.net/main" },
-      { region: "US-WEST1", url: "https://us-west1-image-scraper-451516.cloudfunctions.net/main" },
-      { region: "EUROPE-WEST4", url: "https://europe-west4-image-scraper-451516.cloudfunctions.net/main" },
-      { region: "US-WEST4", url: "https://us-west4-image-proxy-453319.cloudfunctions.net/main" },
-      { region: "EUROPE-WEST1", url: "https://europe-west1-image-proxy-453319.cloudfunctions.net/main" },
-      { region: "EUROPE-NORTH1", url: "https://europe-north1-image-proxy-453319.cloudfunctions.net/main" },
-      { region: "ASIA-EAST1", url: "https://asia-east1-image-proxy-453319.cloudfunctions.net/main" },
-      { region: "US-SOUTH1", url: "https://us-south1-gen-lang-client-0697423475.cloudfunctions.net/main" },
-      { region: "US-WEST3", url: "https://us-west3-gen-lang-client-0697423475.cloudfunctions.net/main" },
-      { region: "US-EAST5", url: "https://us-east5-gen-lang-client-0697423475.cloudfunctions.net/main" },
-      { region: "ASIA-SOUTHEAST1", url: "https://asia-southeast1-gen-lang-client-0697423475.cloudfunctions.net/main" },
-      { region: "US-WEST2", url: "https://us-west2-gen-lang-client-0697423475.cloudfunctions.net/main" },
-      { region: "NORTHAMERICA-NORTHEAST2", url: "https://northamerica-northeast2-image-proxy2-453320.cloudfunctions.net/main" },
-      { region: "SOUTHAMERICA-EAST1", url: "https://southamerica-east1-image-proxy2-453320.cloudfunctions.net/main" },
-      { region: "EUROPE-WEST8", url: "https://europe-west8-icon-image3.cloudfunctions.net/main" },
-      { region: "EUROPE-SOUTHWEST1", url: "https://europe-southwest1-icon-image3.cloudfunctions.net/main" },
-      { region: "EUROPE-WEST6", url: "https://europe-west6-icon-image3.cloudfunctions.net/main" },
-      { region: "EUROPE-WEST3", url: "https://europe-west3-icon-image3.cloudfunctions.net/main" },
-      { region: "EUROPE-WEST2", url: "https://europe-west2-icon-image3.cloudfunctions.net/main" },
-      { region: "EUROPE-WEST9", url: "https://europe-west9-image-proxy2-453320.cloudfunctions.net/main" },
-      { region: "MIDDLEEAST-WEST1", url: "https://me-west1-image-proxy4.cloudfunctions.net/main" },
-      { region: "MIDDLEEAST-CENTRAL1", url: "https://me-central1-image-proxy4.cloudfunctions.net/main" },
-      { region: "EUROPE-WEST12", url: "https://europe-west12-image-proxy4.cloudfunctions.net/main" },
-      { region: "EUROPE-WEST10", url: "https://europe-west10-image-proxy4.cloudfunctions.net/main" },
-      { region: "ASIA-NORTHEAST2", url: "https://asia-northeast2-image-proxy4.cloudfunctions.net/main" },
-      // Additional Google Cloud URLs from your list not already in the original code
-      { region: "NORTHAMERICA-NORTHEAST1", url: "https://northamerica-northeast1-proxy2-455013.cloudfunctions.net/main" },
-    ],
-    "AWS": [
-      { region: "us-east-1", url: "https://us-east-1-aws-scraper.example.com" },
-      { region: "eu-west-1", url: "https://eu-west-1-aws-scraper.invalid" },
-    ],
-    "Azure": [
-      { region: "eastus", url: "https://prod-fetch.azurewebsites.net/api/HttpTrigger1?code=aW--Ht7EhrEfmS1BQLz4236XyYXlCK4G-70_1rl0Ot7zAzFuZIXBYA==" },
-      { region: "westeurope", url: "https://westeurope-azure-scraper.broken" },
-    ],
-    "DigitalOcean": [
-      { region: "nyc1", url: "https://nyc1-do-scraper.example.com" },
-      { region: "ams3", url: "https://ams3-do-scraper.unreachable" },
-    ],
     "DataProxy": [
       // Proxy1 URLs
       { region: "US-EAST4", url: "https://us-east4-proxy1-454912.cloudfunctions.net/main" },
