@@ -236,7 +236,7 @@ const ProxyPage = memo(() => {
         <Flex align="center" justify="space-between" flexWrap="wrap" gap={4}>
           <Box textAlign="left" flex="1">
             <Text fontSize="xl" fontWeight="bold" color="black">
-              Search Proxies Dashboard
+              Search Proxies
             </Text>
             <Text fontSize="sm" color="gray.600">
               View and manage search proxies for scraping operations.
@@ -264,9 +264,9 @@ const ProxyPage = memo(() => {
             onChange={(e) => setSearchTerm(e.target.value)}
             w={{ base: "100%", md: "250px" }}
             aria-label="Search proxies"
-            borderColor="green.300"
-            _hover={{ borderColor: "green.400" }}
-            _focus={{ borderColor: "green.500", boxShadow: "0 0 0 1px green.500" }}
+            borderColor="blue.300"
+            _hover={{ borderColor: "blue.400" }}
+            _focus={{ borderColor: "blue.500", boxShadow: "0 0 0 1px blue.500" }}
             bg="white"
             color="gray.800"
             _placeholder={{ color: "gray.500" }}
@@ -285,10 +285,10 @@ const ProxyPage = memo(() => {
                 variant={providerFilter === provider ? "solid" : "outline"}
                 onClick={() => setProviderFilter(provider)}
                 color={providerFilter === provider ? "white" : "gray.800"}
-                borderColor={providerFilter === provider ? "green.500" : "gray.300"}
+                borderColor={providerFilter === provider ? "blue.500" : "gray.300"}
                 _hover={{
-                  bg: providerFilter === provider ? "green.600" : "gray.100",
-                  borderColor: providerFilter === provider ? "green.600" : "gray.400",
+                  bg: providerFilter === provider ? "blue.600" : "gray.100",
+                  borderColor: providerFilter === provider ? "blue.600" : "gray.400",
                 }}
               >
                 {provider === "all" ? "All" : provider}
@@ -299,9 +299,9 @@ const ProxyPage = memo(() => {
               onChange={(e) => setHealthFilter(e.target.value)}
               size="sm"
               w={{ base: "100%", md: "150px" }}
-              borderColor="green.300"
-              _hover={{ borderColor: "green.400" }}
-              _focus={{ borderColor: "green.500", boxShadow: "0 0 0 1px green.500" }}
+              borderColor="blue.300"
+              _hover={{ borderColor: "blue.400" }}
+              _focus={{ borderColor: "blue.500", boxShadow: "0 0 0 1px blue.500" }}
               bg="white"
               color="gray.700"
               borderRadius="md"
@@ -311,7 +311,7 @@ const ProxyPage = memo(() => {
                 "& option": {
                   color: "gray.700",
                   backgroundColor: "white",
-                  _hover: { backgroundColor: "green.50" },
+                  _hover: { backgroundColor: "blue.50" },
                 },
               }}
             >
@@ -324,9 +324,9 @@ const ProxyPage = memo(() => {
               onChange={(e) => setRegionFilter(e.target.value)}
               size="sm"
               w={{ base: "100%", md: "220px" }}
-              borderColor="green.300"
-              _hover={{ borderColor: "green.400" }}
-              _focus={{ borderColor: "green.500", boxShadow: "0 0 0 1px green.500" }}
+              borderColor="blue.300"
+              _hover={{ borderColor: "blue.400" }}
+              _focus={{ borderColor: "blue.500", boxShadow: "0 0 0 1px blue.500" }}
               bg="white"
               color="gray.700"
               borderRadius="md"
@@ -336,7 +336,7 @@ const ProxyPage = memo(() => {
                 "& option": {
                   color: "gray.700",
                   backgroundColor: "white",
-                  _hover: { backgroundColor: "green.50" },
+                  _hover: { backgroundColor: "blue.50" },
                 },
               }}
             >
@@ -369,7 +369,7 @@ const ProxyPage = memo(() => {
 
         {isLoading ? (
           <Flex justify="center" align="center" h="200px">
-            <Spinner size="xl" color="green.500" />
+            <Spinner size="xl" color="blue.500" />
           </Flex>
         ) : (
           <VStack spacing={showDetails ? 4 : 2} align="stretch">
@@ -388,7 +388,7 @@ const ProxyPage = memo(() => {
                       <Text
                         display="inline"
                         fontWeight="bold"
-                        color="green.500"
+                        color="blue.500"
                         cursor="pointer"
                         onClick={() => handleTitleClick(proxy.region)}
                         _hover={{ textDecoration: "underline" }}
@@ -428,7 +428,7 @@ const ProxyPage = memo(() => {
                   >
                     <Text
                       fontWeight="bold"
-                      color="green.500"
+                      color="blue.500"
                       cursor="pointer"
                       onClick={() => handleTitleClick(proxy.region)}
                       _hover={{ textDecoration: "underline" }}
