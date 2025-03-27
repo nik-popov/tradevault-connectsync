@@ -36,7 +36,7 @@ function Dashboard() {
   const filteredProducts = useMemo(() => {
     return proxyProducts.filter((product) => {
       const matchesFilter =
-        activeFilter === "all" ||
+        activeFilter === "All" ||
         product.type.toLowerCase() === activeFilter.toLowerCase();
       const matchesOwnership = !ownedOnly || product.owned;
       return matchesFilter && matchesOwnership;
