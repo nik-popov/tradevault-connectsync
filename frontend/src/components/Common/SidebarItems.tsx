@@ -53,7 +53,7 @@ const NavItems = () => {  // Changed name from SidebarItems
       (title === "Submit Batch" &&   
       finalSidebarStructure.some(item => 
         item.title === "Scraping API" && 
-        item.subItems?.some(sub => sub.title === "Jobs")
+        item.subItems?.some(sub => sub.title === "Submit Batch")
       )) ||
     (title === "Proxies" && 
       finalSidebarStructure.some(item => 
