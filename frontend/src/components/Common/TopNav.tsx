@@ -67,10 +67,10 @@ const NavItems = ({ onClose, isMobile = false }: NavItemsProps) => {
         item.title === "Scraping API" && 
         item.subItems?.some(sub => sub.title === "Jobs")
       )) ||
-      (title === "Submit Batch" &&   
+      (title === "Google Search" &&   
         finalNavStructure.some(item => 
         item.title === "Scraping API" && 
-        item.subItems?.some(sub => sub.title === "Submit Batch")
+        item.subItems?.some(sub => sub.title === "Google Search")
       )) ||
     (title === "Proxies" && 
       finalNavStructure.some(item => 
