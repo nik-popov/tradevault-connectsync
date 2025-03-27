@@ -234,7 +234,7 @@ const ProxyPage = memo(() => {
   const providerCategories = ["all", ...new Set(allProxies.map((proxy) => proxy.provider))];
 
   return (
-    <Container maxW="full" py={6} bg="white" color="gray.800">
+    <Container maxW="full" py={6} color="gray.800">
       <Flex direction="column" gap={4}>
         <Flex align="center" justify="space-between" flexWrap="wrap" gap={4}>
           <Box textAlign="left" flex="1">
