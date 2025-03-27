@@ -1,5 +1,6 @@
 import { useNavigate } from '@tanstack/react-router';
 import { createFileRoute } from '@tanstack/react-router';
+
 const LandingPage: React.FC = () => {
   const navigate = useNavigate();
   return (
@@ -15,7 +16,9 @@ const LandingPage: React.FC = () => {
     </div>
   );
 };
+
 export const Route = createFileRoute('/')({
-    component: LandingPage,
-  });
+  component: LandingPage,
+});
+
 export default LandingPage;
