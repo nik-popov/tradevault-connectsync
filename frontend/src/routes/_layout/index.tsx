@@ -30,13 +30,13 @@ function Dashboard() {
   };
 
   const proxyProducts: Product[] = [
-    { id: "google-serp", name: "⚙️ Google Search API", type: "Search API", description: "Scrape real-time Google search results.", owned: true, path: "/scraping-api/google-serp" },
+    { id: "google-serp", name: "⚙️ Google Search API", type: "SearchAPI", description: "Scrape real-time Google search results.", owned: true, path: "/scraping-api/google-serp" },
   ];
 
   const filteredProducts = useMemo(() => {
     return proxyProducts.filter((product) => {
       const matchesFilter =
-        activeFilter === "All" ||
+        activeFilter === "all" ||
         product.type.toLowerCase() === activeFilter.toLowerCase();
       const matchesOwnership = !ownedOnly || product.owned;
       return matchesFilter && matchesOwnership;
@@ -48,7 +48,7 @@ function Dashboard() {
       {/* Filters & Toggle */}
       <Flex mt={6} gap={4} justify="space-between" align="center" flexWrap="wrap">
         <Flex gap={2}>
-  {["All", "Search API"].map((type) => (
+  {["All", "SearchAPI"].map((type) => (
     <Button
       key={type}
       size="md"
