@@ -12,11 +12,12 @@ import {
   Link,
   Text,
   Flex,
+  Box,
+  Heading,
   useBoolean,
 } from "@chakra-ui/react"
 import { Link as RouterLink, createFileRoute, redirect } from "@tanstack/react-router"
 import { type SubmitHandler, useForm } from "react-hook-form"
-
 import Logo from "/assets/images/data-proxy-logo.png"
 import type { Body_login_login_access_token as AccessToken } from "../client"
 import useAuth, { isLoggedIn } from "../hooks/useAuth"
@@ -46,9 +47,7 @@ function Login() {
 
   const onSubmit: SubmitHandler<AccessToken> = async (data) => {
     if (isSubmitting) return
-
     resetError()
-
     try {
       await loginMutation.mutateAsync(data)
     } catch {
@@ -56,139 +55,121 @@ function Login() {
     }
   }
 
-  // Social media logo components
-
-  // GitHub logo remains unchanged
+  // Social media logo components remain unchanged
   const GitHubLogo = () => (
-    <Link
-      href="https://github.com/CobaltDataNet"
-      target="_blank"
-      rel="noopener noreferrer"
-    >
-      <Image
-        src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png"
-        alt="GitHub Logo"
-        boxSize="32px"
-      />
+    <Link href="https://github.com/CobaltDataNet" target="_blank" rel="noopener noreferrer">
+      <Image src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png" alt="GitHub Logo" boxSize="32px" />
     </Link>
   )
 
-  // LinkedIn logo component
   const LinkedInLogo = () => (
-    <Link
-      href="https://www.linkedin.com/company/CobaltDataNet"
-      target="_blank"
-      rel="noopener noreferrer"
-    >
-      <Image
-        src="https://upload.wikimedia.org/wikipedia/commons/c/ca/LinkedIn_logo_initials.png"
-        alt="LinkedIn Logo"
-        boxSize="32px"
-      />
+    <Link href="https://www.linkedin.com/company/CobaltDataNet" target="_blank" rel="noopener noreferrer">
+      <Image src="https://upload.wikimedia.org/wikipedia/commons/c/ca/LinkedIn_logo_initials.png" alt="LinkedIn Logo" boxSize="32px" />
     </Link>
   )
-// X (formerly Twitter) logo component
-const XLogo = () => (
-  <Link
-    href="https://twitter.com/cobaltdata"
-    target="_blank"
-    rel="noopener noreferrer"
-  >
-    <Image
-      src="https://uxwing.com/wp-content/themes/uxwing/download/brands-and-social-media/x-social-media-round-icon.png"
-      alt="XLogo"
-      boxSize="32px"
-    />
-  </Link>
-)
 
+  const XLogo = () => (
+    <Link href="https://twitter.com/cobaltdata" target="_blank" rel="noopener noreferrer">
+      <Image src="https://uxwing.com/wp-content/themes/uxwing/download/brands-and-social-media/x-social-media-round-icon.png" alt="XLogo" boxSize="32px" />
+    </Link>
+  )
 
   return (
-      <Container
-        as="form"
-        onSubmit={handleSubmit(onSubmit)}
-        maxW="sm"
-        p={10} /* Increased padding for more space inside */
-        centerContent
-        display="flex"
-        flexDirection="column"
-        alignItems="center"
-        justifyContent="center"
-        height="100vh" /* Full viewport height */
-        gap={10} /* Adds spacing between form elements */
-      >
-        <Link
-      href="https://thedataproxy.com"
-      target="_blank"
-      rel="noopener noreferrer"
-    >
+    <Container maxW="container.xl" p={0} height="100vh">
+      <Flex height="100%" direction={{ base: "column", md: "row" }}>
+        {/* Left Column - Text Section */}
+        <Box
+          flex="1"
+          bg="gray.50"
+          p={10}
+          display="flex"
+          flexDirection="column"
+          justifyContent="center"
+          alignItems="flex-start"
+        >
+          <Heading as="h1" size="xl" mb={6} color="gray.800">
+            Welcome Back
+          </Heading>
+          <Text fontSize="lg" color="gray.600" mb={4}>
+            Log in to access your account and continue managing your data with ease.
+          </Text>
+          <Text fontSize="md" color="gray.500">
+            Need help? Contact our support team or check out our documentation.
+          </Text>
+        </Box>
 
-      <Image
-        src={Logo}
-        alt=" logo"
-        height="auto"
-        maxW="2xs"
-        alignSelf="center"
-        mb={4}
-      />
-  </Link>
-      <FormControl id="username" isInvalid={!!errors.username || !!error}>
-        <Input
-          id="username"
-          {...register("username", {
-            required: "Username is required",
-            pattern: emailPattern,
-          })}
-          placeholder="Email"
-          type="email"
-          required
-        />
-        {errors.username && (
-          <FormErrorMessage>{errors.username.message}</FormErrorMessage>
-        )}
-      </FormControl>
+        {/* Right Column - Form Section */}
+        <Box
+          flex="1"
+          as="form"
+          onSubmit={handleSubmit(onSubmit)}
+          p={10}
+          display="flex"
+          flexDirection="column"
+          alignItems="center"
+          justifyContent="center"
+          gap={6}
+        >
+          <Link href="https://thedataproxy.com" target="_blank" rel="noopener noreferrer">
+            <Image src={Logo} alt="logo" height="auto" maxW="2xs" mb={4} />
+          </Link>
 
-      <FormControl id="password" isInvalid={!!error}>
-        <InputGroup>
-          <Input
-            {...register("password", { required: "Password is required" })}
-            type={show ? "text" : "password"}
-            placeholder="Password"
-            required
-          />
-          <InputRightElement color="ui.dim" _hover={{ cursor: "pointer" }}>
-            <Icon
-              as={show ? ViewOffIcon : ViewIcon}
-              onClick={setShow.toggle}
-              aria-label={show ? "Hide password" : "Show password"}
-            >
-              {show ? <ViewOffIcon /> : <ViewIcon />}
-            </Icon>
-          </InputRightElement>
-        </InputGroup>
-        {error && <FormErrorMessage>{error}</FormErrorMessage>}
-      </FormControl>
+          <FormControl id="username" isInvalid={!!errors.username || !!error}>
+            <Input
+              id="username"
+              {...register("username", {
+                required: "Username is required",
+                pattern: emailPattern,
+              })}
+              placeholder="Email"
+              type="email"
+              required
+            />
+            {errors.username && (
+              <FormErrorMessage>{errors.username.message}</FormErrorMessage>
+            )}
+          </FormControl>
 
-      <Link as={RouterLink} to="/recover-password" color="blue.500">
-        Forgot password?
-      </Link>
+          <FormControl id="password" isInvalid={!!error}>
+            <InputGroup>
+              <Input
+                {...register("password", { required: "Password is required" })}
+                type={show ? "text" : "password"}
+                placeholder="Password"
+                required
+              />
+              <InputRightElement color="ui.dim" _hover={{ cursor: "pointer" }}>
+                <Icon
+                  as={show ? ViewOffIcon : ViewIcon}
+                  onClick={setShow.toggle}
+                  aria-label={show ? "Hide password" : "Show password"}
+                />
+              </InputRightElement>
+            </InputGroup>
+            {error && <FormErrorMessage>{error}</FormErrorMessage>}
+          </FormControl>
 
-      <Button variant="primary" type="submit" isLoading={isSubmitting}>
-        Log In
-      </Button>
+          <Link as={RouterLink} to="/recover-password" color="blue.500">
+            Forgot password?
+          </Link>
 
-      <Text>
-        Don't have an account?{" "}
-        <Link as={RouterLink} to="/signup" color="blue.500">
-          Sign up
-        </Link>
-      </Text>
+          <Button variant="primary" type="submit" isLoading={isSubmitting} width="full">
+            Log In
+          </Button>
 
-      {/* Social media icons row pushed lower by increasing the top margin */}
-      <Flex direction="row" justify="center" align="center" gap={4} mt={12}>
-        <GitHubLogo />
-        <LinkedInLogo />
-        <XLogo />
+          <Text>
+            Don't have an account?{" "}
+            <Link as={RouterLink} to="/signup" color="blue.500">
+              Sign up
+            </Link>
+          </Text>
+
+          <Flex direction="row" justify="center" align="center" gap={4} mt={6}>
+            <GitHubLogo />
+            <LinkedInLogo />
+            <XLogo />
+          </Flex>
+        </Box>
       </Flex>
     </Container>
   )
