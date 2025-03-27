@@ -38,7 +38,7 @@ const navStructure: NavItem[] = [
     title: "Scraping API",
     subItems: [
     
-      { title: "Google Search", path: "/scraping-api/google-serp" },
+      { title: "Google Search API", path: "/scraping-api/google-serp" },
  
       // { title: "Submit Batch", path: "/scraping-api/submit-form/google-serp" },
       { title: "Proxies", path: "/scraping-api/search-proxies" },
@@ -67,7 +67,7 @@ const NavItems = ({ onClose, isMobile = false }: NavItemsProps) => {
         item.title === "Scraping API" && 
         item.subItems?.some(sub => sub.title === "Jobs")
       )) ||
-      (title === "Google Search" &&   
+      (title === "Google Search API" &&   
         finalNavStructure.some(item => 
         item.title === "Scraping API" && 
         item.subItems?.some(sub => sub.title === "Google Search")
