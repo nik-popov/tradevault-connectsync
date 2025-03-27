@@ -17,7 +17,7 @@ const LandingPage: React.FC = () => {
   );
 };
 
-export const Route = createFileRoute('/')({
+export const Route = createFileRoute('/_layout')({
   component: LandingPage,
 });
 
