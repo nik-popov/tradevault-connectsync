@@ -81,7 +81,7 @@ function SignUp() {
           borderRadius={{ md: "md 0 0 md" }}
         >
         <Heading as="h1" size="xl" mb={6} color="gray.800">
-            Access Your Data Insights
+            Access Your Data Needs
           </Heading>
           <Text fontSize="lg" color="gray.600" mb={4}>
             Sign up to wield cutting-edge tools and transform your data into pure power.
