@@ -95,13 +95,13 @@ function Login() {
           borderRadius={{ md: "md 0 0 md" }}
         >
           <Heading as="h1" size="xl" mb={6} color="gray.800">
-            Welcome Back
+          Unlock Your Data’s Potential
           </Heading>
           <Text fontSize="lg" color="gray.600" mb={4}>
-            Log in to access your account and continue managing your data with ease.
+          Sign in to experience seamless data management and take control with confidence.
           </Text>
           <Text fontSize="md" color="gray.500">
-            Need help? Contact our support team or check out our documentation.
+Need a Boost? Our expert support team and comprehensive documentation are here to fuel your success.
           </Text>
         </Box>
 
