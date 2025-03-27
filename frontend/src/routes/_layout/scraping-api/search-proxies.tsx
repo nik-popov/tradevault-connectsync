@@ -242,13 +242,11 @@ const ProxyPage = memo(() => {
         <Text fontSize="sm">View search proxy status by region </Text>
       </Flex>
         <Flex
-          gap={4}
-          mb={4}
+          gap={2}
           position="sticky"
           top="0"
           bg="white"
           zIndex="10"
-          py={5}
           borderBottom="1px solid"
           borderColor="gray.200"
           justify="space-between"
