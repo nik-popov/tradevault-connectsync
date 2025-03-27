@@ -1,7 +1,7 @@
 import { Flex, Spinner } from "@chakra-ui/react"
 import { Outlet, createFileRoute, redirect } from "@tanstack/react-router"
 
-import Sidebar from "../components/Common/Sidebar"
+import TopNav from "../components/Common/TopNav" // Changed from Sidebar
 import UserMenu from "../components/Common/UserMenu"
 import useAuth, { isLoggedIn } from "../hooks/useAuth"
 
@@ -20,16 +20,32 @@ function Layout() {
   const { isLoading } = useAuth()
 
   return (
-    <Flex maxW="large" h="auto" position="relative">
-      <Sidebar />
+    <Flex 
+      direction="column" // Changed to column layout
+      minH="100vh"    // Ensure full height
+      w="100%"
+    >
+      <TopNav /> {/* Changed from Sidebar */}
       {isLoading ? (
-        <Flex justify="center" align="center" height="100vh" width="full">
+        <Flex 
+          justify="center" 
+          align="center" 
+          flex="1" // Allow it to fill remaining space
+        >
           <Spinner size="xl" color="ui.main" />
         </Flex>
       ) : (
-        <Outlet />
+        <Flex
+          flex="1" // Allow content to fill remaining space
+          direction="column"
+          maxW="1200px" // Match TopNav max-width if desired
+          mx="auto"     // Center the content
+          w="100%"
+        >
+          <Outlet />
+        </Flex>
       )}
-      <UserMenu />
+      <UserMenu /> {/* Note: You might want to move this into TopNav */}
     </Flex>
   )
 }

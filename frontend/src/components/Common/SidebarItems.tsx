@@ -1,24 +1,11 @@
-import { Box, Flex, Icon, Text, useColorModeValue, Tooltip } from "@chakra-ui/react";
+import { Box, Flex, Icon, Text, useColorModeValue, Tooltip, Menu, MenuButton, MenuList, MenuItem } from "@chakra-ui/react";
 import { useQueryClient } from "@tanstack/react-query";
 import { Link } from "@tanstack/react-router";
 import {
   FiHome,
   FiUsers,
-  FiLayers,
-  FiMessageSquare,
-  FiCpu,
-  FiMusic,
-  FiWifi,
-  FiCalendar,
-  FiFileText,
-  FiSettings,
-  FiTool,
-  FiDatabase,
   FiGlobe,
-  FiShield,
-  FiCloud,
-  FiMonitor,
-  FiHelpCircle,
+  FiChevronDown,
 } from "react-icons/fi";
 import type { UserPublic } from "../../client";
 
@@ -41,17 +28,13 @@ const sidebarStructure: SidebarItem[] = [
   },
 ];
 
-interface SidebarItemsProps {
-  onClose?: () => void;
-}
-
-const SidebarItems = ({ onClose }: SidebarItemsProps) => {
+const NavItems = () => {  // Changed name from SidebarItems
   const queryClient = useQueryClient();
-  const textColor = "gray.800"  // Dark text for enabled items
-  const disabledColor = "gray.300"  // Darker gray for disabled items (was gray.400)
-  const hoverColor = "blue.600"  // blue accent for hover
-  const bgActive = "blue.100"  // Light blue for active state
-  const activeTextColor = "blue.800"  // Darker blue for active text
+  const textColor = "gray.800";
+  const disabledColor = "gray.300";
+  const hoverColor = "blue.600";
+  const bgActive = "blue.100";
+  const activeTextColor = "blue.800";
   const currentUser = queryClient.getQueryData<UserPublic>(["currentUser"]);
 
   const finalSidebarStructure = [...sidebarStructure];
@@ -70,63 +53,88 @@ const SidebarItems = ({ onClose }: SidebarItemsProps) => {
       finalSidebarStructure.some(item => 
         item.title === "Scraping" && 
         item.subItems?.some(sub => sub.title === "Proxies")
-      )) ||
-    (title === "User Agents" && 
-      finalSidebarStructure.some(item => 
-        item.title === "Scraping" && 
-        item.subItems?.some(sub => sub.title === "User Agents")
       ));
 
   const renderItems = (items: SidebarItem[]) =>
     items.map(({ icon, title, path, subItems }) => {
       const enabled = isEnabled(title);
-      return (
-        <Box key={title}>
-          {path ? (
-            enabled ? (
-              <Flex
-                as={Link}
-                to={path}
-                w="100%"
-                p={2}
-                activeProps={{
-                  style: { background: bgActive, borderRadius: "12px", color: activeTextColor },
-                }}
-                color={textColor}
-                _hover={{ color: hoverColor }}
-                onClick={onClose}
-              >
-                {icon && <Icon as={icon} alignSelf="center" />}
-                <Text color={textColor} ml={2}>{title}</Text>
+      
+      if (!enabled) {
+        return (
+          <Tooltip key={title} label="Restricted" placement="bottom">
+            <Flex
+              px={4}
+              py={2}
+              color={disabledColor}
+              cursor="not-allowed"
+              _hover={{ color: hoverColor }}
+              align="center"
+            >
+              {icon && <Icon as={icon} mr={2} color={disabledColor} />}
+              <Text>{title}</Text>
+            </Flex>
+          </Tooltip>
+        );
+      }
+
+      if (subItems) {
+        return (
+          <Menu key={title}>
+            <MenuButton
+              px={4}
+              py={2}
+              color={textColor}
+              _hover={{ color: hoverColor }}
+              _active={{ bg: bgActive, color: activeTextColor }}
+            >
+              <Flex align="center">
+                {icon && <Icon as={icon} mr={2} />}
+                <Text>{title}</Text>
+                <Icon as={FiChevronDown} ml={1} />
               </Flex>
-            ) : (
-              <Tooltip label="Restricted" placement="right">
-                <Flex
-                  w="100%"
-                  p={2}
-                  color={disabledColor}
-                  cursor="not-allowed"
-                  _hover={{ color: hoverColor }}
+            </MenuButton>
+            <MenuList>
+              {subItems.map((subItem) => (
+                <MenuItem
+                  key={subItem.title}
+                  as={Link}
+                  to={subItem.path}
+                  color={textColor}
+                  _hover={{ color: hoverColor, bg: "gray.100" }}
                 >
-                  {icon && <Icon as={icon} alignSelf="center" color={disabledColor} />}
-                  <Text ml={2} color={disabledColor}>{title}</Text>
-                </Flex>
-              </Tooltip>
-            )
-          ) : (
-            <Box>
-              <Flex p={2} color={enabled ? textColor : disabledColor}>
-                {icon && <Icon as={icon} alignSelf="center" color={enabled ? textColor : disabledColor} />}
-                <Text ml={2} color={enabled ? textColor : disabledColor}>{title}</Text>
-              </Flex>
-              <Box ml={6}>{subItems && renderItems(subItems)}</Box>
-            </Box>
-          )}
-        </Box>
+                  {subItem.title}
+                </MenuItem>
+              ))}
+            </MenuList>
+          </Menu>
+        );
+      }
+
+      return (
+        <Flex
+          key={title}
+          as={Link}
+          to={path}
+          px={4}
+          py={2}
+          color={textColor}
+          _hover={{ color: hoverColor }}
+          activeProps={{
+            style: { background: bgActive, color: activeTextColor },
+          }}
+          align="center"
+        >
+          {icon && <Icon as={icon} mr={2} />}
+          <Text>{title}</Text>
+        </Flex>
       );
     });
 
-  return <Box>{renderItems(finalSidebarStructure)}</Box>;
+  return (
+    <Flex align="center" gap={2}>
+      {renderItems(finalSidebarStructure)}
+    </Flex>
+  );
 };
 
-export default SidebarItems;
+export default NavItems;
