@@ -47,6 +47,7 @@ function Dashboard() {
     <Container maxW="full" bg="gray.50" minH="100vh">
       {/* Filters & Toggle */}
       <Flex mt={6} gap={4} justify="space-between" align="center" flexWrap="wrap">
+        <Flex gap={2}>
   {["All", "SearchAPI"].map((type) => (
     <Button
       key={type}
@@ -70,6 +71,7 @@ function Dashboard() {
       {type}
     </Button>
   ))}
+</Flex>
       </Flex>
 
       <Divider my={4} borderColor="gray.200" />
