@@ -239,7 +239,7 @@ const ProxyPage = memo(() => {
       <Flex direction="column" gap={4}>
       <Flex align="center" justify="space-between" py={6}>
         <Text fontSize="xl" fontWeight="bold">Proxy Status</Text>
-        <Text fontSize="sm">View search proxy status by region </Text>
+        <Text fontSize="sm">View proxy status by region </Text>
       </Flex>
         <Flex
           gap={2}
@@ -336,7 +336,6 @@ const ProxyPage = memo(() => {
             <Table variant="striped" colorScheme="gray">
               <Thead>
                 <Tr>
-                  <Th>Provider</Th>
                   <Th>Region</Th>
                   {showDetails && (
                     <>
@@ -353,7 +352,6 @@ const ProxyPage = memo(() => {
               <Tbody>
                 {filteredProxies.map((proxy) => (
                   <Tr key={proxy.id}>
-                    <Td>{proxy.provider}</Td>
                     <Td>
                       <Text
                         color="blue.500"
