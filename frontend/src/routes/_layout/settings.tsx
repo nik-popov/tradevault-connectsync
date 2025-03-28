@@ -49,17 +49,11 @@ function UserSettings() {
     : tabsConfig; // All tabs for non-superusers (or adjust as needed)
 
   return (
-    <Container maxW="full" bg="gray.50" color="gray.800">
-      <Flex align="center" justify="space-between" py={6} flexWrap="wrap" gap={4}>
-        <Box textAlign="left" flex="1">
-          <Text fontSize="xl" fontWeight="bold" color="black">
-            Settings
-          </Text>
-          <Text fontSize="sm" color="gray.600">
-            Manage system & user settings
-          </Text>
-        </Box>
-      </Flex>
+    <Container maxW="full">
+    <Flex align="center" justify="space-between" py={6}>
+      <Text fontSize="xl" fontWeight="bold">HTTPS Proxy API</Text>
+      <Text fontSize="sm">Manage your HTTPS proxy settings and regions.</Text>
+    </Flex>
 
       <Divider my={4} borderColor="gray.200" />
 
