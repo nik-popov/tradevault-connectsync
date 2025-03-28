@@ -52,7 +52,6 @@ function Dashboard() {
     <Button
       key={type}
       size="md"
-      fontWeight="bold"
       borderRadius="full"
       colorScheme={
         activeFilter === type.toLowerCase() || 
@@ -98,7 +97,7 @@ function Dashboard() {
             }}
             onClick={() => navigate({ to: product.path })}  // Make entire box clickable
           >
-            <Text fontWeight="bold" fontSize="lg" color="gray.800">{product.name}</Text>
+            <Text fontSize="lg" color="gray.800">{product.name}</Text>
             <Text fontSize="sm" color="gray.600">{product.description}</Text>
           </Box>
         ))

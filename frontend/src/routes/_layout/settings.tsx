@@ -51,8 +51,8 @@ function UserSettings() {
   return (
     <Container maxW="full">
     <Flex align="center" justify="space-between" py={6}>
-      <Text fontSize="xl" fontWeight="bold">HTTPS Proxy API</Text>
-      <Text fontSize="sm">Manage your HTTPS proxy settings and regions.</Text>
+      <Text fontSize="xl">Settings</Text>
+      <Text fontSize="sm">Manage your settings</Text>
     </Flex>
 
       <Divider my={4} borderColor="gray.200" />

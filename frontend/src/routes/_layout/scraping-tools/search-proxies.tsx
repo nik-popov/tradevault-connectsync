@@ -238,7 +238,7 @@ const ProxyPage = memo(() => {
       
       <Flex direction="column" gap={4}>
       <Flex align="center" justify="space-between" py={6}>
-        <Text fontSize="xl" fontWeight="bold">Proxy Status</Text>
+        <Text fontSize="xl">Proxy Status</Text>
         <Text fontSize="sm">View proxy status by region </Text>
       </Flex>
         <Flex
