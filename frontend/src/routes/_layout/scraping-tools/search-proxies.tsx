@@ -228,7 +228,7 @@ const ProxyPage = memo(() => {
   });
 
   const handleTitleClick = (region: string) => {
-    navigate({ to: "/scraping-api/endpoints/$endpointId", params: { endpointId: region } });
+    navigate({ to: "/scraping-tools/endpoints/$endpointId", params: { endpointId: region } });
   };
 
   const providerCategories = ["all", ...new Set(allProxies.map((proxy) => proxy.provider))];
@@ -406,7 +406,7 @@ const ProxyPage = memo(() => {
 
 ProxyPage.displayName = "SearchProxiesPage";
 
-export const Route = createFileRoute("/_layout/scraping-api/search-proxies")({
+export const Route = createFileRoute("/_layout/scraping-tools/search-proxies")({
   component: ProxyPage,
 });
 

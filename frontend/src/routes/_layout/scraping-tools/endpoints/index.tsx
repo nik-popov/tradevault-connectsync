@@ -64,7 +64,7 @@ const endpointData: EndpointData[] = [
 ];
 
 // Define the route for the list page (no parameters)
-export const Route = createFileRoute('/_layout/scraping-api/endpoints/')({
+export const Route = createFileRoute('/_layout/scraping-tools/endpoints/')({
   component: EndpointsListPage,
 });
 
@@ -98,7 +98,7 @@ function EndpointsListPage() {
               <Tr key={endpoint.endpointId}>
                 <Td>
                 <Link
-  to="/scraping-api/endpoints/$endpointId"
+  to="/scraping-tools/endpoints/$endpointId"
   params={{ endpointId: endpoint.endpointId }}
 >
                     {endpoint.endpointId}

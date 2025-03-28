@@ -15,8 +15,8 @@ const GoogleSerpPage = () => {
     <ProtectedComponent>
       <Container maxW="full">
         <Flex align="center" justify="space-between" py={6}>
-          <Text fontSize="xl" fontWeight="bold">Https Proxy API</Text>
-          <Text fontSize="sm">Manage your Google SERP settings and endpoints.</Text>
+          <Text fontSize="xl" fontWeight="bold">HTTPS Proxy API</Text>
+          <Text fontSize="sm">Manage your HTTPS proxy settings and regions.</Text>
         </Flex>
         <Tabs>
           <TabList>
@@ -35,7 +35,7 @@ const GoogleSerpPage = () => {
   );
 };
 
-export const Route = createFileRoute("/_layout/scraping-api/google-serp")({
+export const Route = createFileRoute("/_layout/scraping-tools/https-proxy")({
   component: GoogleSerpPage,
 });
 

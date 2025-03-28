@@ -178,7 +178,7 @@ const LogsDetails: React.FC = () => {
             size="sm"
             colorScheme="teal"
             as={Link}
-            to="/scraping-api/log-files"
+            to="/scraping-tools/log-files"
           >
             Back to Log Files
           </Button>

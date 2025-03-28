@@ -26,7 +26,7 @@ const ScrapingJobsIndexPage = () => {
           <Text mb={4}>
             View all your scraping jobs, check their status, and download results from the Explore page.
           </Text>
-          <Button as={Link} to="/scraping-api/explore" colorScheme="blue">
+          <Button as={Link} to="/scraping-tools/explore" colorScheme="blue">
             Explore Jobs
           </Button>
         </Box>
@@ -41,7 +41,7 @@ const ScrapingJobsIndexPage = () => {
   );
 };
 
-export const Route = createFileRoute("/_layout/scraping-api/scraping-jobs/")({
+export const Route = createFileRoute("/_layout/scraping-tools/scraping-jobs/")({
   component: ScrapingJobsIndexPage,
 });
 

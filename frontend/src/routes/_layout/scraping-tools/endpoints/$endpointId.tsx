@@ -428,7 +428,7 @@ const LoadScriptOnce: React.FC<{ children: React.ReactNode }> = ({ children }) =
 };
 
 const EndpointDetailPage = () => {
-  const { endpointId } = useParams({ from: "/_layout/scraping-api/endpoints/$endpointId" });
+  const { endpointId } = useParams({ from: "/_layout/scraping-tools/endpoints/$endpointId" });
   const showToast = useCustomToast(); // Use custom toast in main component
 
   const [tracerouteData, setTracerouteData] = useState<TracerouteHop[]>([]);
@@ -672,7 +672,7 @@ const EndpointDetailPage = () => {
   );
 };
 
-export const Route = createFileRoute("/_layout/scraping-api/endpoints/$endpointId")({
+export const Route = createFileRoute("/_layout/scraping-tools/endpoints/$endpointId")({
   component: EndpointDetailPage,
 });
 

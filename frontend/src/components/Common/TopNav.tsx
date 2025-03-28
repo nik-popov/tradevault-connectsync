@@ -35,13 +35,13 @@ interface NavItemsProps {
 
 const navStructure: NavItem[] = [
   {
-    title: "Scraping API",
+    title: "Scraping Tools",
     subItems: [
     
-      { title: "Https Request API", path: "/scraping-api/google-serp" },
+      { title: "HTTPS Request API", path: "/scraping-tools/https-proxy" },
  
-      // { title: "Submit Batch", path: "/scraping-api/submit-form/google-serp" },
-      { title: "Proxy Status", path: "/scraping-api/search-proxies" },
+      // { title: "Submit Batch", path: "/scraping-tools/submit-form/https-proxy" },
+      { title: "Realtime Proxy Status", path: "/scraping-tools/search-proxies" },
     ],
     icon: FiSearch,
   },
@@ -61,21 +61,21 @@ const NavItems = ({ onClose, isMobile = false }: NavItemsProps) => {
     finalNavStructure.push({ title: "Admin", icon: FiUsers, path: "/admin" });
   }
   const isEnabled = (title: string) =>
-    ["Home", "Scraping API", "Admin"].includes(title) ||
+    ["Home", "Scraping Tools", "Admin"].includes(title) ||
     (title === "Jobs" && 
       finalNavStructure.some(item => 
-        item.title === "Scraping API" && 
+        item.title === "Scraping Tools" && 
         item.subItems?.some(sub => sub.title === "Jobs")
       )) ||
-      (title === "Https Request API" &&   
+      (title === "HTTPS Request API" &&   
         finalNavStructure.some(item => 
-        item.title === "Scraping API" && 
-        item.subItems?.some(sub => sub.title === "Https Request API")
+        item.title === "Scraping Tools" && 
+        item.subItems?.some(sub => sub.title === "HTTPS Request API")
       )) ||
-    (title === "Proxy Status" && 
+    (title === "Realtime Proxy Status" && 
       finalNavStructure.some(item => 
-        item.title === "Scraping API" && 
-        item.subItems?.some(sub => sub.title === "Proxy Status")
+        item.title === "Scraping Tools" && 
+        item.subItems?.some(sub => sub.title === "Realtime Proxy Status")
       ));
 
   const renderNavItems = (items: NavItem[]) =>

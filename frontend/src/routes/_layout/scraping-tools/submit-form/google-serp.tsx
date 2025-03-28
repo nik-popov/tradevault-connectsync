@@ -221,7 +221,7 @@ const GoogleSerpForm: React.FC = () => {
       await response.json();
       
       showToast('Success', 'Data submitted successfully', 'success');
-      navigate({ to: '/scraping-api/submit-form/success' });
+      navigate({ to: '/scraping-tools/submit-form/success' });
     } catch (error) {
       showToast('Submission Error', error instanceof Error ? error.message : 'Unknown error', 'error');
     } finally {
@@ -732,6 +732,6 @@ const ConfirmHeaderModal: React.FC<ConfirmHeaderModalProps> = ({
   </Modal>
 );
 
-export const Route = createFileRoute('/_layout/scraping-api/submit-form/google-serp')({
+export const Route = createFileRoute('/_layout/scraping-tools/submit-form/https-proxy')({
   component: GoogleSerpForm,
 });

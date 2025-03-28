@@ -239,7 +239,7 @@ const UserAgentDashboard = () => {
   );
 };
 
-export const Route = createFileRoute("/_layout/scraping-api/user-agents")({
+export const Route = createFileRoute("/_layout/scraping-tools/user-agents")({
   component: UserAgentDashboard,
 });
 

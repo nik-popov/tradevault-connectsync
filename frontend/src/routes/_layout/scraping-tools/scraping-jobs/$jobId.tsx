@@ -1290,13 +1290,13 @@ const SearchRowsTab: React.FC<SearchRowsTabProps> = ({ job }) => {
 };
 
 const JobsDetailPage = () => {
-  const { jobId } = useParams({ from: "/_layout/scraping-api/scraping-jobs/$jobId" }) as { jobId: string };
+  const { jobId } = useParams({ from: "/_layout/scraping-tools/scraping-jobs/$jobId" }) as { jobId: string };
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [jobData, setJobData] = useState<JobDetails | null>(null);
   const showToast = useCustomToast();
 
-  const searchParams = useSearch({ from: "/_layout/scraping-api/scraping-jobs/$jobId" }) as { search?: string; activeTab?: string };
+  const searchParams = useSearch({ from: "/_layout/scraping-tools/scraping-jobs/$jobId" }) as { search?: string; activeTab?: string };
   const initialTab = searchParams.activeTab ? parseInt(searchParams.activeTab, 10) : 4;
   const [activeTab, setActiveTab] = useState<number>(isNaN(initialTab) || initialTab < 0 || initialTab > 4 ? 4 : initialTab);
   const [sortBy, setSortBy] = useState<"match" | "linesheet" | null>(null);
@@ -1414,7 +1414,7 @@ const JobsDetailPage = () => {
   );
 };
 
-export const Route = createFileRoute("/_layout/scraping-api/scraping-jobs/$jobId")({
+export const Route = createFileRoute("/_layout/scraping-tools/scraping-jobs/$jobId")({
   component: JobsDetailPage,
 });
 

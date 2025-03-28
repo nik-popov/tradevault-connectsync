@@ -138,7 +138,7 @@ const OverviewGSerp: React.FC = () => {
 
     setError(null);
     try {
-      const response = await fetch("https://s3.us-east-1.amazonaws.com/thedataproxy.com/google-serp-overview.json");
+      const response = await fetch("https://s3.us-east-1.amazonaws.com/thedataproxy.com/https-proxy-overview.json");
       if (!response.ok) throw new Error("Failed to fetch data");
       const data: EndpointData[] = await response.json();
 
