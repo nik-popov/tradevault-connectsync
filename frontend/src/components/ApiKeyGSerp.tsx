@@ -53,9 +53,6 @@ const ApiKeyGSerp: React.FC = () => {
 
   return (
     <Box p={4} width="100%">
-      <Flex justify="space-between" align="center" mb={4}>
-        <Text fontSize="lg" fontWeight="bold">API Key Management</Text>
-      </Flex>
       <Flex direction="column" gap={6}>
         <Box>
           <Text fontSize="md" fontWeight="semibold" mb={2}>Generate New API Key</Text>
