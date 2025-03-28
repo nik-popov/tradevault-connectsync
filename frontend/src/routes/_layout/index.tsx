@@ -18,7 +18,7 @@ export const Route = createFileRoute("/_layout/")({
 function Dashboard() {
   const navigate = useNavigate();
   const [ownedOnly, setOwnedOnly] = useState(true);
-  const [activeFilter, setActiveFilter] = useState("SearchAPI");
+  const [activeFilter, setActiveFilter] = useState("proxy");
 
   type Product = {
     id: string;
