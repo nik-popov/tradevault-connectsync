@@ -45,34 +45,6 @@ function Dashboard() {
 
   return (
     <Container maxW="full" bg="gray.50" minH="100vh">
-      {/* Filters & Toggle */}
-      <Flex mt={6} gap={4} justify="space-between" align="center" flexWrap="wrap">
-        <Flex gap={2}>
-  {["all"].map((type) => (
-    <Button
-      key={type}
-      size="md"
-      borderRadius="full"
-      colorScheme={
-        activeFilter === type.toLowerCase() || 
-        (type === "All" && activeFilter === "all") ? "blue" : "gray"
-      }
-      variant={
-        activeFilter === type.toLowerCase() || 
-        (type === "All" && activeFilter === "all") ? "solid" : "outline"
-      }
-      color={
-        activeFilter === type.toLowerCase() || 
-        (type === "All" && activeFilter === "all") ? "gray.800" : "gray.600"
-      }
-      onClick={() => setActiveFilter(type === "All" ? "all" : type.toLowerCase())}
-    >
-      {type}
-    </Button>
-  ))}
-</Flex>
-      </Flex>
-
       <Divider my={4} borderColor="gray.200" />
 
 <Flex mt={6} gap={6} justify="space-between">
