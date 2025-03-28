@@ -45,8 +45,6 @@ function Dashboard() {
 
   return (
     <Container maxW="full" bg="gray.50" minH="100vh">
-      <Divider my={4} borderColor="gray.200" />
-
 <Flex mt={6} gap={6} justify="space-between">
   <Box flex="1">
     <VStack spacing={6} mt={6} align="stretch">
