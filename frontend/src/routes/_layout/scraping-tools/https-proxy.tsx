@@ -15,7 +15,7 @@ const GoogleSerpPage = () => {
     <ProtectedComponent>
       <Container maxW="full">
         <Flex align="center" justify="space-between" py={6}>
-          <Text fontSize="xl" fontWeight="bold">HTTPS Proxy API</Text>
+          <Text fontSize="xl" >HTTPS Proxy API</Text>
           <Text fontSize="sm">Manage your HTTPS proxy settings and regions.</Text>
         </Flex>
         <Tabs>
