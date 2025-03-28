@@ -732,6 +732,6 @@ const ConfirmHeaderModal: React.FC<ConfirmHeaderModalProps> = ({
   </Modal>
 );
 
-export const Route = createFileRoute('/_layout/scraping-tools/submit-form/https-proxy')({
+export const Route = createFileRoute('/_layout/scraping-tools/submit-form/google-serp')({
   component: GoogleSerpForm,
 });
