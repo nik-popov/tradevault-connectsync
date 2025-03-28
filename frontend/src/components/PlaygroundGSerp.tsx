@@ -128,7 +128,7 @@ const PlaygroundGSerp: React.FC = () => {
   }, [provider, regionFilter]);
 
   return (
-    <Box p={4} width="100%">
+    <Box width="100%">
       <Box mb={6}>
         <Flex direction="column" gap={4}>
           <Flex gap={4} alignItems="flex-end">
