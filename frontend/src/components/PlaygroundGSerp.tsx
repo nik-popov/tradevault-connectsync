@@ -142,14 +142,14 @@ const PlaygroundGSerp: React.FC = () => {
                 isRequired
               />
             </FormControl>
-            <FormControl flex="1">
+            {/* <FormControl flex="1">
               <FormLabel fontSize="sm">Provider</FormLabel>
               <Select value={provider} onChange={handleProviderChange} size="sm">
                 {Object.keys(proxyData).map((prov) => (
                   <option key={prov} value={prov}>{prov}</option>
                 ))}
               </Select>
-            </FormControl>
+            </FormControl> */}
           </Flex>
           <Flex direction="row" gap={4} alignItems="flex-end">
             <FormControl flex="1">
