@@ -123,12 +123,12 @@ const Usage = ({ toolId }: UsageProps) => {
           <StatHelpText>Request success</StatHelpText>
         </Stat>
         <Stat>
-          <StatLabel>Gigabytes Used Today</StatLabel>
+          <StatLabel>Gigabytes Today</StatLabel>
           <StatNumber>{usageData.gigsUsedToday.toFixed(1)} GB</StatNumber>
           <StatHelpText>Daily data usage</StatHelpText>
         </Stat>
         <Stat>
-          <StatLabel>Gigabytes Used This Month</StatLabel>
+          <StatLabel>Gigabytes This Month</StatLabel>
           <StatNumber>{usageData.gigsUsedThisMonth.toFixed(1)} GB</StatNumber>
           <StatHelpText>Monthly data usage</StatHelpText>
         </Stat>

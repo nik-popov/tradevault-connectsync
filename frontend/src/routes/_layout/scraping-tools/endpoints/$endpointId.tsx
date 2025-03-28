@@ -414,12 +414,11 @@ const LoadScriptOnce: React.FC<{ children: React.ReactNode }> = ({ children }) =
       googleMapsApiKey="AIzaSyCGkpSEixfDAVnE3UWw-8v9pd6L3OFXvM0"
       onLoad={() => {
         if (!loaded) {
-          showToast("Google Maps Loaded", "Google Maps API loaded successfully", "success");
           setLoaded(true);
         } 
       }}
       onError={(e) => {
-        showToast("Google Maps Error", `Failed to load Google Maps API: ${e.message}`, "error");
+        showToast("Google Maps Error", `Failed to load Google Maps: ${e.message}`, "error");
       }}
     >
       {loaded && children}
