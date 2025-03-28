@@ -48,7 +48,7 @@ function Dashboard() {
       {/* Filters & Toggle */}
       <Flex mt={6} gap={4} justify="space-between" align="center" flexWrap="wrap">
         <Flex gap={2}>
-  {["All"].map((type) => (
+  {["all"].map((type) => (
     <Button
       key={type}
       size="md"
