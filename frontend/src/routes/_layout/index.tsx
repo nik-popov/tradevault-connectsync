@@ -30,7 +30,7 @@ function Dashboard() {
   };
 
   const proxyProducts: Product[] = [
-    { id: "https-proxy", name: "⚙️ HTTPS Proxy API", type: "proxy", description: "Reroute any https request in any region", owned: true, path: "/scraping-tools/https-proxy" },
+    { id: "https-proxy", name: "HTTPS Proxy API ⚙️", type: "proxy", description: "Reroute any https request in any region", owned: true, path: "/scraping-tools/https-proxy" },
   ];
 
   const filteredProducts = useMemo(() => {
