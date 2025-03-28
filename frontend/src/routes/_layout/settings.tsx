@@ -62,8 +62,8 @@ function UserSettings() {
           {finalTabs.map((tab, index) => (
             <Tab
               key={index}
-              _selected={{ bg: "white", color: "blue.300", borderColor: "blue.300" }}
-               color="gray.600"
+              _selected={{ color: "blue.700", borderColor: "blue.500" }}
+              color="gray.600"
               _hover={{ bg: "gray.100" }}
             >
               {tab.title}
