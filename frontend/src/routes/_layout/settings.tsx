@@ -57,7 +57,7 @@ function UserSettings() {
 
       <Divider my={4} borderColor="gray.200" />
 
-      <Tabs variant="enclosed" colorScheme="blue">
+      <Tabs colorScheme="blue">
         <TabList borderBottom="2px solid" borderColor="blue.200">
           {finalTabs.map((tab, index) => (
             <Tab

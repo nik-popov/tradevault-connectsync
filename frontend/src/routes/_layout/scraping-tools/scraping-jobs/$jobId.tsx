@@ -1387,7 +1387,6 @@ const JobsDetailPage = () => {
         </Box>
       </Flex>
       <Tabs
-        variant="enclosed"
         isLazy
         index={activeTab}
         onChange={(index) => setActiveTab(index)}
