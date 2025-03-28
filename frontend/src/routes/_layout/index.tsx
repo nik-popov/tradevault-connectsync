@@ -30,7 +30,7 @@ function Dashboard() {
   };
 
   const proxyProducts: Product[] = [
-    { id: "google-serp", name: "⚙️ Https Proxy API", type: "SearchAPI", description: "Reroute any https request in any region", owned: true, path: "/scraping-api/google-serp" },
+    { id: "https-proxy", name: "⚙️ Https Proxy API", type: "proxy", description: "Reroute any https request in any region", owned: true, path: "/scraping-api/google-serp" },
   ];
 
   const filteredProducts = useMemo(() => {
@@ -48,7 +48,7 @@ function Dashboard() {
       {/* Filters & Toggle */}
       <Flex mt={6} gap={4} justify="space-between" align="center" flexWrap="wrap">
         <Flex gap={2}>
-  {["All", "SearchAPI"].map((type) => (
+  {["All"].map((type) => (
     <Button
       key={type}
       size="md"
