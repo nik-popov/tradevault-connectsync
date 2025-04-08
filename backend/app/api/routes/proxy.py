@@ -165,7 +165,6 @@ async def get_proxy_status_endpoint(
 async def generate_user_api_key(session: SessionDep, current_user: CurrentUser):
     if not current_user.has_subscription:
         raise HTTPException(status_code=403, detail="Active subscription required")
-    
     api_key = generate_api_key(user_id=str(current_user.id))
     token = APIToken(
         user_id=current_user.id,

@@ -2,10 +2,10 @@ import uuid
 from typing import Optional
 from pydantic import EmailStr
 from sqlalchemy import Column, Integer, String, DateTime, ForeignKey, Boolean
-from sqlmodel import Field, Relationship, SQLModel
+from sqlmodel import Field, Relationship, SQLModel,BaseModel
 from datetime import datetime, timezone
 from sqlalchemy.dialects.postgresql import UUID as PG_UUID
-from app.db.base_class import Base  #
+
 class User(SQLModel, table=True):
     __tablename__ = "users"  # Optional, SQLModel infers table name from class name if omitted
     id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
