@@ -5,7 +5,7 @@ from sqlalchemy import Column, Integer, String, DateTime, ForeignKey, Boolean
 from sqlmodel import Field, Relationship, SQLModel
 from datetime import datetime, timezone
 from sqlalchemy.dialects.postgresql import UUID as PG_UUID
-
+from app.db.base_class import Base  #
 class APIToken(Base):
     __tablename__ = "apitoken"
     id = Column(Integer, primary_key=True, index=True)
