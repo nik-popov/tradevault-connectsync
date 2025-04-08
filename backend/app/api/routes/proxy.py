@@ -8,7 +8,7 @@ import time
 import random
 from datetime import datetime, timedelta
 from app.api.deps import SessionDep, CurrentUser
-from app.models import User,APIToken  # Only importing User since we'll define APIToken here
+from app.models import User
 from app.core.security import generate_api_key, verify_api_key
 from app.api.routes import users
 from sqlalchemy.orm import Session
@@ -16,6 +16,16 @@ from sqlmodel import SQLModel, Field  # Added for APIToken definition
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
+# APIToken model
+class APIToken(SQLModel, table=True):
+    __tablename__ = "apitoken"
+    id: Optional[int] = Field(default=None, primary_key=True)
+    token: str = Field(unique=True)
+    user_id: uuid.UUID = Field(foreign_key="user.id", index=True)
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+    expires_at: datetime
+    is_active: bool = Field(default=True)
+    request_count: int = Field(default=0)  # New field for tracking requests
 
 # Define regions and their corresponding endpoints
 REGION_ENDPOINTS = {
