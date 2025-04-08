@@ -105,6 +105,140 @@ class ProxyResponse(BaseModel):
     device_id: str
     region_used: str  # Changed from endpoint_used to region_used
 
+You're correct to question this—there’s an issue with the code as provided. While APIToken is referenced in the imports (from app.models import User, APIToken), its actual definition is missing from the code snippet. This would cause a runtime error because Python needs the APIToken class definition to work with the SQLAlchemy queries and object creation.
+
+The import statement alone (from app.models import User, APIToken) assumes that APIToken is defined elsewhere (likely in app.models), but based on your previous interactions, it seems you expect it to be part of this file or explicitly defined here. Since it’s not present, the code as-is would fail with an AttributeError or NameError when trying to use APIToken.
+
+Fixing the Issue
+To make this code work, we need to explicitly define the APIToken model in the file (or ensure it’s correctly imported from app.models). Given that this is a FastAPI application using SQLAlchemy/SQLModel, and considering your earlier request for a request counter, I’ll add the APIToken model definition here to make the code complete and functional.
+
+Here’s the corrected version with the APIToken model included:
+
+python
+
+Collapse
+
+Wrap
+
+Copy
+from fastapi import APIRouter, Depends, HTTPException, BackgroundTasks, Header
+from typing import Annotated, Dict, List, Optional
+from pydantic import BaseModel
+import httpx
+import logging
+import asyncio
+import time
+import random
+from datetime import datetime, timedelta
+from app.api.deps import SessionDep, CurrentUser
+from app.models import User  # Only importing User since we'll define APIToken here
+from app.core.security import generate_api_key, verify_api_key
+from app.api.routes import users
+from sqlalchemy.orm import Session
+from sqlmodel import SQLModel, Field  # Added for APIToken definition
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
+# Define regions and their corresponding endpoints
+REGION_ENDPOINTS = {
+    "us-east": [
+        "https://us-east4-proxy1-454912.cloudfunctions.net/main",
+        "https://us-east1-proxy1-454912.cloudfunctions.net/main",
+        "https://us-east5-proxy2-455013.cloudfunctions.net/main"
+    ],
+    "us-west": [
+        "https://us-west1-proxy1-454912.cloudfunctions.net/main",
+        "https://us-west3-proxy1-454912.cloudfunctions.net/main",
+        "https://us-west4-proxy1-454912.cloudfunctions.net/main",
+        "https://us-west2-proxy2-455013.cloudfunctions.net/main"
+    ],
+    "us-central": [
+        "https://us-central1-proxy1-454912.cloudfunctions.net/main",
+        "https://us-central1-proxy2-455013.cloudfunctions.net/main",
+        "https://us-south1-proxy3-455013.cloudfunctions.net/main"
+    ],
+    "northamerica-northeast": [
+        "https://northamerica-northeast1-proxy2-455013.cloudfunctions.net/main",
+        "https://northamerica-northeast2-proxy2-455013.cloudfunctions.net/main"
+    ],
+    "southamerica": [
+        "https://southamerica-west1-proxy1-454912.cloudfunctions.net/main",
+        "https://southamerica-east1-proxy3-455013.cloudfunctions.net/main",
+        "https://southamerica-west1-proxy3-455013.cloudfunctions.net/main"
+    ],
+    "asia": [
+        "https://asia-east1-proxy6-455014.cloudfunctions.net/main",
+        "https://asia-northeast2-proxy6-455014.cloudfunctions.net/main"
+    ],
+    "australia": [
+        "https://australia-southeast1-proxy3-455013.cloudfunctions.net/main",
+        "https://australia-southeast2-proxy3-455013.cloudfunctions.net/main"
+    ],
+    "europe": [
+        "https://europe-north1-proxy4-455014.cloudfunctions.net/main",
+        "https://europe-southwest1-proxy4-455014.cloudfunctions.net/main",
+        "https://europe-west1-proxy4-455014.cloudfunctions.net/main",
+        "https://europe-west4-proxy4-455014.cloudfunctions.net/main",
+        "https://europe-west6-proxy4-455014.cloudfunctions.net/main",
+        "https://europe-west8-proxy4-455014.cloudfunctions.net/main",
+        "https://europe-west12-proxy5-455014.cloudfunctions.net/main",
+        "https://europe-west2-proxy5-455014.cloudfunctions.net/main",
+        "https://europe-west3-proxy5-455014.cloudfunctions.net/main",
+        "https://europe-west6-proxy5-455014.cloudfunctions.net/main",
+        "https://europe-west9-proxy5-455014.cloudfunctions.net/main",
+        "https://europe-west10-proxy6-455014.cloudfunctions.net/main"
+    ],
+    "middle-east": [
+        "https://me-central1-proxy6-455014.cloudfunctions.net/main",
+        "https://me-west1-proxy6-455014.cloudfunctions.net/main"
+    ]
+}
+
+router = APIRouter(tags=["proxy"], prefix="/proxy")
+
+# APIToken Model Definition
+class APIToken(SQLModel, table=True):
+    __tablename__ = "apitoken"
+    id: Optional[int] = Field(default=None, primary_key=True)
+    token: str = Field(unique=True)
+    user_id: str = Field(foreign_key="user.id", index=True)
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+    expires_at: datetime
+    is_active: bool = Field(default=True)
+    request_count: int = Field(default=0)  # Added for request tracking
+
+# Other Models
+class RegionsResponse(BaseModel):
+    regions: List[str]
+
+class APIKeyResponse(BaseModel):
+    key_preview: str
+    created_at: str
+    expires_at: str
+    is_active: bool
+    request_count: int
+
+class ProxyStatus(BaseModel):
+    region: str
+    is_healthy: bool
+    avg_response_time: float
+    healthy_endpoints: int
+    total_endpoints: int
+    last_checked: datetime
+
+class ProxyStatusResponse(BaseModel):
+    statuses: List[ProxyStatus]
+
+class ProxyRequest(BaseModel):
+    url: str
+
+class ProxyResponse(BaseModel):
+    result: str
+    public_ip: str
+    device_id: str
+    region_used: str
+
 # Health check function
 async def check_proxy_health(endpoint: str, region: str) -> Dict:
     start_time = time.time()
@@ -128,7 +262,7 @@ async def check_proxy_health(endpoint: str, region: str) -> Dict:
             "last_checked": datetime.utcnow()
         }
 
-# Custom dependency for API key verification (unchanged)
+# Custom dependency for API key verification
 async def verify_api_token(
     session: SessionDep,
     x_api_key: Annotated[str, Header()] = None
@@ -149,40 +283,39 @@ async def verify_api_token(
     
     return user
 
-
+# API Endpoints
 @router.post("/generate-api-key", response_model=dict)
 async def generate_user_api_key(session: SessionDep, current_user: CurrentUser):
-    """Generate a new API key for the authenticated user"""
     if not current_user.has_subscription:
         raise HTTPException(status_code=403, detail="Active subscription required")
     
     api_key = generate_api_key(user_id=str(current_user.id))
     token = APIToken(
-        user_id=current_user.id,
+        user_id=str(current_user.id),
         token=api_key,
         created_at=datetime.utcnow(),
         expires_at=datetime.utcnow() + timedelta(days=365),
-        is_active=True
+        is_active=True,
+        request_count=0
     )
     session.add(token)
     session.commit()
     session.refresh(token)
     return {"api_key": api_key}
+
 @router.get("/regions", response_model=RegionsResponse)
 async def list_regions(
     user: Annotated[User, Depends(verify_api_token)],
     session: SessionDep
 ):
-    """Get list of available regions for the authenticated user"""
     return RegionsResponse(regions=list(REGION_ENDPOINTS.keys()))
-# Updated Endpoints
+
 @router.get("/status", response_model=ProxyStatusResponse)
 async def get_proxy_status(
     region: str,
     user: Annotated[User, Depends(verify_api_token)],
     session: SessionDep
 ):
-    """Get status of all proxy endpoints in a specific region"""
     if region not in REGION_ENDPOINTS:
         raise HTTPException(status_code=400, detail=f"Invalid region. Available regions: {list(REGION_ENDPOINTS.keys())}")
     
@@ -202,9 +335,8 @@ async def get_proxy_status(
         total_endpoints=total_count,
         last_checked=results[0]["last_checked"] if results else datetime.utcnow()
     )
-    
     return ProxyStatusResponse(statuses=[status])
-    
+
 @router.post("/fetch", response_model=ProxyResponse)
 async def proxy_fetch(
     session: SessionDep,
@@ -217,7 +349,7 @@ async def proxy_fetch(
     if region not in REGION_ENDPOINTS:
         raise HTTPException(status_code=400, detail=f"Invalid region. Available regions: {list(REGION_ENDPOINTS.keys())}")
     
-    # Increment request counter
+    # Verify and increment request counter
     token = session.query(APIToken).filter(
         APIToken.token == x_api_key,
         APIToken.user_id == str(user.id),
@@ -245,7 +377,7 @@ async def proxy_fetch(
             response.raise_for_status()
             data = response.json()
             
-            # Increment counter after successful request
+            # Increment request counter after successful fetch
             token.request_count += 1
             session.commit()
             
@@ -269,27 +401,6 @@ async def list_user_api_keys(session: SessionDep, current_user: CurrentUser):
     
     api_tokens = session.query(APIToken).filter(
         APIToken.user_id == str(current_user.id),
-        APIToken.is_active == True
-    ).all()
-    
-    key_list = [
-        {
-            "key_preview": f"{token.token[:FRONT_PREVIEW_LENGTH]}...{token.token[-END_PREVIEW_LENGTH:]}",
-            "created_at": token.created_at.isoformat(),
-            "expires_at": token.expires_at.isoformat(),
-            "is_active": token.is_active,
-            "request_count": token.request_count
-        }
-        for token in api_tokens
-    ]
-    return key_list
-
-@router.get("/all-api-keys", response_model=List[APIKeyResponse])
-async def list_all_api_keys(session: SessionDep, current_user: CurrentUser):
-    if not current_user.is_superuser:
-        raise HTTPException(status_code=403, detail="Superuser access required")
-    
-    api_tokens = session.query(APIToken).filter(
         APIToken.is_active == True
     ).all()
     
