@@ -15,13 +15,15 @@ import {
   Alert,
   AlertIcon,
 } from "@chakra-ui/react";
-import { CopyIcon } from "@chakra-ui/icons";
+import { CopyIcon, DeleteIcon } from "@chakra-ui/icons";
 
 interface ApiKey {
+  id: string; // Required for delete action
   key_preview: string;
   created_at: string;
   expires_at: string;
   is_active: boolean;
+  count?: number; // Optional count field (adjust if named differently)
 }
 
 interface ApiKeyGSerpProps {
@@ -34,7 +36,7 @@ const ApiKeyGSerp: React.FC<ApiKeyGSerpProps> = ({ token }) => {
   const [apiKeys, setApiKeys] = useState<ApiKey[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [fullKey, setFullKey] = useState<string | null>(null); // For sandbox display
+  const [fullKey, setFullKey] = useState<string | null>(null);
 
   useEffect(() => {
     if (token) {
@@ -87,8 +89,34 @@ const ApiKeyGSerp: React.FC<ApiKeyGSerpProps> = ({ token }) => {
         throw new Error(`Failed to generate API key: ${response.status}`);
       }
       const newKeyData = await response.json();
-      setFullKey(newKeyData.full_key); // Display full key in sandbox
-      await fetchApiKeys(); // Refresh the list
+      setFullKey(newKeyData.api_key); // Updated to match cURL response
+      await fetchApiKeys();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "An error occurred");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const deleteApiKey = async (keyId: string) => {
+    if (!token) {
+      setError("No authentication token available");
+      return;
+    }
+    setLoading(true);
+    setError(null);
+    try {
+      const response = await fetch(`${API_URL}/api-keys/${keyId}`, {
+        method: "DELETE",
+        headers: {
+          "Accept": "application/json",
+          "Authorization": `Bearer ${token}`,
+        },
+      });
+      if (!response.ok) {
+        throw new Error(`Failed to delete API key: ${response.status}`);
+      }
+      await fetchApiKeys(); // Refresh the list after deletion
     } catch (err) {
       setError(err instanceof Error ? err.message : "An error occurred");
     } finally {
@@ -138,7 +166,7 @@ const ApiKeyGSerp: React.FC<ApiKeyGSerpProps> = ({ token }) => {
             bg="gray.50"
             borderRadius="md"
             borderWidth="1px"
-            minH="100px" // Fixed height to prevent shifting
+            minH="100px"
             display="flex"
             flexDirection="column"
             gap={2}
@@ -192,15 +220,30 @@ const ApiKeyGSerp: React.FC<ApiKeyGSerpProps> = ({ token }) => {
                   <Th>Created At</Th>
                   <Th>Expires At</Th>
                   <Th>Status</Th>
+                  <Th>Count</Th>
+                  <Th>Actions</Th>
                 </Tr>
               </Thead>
               <Tbody>
-                {apiKeys.map((key, index) => (
-                  <Tr key={index}>
+                {apiKeys.map((key) => (
+                  <Tr key={key.id}>
                     <Td>{key.key_preview}</Td>
                     <Td>{new Date(key.created_at).toLocaleString()}</Td>
                     <Td>{new Date(key.expires_at).toLocaleString()}</Td>
                     <Td>{key.is_active ? "Active" : "Inactive"}</Td>
+                    <Td>{key.count ?? "N/A"}</Td> {/* Display count or N/A if not present */}
+                    <Td>
+                      <Tooltip label="Delete API key">
+                        <IconButton
+                          aria-label="Delete key"
+                          icon={<DeleteIcon />}
+                          size="sm"
+                          colorScheme="red"
+                          onClick={() => deleteApiKey(key.id)}
+                          isDisabled={loading}
+                        />
+                      </Tooltip>
+                    </Td>
                   </Tr>
                 ))}
               </Tbody>
