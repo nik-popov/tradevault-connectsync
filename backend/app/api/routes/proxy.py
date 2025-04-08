@@ -10,8 +10,7 @@ from datetime import datetime, timedelta
 from app.api.deps import SessionDep
 from app.models import User, APIToken
 from app.core.security import generate_api_key, verify_api_key
-from app import crud
-from app import users
+from app.api.routes import users
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
