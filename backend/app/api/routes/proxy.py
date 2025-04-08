@@ -7,7 +7,7 @@ import asyncio
 import time
 import random
 from datetime import datetime, timedelta
-from app.api.deps import SessionDep
+from app.api.deps import SessionDep,CurrentUser
 from app.models import User, APIToken
 from app.core.security import generate_api_key, verify_api_key
 from app.api.routes import users
