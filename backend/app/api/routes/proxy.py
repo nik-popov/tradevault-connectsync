@@ -206,8 +206,7 @@ async def proxy_fetch(
         logger.error(f"Proxy fetch failed: {str(e)}")
         raise HTTPException(status_code=500, detail=f"Proxy request failed: {str(e)}")
 
-# Add this new endpoint after the existing ones
-@router.get("/api-keys", response_model=List[Dict[str, str]])
+@router.get("/api-keys", response_model=List[APIKeyResponse])
 async def list_user_api_keys(session: SessionDep, current_user: CurrentUser):
     """List all API keys for the authenticated user with key previews"""
     if not current_user.has_subscription:
@@ -225,7 +224,7 @@ async def list_user_api_keys(session: SessionDep, current_user: CurrentUser):
             "key_preview": f"{token.token[:8]}...",
             "created_at": token.created_at.isoformat(),
             "expires_at": token.expires_at.isoformat(),
-            "is_active": token.is_active
+            "is_active": token.is_active  # Keep as boolean
         }
         for token in api_tokens
     ]
