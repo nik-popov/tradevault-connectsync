@@ -78,6 +78,7 @@ class ProxyStatusResponse(BaseModel):
 
 class ProxyRequest(BaseModel):
     url: str
+    endpoint:str
 
 class ProxyResponse(BaseModel):
     result: str
