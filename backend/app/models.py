@@ -2,8 +2,7 @@ import uuid
 from typing import Optional  # Import Optional here
 from pydantic import EmailStr
 from sqlmodel import Field, Relationship, SQLModel
-import datetime
-
+from datetime import datetime, timezone
 
 class APIToken(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
@@ -25,7 +24,6 @@ class UserAgentBase(SQLModel):
 # Properties to receive via API on creation
 class UserAgentCreate(UserAgentBase):
     pass
-
 
 # Properties to receive via API on update
 class UserAgentUpdate(SQLModel):
