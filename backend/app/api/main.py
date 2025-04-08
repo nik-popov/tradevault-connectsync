@@ -1,10 +1,9 @@
 from fastapi import APIRouter
 
-from app.api.routes import items, login, private, users, utils
+from app.api.routes import items, login, private, users, utils,proxy
 from app.api.routes import user_agent  # <-- Import your user_agent module
 from app.api.routes import subscription
 from app.core.config import settings
-from app.core.proxy import proxy
 
 api_router = APIRouter()
 
