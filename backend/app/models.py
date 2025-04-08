@@ -2,7 +2,7 @@ import uuid
 from typing import Optional
 from pydantic import EmailStr
 from sqlalchemy import Column, Integer, String, DateTime, ForeignKey, Boolean
-from sqlmodel import Field, Relationship, SQLModel,BaseModel
+from sqlmodel import Field, Relationship, SQLModel
 from datetime import datetime, timezone
 from sqlalchemy.dialects.postgresql import UUID as PG_UUID
 
