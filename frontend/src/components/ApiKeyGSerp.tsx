@@ -14,12 +14,6 @@ import {
   IconButton,
   Alert,
   AlertIcon,
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalBody,
-  ModalCloseButton,
 } from "@chakra-ui/react";
 import { CopyIcon } from "@chakra-ui/icons";
 
@@ -40,7 +34,7 @@ const ApiKeyGSerp: React.FC<ApiKeyGSerpProps> = ({ token }) => {
   const [apiKeys, setApiKeys] = useState<ApiKey[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [fullKey, setFullKey] = useState<string | null>(null); // For modal display
+  const [fullKey, setFullKey] = useState<string | null>(null); // For sandbox display
 
   useEffect(() => {
     if (token) {
@@ -93,7 +87,7 @@ const ApiKeyGSerp: React.FC<ApiKeyGSerpProps> = ({ token }) => {
         throw new Error(`Failed to generate API key: ${response.status}`);
       }
       const newKeyData = await response.json();
-      setFullKey(newKeyData.full_key); // Display full key in modal
+      setFullKey(newKeyData.full_key); // Display full key in sandbox
       await fetchApiKeys(); // Refresh the list
     } catch (err) {
       setError(err instanceof Error ? err.message : "An error occurred");
@@ -136,6 +130,45 @@ const ApiKeyGSerp: React.FC<ApiKeyGSerpProps> = ({ token }) => {
               Generate
             </Button>
           </Tooltip>
+
+          {/* Sandbox Area for Full Key */}
+          <Box
+            mt={4}
+            p={4}
+            bg="gray.50"
+            borderRadius="md"
+            borderWidth="1px"
+            minH="100px" // Fixed height to prevent shifting
+            display="flex"
+            flexDirection="column"
+            gap={2}
+          >
+            {fullKey ? (
+              <>
+                <Text fontSize="sm">
+                  Your new API key (copy it now as it won't be shown again after refresh):
+                </Text>
+                <Flex gap={2} alignItems="center">
+                  <Text fontFamily="monospace" fontSize="sm" wordBreak="break-all">
+                    {fullKey}
+                  </Text>
+                  <IconButton
+                    aria-label="Copy full key"
+                    icon={<CopyIcon />}
+                    size="sm"
+                    onClick={() => copyToClipboard(fullKey)}
+                  />
+                </Flex>
+                <Text fontSize="xs" color="gray.500">
+                  Store this securely.
+                </Text>
+              </>
+            ) : (
+              <Text fontSize="sm" color="gray.500">
+                Generate a key to see it here.
+              </Text>
+            )}
+          </Box>
         </Box>
 
         {/* Error Display */}
@@ -175,36 +208,6 @@ const ApiKeyGSerp: React.FC<ApiKeyGSerpProps> = ({ token }) => {
           </Box>
         </Box>
       </Flex>
-
-      {/* Modal for Full API Key */}
-      <Modal isOpen={!!fullKey} onClose={() => setFullKey(null)}>
-        <ModalOverlay />
-        <ModalContent>
-          <ModalHeader>New API Key</ModalHeader>
-          <ModalCloseButton />
-          <ModalBody pb={6}>
-            <Flex direction="column" gap={4}>
-              <Text>
-                Your new API key (copy it now as it won't be shown again):
-              </Text>
-              <Flex gap={2} alignItems="center">
-                <Text fontFamily="monospace" wordBreak="break-all">
-                  {fullKey}
-                </Text>
-                <IconButton
-                  aria-label="Copy full key"
-                  icon={<CopyIcon />}
-                  size="sm"
-                  onClick={() => copyToClipboard(fullKey || "")}
-                />
-              </Flex>
-              <Text fontSize="sm" color="gray.500">
-                Store this securely. It will not be displayed again after closing.
-              </Text>
-            </Flex>
-          </ModalBody>
-        </ModalContent>
-      </Modal>
     </Box>
   );
 };

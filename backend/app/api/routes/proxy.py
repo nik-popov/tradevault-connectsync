@@ -83,6 +83,7 @@ class APIKeyResponse(BaseModel):
     created_at: str
     expires_at: str
     is_active: bool
+    request_count: int  # Added request count to response
 
 class ProxyStatus(BaseModel):
     region: str
