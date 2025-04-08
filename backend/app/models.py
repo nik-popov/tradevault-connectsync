@@ -10,7 +10,7 @@ class APIToken(SQLModel, table=True):
     __tablename__ = "apitoken"
     id: Optional[int] = Field(default=None, primary_key=True)
     token: str = Field(unique=True)
-    user_id: uuid.UUID = Field(foreign_key="users.id", index=True)
+    user_id: uuid.UUID = Field(foreign_key="user.id", index=True)
     created_at: datetime = Field(default_factory=datetime.utcnow)
     expires_at: datetime
     is_active: bool = Field(default=True)
