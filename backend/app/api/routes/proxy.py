@@ -5,9 +5,8 @@ import httpx
 import logging
 import asyncio
 import time
-import random
 from datetime import datetime, timedelta
-from app.api.deps import CurrentUser, SessionDep, get_current_active_superuser
+from app.api.deps import SessionDep
 from app.models import User, APIToken
 from app.core.security import generate_api_key, verify_api_key
 from app import crud
@@ -61,7 +60,7 @@ PROXY_ENDPOINTS = [
     "https://me-central2-proxy6-455014.cloudfunctions.net/main"
 ]
 
-router = APIRouter(tags=["proxy"], prefix="/proxy")
+router = APIRouter(tags=["proxy"], prefix="")  # Changed prefix to "" for /status
 
 # Models
 class ProxyStatus(BaseModel):
@@ -72,9 +71,7 @@ class ProxyStatus(BaseModel):
     last_checked: datetime
 
 class ProxyStatusResponse(BaseModel):
-    proxies: Dict[str, List[ProxyStatus]]
-    total_healthy: int
-    total_endpoints: int
+    status: ProxyStatus  # Changed to return single status
 
 class ProxyRequest(BaseModel):
     url: str
@@ -86,7 +83,7 @@ class ProxyResponse(BaseModel):
     device_id: str
     endpoint_used: str
 
-# Health check functions
+# Health check function
 async def check_proxy_health(endpoint: str) -> ProxyStatus:
     region = endpoint.split('.')[0].split('//')[1].split('-proxy')[0]
     start_time = time.time()
@@ -113,28 +110,10 @@ async def check_proxy_health(endpoint: str) -> ProxyStatus:
             last_checked=datetime.utcnow()
         )
 
-async def get_proxy_status() -> ProxyStatusResponse:
-    status_tasks = [check_proxy_health(endpoint) for endpoint in PROXY_ENDPOINTS]
-    results = await asyncio.gather(*status_tasks)
-    
-    proxies_by_region: Dict[str, List[ProxyStatus]] = {}
-    for result in results:
-        if result.region not in proxies_by_region:
-            proxies_by_region[result.region] = []
-        proxies_by_region[result.region].append(result)
-    
-    total_healthy = sum(1 for result in results if result.is_healthy)
-    
-    return ProxyStatusResponse(
-        proxies=proxies_by_region,
-        total_healthy=total_healthy,
-        total_endpoints=len(PROXY_ENDPOINTS)
-    )
-
 # Custom dependency for API key verification
 async def verify_api_token(
     session: SessionDep,
-    x_api_key: Annotated[str, Header()] = None  # Fixed: Use Header dependency
+    x_api_key: Annotated[str, Header()] = None
 ) -> User:
     if not x_api_key:
         raise HTTPException(status_code=401, detail="API key required")
@@ -155,10 +134,16 @@ async def verify_api_token(
 # Endpoints
 @router.get("/status", response_model=ProxyStatusResponse)
 async def get_proxy_status_endpoint(
-    current_user: Annotated[User, Depends(get_current_active_superuser)]
+    endpoint: str,
+    user: Annotated[User, Depends(verify_api_token)],
+    session: SessionDep
 ):
-    """Get status of all proxy endpoints (admin only)"""
-    return await get_proxy_status()
+    """Get status of a specific proxy endpoint using an API key"""
+    if endpoint not in PROXY_ENDPOINTS:
+        raise HTTPException(status_code=400, detail="Invalid endpoint")
+    
+    status = await check_proxy_health(endpoint)
+    return ProxyStatusResponse(status=status)
 
 @router.post("/generate-api-key", response_model=dict)
 async def generate_user_api_key(session: SessionDep, current_user: CurrentUser):
@@ -187,13 +172,10 @@ async def proxy_fetch(
     background_tasks: BackgroundTasks
 ):
     """Make a proxied request through a specified or random healthy endpoint"""
-    status = await get_proxy_status()
-    healthy_endpoints = [
-        proxy.endpoint 
-        for region in status.proxies.values() 
-        for proxy in region 
-        if proxy.is_healthy
-    ]
+    status_tasks = [check_proxy_health(endpoint) for endpoint in PROXY_ENDPOINTS]
+    results = await asyncio.gather(*status_tasks)
+    
+    healthy_endpoints = [result.endpoint for result in results if result.is_healthy]
     
     if not healthy_endpoints:
         raise HTTPException(status_code=503, detail="No healthy proxy endpoints available")
