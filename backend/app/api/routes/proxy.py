@@ -17,57 +17,59 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 # Define regions and their corresponding endpoints (kept internal)
-REGION_ENDPOINTS ={
-    "northamerica-northeast":  [
-                                   "https://northamerica-northeast1-proxy2-455013.cloudfunctions.net/main",
-                                   "https://northamerica-northeast2-proxy2-455013.cloudfunctions.net/main"
-                               ],
-    "southamerica":  [
-                         "https://southamerica-west1-proxy1-454912.cloudfunctions.net/main",
-                         "https://southamerica-east1-proxy3-455013.cloudfunctions.net/main",
-                         "https://southamerica-west1-proxy3-455013.cloudfunctions.net/main"
-                     ],
-    "us-central":  [
-                       "https://us-central1-proxy1-454912.cloudfunctions.net/main",
-                       "https://us-central1-proxy2-455013.cloudfunctions.net/main",
-                       "https://us-south1-proxy3-455013.cloudfunctions.net/main"
-                   ],
-    "us-east":  [
-                    "https://us-east1-proxy1-454912.cloudfunctions.net/main",
-                    "https://us-east4-proxy1-454912.cloudfunctions.net/main",
-                    "https://us-east5-proxy2-455013.cloudfunctions.net/main"
-                ],
-    "asia":  [
-                 "https://asia-east1-proxy6-455014.cloudfunctions.net/main",
-                 "https://asia-northeast2-proxy6-455014.cloudfunctions.net/main"
-             ],
-    "us-west":  [
-                    "https://us-west1-proxy1-454912.cloudfunctions.net/main",
-                    "https://us-west3-proxy1-454912.cloudfunctions.net/main",
-                    "https://us-west4-proxy1-454912.cloudfunctions.net/main",
-                    "https://us-west2-proxy2-455013.cloudfunctions.net/main"
-                ],
-    "europe":  [
-                   "https://europe-north1-proxy4-455014.cloudfunctions.net/main",
-                   "https://europe-southwest1-proxy4-455014.cloudfunctions.net/main",
-                   "https://europe-west1-proxy4-455014.cloudfunctions.net/main",
-                   "https://europe-west4-proxy4-455014.cloudfunctions.net/main",
-                   "https://europe-west6-proxy4-455014.cloudfunctions.net/main",
-                   "https://europe-west8-proxy4-455014.cloudfunctions.net/main",
-                   "https://europe-west12-proxy5-455014.cloudfunctions.net/main",
-                   "https://europe-west2-proxy5-455014.cloudfunctions.net/main",
-                   "https://europe-west3-proxy5-455014.cloudfunctions.net/main",
-                   "https://europe-west6-proxy5-455014.cloudfunctions.net/main",
-                   "https://europe-west9-proxy5-455014.cloudfunctions.net/main",
-                   "https://europe-west10-proxy6-455014.cloudfunctions.net/main"
-               ],
-    "middle-east":  [
-                        "https://me-central1-proxy6-455014.cloudfunctions.net/main"
-                    ],
-    "australia":  [
-                      "https://australia-southeast1-proxy3-455013.cloudfunctions.net/main",
-                      "https://australia-southeast2-proxy3-455013.cloudfunctions.net/main"
-                  ]
+ # Region endpoints updated based on the document
+REGION_ENDPOINTS = {
+    "us-east": [
+        "https://us-east4-proxy1-454912.cloudfunctions.net/main",
+        "https://us-east1-proxy1-454912.cloudfunctions.net/main",
+        "https://us-east5-proxy2-455013.cloudfunctions.net/main"  # Added missing us-east region
+    ],
+    "us-west": [
+        "https://us-west1-proxy1-454912.cloudfunctions.net/main",
+        "https://us-west3-proxy1-454912.cloudfunctions.net/main",
+        "https://us-west4-proxy1-454912.cloudfunctions.net/main",
+        "https://us-west2-proxy2-455013.cloudfunctions.net/main"
+    ],
+    "us-central": [
+        "https://us-central1-proxy1-454912.cloudfunctions.net/main",
+        "https://us-central1-proxy2-455013.cloudfunctions.net/main",
+        "https://us-south1-proxy3-455013.cloudfunctions.net/main"
+    ],
+    "northamerica-northeast": [
+        "https://northamerica-northeast1-proxy2-455013.cloudfunctions.net/main",  # Updated to match document
+        "https://northamerica-northeast2-proxy2-455013.cloudfunctions.net/main"
+    ],
+    "southamerica": [
+        "https://southamerica-west1-proxy1-454912.cloudfunctions.net/main",
+        "https://southamerica-east1-proxy3-455013.cloudfunctions.net/main",
+        "https://southamerica-west1-proxy3-455013.cloudfunctions.net/main"  # Removed duplicate southamerica-east2 as it's not in the document
+    ],
+    "asia": [
+        "https://asia-east1-proxy6-455014.cloudfunctions.net/main",  # Updated to match document
+        "https://asia-northeast2-proxy6-455014.cloudfunctions.net/main"  # Removed others not in document
+    ],
+    "australia": [
+        "https://australia-southeast1-proxy3-455013.cloudfunctions.net/main",
+        "https://australia-southeast2-proxy3-455013.cloudfunctions.net/main"
+    ],
+    "europe": [
+        "https://europe-north1-proxy4-455014.cloudfunctions.net/main",
+        "https://europe-southwest1-proxy4-455014.cloudfunctions.net/main",
+        "https://europe-west1-proxy4-455014.cloudfunctions.net/main",
+        "https://europe-west4-proxy4-455014.cloudfunctions.net/main",
+        "https://europe-west6-proxy4-455014.cloudfunctions.net/main",
+        "https://europe-west8-proxy4-455014.cloudfunctions.net/main",
+        "https://europe-west12-proxy5-455014.cloudfunctions.net/main",
+        "https://europe-west2-proxy5-455014.cloudfunctions.net/main",
+        "https://europe-west3-proxy5-455014.cloudfunctions.net/main",
+        "https://europe-west6-proxy5-455014.cloudfunctions.net/main",  # Duplicate region, kept both
+        "https://europe-west9-proxy5-455014.cloudfunctions.net/main",
+        "https://europe-west10-proxy6-455014.cloudfunctions.net/main"  # Moved from middle-east
+    ],
+    "middle-east": [
+        "https://me-central1-proxy6-455014.cloudfunctions.net/main",
+        "https://me-west1-proxy6-455014.cloudfunctions.net/main"  # Updated from me-central2 to me-west1
+    ]
 }
 
 router = APIRouter(tags=["proxy"], prefix="")
