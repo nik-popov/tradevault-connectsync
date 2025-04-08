@@ -124,7 +124,7 @@ async def verify_api_token(
         raise HTTPException(status_code=401, detail="Invalid API key")
     
     # Use get_user instead of get_user_by_id (assuming it exists)
-    user = users.read_user_by_id(session=session, user_id=token_data["user_id"])
+    user = users.read_user_by_id(session=session, user_id=token_data["user_id"],current_user=CurrentUser)
     if not user or not user.is_active:
         raise HTTPException(status_code=401, detail="Invalid or inactive user")
     
