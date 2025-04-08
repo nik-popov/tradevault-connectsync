@@ -21,7 +21,8 @@ import { ExternalLinkIcon } from "@chakra-ui/icons";
 import { FiSend } from "react-icons/fi";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 
-export const Route = createFileRoute("/_layout/")({
+// Update the route to /scraping-tools/https-proxy
+export const Route = createFileRoute("/scraping-tools/https-proxy")({
   component: Dashboard,
 });
 
@@ -121,18 +122,6 @@ function Dashboard() {
                 type="password"
                 isRequired
               />
-              {!apiKey && (
-                <Text fontSize="sm" color="gray.500" mt={2}>
-                  Don't have an API key?{" "}
-                  <Link
-                    color="blue.500"
-                    onClick={() => navigate({ to: "/api-keys" })}
-                    textDecoration="underline"
-                  >
-                    Generate one here
-                  </Link>
-                </Text>
-              )}
             </FormControl>
             <FormControl flex="1">
               <FormLabel fontSize="sm">Region</FormLabel>
@@ -148,7 +137,7 @@ function Dashboard() {
                 ))}
               </Select>
             </FormControl>
-            <Box>
+            <Flex alignItems="flex-end" gap={2}>
               <Tooltip label="Send test request">
                 <Button
                   size="sm"
@@ -160,7 +149,17 @@ function Dashboard() {
                   <FiSend />
                 </Button>
               </Tooltip>
-            </Box>
+              {!apiKey && (
+                <Button
+                  size="sm"
+                  variant="outline"
+                  colorScheme="blue"
+                  onClick={() => navigate({ to: "/api-keys" })}
+                >
+                  Generate API Key
+                </Button>
+              )}
+            </Flex>
           </Flex>
           {error && (
             <Text color="red.500" fontSize="sm">{error}</Text>
