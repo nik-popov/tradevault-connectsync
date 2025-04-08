@@ -60,7 +60,7 @@ const ApiKeyGSerp: React.FC<ApiKeyGSerpProps> = ({ token }) => {
         headers: {
           "Accept": "application/json",
           "Authorization": `Bearer ${token}`,
-          "Content-Type": "application/json",
+          
         },
       });
       if (!response.ok) {
