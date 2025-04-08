@@ -61,9 +61,7 @@ PROXY_ENDPOINTS = [
     "https://me-central1-proxy6-455014.cloudfunctions.net/main",
     "https://me-central2-proxy6-455014.cloudfunctions.net/main"
 ]
-
 router = APIRouter(prefix="/proxy", tags=["proxy"])
-
 # Models
 class ProxyStatus(BaseModel):
     endpoint: str

@@ -4,6 +4,7 @@ from app.api.routes import items, login, private, users, utils
 from app.api.routes import user_agent  # <-- Import your user_agent module
 from app.api.routes import subscription
 from app.core.config import settings
+from app.core.proxy import proxy
 
 api_router = APIRouter()
 
@@ -20,6 +21,8 @@ api_router.include_router(
     prefix="/user-agents", 
     tags=["user-agents"]
 )
+api_router.include_router(proxy.router)
+
 
 # Private routes for local environment
 if settings.ENVIRONMENT == "local":
