@@ -5,7 +5,7 @@ import httpx
 import logging
 import asyncio
 import time
-import random
+import random,uuid
 from datetime import datetime, timedelta
 from app.api.deps import SessionDep, CurrentUser
 from app.models import User
