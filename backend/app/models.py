@@ -1,5 +1,5 @@
 import uuid
-
+from typing import Optional  # Import Optional here
 from pydantic import EmailStr
 from sqlmodel import Field, Relationship, SQLModel
 import datetime
