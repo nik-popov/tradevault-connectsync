@@ -61,9 +61,17 @@ const ApiKeyGSerp: React.FC<ApiKeyGSerpProps> = ({ token }) => {
       const data: ApiKey[] = await response.json();
       const normalizedData = data.map(key => ({
         ...key,
-        request_count: key.request_count ?? 0
+        request_count: key.request_count ?? 0,
+        created_at: key.created_at || new Date().toISOString(), // Fallback if undefined
+        expires_at: key.expires_at || new Date().toISOString(), // Fallback if undefined
+        is_active: key.is_active ?? false, // Fallback if undefined
+        key_preview: key.key_preview || 'N/A' // Fallback if undefined
       }));
-      setApiKeys(normalizedData);
+      // Sort by created_at descending (latest first)
+      const sortedData = normalizedData.sort((a, b) => 
+        new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+      );
+      setApiKeys(sortedData);
     } catch (err) {
       setError(err instanceof Error ? err.message : "An error occurred");
     } finally {
@@ -92,7 +100,6 @@ const ApiKeyGSerp: React.FC<ApiKeyGSerpProps> = ({ token }) => {
         throw new Error(`Failed to generate API key: ${response.status}`);
       }
       const newKeyData = await response.json();
-      // Changed from full_key to api_key to match your API response
       setFullKey(newKeyData.api_key);
       await fetchApiKeys();
     } catch (err) {
@@ -195,8 +202,8 @@ const ApiKeyGSerp: React.FC<ApiKeyGSerpProps> = ({ token }) => {
                   <Th>Key Preview</Th>
                   <Th>Created At</Th>
                   <Th>Expires At</Th>
+                  <Th>Request Count</Th> {/* Moved inward before Status */}
                   <Th>Status</Th>
-                  <Th>Request Count</Th>
                 </Tr>
               </Thead>
               <Tbody>
@@ -205,8 +212,8 @@ const ApiKeyGSerp: React.FC<ApiKeyGSerpProps> = ({ token }) => {
                     <Td>{key.key_preview}</Td>
                     <Td>{new Date(key.created_at).toLocaleString()}</Td>
                     <Td>{new Date(key.expires_at).toLocaleString()}</Td>
-                    <Td>{key.is_active ? "Active" : "Inactive"}</Td>
                     <Td>{key.request_count}</Td>
+                    <Td>{key.is_active ? "Active" : "Inactive"}</Td>
                   </Tr>
                 ))}
               </Tbody>
