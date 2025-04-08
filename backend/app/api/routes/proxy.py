@@ -212,11 +212,12 @@ async def proxy_fetch(
         logger.error(f"Proxy fetch failed: {str(e)}")
         raise HTTPException(status_code=500, detail=f"Proxy request failed: {str(e)}")
 
+FRONT_PREVIEW_LENGTH = 8  # Number of characters to show from the start
+END_PREVIEW_LENGTH = 8    # Number of characters to show from the end
 
-# Updated endpoint
 @router.get("/api-keys", response_model=List[APIKeyResponse])
 async def list_user_api_keys(session: SessionDep, current_user: CurrentUser):
-    """List all API keys for the authenticated user showing the front portion of each key"""
+    """List all API keys for the authenticated user showing front and end portions"""
     if not current_user.has_subscription:
         raise HTTPException(status_code=403, detail="Active subscription required")
     
@@ -226,10 +227,10 @@ async def list_user_api_keys(session: SessionDep, current_user: CurrentUser):
         APIToken.is_active == True
     ).all()
     
-    # Format response showing first 8 characters of the key
+    # Format response showing front and end portions
     key_list = [
         {
-            "key_preview": f"{token.token[:8]}...",  # Explicitly taking front 8 characters
+            "key_preview": f"{token.token[:FRONT_PREVIEW_LENGTH]}...{token.token[-END_PREVIEW_LENGTH:]}",
             "created_at": token.created_at.isoformat(),
             "expires_at": token.expires_at.isoformat(),
             "is_active": token.is_active
