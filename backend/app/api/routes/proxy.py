@@ -13,7 +13,6 @@ from app.core.security import generate_api_key, verify_api_key
 from app.api.routes import users
 # You might want to update the imports to include:
 from sqlalchemy.orm import Session
-from typing import List, Dict
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
