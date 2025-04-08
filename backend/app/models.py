@@ -7,8 +7,8 @@ from datetime import datetime, timezone
 from sqlalchemy.dialects.postgresql import UUID as PG_UUID
 
 class APIToken(SQLModel, table=True):
-    __tablename__ = "apitoken"  # Explicitly set since it’s not plural
-    id: int = Field(default=None, primary_key=True)
+    __tablename__ = "apitoken"
+    id: Optional[int] = Field(default=None, primary_key=True)
     token: str = Field(unique=True)
     user_id: uuid.UUID = Field(foreign_key="users.id", index=True)
     created_at: datetime = Field(default_factory=datetime.utcnow)
