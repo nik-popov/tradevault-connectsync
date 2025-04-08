@@ -5,11 +5,13 @@ import httpx
 import logging
 import asyncio
 import time
+import random
 from datetime import datetime, timedelta
 from app.api.deps import SessionDep
 from app.models import User, APIToken
 from app.core.security import generate_api_key, verify_api_key
 from app import crud
+from app import users
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -60,7 +62,7 @@ PROXY_ENDPOINTS = [
     "https://me-central2-proxy6-455014.cloudfunctions.net/main"
 ]
 
-router = APIRouter(tags=["proxy"], prefix="")  # Changed prefix to "" for /status
+router = APIRouter(tags=["proxy"], prefix="")  # Adjusted for /status
 
 # Models
 class ProxyStatus(BaseModel):
@@ -71,7 +73,7 @@ class ProxyStatus(BaseModel):
     last_checked: datetime
 
 class ProxyStatusResponse(BaseModel):
-    status: ProxyStatus  # Changed to return single status
+    status: ProxyStatus
 
 class ProxyRequest(BaseModel):
     url: str
@@ -122,7 +124,8 @@ async def verify_api_token(
     if not token_data or "user_id" not in token_data:
         raise HTTPException(status_code=401, detail="Invalid API key")
     
-    user = crud.get_user_by_id(session=session, user_id=token_data["user_id"])
+    # Use get_user instead of get_user_by_id (assuming it exists)
+    user = users.read_user_by_id(session=session, user_id=token_data["user_id"])
     if not user or not user.is_active:
         raise HTTPException(status_code=401, detail="Invalid or inactive user")
     
