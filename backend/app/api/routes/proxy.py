@@ -65,6 +65,13 @@ PROXY_ENDPOINTS = [
 router = APIRouter(tags=["proxy"], prefix="")  # Adjusted for /status
 
 # Models
+# Add this new model
+class APIKeyResponse(BaseModel):
+    key_preview: str
+    created_at: str
+    expires_at: str
+    is_active: bool
+
 class ProxyStatus(BaseModel):
     endpoint: str
     region: str
