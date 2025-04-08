@@ -11,7 +11,9 @@ from app.api.deps import SessionDep,CurrentUser
 from app.models import User, APIToken
 from app.core.security import generate_api_key, verify_api_key
 from app.api.routes import users
-
+# You might want to update the imports to include:
+from sqlalchemy.orm import Session
+from typing import List, Dict
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
@@ -76,7 +78,6 @@ class ProxyStatusResponse(BaseModel):
 
 class ProxyRequest(BaseModel):
     url: str
-    endpoint: Optional[str] = None
 
 class ProxyResponse(BaseModel):
     result: str
@@ -169,6 +170,7 @@ async def generate_user_api_key(session: SessionDep, current_user: CurrentUser):
 @router.post("/fetch", response_model=ProxyResponse)
 async def proxy_fetch(
     session: SessionDep,
+    endpoint: str,
     request: ProxyRequest,
     user: Annotated[User, Depends(verify_api_token)],
     background_tasks: BackgroundTasks
@@ -202,3 +204,30 @@ async def proxy_fetch(
     except Exception as e:
         logger.error(f"Proxy fetch failed: {str(e)}")
         raise HTTPException(status_code=500, detail=f"Proxy request failed: {str(e)}")
+
+# Add this new endpoint after the existing ones
+@router.get("/api-keys", response_model=List[Dict[str, str]])
+async def list_user_api_keys(session: SessionDep, current_user: CurrentUser):
+    """List all API keys for the authenticated user with key previews"""
+    if not current_user.has_subscription:
+        raise HTTPException(status_code=403, detail="Active subscription required")
+    
+    # Query all API tokens for the current user
+    api_tokens = session.query(APIToken).filter(
+        APIToken.user_id == current_user.id,
+        APIToken.is_active == True
+    ).all()
+    
+    # Format response with key preview (showing first 8 characters)
+    key_list = [
+        {
+            "key_preview": f"{token.token[:8]}...",
+            "created_at": token.created_at.isoformat(),
+            "expires_at": token.expires_at.isoformat(),
+            "is_active": token.is_active
+        }
+        for token in api_tokens
+    ]
+    
+    return key_list
+
