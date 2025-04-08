@@ -22,6 +22,7 @@ interface ApiKey {
   created_at: string;
   expires_at: string;
   is_active: boolean;
+  request_count?: number; // Added optional request count
 }
 
 interface ApiKeyGSerpProps {
@@ -34,7 +35,7 @@ const ApiKeyGSerp: React.FC<ApiKeyGSerpProps> = ({ token }) => {
   const [apiKeys, setApiKeys] = useState<ApiKey[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [fullKey, setFullKey] = useState<string | null>(null); // For sandbox display
+  const [fullKey, setFullKey] = useState<string | null>(null);
 
   useEffect(() => {
     if (token) {
@@ -58,7 +59,12 @@ const ApiKeyGSerp: React.FC<ApiKeyGSerpProps> = ({ token }) => {
         throw new Error(`Failed to fetch API keys: ${response.status}`);
       }
       const data: ApiKey[] = await response.json();
-      setApiKeys(data);
+      // Ensure request_count exists, default to 0 if not provided
+      const normalizedData = data.map(key => ({
+        ...key,
+        request_count: key.request_count ?? 0
+      }));
+      setApiKeys(normalizedData);
     } catch (err) {
       setError(err instanceof Error ? err.message : "An error occurred");
     } finally {
@@ -87,8 +93,8 @@ const ApiKeyGSerp: React.FC<ApiKeyGSerpProps> = ({ token }) => {
         throw new Error(`Failed to generate API key: ${response.status}`);
       }
       const newKeyData = await response.json();
-      setFullKey(newKeyData.full_key); // Display full key in sandbox
-      await fetchApiKeys(); // Refresh the list
+      setFullKey(newKeyData.full_key);
+      await fetchApiKeys();
     } catch (err) {
       setError(err instanceof Error ? err.message : "An error occurred");
     } finally {
@@ -116,29 +122,31 @@ const ApiKeyGSerp: React.FC<ApiKeyGSerpProps> = ({ token }) => {
       <Flex direction="column" gap={6}>
         {/* Generate New API Key Section */}
         <Box>
-          <Text fontSize="md" fontWeight="semibold" mb={2}>
-            Generate New API Key
-          </Text>
-          <Tooltip label="Generate a new API key">
-            <Button
-              size="sm"
-              colorScheme="blue"
-              onClick={generateKey}
-              isLoading={loading}
-              isDisabled={loading}
-            >
-              Generate
-            </Button>
-          </Tooltip>
+          <Flex justify="space-between" align="center" mb={2}>
+            <Text fontSize="md" fontWeight="semibold">
+              Generate New API Key
+            </Text>
+            <Tooltip label="Generate a new API key">
+              <Button
+                size="sm"
+                colorScheme="blue"
+                onClick={generateKey}
+                isLoading={loading}
+                isDisabled={loading}
+              >
+                Generate
+              </Button>
+            </Tooltip>
+          </Flex>
 
           {/* Sandbox Area for Full Key */}
           <Box
             mt={4}
             p={4}
-            bg="gray.50"
+            bg="gray.100" // Slightly different shade from gray.50
             borderRadius="md"
             borderWidth="1px"
-            minH="100px" // Fixed height to prevent shifting
+            minH="100px"
             display="flex"
             flexDirection="column"
             gap={2}
@@ -192,6 +200,7 @@ const ApiKeyGSerp: React.FC<ApiKeyGSerpProps> = ({ token }) => {
                   <Th>Created At</Th>
                   <Th>Expires At</Th>
                   <Th>Status</Th>
+                  <Th>Request Count</Th>
                 </Tr>
               </Thead>
               <Tbody>
@@ -201,6 +210,7 @@ const ApiKeyGSerp: React.FC<ApiKeyGSerpProps> = ({ token }) => {
                     <Td>{new Date(key.created_at).toLocaleString()}</Td>
                     <Td>{new Date(key.expires_at).toLocaleString()}</Td>
                     <Td>{key.is_active ? "Active" : "Inactive"}</Td>
+                    <Td>{key.request_count}</Td>
                   </Tr>
                 ))}
               </Tbody>
