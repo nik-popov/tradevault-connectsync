@@ -22,7 +22,7 @@ interface ApiKey {
   created_at: string;
   expires_at: string;
   is_active: boolean;
-  request_count?: number; // Added optional request count
+  request_count?: number;
 }
 
 interface ApiKeyGSerpProps {
@@ -59,7 +59,6 @@ const ApiKeyGSerp: React.FC<ApiKeyGSerpProps> = ({ token }) => {
         throw new Error(`Failed to fetch API keys: ${response.status}`);
       }
       const data: ApiKey[] = await response.json();
-      // Ensure request_count exists, default to 0 if not provided
       const normalizedData = data.map(key => ({
         ...key,
         request_count: key.request_count ?? 0
@@ -93,7 +92,8 @@ const ApiKeyGSerp: React.FC<ApiKeyGSerpProps> = ({ token }) => {
         throw new Error(`Failed to generate API key: ${response.status}`);
       }
       const newKeyData = await response.json();
-      setFullKey(newKeyData.full_key);
+      // Changed from full_key to api_key to match your API response
+      setFullKey(newKeyData.api_key);
       await fetchApiKeys();
     } catch (err) {
       setError(err instanceof Error ? err.message : "An error occurred");
@@ -120,7 +120,6 @@ const ApiKeyGSerp: React.FC<ApiKeyGSerpProps> = ({ token }) => {
   return (
     <Box p={4} width="100%">
       <Flex direction="column" gap={6}>
-        {/* Generate New API Key Section */}
         <Box>
           <Flex justify="space-between" align="center" mb={2}>
             <Text fontSize="md" fontWeight="semibold">
@@ -139,11 +138,10 @@ const ApiKeyGSerp: React.FC<ApiKeyGSerpProps> = ({ token }) => {
             </Tooltip>
           </Flex>
 
-          {/* Sandbox Area for Full Key */}
           <Box
             mt={4}
             p={4}
-            bg="gray.100" // Slightly different shade from gray.50
+            bg="gray.100"
             borderRadius="md"
             borderWidth="1px"
             minH="100px"
@@ -179,7 +177,6 @@ const ApiKeyGSerp: React.FC<ApiKeyGSerpProps> = ({ token }) => {
           </Box>
         </Box>
 
-        {/* Error Display */}
         {error && (
           <Alert status="error">
             <AlertIcon />
@@ -187,7 +184,6 @@ const ApiKeyGSerp: React.FC<ApiKeyGSerpProps> = ({ token }) => {
           </Alert>
         )}
 
-        {/* Existing API Keys Section */}
         <Box>
           <Text fontSize="md" fontWeight="semibold" mb={2}>
             Existing API Keys
