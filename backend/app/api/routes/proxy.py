@@ -176,7 +176,7 @@ async def generate_user_api_key(session: SessionDep, current_user: CurrentUser):
     )
     session.add(token)
     session.commit()
-    session.refresh(token)  # Ensure the token is refreshed to get the ID
+    session.refresh(token)  # Refresh to ensure full object state
     return {"api_key": api_key}
 
 @router.post("/fetch", response_model=ProxyResponse)
