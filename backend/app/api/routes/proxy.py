@@ -84,7 +84,6 @@ class ProxyStatusResponse(BaseModel):
 
 class ProxyRequest(BaseModel):
     url: str
-    endpoint:str
 
 class ProxyResponse(BaseModel):
     result: str
@@ -191,13 +190,13 @@ async def proxy_fetch(
     if not healthy_endpoints:
         raise HTTPException(status_code=503, detail="No healthy proxy endpoints available")
     
-    selected_endpoint = request.endpoint if request.endpoint in healthy_endpoints else random.choice(healthy_endpoints)
+    selected_endpoint = endpoint if endpoint in healthy_endpoints else random.choice(healthy_endpoints)
     
     try:
         async with httpx.AsyncClient(timeout=10.0) as client:
             response = await client.post(
                 f"{selected_endpoint}/fetch",
-                json={"url": request.url}
+                json={"url": endpoint}
             )
             response.raise_for_status()
             data = response.json()
