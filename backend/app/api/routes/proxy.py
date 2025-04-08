@@ -5,16 +5,15 @@ import httpx
 import logging
 import asyncio
 import time
-import random
-from uuid import UUID
+import random,uuid
 from datetime import datetime, timedelta
 from app.api.deps import SessionDep, CurrentUser
 from app.models import User
 from app.core.security import generate_api_key, verify_api_key
 from app.api.routes import users
 from sqlalchemy.orm import Session
-from sqlmodel import SQLModel, Field
-
+from sqlmodel import SQLModel, Field  # Added for APIToken definition
+from uuid import UUID
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
@@ -80,7 +79,7 @@ class APIToken(SQLModel, table=True):
     __tablename__ = "apitoken"
     id: Optional[int] = Field(default=None, primary_key=True)
     token: str = Field(unique=True)
-    user_id: UUID = Field(foreign_key="user.id", index=True)
+    user_id: UUID = Field(foreign_key="user.id", index=True)  # Change to UUID
     created_at: datetime = Field(default_factory=datetime.utcnow)
     expires_at: datetime
     is_active: bool = Field(default=True)
@@ -91,7 +90,6 @@ class RegionsResponse(BaseModel):
     regions: List[str]
 
 class APIKeyResponse(BaseModel):
-    id: int  # Added ID
     key_preview: str
     created_at: str
     expires_at: str
@@ -113,7 +111,6 @@ class ProxyRequest(BaseModel):
     url: str
 
 class ProxyResponse(BaseModel):
-    id: int  # Added ID of the API token used
     result: str
     public_ip: str
     device_id: str
@@ -171,17 +168,17 @@ async def generate_user_api_key(session: SessionDep, current_user: CurrentUser):
     
     api_key = generate_api_key(user_id=str(current_user.id))
     token = APIToken(
-        user_id=current_user.id,  # Use UUID directly
+        user_id=str(current_user.id),
         token=api_key,
         created_at=datetime.utcnow(),
         expires_at=datetime.utcnow() + timedelta(days=365),
         is_active=True,
         request_count=0
- выбирайте    )
+    )
     session.add(token)
     session.commit()
     session.refresh(token)
-    return {"api_key": api_key, "id": token.id}  # Return ID with the key
+    return {"api_key": api_key}
 
 @router.get("/regions", response_model=RegionsResponse)
 async def list_regions(
@@ -232,7 +229,7 @@ async def proxy_fetch(
     # Verify and increment request counter
     token = session.query(APIToken).filter(
         APIToken.token == x_api_key,
-        APIToken.user_id == user.id,
+        APIToken.user_id == str(user.id),
         APIToken.is_active == True
     ).first()
     if not token:
@@ -262,7 +259,6 @@ async def proxy_fetch(
             session.commit()
             
             return ProxyResponse(
-                id=token.id,  # Include the API token ID
                 result=data["result"],
                 public_ip=data["public_ip"],
                 device_id=data["device_id"],
@@ -281,13 +277,12 @@ async def list_user_api_keys(session: SessionDep, current_user: CurrentUser):
         raise HTTPException(status_code=403, detail="Active subscription required")
     
     api_tokens = session.query(APIToken).filter(
-        APIToken.user_id == current_user.id,
+        APIToken.user_id == str(current_user.id),
         APIToken.is_active == True
     ).all()
     
     key_list = [
         {
-            "id": token.id,  # Include the ID
             "key_preview": f"{token.token[:FRONT_PREVIEW_LENGTH]}...{token.token[-END_PREVIEW_LENGTH:]}",
             "created_at": token.created_at.isoformat(),
             "expires_at": token.expires_at.isoformat(),
@@ -297,66 +292,3 @@ async def list_user_api_keys(session: SessionDep, current_user: CurrentUser):
         for token in api_tokens
     ]
     return key_list
-from fastapi import APIRouter, Depends, HTTPException
-from typing import Annotated
-from sqlalchemy.orm import Session
-from app.api.deps import SessionDep, CurrentUser
-from app.models import User
-from pydantic import BaseModel
-
-# Assuming APIToken and router are defined elsewhere
-class APIKeyDeleteRequest(BaseModel):
-    id: int  # The ID of the API key to delete
-
-class APIKeyDeleteResponse(BaseModel):
-    message: str
-    deleted_key_preview: str
-
-@router.delete("/api-keys", response_model=APIKeyDeleteResponse)
-async def delete_user_api_key(
-    session: SessionDep,
-    current_user: CurrentUser,
-    request: APIKeyDeleteRequest
-):
-    """
-    Delete an API key for the authenticated user by its ID.
-    
-    Args:
-        session: Database session dependency
-        current_user: Authenticated user from dependency
-        request: Request body containing the API key ID to delete
-    
-    Returns:
-        APIKeyDeleteResponse with confirmation message and key preview
-    
-    Raises:
-        HTTPException: If user lacks subscription, key doesn't exist, or doesn't belong to user
-    """
-    if not current_user.has_subscription:
-        raise HTTPException(status_code=403, detail="Active subscription required")
-
-    # Find the API key in the database by ID and ensure it belongs to the current user
-    api_token = session.query(APIToken).filter(
-        APIToken.id == request.id,
-        APIToken.user_id == current_user.id,
-        APIToken.is_active == True
-    ).first()
-
-    if not api_token:
-        raise HTTPException(status_code=404, detail="API key not found, already inactive, or does not belong to this user")
-
-    # Soft delete by marking as inactive
-    api_token.is_active = False
-    session.commit()
-
-    # Hard delete (uncomment if preferred)
-    # session.delete(api_token)
-    # session.commit()
-
-    # Generate a preview of the deleted key
-    key_preview = f"{api_token.token[:FRONT_PREVIEW_LENGTH]}...{api_token.token[-END_PREVIEW_LENGTH:]}"
-
-    return APIKeyDeleteResponse(
-        message="API key successfully deleted",
-        deleted_key_preview=key_preview
-    )
