@@ -72,7 +72,7 @@ REGION_ENDPOINTS = {
     ]
 }
 
-router = APIRouter(tags=["proxy"], prefix="")
+router = APIRouter(tags=["proxy"], prefix="/proxy")
 
 # Models
 # New model for regions response
