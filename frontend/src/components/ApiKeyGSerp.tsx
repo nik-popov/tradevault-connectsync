@@ -24,12 +24,10 @@ import {
 import { CopyIcon } from "@chakra-ui/icons";
 
 interface ApiKey {
-  id?: string; // Added for fetching full key (adjust if your backend uses a different identifier)
   key_preview: string;
   created_at: string;
   expires_at: string;
   is_active: boolean;
-  full_key?: string; // Optional, only set when generating a new key
 }
 
 interface ApiKeyGSerpProps {
@@ -42,7 +40,7 @@ const ApiKeyGSerp: React.FC<ApiKeyGSerpProps> = ({ token }) => {
   const [apiKeys, setApiKeys] = useState<ApiKey[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [fullKey, setFullKey] = useState<string | null>(null);
+  const [fullKey, setFullKey] = useState<string | null>(null); // For modal display
 
   useEffect(() => {
     if (token) {
@@ -74,27 +72,6 @@ const ApiKeyGSerp: React.FC<ApiKeyGSerpProps> = ({ token }) => {
     }
   };
 
-  const fetchFullKey = async (keyId: string) => {
-    if (!token) return null;
-    try {
-      const response = await fetch(`${API_URL}/api-keys/${keyId}`, {
-        method: "GET",
-        headers: {
-          "Accept": "application/json",
-          "Authorization": `Bearer ${token}`,
-        },
-      });
-      if (!response.ok) {
-        throw new Error(`Failed to fetch full key: ${response.status}`);
-      }
-      const data = await response.json();
-      return data.full_key; // Adjust based on actual response structure
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to fetch full key");
-      return null;
-    }
-  };
-
   const generateKey = async () => {
     if (!token) {
       setError("No authentication token available");
@@ -116,8 +93,8 @@ const ApiKeyGSerp: React.FC<ApiKeyGSerpProps> = ({ token }) => {
         throw new Error(`Failed to generate API key: ${response.status}`);
       }
       const newKeyData = await response.json();
-      setFullKey(newKeyData.full_key);
-      await fetchApiKeys();
+      setFullKey(newKeyData.full_key); // Display full key in modal
+      await fetchApiKeys(); // Refresh the list
     } catch (err) {
       setError(err instanceof Error ? err.message : "An error occurred");
     } finally {
@@ -127,20 +104,6 @@ const ApiKeyGSerp: React.FC<ApiKeyGSerpProps> = ({ token }) => {
 
   const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text);
-  };
-
-  const handleCopyFullKey = async (keyId?: string) => {
-    if (!keyId) {
-      setError("API key ID is missing");
-      return;
-    }
-    setLoading(true);
-    const fullKey = await fetchFullKey(keyId);
-    if (fullKey) {
-      copyToClipboard(fullKey);
-      setError(null); // Clear error on success
-    }
-    setLoading(false);
   };
 
   if (!token) {
@@ -157,6 +120,7 @@ const ApiKeyGSerp: React.FC<ApiKeyGSerpProps> = ({ token }) => {
   return (
     <Box p={4} width="100%">
       <Flex direction="column" gap={6}>
+        {/* Generate New API Key Section */}
         <Box>
           <Text fontSize="md" fontWeight="semibold" mb={2}>
             Generate New API Key
@@ -174,6 +138,7 @@ const ApiKeyGSerp: React.FC<ApiKeyGSerpProps> = ({ token }) => {
           </Tooltip>
         </Box>
 
+        {/* Error Display */}
         {error && (
           <Alert status="error">
             <AlertIcon />
@@ -181,6 +146,7 @@ const ApiKeyGSerp: React.FC<ApiKeyGSerpProps> = ({ token }) => {
           </Alert>
         )}
 
+        {/* Existing API Keys Section */}
         <Box>
           <Text fontSize="md" fontWeight="semibold" mb={2}>
             Existing API Keys
@@ -193,7 +159,6 @@ const ApiKeyGSerp: React.FC<ApiKeyGSerpProps> = ({ token }) => {
                   <Th>Created At</Th>
                   <Th>Expires At</Th>
                   <Th>Status</Th>
-                  <Th>Actions</Th>
                 </Tr>
               </Thead>
               <Tbody>
@@ -203,29 +168,6 @@ const ApiKeyGSerp: React.FC<ApiKeyGSerpProps> = ({ token }) => {
                     <Td>{new Date(key.created_at).toLocaleString()}</Td>
                     <Td>{new Date(key.expires_at).toLocaleString()}</Td>
                     <Td>{key.is_active ? "Active" : "Inactive"}</Td>
-                    <Td>
-                      <Flex gap={2}>
-                        <Tooltip label="Copy API key preview">
-                          <IconButton
-                            aria-label="Copy preview"
-                            icon={<CopyIcon />}
-                            size="sm"
-                            onClick={() => copyToClipboard(key.key_preview)}
-                            isDisabled={loading}
-                          />
-                        </Tooltip>
-                        <Tooltip label="Copy full API key">
-                          <IconButton
-                            aria-label="Copy full key"
-                            icon={<CopyIcon />}
-                            size="sm"
-                            onClick={() => handleCopyFullKey(key.id)}
-                            isDisabled={loading || !key.id}
-                            colorScheme="teal" // Visually distinguish from preview
-                          />
-                        </Tooltip>
-                      </Flex>
-                    </Td>
                   </Tr>
                 ))}
               </Tbody>
@@ -234,18 +176,21 @@ const ApiKeyGSerp: React.FC<ApiKeyGSerpProps> = ({ token }) => {
         </Box>
       </Flex>
 
+      {/* Modal for Full API Key */}
       <Modal isOpen={!!fullKey} onClose={() => setFullKey(null)}>
         <ModalOverlay />
         <ModalContent>
           <ModalHeader>New API Key</ModalHeader>
           <ModalCloseButton />
-          <ModalBody>
+          <ModalBody pb={6}>
             <Flex direction="column" gap={4}>
               <Text>
                 Your new API key (copy it now as it won't be shown again):
               </Text>
               <Flex gap={2} alignItems="center">
-                <Text fontFamily="monospace">{fullKey}</Text>
+                <Text fontFamily="monospace" wordBreak="break-all">
+                  {fullKey}
+                </Text>
                 <IconButton
                   aria-label="Copy full key"
                   icon={<CopyIcon />}
