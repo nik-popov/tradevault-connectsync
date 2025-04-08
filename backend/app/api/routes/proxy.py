@@ -292,3 +292,75 @@ async def list_user_api_keys(session: SessionDep, current_user: CurrentUser):
         for token in api_tokens
     ]
     return key_list
+from fastapi import APIRouter, Depends, HTTPException
+from typing import Annotated
+from sqlalchemy.orm import Session
+from app.api.deps import SessionDep, CurrentUser
+from app.models import User
+from app.core.security import verify_api_key
+
+# Assuming the APIToken model and router are already defined as in your code
+class APIKeyDeleteRequest(BaseModel):
+    api_key: str  # The full API key to delete
+
+class APIKeyDeleteResponse(BaseModel):
+    message: str
+    deleted_key_preview: str
+
+@router.delete("/api-keys", response_model=APIKeyDeleteResponse)
+async def delete_user_api_key(
+    session: SessionDep,
+    current_user: CurrentUser,
+    request: APIKeyDeleteRequest
+):
+    """
+    Delete an API key for the authenticated user.
+    
+    Args:
+        session: Database session dependency
+        current_user: Authenticated user from dependency
+        request: Request body containing the API key to delete
+    
+    Returns:
+        APIKeyDeleteResponse with confirmation message and key preview
+    
+    Raises:
+        HTTPException: If user lacks subscription, key doesn't exist, or doesn't belong to user
+    """
+    if not current_user.has_subscription:
+        raise HTTPException(status_code=403, detail="Active subscription required")
+
+    # Verify the API key and extract user_id from it
+    token_data = verify_api_key(request.api_key)
+    if not token_data or "user_id" not in token_data:
+        raise HTTPException(status_code=400, detail="Invalid API key format")
+
+    # Ensure the key belongs to the current user
+    if str(token_data["user_id"]) != str(current_user.id):
+        raise HTTPException(status_code=403, detail="API key does not belong to this user")
+
+    # Find the API key in the database
+    api_token = session.query(APIToken).filter(
+        APIToken.token == request.api_key,
+        APIToken.user_id == current_user.id,
+        APIToken.is_active == True
+    ).first()
+
+    if not api_token:
+        raise HTTPException(status_code=404, detail="API key not found or already inactive")
+
+    # Option 1: Soft delete by marking as inactive
+    api_token.is_active = False
+    session.commit()
+
+    # Option 2: Hard delete (uncomment if preferred)
+    # session.delete(api_token)
+    # session.commit()
+
+    # Generate a preview of the deleted key
+    key_preview = f"{api_token.token[:FRONT_PREVIEW_LENGTH]}...{api_token.token[-END_PREVIEW_LENGTH:]}"
+
+    return APIKeyDeleteResponse(
+        message="API key successfully deleted",
+        deleted_key_preview=key_preview
+    )
