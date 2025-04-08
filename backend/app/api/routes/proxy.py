@@ -1,4 +1,3 @@
-# app/api/routes/proxy.py
 from fastapi import APIRouter, Depends, HTTPException, BackgroundTasks
 from typing import Annotated, Dict, List
 from pydantic import BaseModel
@@ -17,7 +16,7 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 PROXY_ENDPOINTS = [
- "https://us-east4-proxy1-454912.cloudfunctions.net/main",
+    "https://us-east4-proxy1-454912.cloudfunctions.net/main",
     "https://southamerica-west1-proxy1-454912.cloudfunctions.net/main",
     "https://us-central1-proxy1-454912.cloudfunctions.net/main",
     "https://us-east1-proxy1-454912.cloudfunctions.net/main",
@@ -61,8 +60,8 @@ PROXY_ENDPOINTS = [
     "https://me-central1-proxy6-455014.cloudfunctions.net/main",
     "https://me-central2-proxy6-455014.cloudfunctions.net/main"
 ]
-router = APIRouter(tags=["proxy"], prefix="/proxy")
 
+router = APIRouter(tags=["proxy"], prefix="/proxy")
 
 # Models
 class ProxyStatus(BaseModel):
@@ -79,7 +78,7 @@ class ProxyStatusResponse(BaseModel):
 
 class ProxyRequest(BaseModel):
     url: str
-    endpoint: str | None = None
+    endpoint: Optional[str] = None
 
 class ProxyResponse(BaseModel):
     result: str
@@ -163,8 +162,10 @@ async def get_proxy_status_endpoint(
 
 @router.post("/generate-api-key", response_model=dict)
 async def generate_user_api_key(session: SessionDep, current_user: CurrentUser):
+    """Generate a new API key for the authenticated user"""
     if not current_user.has_subscription:
         raise HTTPException(status_code=403, detail="Active subscription required")
+    
     api_key = generate_api_key(user_id=str(current_user.id))
     token = APIToken(
         user_id=current_user.id,
@@ -175,6 +176,7 @@ async def generate_user_api_key(session: SessionDep, current_user: CurrentUser):
     )
     session.add(token)
     session.commit()
+    session.refresh(token)  # Ensure the token is refreshed to get the ID
     return {"api_key": api_key}
 
 @router.post("/fetch", response_model=ProxyResponse)
