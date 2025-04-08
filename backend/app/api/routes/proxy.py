@@ -7,7 +7,7 @@ import logging
 import asyncio
 import time
 import random
-from datetime import datetime
+from datetime import datetime, timedelta
 from app.api.deps import CurrentUser, SessionDep, get_current_active_superuser
 from app.models import User, APIToken
 from app.core.security import generate_api_key, verify_api_key
@@ -175,7 +175,7 @@ async def generate_user_api_key(
         user_id=current_user.id,
         token=api_key,
         created_at=datetime.utcnow(),
-        expires_at=datetime.utcnow() + timedelta(days=365)
+        expires_at=datetime.utcnow() + timedelta(days=365)  # Now this will work
     )
     session.add(token)
     session.commit()
