@@ -34,17 +34,16 @@ interface NavItemsProps {
 }
 
 const navStructure: NavItem[] = [
-  {
-    title: "Scraping Tools",
-    subItems: [
+  // {
+  //   title: "Scraping Tools",
+  //   subItems: [
     
-      { title: "HTTPS Request API", path: "/scraping-tools/https-proxy" },
+  //     { title: "HTTPS Request API", path: "/scraping-tools/https-proxy" },
  
-      // { title: "Submit Batch", path: "/scraping-tools/submit-form/https-proxy" },
-      { title: "Realtime Proxy Status", path: "/scraping-tools/search-proxies" },
-    ],
-    icon: FiSearch,
-  },
+  //     { title: "Realtime Proxy Status", path: "/scraping-tools/search-proxies" },
+  //   ],
+  // icon: FiSearch,
+  // },
 ];
 
 const NavItems = ({ onClose, isMobile = false }: NavItemsProps) => {
