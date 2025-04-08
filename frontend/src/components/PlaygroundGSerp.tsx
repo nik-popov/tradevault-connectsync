@@ -14,89 +14,54 @@ import {
   Grid,
   GridItem,
   IconButton,
-  Image,
 } from "@chakra-ui/react";
 import { ExternalLinkIcon } from "@chakra-ui/icons";
 import { FiSend } from "react-icons/fi";
-const proxyData = {
-    "DataProxy": [
-      { region: "US-EAST4", url: "https://us-east4-proxy1-454912.cloudfunctions.net/main/fetch" },
-      { region: "SOUTHAMERICA-WEST1", url: "https://southamerica-west1-proxy1-454912.cloudfunctions.net/main/fetch" },
-      { region: "US-CENTRAL1", url: "https://us-central1-proxy1-454912.cloudfunctions.net/main/fetch" },
-      { region: "US-EAST1", url: "https://us-east1-proxy1-454912.cloudfunctions.net/main/fetch" },
-      { region: "US-EAST2", url: "https://us-east2-proxy1-454912.cloudfunctions.net/main/fetch" },
-      { region: "US-WEST1", url: "https://us-west1-proxy1-454912.cloudfunctions.net/main/fetch" },
-      { region: "US-WEST3", url: "https://us-west3-proxy1-454912.cloudfunctions.net/main/fetch" },
-      { region: "US-WEST4", url: "https://us-west4-proxy1-454912.cloudfunctions.net/main/fetch" },
-      { region: "NORTHAMERICA-NORTHEAST3", url: "https://northamerica-northeast3-proxy1-454912.cloudfunctions.net/main/fetch" },
-      { region: "NORTHAMERICA-NORTHEAST2", url: "https://northamerica-northeast2-proxy2-455013.cloudfunctions.net/main/fetch" },
-      { region: "US-CENTRAL1", url: "https://us-central1-proxy2-455013.cloudfunctions.net/main/fetch" },
-      { region: "US-EAST5", url: "https://us-east5-proxy2-455013.cloudfunctions.net/main/fetch" },
-      { region: "US-WEST2", url: "https://us-west2-proxy2-455013.cloudfunctions.net/main/fetch" },
-      { region: "US-WEST6", url: "https://us-west6-proxy2-455013.cloudfunctions.net/main/fetch" },
-      { region: "ASIA-SOUTHEAST1", url: "https://asia-southeast1-proxy2-455013.cloudfunctions.net/main/fetch" },
-      { region: "AUSTRALIA-SOUTHEAST1", url: "https://australia-southeast1-proxy3-455013.cloudfunctions.net/main/fetch" },
-      { region: "AUSTRALIA-SOUTHEAST2", url: "https://australia-southeast2-proxy3-455013.cloudfunctions.net/main/fetch" },
-      { region: "SOUTHAMERICA-EAST1", url: "https://southamerica-east1-proxy3-455013.cloudfunctions.net/main/fetch" },
-      { region: "SOUTHAMERICA-EAST2", url: "https://southamerica-east2-proxy3-455013.cloudfunctions.net/main/fetch" },
-      { region: "SOUTHAMERICA-WEST1", url: "https://southamerica-west1-proxy3-455013.cloudfunctions.net/main/fetch" },
-      { region: "US-SOUTH1", url: "https://us-south1-proxy3-455013.cloudfunctions.net/main/fetch" },
-      { region: "ASIA-SOUTH1", url: "https://asia-south1-proxy3-455013.cloudfunctions.net/main/fetch" },
-      { region: "EUROPE-NORTH1", url: "https://europe-north1-proxy4-455014.cloudfunctions.net/main/fetch" },
-      { region: "EUROPE-SOUTHWEST1", url: "https://europe-southwest1-proxy4-455014.cloudfunctions.net/main/fetch" },
-      { region: "EUROPE-WEST1", url: "https://europe-west1-proxy4-455014.cloudfunctions.net/main/fetch" },
-      { region: "EUROPE-WEST4", url: "https://europe-west4-proxy4-455014.cloudfunctions.net/main/fetch" },
-      { region: "EUROPE-WEST5", url: "https://europe-west5-proxy4-455014.cloudfunctions.net/main/fetch" },
-      { region: "EUROPE-WEST6", url: "https://europe-west6-proxy4-455014.cloudfunctions.net/main/fetch" },
-      { region: "EUROPE-WEST8", url: "https://europe-west8-proxy4-455014.cloudfunctions.net/main/fetch" },
-      { region: "EUROPE-CENTRAL2", url: "https://europe-central2-proxy4-455014.cloudfunctions.net/main/fetch" },
-      { region: "EUROPE-WEST12", url: "https://europe-west12-proxy5-455014.cloudfunctions.net/main/fetch" },
-      { region: "EUROPE-WEST2", url: "https://europe-west2-proxy5-455014.cloudfunctions.net/main/fetch" },
-      { region: "EUROPE-WEST3", url: "https://europe-west3-proxy5-455014.cloudfunctions.net/main/fetch" },
-      { region: "EUROPE-WEST6", url: "https://europe-west6-proxy5-455014.cloudfunctions.net/main/fetch" },
-      { region: "EUROPE-WEST9", url: "https://europe-west9-proxy5-455014.cloudfunctions.net/main/fetch" },
-      { region: "EUROPE-WEST11", url: "https://europe-west11-proxy5-455014.cloudfunctions.net/main/fetch" },
-      { region: "ASIA-NORTHEAST1", url: "https://asia-northeast1-proxy5-455014.cloudfunctions.net/main/fetch" },
-      { region: "ASIA-EAST1", url: "https://asia-east1-proxy6-455014.cloudfunctions.net/main/fetch" },
-      { region: "ASIA-EAST2", url: "https://asia-east2-proxy6-455014.cloudfunctions.net/main/fetch" },
-      { region: "ASIA-NORTHEAST2", url: "https://asia-northeast2-proxy6-455014.cloudfunctions.net/main/fetch" },
-      { region: "EUROPE-WEST10", url: "https://europe-west10-proxy6-455014.cloudfunctions.net/main/fetch" },
-      { region: "MIDDLEEAST-CENTRAL1", url: "https://me-central1-proxy6-455014.cloudfunctions.net/main/fetch" },
-      { region: "MIDDLEEAST-CENTRAL2", url: "https://me-central2-proxy6-455014.cloudfunctions.net/main/fetch" },
-    ],
-};
+
+// Define regions based on backend REGION_ENDPOINTS
+const REGIONS = [
+  "us-east",
+  "us-west",
+  "us-central",
+  "northamerica-northeast",
+  "southamerica",
+  "asia",
+  "australia",
+  "europe",
+  "middle-east"
+];
+
+const API_URL = "https://api.thedataproxy.com/api/v1/proxy";
 
 const PlaygroundGSerp: React.FC = () => {
   const [url, setUrl] = useState<string>("https://www.google.com/search?q=flowers&udm=2");
-  const [provider, setProvider] = useState<string>("DataProxy");
-  const [selectedUrl, setSelectedUrl] = useState<string>(proxyData["DataProxy"][0].url);
-  const [regionFilter, setRegionFilter] = useState<string>("");
+  const [region, setRegion] = useState<string>(REGIONS[0]);
+  const [apiKey, setApiKey] = useState<string>("");
   const [response, setResponse] = useState<string>("");
   const [htmlPreview, setHtmlPreview] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
-
-  const handleProviderChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const newProvider = e.target.value;
-    setProvider(newProvider);
-    setRegionFilter("");
-    setSelectedUrl(proxyData[newProvider][0].url);
-  };
-
-  const handleUrlChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setSelectedUrl(e.target.value);
-  };
+  const [error, setError] = useState<string>("");
 
   const handleTestRequest = async () => {
     setIsLoading(true);
     setResponse("");
     setHtmlPreview("");
+    setError("");
 
     try {
-      const res = await fetch(selectedUrl, {
+      const res = await fetch(`${API_URL}/fetch?region=${region}`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ url }),
+        headers: {
+          "Content-Type": "application/json",
+          "x-api-key": apiKey,
+        },
+        body: JSON.stringify({ url }), // Matches ProxyRequest model
       });
+
+      if (!res.ok) {
+        const errorData = await res.json();
+        throw new Error(errorData.detail || `HTTP error! status: ${res.status}`);
+      }
 
       const data = await res.json();
       console.log("API Response:", data);
@@ -108,24 +73,12 @@ const PlaygroundGSerp: React.FC = () => {
         console.log("No HTML content found in data.result");
       }
     } catch (error) {
+      setError(error instanceof Error ? error.message : "Unknown error");
       setResponse(`Error: ${error instanceof Error ? error.message : "Unknown error"}`);
     } finally {
       setIsLoading(false);
     }
   };
-
-  useEffect(() => {
-    const filtered = proxyData[provider].filter((proxy) =>
-      proxy.region.toLowerCase().includes(regionFilter.toLowerCase())
-    );
-    if (filtered.length > 0) {
-      if (!filtered.some((proxy) => proxy.url === selectedUrl)) {
-        setSelectedUrl(filtered[0].url);
-      }
-    } else {
-      setSelectedUrl("");
-    }
-  }, [provider, regionFilter]);
 
   return (
     <Box width="100%">
@@ -142,40 +95,32 @@ const PlaygroundGSerp: React.FC = () => {
                 isRequired
               />
             </FormControl>
-            {/* <FormControl flex="1">
-              <FormLabel fontSize="sm">Provider</FormLabel>
-              <Select value={provider} onChange={handleProviderChange} size="sm">
-                {Object.keys(proxyData).map((prov) => (
-                  <option key={prov} value={prov}>{prov}</option>
-                ))}
-              </Select>
-            </FormControl> */}
           </Flex>
           <Flex direction="row" gap={4} alignItems="flex-end">
             <FormControl flex="1">
-              <FormLabel fontSize="sm">Endpoint URL</FormLabel>
+              <FormLabel fontSize="sm">API Key</FormLabel>
               <Input
-                value={regionFilter}
-                onChange={(e) => setRegionFilter(e.target.value)}
-                placeholder="Filter regions"
+                value={apiKey}
+                onChange={(e) => setApiKey(e.target.value)}
+                placeholder="Enter your API key"
                 size="sm"
-                mb={2}
+                type="password" // Hide API key by default
+                isRequired
               />
-              {proxyData[provider].filter((proxy) =>
-                proxy.region.toLowerCase().includes(regionFilter.toLowerCase())
-              ).length > 0 ? (
-                <Select value={selectedUrl} onChange={handleUrlChange} size="sm">
-                  {proxyData[provider]
-                    .filter((proxy) => proxy.region.toLowerCase().includes(regionFilter.toLowerCase()))
-                    .map((proxy) => (
-                      <option key={proxy.url} value={proxy.url}>
-                        {proxy.region} - {proxy.url}
-                      </option>
-                    ))}
-                </Select>
-              ) : (
-                <Select isDisabled placeholder="No regions match the filter" size="sm" />
-              )}
+            </FormControl>
+            <FormControl flex="1">
+              <FormLabel fontSize="sm">Region</FormLabel>
+              <Select
+                value={region}
+                onChange={(e) => setRegion(e.target.value)}
+                size="sm"
+              >
+                {REGIONS.map((reg) => (
+                  <option key={reg} value={reg}>
+                    {reg}
+                  </option>
+                ))}
+              </Select>
             </FormControl>
             <Box>
               <Tooltip label="Send test request">
@@ -184,13 +129,16 @@ const PlaygroundGSerp: React.FC = () => {
                   colorScheme="blue"
                   onClick={handleTestRequest}
                   isLoading={isLoading}
-                  isDisabled={!url.trim() || !selectedUrl}
+                  isDisabled={!url.trim() || !apiKey.trim() || !region}
                 >
-            <FiSend />
+                  <FiSend />
                 </Button>
               </Tooltip>
             </Box>
           </Flex>
+          {error && (
+            <Text color="red.500" fontSize="sm">{error}</Text>
+          )}
         </Flex>
       </Box>
       <Grid templateColumns={{ base: "1fr", md: "1fr 1fr" }} gap={6}>
