@@ -204,24 +204,33 @@ async def get_proxy_status(
     )
     
     return ProxyStatusResponse(statuses=[status])
+    
 @router.post("/fetch", response_model=ProxyResponse)
 async def proxy_fetch(
     session: SessionDep,
     region: str,
     request: ProxyRequest,
     user: Annotated[User, Depends(verify_api_token)],
-    background_tasks: BackgroundTasks
+    background_tasks: BackgroundTasks,
+    x_api_key: Annotated[str, Header()] = None
 ):
-    """Make a proxied request through a healthy endpoint in the specified region"""
     if region not in REGION_ENDPOINTS:
         raise HTTPException(status_code=400, detail=f"Invalid region. Available regions: {list(REGION_ENDPOINTS.keys())}")
+    
+    # Increment request counter
+    token = session.query(APIToken).filter(
+        APIToken.token == x_api_key,
+        APIToken.user_id == str(user.id),
+        APIToken.is_active == True
+    ).first()
+    if not token:
+        raise HTTPException(status_code=401, detail="Invalid API key")
     
     endpoints = REGION_ENDPOINTS[region]
     status_tasks = [check_proxy_health(endpoint, region) for endpoint in endpoints]
     results = await asyncio.gather(*status_tasks)
     
     healthy_endpoints = [endpoints[i] for i, result in enumerate(results) if result["is_healthy"]]
-    
     if not healthy_endpoints:
         raise HTTPException(status_code=503, detail=f"No healthy proxy endpoints available in {region}")
     
@@ -231,16 +240,20 @@ async def proxy_fetch(
         async with httpx.AsyncClient(timeout=10.0) as client:
             response = await client.post(
                 f"{selected_endpoint}/fetch",
-                json={"url": request.url}  # Fixed: use request.url instead of endpoint
+                json={"url": request.url}
             )
             response.raise_for_status()
             data = response.json()
+            
+            # Increment counter after successful request
+            token.request_count += 1
+            session.commit()
             
             return ProxyResponse(
                 result=data["result"],
                 public_ip=data["public_ip"],
                 device_id=data["device_id"],
-                region_used=region  # Return region instead of specific endpoint
+                region_used=region
             )
     except Exception as e:
         logger.error(f"Proxy fetch failed in {region}: {str(e)}")
@@ -251,12 +264,11 @@ END_PREVIEW_LENGTH = 8
 
 @router.get("/api-keys", response_model=List[APIKeyResponse])
 async def list_user_api_keys(session: SessionDep, current_user: CurrentUser):
-    """List all API keys for the authenticated user showing front and end portions"""
     if not current_user.has_subscription:
         raise HTTPException(status_code=403, detail="Active subscription required")
     
     api_tokens = session.query(APIToken).filter(
-        APIToken.user_id == current_user.id,
+        APIToken.user_id == str(current_user.id),
         APIToken.is_active == True
     ).all()
     
@@ -265,9 +277,30 @@ async def list_user_api_keys(session: SessionDep, current_user: CurrentUser):
             "key_preview": f"{token.token[:FRONT_PREVIEW_LENGTH]}...{token.token[-END_PREVIEW_LENGTH:]}",
             "created_at": token.created_at.isoformat(),
             "expires_at": token.expires_at.isoformat(),
-            "is_active": token.is_active
+            "is_active": token.is_active,
+            "request_count": token.request_count
         }
         for token in api_tokens
     ]
+    return key_list
+
+@router.get("/all-api-keys", response_model=List[APIKeyResponse])
+async def list_all_api_keys(session: SessionDep, current_user: CurrentUser):
+    if not current_user.is_superuser:
+        raise HTTPException(status_code=403, detail="Superuser access required")
     
+    api_tokens = session.query(APIToken).filter(
+        APIToken.is_active == True
+    ).all()
+    
+    key_list = [
+        {
+            "key_preview": f"{token.token[:FRONT_PREVIEW_LENGTH]}...{token.token[-END_PREVIEW_LENGTH:]}",
+            "created_at": token.created_at.isoformat(),
+            "expires_at": token.expires_at.isoformat(),
+            "is_active": token.is_active,
+            "request_count": token.request_count
+        }
+        for token in api_tokens
+    ]
     return key_list
