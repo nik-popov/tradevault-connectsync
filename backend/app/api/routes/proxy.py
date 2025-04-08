@@ -13,7 +13,7 @@ from app.core.security import generate_api_key, verify_api_key
 from app.api.routes import users
 from sqlalchemy.orm import Session
 from sqlmodel import SQLModel, Field  # Added for APIToken definition
-
+from uuid import UUID
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
@@ -79,11 +79,11 @@ class APIToken(SQLModel, table=True):
     __tablename__ = "apitoken"
     id: Optional[int] = Field(default=None, primary_key=True)
     token: str = Field(unique=True)
-    user_id: str = Field(foreign_key="user.id", index=True)
+    user_id: UUID = Field(foreign_key="user.id", index=True)  # Change to UUID
     created_at: datetime = Field(default_factory=datetime.utcnow)
     expires_at: datetime
     is_active: bool = Field(default=True)
-    request_count: int = Field(default=0)  # Added for request tracking
+    request_count: int = Field(default=0)
 
 # Other Models
 class RegionsResponse(BaseModel):
