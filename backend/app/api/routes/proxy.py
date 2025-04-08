@@ -73,6 +73,9 @@ REGION_ENDPOINTS ={
 router = APIRouter(tags=["proxy"], prefix="")
 
 # Models
+# New model for regions response
+class RegionsResponse(BaseModel):
+    regions: List[str]
 class APIKeyResponse(BaseModel):
     key_preview: str
     created_at: str
@@ -143,6 +146,32 @@ async def verify_api_token(
     
     return user
 
+
+@router.post("/generate-api-key", response_model=dict)
+async def generate_user_api_key(session: SessionDep, current_user: CurrentUser):
+    """Generate a new API key for the authenticated user"""
+    if not current_user.has_subscription:
+        raise HTTPException(status_code=403, detail="Active subscription required")
+    
+    api_key = generate_api_key(user_id=str(current_user.id))
+    token = APIToken(
+        user_id=current_user.id,
+        token=api_key,
+        created_at=datetime.utcnow(),
+        expires_at=datetime.utcnow() + timedelta(days=365),
+        is_active=True
+    )
+    session.add(token)
+    session.commit()
+    session.refresh(token)
+    return {"api_key": api_key}
+@router.get("/regions", response_model=RegionsResponse)
+async def list_regions(
+    user: Annotated[User, Depends(verify_api_token)],
+    session: SessionDep
+):
+    """Get list of available regions for the authenticated user"""
+    return RegionsResponse(regions=list(REGION_ENDPOINTS.keys()))
 # Updated Endpoints
 @router.get("/status", response_model=ProxyStatusResponse)
 async def get_proxy_status(
@@ -172,26 +201,6 @@ async def get_proxy_status(
     )
     
     return ProxyStatusResponse(statuses=[status])
-
-@router.post("/generate-api-key", response_model=dict)
-async def generate_user_api_key(session: SessionDep, current_user: CurrentUser):
-    """Generate a new API key for the authenticated user"""
-    if not current_user.has_subscription:
-        raise HTTPException(status_code=403, detail="Active subscription required")
-    
-    api_key = generate_api_key(user_id=str(current_user.id))
-    token = APIToken(
-        user_id=current_user.id,
-        token=api_key,
-        created_at=datetime.utcnow(),
-        expires_at=datetime.utcnow() + timedelta(days=365),
-        is_active=True
-    )
-    session.add(token)
-    session.commit()
-    session.refresh(token)
-    return {"api_key": api_key}
-
 @router.post("/fetch", response_model=ProxyResponse)
 async def proxy_fetch(
     session: SessionDep,
