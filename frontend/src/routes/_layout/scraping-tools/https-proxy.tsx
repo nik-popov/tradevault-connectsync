@@ -43,8 +43,8 @@ const GoogleSerpPage = () => {
     <ProtectedComponent>
       <Container maxW="full">
         <Flex align="center" justify="space-between" py={6}>
-          <Text fontSize="xl">Google SERP Proxy API</Text> {/* Updated title for clarity */}
-          <Text fontSize="sm">Manage your Google SERP proxy settings and API keys.</Text>
+          <Text fontSize="xl">Proxy API</Text> {/* Updated title for clarity */}
+          <Text fontSize="sm">Manage Your proxy settings and API keys.</Text>
         </Flex>
         {isLoading ? (
           <Text>Loading subscription status...</Text>
