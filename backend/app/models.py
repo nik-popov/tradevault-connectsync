@@ -1,16 +1,19 @@
 import uuid
 from typing import Optional
 from pydantic import EmailStr
+from sqlalchemy import Column, Integer, String, DateTime, ForeignKey, Boolean
 from sqlmodel import Field, Relationship, SQLModel
 from datetime import datetime, timezone
+from sqlalchemy.dialects.postgresql import UUID as PG_UUID
 
-class APIToken(SQLModel, table=True):
-    id: Optional[int] = Field(default=None, primary_key=True)
-    token: str = Field(index=True, unique=True)
-    user_id: int = Field(foreign_key="user.id")
-    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))  # Fixed
-    expires_at: Optional[datetime] = None
-    is_active: bool = Field(default=True)
+class APIToken(Base):
+    __tablename__ = "apitoken"
+    id = Column(Integer, primary_key=True, index=True)
+    token = Column(String, nullable=False, unique=True)
+    user_id = Column(PG_UUID(as_uuid=True), ForeignKey("users.id"), nullable=False, index=True)
+    created_at = Column(DateTime(timezone=False), server_default=func.now(), nullable=False)
+    expires_at = Column(DateTime(timezone=False), nullable=False)
+    is_active = Column(Boolean, default=True)
 
 # Shared properties
 class UserAgentBase(SQLModel):
