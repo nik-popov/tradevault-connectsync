@@ -21,8 +21,64 @@ function Dashboard() {
       name: "HTTPS Proxy",
       description: "Route HTTPS requests globally",
       path: "/scraping-tools/https-proxy",
+      isActive: true,
     },
-    // Add more products here as needed
+    {
+      id: "http-tunneling",
+      name: "HTTP Tunneling",
+      description: "Securely tunnel HTTP traffic",
+      path: "",
+      isActive: false,
+    },
+    {
+      id: "socks5-proxy",
+      name: "SOCKS5 Proxy",
+      description: "Flexible protocol routing",
+      path: "",
+      isActive: false,
+    },
+    {
+      id: "web-scraper",
+      name: "Web Scraper",
+      description: "Extract data from websites",
+      path: "",
+      isActive: false,
+    },
+    {
+      id: "rotating-proxy",
+      name: "Rotating Proxy",
+      description: "Dynamic IP rotation",
+      path: "",
+      isActive: false,
+    },
+    {
+      id: "geo-spoofing",
+      name: "Geo-Spoofing",
+      description: "Simulate locations worldwide",
+      path: "",
+      isActive: false,
+    },
+    {
+      id: "api-rate-limiter",
+      name: "API Rate Limiter",
+      description: "Control API request rates",
+      path: "",
+      isActive: false,
+    },
+    {
+      id: "data-cache",
+      name: "Data Cache",
+      description: "Store and retrieve data fast",
+      path: "",
+      isActive: false,
+    },
+    {
+      id: "vpn-service",
+      name: "VPN Service",
+      description: "Private network access",
+      path: "",
+      isActive: false,
+    },
   ];
 
   return (
@@ -30,7 +86,7 @@ function Dashboard() {
       <Heading as="h1" size="lg" mb={8} textAlign="center" color="gray.700">
         Your Tools
       </Heading>
-      <SimpleGrid columns={{ base: 1, md: 2 }} spacing={6}>
+      <SimpleGrid columns={{ base: 1, sm: 2, md: 3 }} spacing={6}>
         {products.map((product) => (
           <Box
             key={product.id}
@@ -38,14 +94,24 @@ function Dashboard() {
             bg="white"
             borderRadius="md"
             boxShadow="sm"
-            _hover={{ boxShadow: "md", transform: "translateY(-2px)", transition: "all 0.2s" }}
-            cursor="pointer"
-            onClick={() => navigate({ to: product.path })}
+            opacity={product.isActive ? 1 : 0.5}
+            cursor={product.isActive ? "pointer" : "not-allowed"}
+            _hover={
+              product.isActive
+                ? { boxShadow: "md", transform: "translateY(-2px)", transition: "all 0.2s" }
+                : {}
+            }
+            onClick={product.isActive ? () => navigate({ to: product.path }) : undefined}
           >
-            <Text fontSize="xl" fontWeight="semibold" color="gray.800" mb={2}>
+            <Text fontSize="xl" fontWeight="semibold" color={product.isActive ? "gray.800" : "gray.500"} mb={2}>
               {product.name}
+              {!product.isActive && (
+                <Text as="span" fontSize="sm" color="gray.400" ml={2}>
+                  (Coming Soon)
+                </Text>
+              )}
             </Text>
-            <Text fontSize="sm" color="gray.500">
+            <Text fontSize="sm" color={product.isActive ? "gray.500" : "gray.400"}>
               {product.description}
             </Text>
           </Box>
