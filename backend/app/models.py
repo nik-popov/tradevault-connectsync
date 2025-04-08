@@ -3,6 +3,16 @@ import uuid
 from pydantic import EmailStr
 from sqlmodel import Field, Relationship, SQLModel
 import datetime
+
+
+class APIToken(SQLModel, table=True):
+    id: Optional[int] = Field(default=None, primary_key=True)
+    token: str = Field(index=True, unique=True)
+    user_id: int = Field(foreign_key="user.id")
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+    expires_at: Optional[datetime] = None
+    is_active: bool = Field(default=True)
+
 # Shared properties
 class UserAgentBase(SQLModel):
     user_agent: str = Field(unique=True, index=True, max_length=512)
