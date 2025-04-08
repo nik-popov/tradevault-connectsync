@@ -4,7 +4,6 @@ import {
   Text,
   Flex,
   Button,
-  Input,
   Table,
   Thead,
   Tbody,
@@ -15,8 +14,12 @@ import {
   IconButton,
   Alert,
   AlertIcon,
-  FormControl,
-  FormLabel,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalBody,
+  ModalCloseButton,
 } from "@chakra-ui/react";
 import { CopyIcon } from "@chakra-ui/icons";
 
@@ -25,26 +28,20 @@ interface ApiKey {
   created_at: string;
   expires_at: string;
   is_active: boolean;
+  full_key?: string; // Added to store the full key when generated
 }
 
-interface LoginCredentials {
-  username: string;
-  password: string;
+interface ApiKeyGSerpProps {
+  token: string | null; // Token passed from parent page
 }
 
-const API_URL = "https://api.thedataproxy.com/api/v1";
-const TOKEN_URL = `${API_URL}/login/access-token`;
+const API_URL = "https://api.thedataproxy.com/api/v1/proxy/";
 
-const ApiKeyGSerp: React.FC = () => {
+const ApiKeyGSerp: React.FC<ApiKeyGSerpProps> = ({ token }) => {
   const [apiKeys, setApiKeys] = useState<ApiKey[]>([]);
-  const [newKeyName, setNewKeyName] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [token, setToken] = useState<string | null>(null);
-  const [credentials, setCredentials] = useState<LoginCredentials>({
-    username: "",
-    password: "",
-  });
+  const [fullKey, setFullKey] = useState<string | null>(null); // For modal display
 
   // Fetch API keys when token is available
   useEffect(() => {
@@ -52,36 +49,6 @@ const ApiKeyGSerp: React.FC = () => {
       fetchApiKeys();
     }
   }, [token]);
-
-  const handleLogin = async () => {
-    setLoading(true);
-    setError(null);
-    try {
-      const formData = new URLSearchParams();
-      formData.append("username", credentials.username);
-      formData.append("password", credentials.password);
-
-      const response = await fetch(TOKEN_URL, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded",
-          "Accept": "application/json",
-        },
-        body: formData.toString(),
-      });
-
-      if (!response.ok) {
-        throw new Error(`Login failed: ${response.status}`);
-      }
-
-      const data = await response.json();
-      setToken(data.access_token); // Assuming response contains { "access_token": "..." }
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Login failed");
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const fetchApiKeys = async () => {
     if (!token) return;
@@ -109,7 +76,7 @@ const ApiKeyGSerp: React.FC = () => {
 
   const generateKey = async () => {
     if (!token) {
-      setError("Please log in first");
+      setError("No authentication token available");
       return;
     }
     setLoading(true);
@@ -122,13 +89,14 @@ const ApiKeyGSerp: React.FC = () => {
           "Authorization": `Bearer ${token}`,
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({}), // No payload needed per your backend
+        body: JSON.stringify({}),
       });
       if (!response.ok) {
         throw new Error(`Failed to generate API key: ${response.status}`);
       }
-      await fetchApiKeys(); // Refresh the list after generation
-      setNewKeyName("");
+      const newKeyData = await response.json();
+      setFullKey(newKeyData.full_key); // Assuming backend returns full_key
+      await fetchApiKeys(); // Refresh the list
     } catch (err) {
       setError(err instanceof Error ? err.message : "An error occurred");
     } finally {
@@ -143,50 +111,10 @@ const ApiKeyGSerp: React.FC = () => {
   if (!token) {
     return (
       <Box p={4} width="100%">
-        <Text fontSize="lg" fontWeight="bold" mb={4}>
-          Login
-        </Text>
-        <Flex direction="column" gap={4} maxW="300px">
-          <FormControl>
-            <FormLabel>Username</FormLabel>
-            <Input
-              value={credentials.username}
-              onChange={(e) =>
-                setCredentials({ ...credentials, username: e.target.value })
-              }
-              placeholder="nik@iconluxurygroup.com"
-              size="sm"
-              disabled={loading}
-            />
-          </FormControl>
-          <FormControl>
-            <FormLabel>Password</FormLabel>
-            <Input
-              type="password"
-              value={credentials.password}
-              onChange={(e) =>
-                setCredentials({ ...credentials, password: e.target.value })
-              }
-              placeholder="Enter password"
-              size="sm"
-              disabled={loading}
-            />
-          </FormControl>
-          <Button
-            colorScheme="blue"
-            onClick={handleLogin}
-            isLoading={loading}
-            isDisabled={loading || !credentials.username || !credentials.password}
-          >
-            Login
-          </Button>
-          {error && (
-            <Alert status="error">
-              <AlertIcon />
-              {error}
-            </Alert>
-          )}
-        </Flex>
+        <Alert status="error">
+          <AlertIcon />
+          Please log in on the main page to access API key management
+        </Alert>
       </Box>
     );
   }
@@ -199,27 +127,17 @@ const ApiKeyGSerp: React.FC = () => {
           <Text fontSize="md" fontWeight="semibold" mb={2}>
             Generate New API Key
           </Text>
-          <Flex gap={4} alignItems="center">
-            <Input
-              value={newKeyName}
-              onChange={(e) => setNewKeyName(e.target.value)}
-              placeholder="Enter key name (optional)"
+          <Tooltip label="Generate a new API key">
+            <Button
               size="sm"
-              width="300px"
-              disabled={loading}
-            />
-            <Tooltip label="Generate a new API key">
-              <Button
-                size="sm"
-                colorScheme="blue"
-                onClick={generateKey}
-                isLoading={loading}
-                isDisabled={loading}
-              >
-                Generate
-              </Button>
-            </Tooltip>
-          </Flex>
+              colorScheme="blue"
+              onClick={generateKey}
+              isLoading={loading}
+              isDisabled={loading}
+            >
+              Generate
+            </Button>
+          </Tooltip>
         </Box>
 
         {/* Error Display */}
@@ -271,6 +189,34 @@ const ApiKeyGSerp: React.FC = () => {
           </Box>
         </Box>
       </Flex>
+
+      {/* Modal for Full API Key */}
+      <Modal isOpen={!!fullKey} onClose={() => setFullKey(null)}>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>New API Key</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>
+            <Flex direction="column" gap={4}>
+              <Text>
+                Your new API key (copy it now as it won't be shown again):
+              </Text>
+              <Flex gap={2} alignItems="center">
+                <Text fontFamily="monospace">{fullKey}</Text>
+                <IconButton
+                  aria-label="Copy full key"
+                  icon={<CopyIcon />}
+                  size="sm"
+                  onClick={() => copyToClipboard(fullKey || "")}
+                />
+              </Flex>
+              <Text fontSize="sm" color="gray.500">
+                Store this securely. It will not be displayed again after closing.
+              </Text>
+            </Flex>
+          </ModalBody>
+        </ModalContent>
+      </Modal>
     </Box>
   );
 };
