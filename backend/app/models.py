@@ -6,15 +6,22 @@ from sqlmodel import Field, Relationship, SQLModel
 from datetime import datetime, timezone
 from sqlalchemy.dialects.postgresql import UUID as PG_UUID
 from app.db.base_class import Base  #
-class APIToken(Base):
-    __tablename__ = "apitoken"
-    id = Column(Integer, primary_key=True, index=True)
-    token = Column(String, nullable=False, unique=True)
-    user_id = Column(PG_UUID(as_uuid=True), ForeignKey("users.id"), nullable=False, index=True)
-    created_at = Column(DateTime(timezone=False), server_default=func.now(), nullable=False)
-    expires_at = Column(DateTime(timezone=False), nullable=False)
-    is_active = Column(Boolean, default=True)
+class User(SQLModel, table=True):
+    __tablename__ = "users"  # Optional, SQLModel infers table name from class name if omitted
+    id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
+    email: str = Field(index=True, unique=True)
+    password: str  # In production, this should be hashed
+    is_superuser: bool = Field(default=False)
+    # Add other fields as needed
 
+class APIToken(SQLModel, table=True):
+    __tablename__ = "apitoken"  # Explicitly set since it’s not plural
+    id: int = Field(default=None, primary_key=True)
+    token: str = Field(unique=True)
+    user_id: uuid.UUID = Field(foreign_key="users.id", index=True)
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+    expires_at: datetime
+    is_active: bool = Field(default=True)
 # Shared properties
 class UserAgentBase(SQLModel):
     user_agent: str = Field(unique=True, index=True, max_length=512)

@@ -162,11 +162,7 @@ async def get_proxy_status_endpoint(
     return await get_proxy_status()
 
 @router.post("/generate-api-key", response_model=dict)
-async def generate_user_api_key(
-    session: SessionDep,
-    current_user: CurrentUser
-):
-    """Generate a new API key for the authenticated user"""
+async def generate_user_api_key(session: SessionDep, current_user: CurrentUser):
     if not current_user.has_subscription:
         raise HTTPException(status_code=403, detail="Active subscription required")
     
@@ -175,7 +171,8 @@ async def generate_user_api_key(
         user_id=current_user.id,
         token=api_key,
         created_at=datetime.utcnow(),
-        expires_at=datetime.utcnow() + timedelta(days=365)  # Now this will work
+        expires_at=datetime.utcnow() + timedelta(days=365),
+        is_active=True
     )
     session.add(token)
     session.commit()
