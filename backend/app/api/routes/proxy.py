@@ -1,5 +1,5 @@
-from fastapi import APIRouter, Depends, HTTPException, BackgroundTasks
-from typing import Annotated, Dict, List,Optional
+from fastapi import APIRouter, Depends, HTTPException, BackgroundTasks, Header
+from typing import Annotated, Dict, List, Optional
 from pydantic import BaseModel
 import httpx
 import logging
@@ -134,7 +134,7 @@ async def get_proxy_status() -> ProxyStatusResponse:
 # Custom dependency for API key verification
 async def verify_api_token(
     session: SessionDep,
-    x_api_key: Annotated[str, Depends(lambda x: x.headers.get("X-API-Key"))]
+    x_api_key: Annotated[str, Header()] = None  # Fixed: Use Header dependency
 ) -> User:
     if not x_api_key:
         raise HTTPException(status_code=401, detail="API key required")
@@ -176,7 +176,7 @@ async def generate_user_api_key(session: SessionDep, current_user: CurrentUser):
     )
     session.add(token)
     session.commit()
-    session.refresh(token)  # Refresh to ensure full object state
+    session.refresh(token)
     return {"api_key": api_key}
 
 @router.post("/fetch", response_model=ProxyResponse)
