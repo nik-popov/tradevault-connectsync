@@ -6,14 +6,6 @@ from sqlmodel import Field, Relationship, SQLModel
 from datetime import datetime, timezone
 from sqlalchemy.dialects.postgresql import UUID as PG_UUID
 
-class User(SQLModel, table=True):
-    __tablename__ = "users"  # Optional, SQLModel infers table name from class name if omitted
-    id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
-    email: str = Field(index=True, unique=True)
-    password: str  # In production, this should be hashed
-    is_superuser: bool = Field(default=False)
-    # Add other fields as needed
-
 class APIToken(SQLModel, table=True):
     __tablename__ = "apitoken"  # Explicitly set since it’s not plural
     id: int = Field(default=None, primary_key=True)
