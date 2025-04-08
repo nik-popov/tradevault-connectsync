@@ -84,9 +84,9 @@ function Dashboard() {
   return (
     <Container maxW="5xl" py={12}>
       <Heading as="h1" size="lg" mb={8} textAlign="center" color="gray.700">
-        Your Tools
+        Proxy Dashboard
       </Heading>
-      <SimpleGrid columns={{ base: 1, sm: 2, md: 3 }} spacing={6}>
+      <SimpleGrid columns={{ base: 1, sm: 2 }} spacing={6}>
         {products.map((product) => (
           <Box
             key={product.id}
