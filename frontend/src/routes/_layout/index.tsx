@@ -105,11 +105,6 @@ function Dashboard() {
           >
             <Text fontSize="xl" fontWeight="semibold" color={product.isActive ? "gray.800" : "gray.500"} mb={2}>
               {product.name}
-              {!product.isActive && (
-                <Text as="span" fontSize="sm" color="gray.400" ml={2}>
-                  (Coming Soon)
-                </Text>
-              )}
             </Text>
             <Text fontSize="sm" color={product.isActive ? "gray.500" : "gray.400"}>
               {product.description}
