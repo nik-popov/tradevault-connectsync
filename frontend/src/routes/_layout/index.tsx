@@ -80,14 +80,6 @@ function Dashboard() {
     <Container maxW="5xl" py={12}>
       {/* Informational Block */}
       <VStack spacing={6} align="stretch" mb={12}>
-        <Heading as="h1" size="xl" textAlign="center">
-          Welcome to TheDataProxy!
-        </Heading>
-        <Text fontSize="md" color="gray.600" textAlign="center">
-          At TheDataProxy, we provide powerful tools for data collection and network management. Whether you need
-          advanced proxy solutions or scalable cloud computing, our services help you unlock the web's potential.
-        </Text>
-
         <SimpleGrid columns={{ base: 1, md: 3 }} spacing={6}>
           <Box>
             <Heading as="h3" size="md" mb={2}>
