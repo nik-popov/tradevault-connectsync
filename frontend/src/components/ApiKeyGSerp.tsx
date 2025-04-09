@@ -127,7 +127,13 @@ const ApiKeyGSerp: React.FC<ApiKeyGSerpProps> = ({ token }) => {
         throw new Error("Invalid key preview format. Expected format: first8...last8");
       }
       const lastEight = parts[1];
-      console.log("Attempting to delete key with preview:", lastEight); // Debug log
+      console.log("Attempting DELETE request:", {
+        url: `${API_URL}/api-keys/${lastEight}`,
+        headers: {
+          "Accept": "application/json",
+          "Authorization": `Bearer ${token.slice(0, 20)}...`, // Truncated for log readability
+        },
+      });
 
       const response = await fetch(`${API_URL}/api-keys/${lastEight}`, {
         method: "DELETE",
@@ -136,15 +142,26 @@ const ApiKeyGSerp: React.FC<ApiKeyGSerpProps> = ({ token }) => {
           "Authorization": `Bearer ${token}`,
         },
       });
+
       if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(`Failed to delete API key: ${response.status} - ${errorData.detail || "Unknown error"}`);
+        let errorDetail = "Unknown error";
+        try {
+          const errorData = await response.json();
+          errorDetail = errorData.detail || errorDetail;
+        } catch (jsonErr) {
+          console.warn("Failed to parse error response:", jsonErr);
+        }
+        throw new Error(`Failed to delete API key: ${response.status} - ${errorDetail}`);
       }
-      console.log("Successfully deleted key:", lastEight); // Success log
+
+      console.log("DELETE successful, status:", response.status);
       await fetchApiKeys();
     } catch (err) {
-      console.error("Delete error:", err); // Error log
-      setError(err instanceof Error ? err.message : "An error occurred");
+      console.error("DELETE request failed:", {
+        message: err instanceof Error ? err.message : "Unknown error",
+        stack: err instanceof Error ? err.stack : undefined,
+      });
+      setError(err instanceof Error ? err.message : "Failed to delete API key due to a network error");
     } finally {
       setLoading(false);
     }
@@ -200,15 +217,10 @@ const ApiKeyGSerp: React.FC<ApiKeyGSerpProps> = ({ token }) => {
             {fullKey ? (
               <>
                 <Text fontSize="sm">
-                  Your new API key (copy it now as it won't be shown again after
-                  refresh):
+                  Your new API key (copy it now as it won’t be shown again after refresh):
                 </Text>
                 <Flex gap={2} alignItems="center">
-                  <Text
-                    fontFamily="monospace"
-                    fontSize="sm"
-                    wordBreak="break-all"
-                  >
+                  <Text fontFamily="monospace" fontSize="sm" wordBreak="break-all">
                     {fullKey}
                   </Text>
                   <IconButton
@@ -279,7 +291,7 @@ const ApiKeyGSerp: React.FC<ApiKeyGSerpProps> = ({ token }) => {
                             deleteApiKey(key.key_preview, key.request_count || 0)
                           }
                           isLoading={loading}
-                          isDisabled={loading || (key.request_count || 0) > 0} // Explicitly check > 0
+                          isDisabled={loading || (key.request_count || 0) > 0}
                         />
                       </Tooltip>
                     </Td>
