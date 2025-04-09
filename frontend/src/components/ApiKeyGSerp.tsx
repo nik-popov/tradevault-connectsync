@@ -116,7 +116,9 @@ const ApiKeyGSerp: React.FC<ApiKeyGSerpProps> = ({ token }) => {
     setLoading(true);
     setError(null);
     try {
-      const response = await fetch(`${API_URL}/api-keys/${keyPreview}`, {
+      // Take only the last 8 characters of the key preview
+      const shortPreview = keyPreview.slice(-8);
+      const response = await fetch(`${API_URL}/api-keys/${shortPreview}`, {
         method: "DELETE",
         headers: {
           "Accept": "application/json",
@@ -126,7 +128,7 @@ const ApiKeyGSerp: React.FC<ApiKeyGSerpProps> = ({ token }) => {
       if (!response.ok) {
         throw new Error(`Failed to delete API key: ${response.status}`);
       }
-      await fetchApiKeys();
+      await fetchApiKeys();  // Refresh the list
     } catch (err) {
       setError(err instanceof Error ? err.message : "An error occurred");
     } finally {

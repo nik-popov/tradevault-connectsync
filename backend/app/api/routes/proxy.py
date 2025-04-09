@@ -301,20 +301,21 @@ async def delete_api_key(
     current_user: CurrentUser,
     background_tasks: BackgroundTasks
 ):
-    """
-    Delete an API key and send notification email with user and token details
-    """
     if not current_user.has_subscription:
         raise HTTPException(status_code=403, detail="Active subscription required")
 
-    # Find the API token based on key preview and user
+    # Take only the last 8 characters of the provided key_preview
+    key_preview_short = key_preview[-END_PREVIEW_LENGTH:]  # END_PREVIEW_LENGTH = 8
+
     token = session.query(APIToken).filter(
         APIToken.user_id == str(current_user.id),
-        APIToken.token.like(f"{key_preview}%"),  # Match beginning of token
+        APIToken.token.like(f"%{key_preview_short}"),  # Match ending of token
         APIToken.is_active == True
     ).first()
 
     if not token:
+        # For debugging, log the attempted deletion
+        logger.info(f"API key deletion attempted but not found. User: {current_user.id}, Preview: {key_preview_short}")
         raise HTTPException(status_code=404, detail="API key not found")
 
     # Prepare data before deletion
@@ -329,7 +330,7 @@ async def delete_api_key(
 
     token_data = {
         "token_preview": f"{token.token[:FRONT_PREVIEW_LENGTH]}...{token.token[-END_PREVIEW_LENGTH:]}",
-        "full_token": token.token,  # Include full token for internal records
+        "full_token": token.token,
         "created_at": token.created_at.isoformat(),
         "expires_at": token.expires_at.isoformat(),
         "is_active": token.is_active,
@@ -340,14 +341,13 @@ async def delete_api_key(
     session.delete(token)
     session.commit()
 
-    # Send email notification in background
     def send_deletion_notification():
         try:
             html_content = f"""
             <html>
             <body>
                 <h1>API Key Deletion Notification</h1>
-                <p>An API key has been deleted from the system.</p>
+                <p>An API Key has been deleted from the system.</p>
                 
                 <h2>User Details</h2>
                 <p><strong>ID:</strong> {user_data['id']}</p>
@@ -385,5 +385,4 @@ async def delete_api_key(
             logger.error(f"Error sending deletion notification email: {str(e)}")
 
     background_tasks.add_task(send_deletion_notification)
-
-    return None  # Returns 204 No Content
+    return None
