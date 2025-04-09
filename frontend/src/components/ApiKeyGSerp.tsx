@@ -59,15 +59,15 @@ const ApiKeyGSerp: React.FC<ApiKeyGSerpProps> = ({ token }) => {
         throw new Error(`Failed to fetch API keys: ${response.status}`);
       }
       const data: ApiKey[] = await response.json();
-      const normalizedData = data.map(key => ({
+      const normalizedData = data.map((key) => ({
         ...key,
         request_count: key.request_count ?? 0,
         created_at: key.created_at || new Date().toISOString(),
         expires_at: key.expires_at || new Date().toISOString(),
         is_active: key.is_active ?? false,
-        key_preview: key.key_preview || 'N/A'
+        key_preview: key.key_preview || "N/A",
       }));
-      const sortedData = normalizedData.sort((a, b) => 
+      const sortedData = normalizedData.sort((a, b) =>
         new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
       );
       setApiKeys(sortedData);
@@ -116,9 +116,9 @@ const ApiKeyGSerp: React.FC<ApiKeyGSerpProps> = ({ token }) => {
     setLoading(true);
     setError(null);
     try {
-      // Take only the last 8 characters of the key preview
-      const shortPreview = keyPreview.slice(-8);
-      const response = await fetch(`${API_URL}/api-keys/${shortPreview}`, {
+      // Extract the last 8 characters after the ellipsis
+      const lastEight = keyPreview.split("...")[1];  // Get the part after "..."
+      const response = await fetch(`${API_URL}/api-keys/${lastEight}`, {
         method: "DELETE",
         headers: {
           "Accept": "application/json",
@@ -128,7 +128,7 @@ const ApiKeyGSerp: React.FC<ApiKeyGSerpProps> = ({ token }) => {
       if (!response.ok) {
         throw new Error(`Failed to delete API key: ${response.status}`);
       }
-      await fetchApiKeys();  // Refresh the list
+      await fetchApiKeys(); // Refresh the list
     } catch (err) {
       setError(err instanceof Error ? err.message : "An error occurred");
     } finally {
@@ -186,10 +186,15 @@ const ApiKeyGSerp: React.FC<ApiKeyGSerpProps> = ({ token }) => {
             {fullKey ? (
               <>
                 <Text fontSize="sm">
-                  Your new API key (copy it now as it won't be shown again after refresh):
+                  Your new API key (copy it now as it won't be shown again after
+                  refresh):
                 </Text>
                 <Flex gap={2} alignItems="center">
-                  <Text fontFamily="monospace" fontSize="sm" wordBreak="break-all">
+                  <Text
+                    fontFamily="monospace"
+                    fontSize="sm"
+                    wordBreak="break-all"
+                  >
                     {fullKey}
                   </Text>
                   <IconButton
