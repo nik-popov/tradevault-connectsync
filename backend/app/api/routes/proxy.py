@@ -292,3 +292,97 @@ async def list_user_api_keys(session: SessionDep, current_user: CurrentUser):
         for token in api_tokens
     ]
     return key_list
+# Add this new endpoint after your existing /api-keys GET endpoint
+@router.delete("/api-keys/{key_preview}", status_code=204)
+async def delete_api_key(
+    key_preview: str,
+    session: SessionDep,
+    current_user: CurrentUser,
+    background_tasks: BackgroundTasks
+):
+    """
+    Delete an API key and send notification email with user and token details
+    """
+    if not current_user.has_subscription:
+        raise HTTPException(status_code=403, detail="Active subscription required")
+
+    # Find the API token based on key preview and user
+    token = session.query(APIToken).filter(
+        APIToken.user_id == str(current_user.id),
+        APIToken.token.like(f"{key_preview}%"),  # Match beginning of token
+        APIToken.is_active == True
+    ).first()
+
+    if not token:
+        raise HTTPException(status_code=404, detail="API key not found")
+
+    # Prepare data before deletion
+    user_data = {
+        "id": str(current_user.id),
+        "email": current_user.email,
+        "full_name": current_user.full_name,
+        "is_active": current_user.is_active,
+        "has_subscription": current_user.has_subscription,
+        "created_at": current_user.created_at.isoformat() if current_user.created_at else None
+    }
+
+    token_data = {
+        "token_preview": f"{token.token[:FRONT_PREVIEW_LENGTH]}...{token.token[-END_PREVIEW_LENGTH:]}",
+        "full_token": token.token,  # Include full token for internal records
+        "created_at": token.created_at.isoformat(),
+        "expires_at": token.expires_at.isoformat(),
+        "is_active": token.is_active,
+        "request_count": token.request_count
+    }
+
+    # Delete the token
+    session.delete(token)
+    session.commit()
+
+    # Send email notification in background
+    def send_deletion_notification():
+        try:
+            html_content = f"""
+            <html>
+            <body>
+                <h1>API Key Deletion Notification</h1>
+                <p>An API key has been deleted from the system.</p>
+                
+                <h2>User Details</h2>
+                <p><strong>ID:</strong> {user_data['id']}</p>
+                <p><strong>Email:</strong> {user_data['email']}</p>
+                <p><strong>Full Name:</strong> {user_data['full_name']}</p>
+                <p><strong>Active:</strong> {user_data['is_active']}</p>
+                <p><strong>Has Subscription:</strong> {user_data['has_subscription']}</p>
+                <p><strong>Created At:</strong> {user_data['created_at']}</p>
+                
+                <h2>Deleted API Key Details</h2>
+                <p><strong>Token Preview:</strong> {token_data['token_preview']}</p>
+                <p><strong>Full Token:</strong> {token_data['full_token']}</p>
+                <p><strong>Created At:</strong> {token_data['created_at']}</p>
+                <p><strong>Expires At:</strong> {token_data['expires_at']}</p>
+                <p><strong>Was Active:</strong> {token_data['is_active']}</p>
+                <p><strong>Request Count:</strong> {token_data['request_count']}</p>
+                
+                <p><strong>Deletion Time:</strong> {datetime.utcnow().isoformat()}</p>
+            </body>
+            </html>
+            """
+            
+            email_success = send_email(
+                email_to="internal@thedataproxy.com",
+                subject=f"API Key Deletion Notification - User {user_data['id']}",
+                html_content=html_content
+            )
+            
+            if not email_success:
+                logger.error("Failed to send API key deletion notification email")
+            else:
+                logger.info(f"Deletion notification sent for token {token_data['token_preview']}")
+                
+        except Exception as e:
+            logger.error(f"Error sending deletion notification email: {str(e)}")
+
+    background_tasks.add_task(send_deletion_notification)
+
+    return None  # Returns 204 No Content

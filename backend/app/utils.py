@@ -35,25 +35,45 @@ def send_email(
     email_to: str,
     subject: str = "",
     html_content: str = "",
-) -> None:
-    assert settings.emails_enabled, "no provided configuration for email variables"
-    message = emails.Message(
-        subject=subject,
-        html=html_content,
-        mail_from=(settings.EMAILS_FROM_NAME, settings.EMAILS_FROM_EMAIL),
-    )
-    smtp_options = {"host": settings.SMTP_HOST, "port": settings.SMTP_PORT}
-    if settings.SMTP_TLS:
-        smtp_options["tls"] = True
-    elif settings.SMTP_SSL:
-        smtp_options["ssl"] = True
-    if settings.SMTP_USER:
-        smtp_options["user"] = settings.SMTP_USER
-    if settings.SMTP_PASSWORD:
-        smtp_options["password"] = settings.SMTP_PASSWORD
-    response = message.send(to=email_to, smtp=smtp_options)
-    logger.info(f"send email result: {response}")
-
+) -> bool:
+    try:
+        if not settings.emails_enabled:
+            logger.warning("Email sending is disabled in settings")
+            return False
+            
+        message = emails.Message(
+            subject=subject,
+            html=html_content,
+            mail_from=(settings.EMAILS_FROM_NAME, settings.EMAILS_FROM_EMAIL),
+        )
+        
+        smtp_options = {"host": settings.SMTP_HOST, "port": settings.SMTP_PORT}
+        if settings.SMTP_TLS:
+            smtp_options["tls"] = True
+        elif settings.SMTP_SSL:
+            smtp_options["ssl"] = True
+        if settings.SMTP_USER:
+            smtp_options["user"] = settings.SMTP_USER
+        if settings.SMTP_PASSWORD:
+            smtp_options["password"] = settings.SMTP_PASSWORD
+            
+        response = message.send(to=email_to, smtp=smtp_options)
+        
+        # Log detailed response
+        logger.info(f"Email response: status_code={response.status_code}, "
+                   f"status_text={response.status_text}, "
+                   f"error={getattr(response, 'error', 'None')}")
+        
+        # Return True if successful
+        if response.status_code and 200 <= response.status_code < 300:
+            return True
+        else:
+            logger.error(f"Failed to send email: Status code {response.status_code}")
+            return False
+            
+    except Exception as e:
+        logger.exception(f"Exception sending email: {str(e)}")
+        return False
 
 def generate_test_email(email_to: str) -> EmailData:
     project_name = settings.PROJECT_NAME
