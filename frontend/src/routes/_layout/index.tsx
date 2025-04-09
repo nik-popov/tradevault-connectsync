@@ -5,6 +5,8 @@ import {
   Text,
   SimpleGrid,
   Heading,
+  VStack,
+  Divider,
 } from "@chakra-ui/react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 
@@ -61,7 +63,7 @@ function Dashboard() {
     {
       id: "cloud-spaces",
       name: "Cloud Spaces",
-      description: "Code in the cloud with scalable coumpute",
+      description: "Code in the cloud with scalable compute",
       path: "",
       isActive: false,
     },
@@ -76,6 +78,49 @@ function Dashboard() {
 
   return (
     <Container maxW="5xl" py={12}>
+      {/* Informational Block */}
+      <VStack spacing={6} align="stretch" mb={12}>
+        <Heading as="h1" size="xl" textAlign="center">
+          Welcome to TheDataProxy!
+        </Heading>
+        <Text fontSize="md" color="gray.600" textAlign="center">
+          At TheDataProxy, we provide powerful tools for data collection and network management. Whether you need
+          advanced proxy solutions or scalable cloud computing, our services help you unlock the web's potential.
+        </Text>
+
+        <SimpleGrid columns={{ base: 1, md: 3 }} spacing={6}>
+          <Box>
+            <Heading as="h3" size="md" mb={2}>
+              Getting Started
+            </Heading>
+            <Text fontSize="sm" color="gray.500">
+              New to TheDataProxy? Start with our HTTPS Proxy to route requests globally with ease.
+            </Text>
+          </Box>
+
+          <Box>
+            <Heading as="h3" size="md" mb={2}>
+              Scale Your Scraping
+            </Heading>
+            <Text fontSize="sm" color="gray.500">
+              Use our upcoming Web Scraper and Rotating Proxy tools to gather data efficiently.
+            </Text>
+          </Box>
+
+          <Box>
+            <Heading as="h3" size="md" mb={2}>
+              Cloud Solutions
+            </Heading>
+            <Text fontSize="sm" color="gray.500">
+              Code anywhere with Cloud Spaces - scalable compute coming soon to TheDataProxy.
+            </Text>
+          </Box>
+        </SimpleGrid>
+      </VStack>
+
+      <Divider mb={12} />
+
+      {/* Product Grid */}
       <SimpleGrid columns={{ base: 1, sm: 2 }} spacing={6}>
         {products.map((product) => (
           <Box
