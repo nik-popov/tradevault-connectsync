@@ -24,7 +24,7 @@ app.add_middleware(
     allow_origins=["https://cloud.thedataproxy.com"],  # Specify your frontend origin
     # allow_origins=["*"],  # Allow all origins
     allow_credentials=True,
-    allow_methods=["GET", "POST", "PATCH", "OPTIONS"],  # Add PATCH
+    allow_methods=["GET", "POST", "PATCH", "OPTIONS","DELETE"],  # Add PATCH
     allow_headers=["*"],
 )
 app.include_router(api_router, prefix=settings.API_V1_STR)
