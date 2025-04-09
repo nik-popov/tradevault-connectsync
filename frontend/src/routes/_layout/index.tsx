@@ -59,9 +59,9 @@ function Dashboard() {
       isActive: false,
     },
     {
-      id: "data-cache",
-      name: "Data Cache",
-      description: "Store and retrieve data fast",
+      id: "cloud-spaces",
+      name: "Cloud Spaces",
+      description: "Code in the cloud with scalable coumpute",
       path: "",
       isActive: false,
     },
