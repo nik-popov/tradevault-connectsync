@@ -15,7 +15,7 @@ import {
   Alert,
   AlertIcon,
 } from "@chakra-ui/react";
-import { CopyIcon } from "@chakra-ui/icons";
+import { CopyIcon, DeleteIcon } from "@chakra-ui/icons";
 
 interface ApiKey {
   key_preview: string;
@@ -62,12 +62,11 @@ const ApiKeyGSerp: React.FC<ApiKeyGSerpProps> = ({ token }) => {
       const normalizedData = data.map(key => ({
         ...key,
         request_count: key.request_count ?? 0,
-        created_at: key.created_at || new Date().toISOString(), // Fallback if undefined
-        expires_at: key.expires_at || new Date().toISOString(), // Fallback if undefined
-        is_active: key.is_active ?? false, // Fallback if undefined
-        key_preview: key.key_preview || 'N/A' // Fallback if undefined
+        created_at: key.created_at || new Date().toISOString(),
+        expires_at: key.expires_at || new Date().toISOString(),
+        is_active: key.is_active ?? false,
+        key_preview: key.key_preview || 'N/A'
       }));
-      // Sort by created_at descending (latest first)
       const sortedData = normalizedData.sort((a, b) => 
         new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
       );
@@ -101,6 +100,32 @@ const ApiKeyGSerp: React.FC<ApiKeyGSerpProps> = ({ token }) => {
       }
       const newKeyData = await response.json();
       setFullKey(newKeyData.api_key);
+      await fetchApiKeys();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "An error occurred");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const deleteApiKey = async (keyPreview: string) => {
+    if (!token) {
+      setError("No authentication token available");
+      return;
+    }
+    setLoading(true);
+    setError(null);
+    try {
+      const response = await fetch(`${API_URL}/api-keys/${keyPreview}`, {
+        method: "DELETE",
+        headers: {
+          "Accept": "application/json",
+          "Authorization": `Bearer ${token}`,
+        },
+      });
+      if (!response.ok) {
+        throw new Error(`Failed to delete API key: ${response.status}`);
+      }
       await fetchApiKeys();
     } catch (err) {
       setError(err instanceof Error ? err.message : "An error occurred");
@@ -202,8 +227,9 @@ const ApiKeyGSerp: React.FC<ApiKeyGSerpProps> = ({ token }) => {
                   <Th>Key Preview</Th>
                   <Th>Created At</Th>
                   <Th>Expires At</Th>
-                  <Th>Request Count</Th> {/* Moved inward before Status */}
+                  <Th>Request Count</Th>
                   <Th>Status</Th>
+                  <Th>Actions</Th>
                 </Tr>
               </Thead>
               <Tbody>
@@ -214,6 +240,20 @@ const ApiKeyGSerp: React.FC<ApiKeyGSerpProps> = ({ token }) => {
                     <Td>{new Date(key.expires_at).toLocaleString()}</Td>
                     <Td>{key.request_count}</Td>
                     <Td>{key.is_active ? "Active" : "Inactive"}</Td>
+                    <Td>
+                      <Tooltip label="Delete API key">
+                        <IconButton
+                          aria-label="Delete key"
+                          icon={<DeleteIcon />}
+                          size="sm"
+                          colorScheme="red"
+                          variant="ghost"
+                          onClick={() => deleteApiKey(key.key_preview)}
+                          isLoading={loading}
+                          isDisabled={loading}
+                        />
+                      </Tooltip>
+                    </Td>
                   </Tr>
                 ))}
               </Tbody>
