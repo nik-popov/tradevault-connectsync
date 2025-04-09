@@ -309,23 +309,21 @@ async def delete_api_key(
 
     token = session.query(APIToken).filter(
         APIToken.user_id == str(current_user.id),
-        APIToken.token.like(f"%{key_preview_short}"),  # Match ending of token
+        APIToken.token.like(f"%{key_preview_short}"),
         APIToken.is_active == True
     ).first()
 
     if not token:
-        # For debugging, log the attempted deletion
         logger.info(f"API key deletion attempted but not found. User: {current_user.id}, Preview: {key_preview_short}")
         raise HTTPException(status_code=404, detail="API key not found")
 
-    # Prepare data before deletion
+    # Prepare user data with only existing fields
     user_data = {
         "id": str(current_user.id),
         "email": current_user.email,
         "full_name": current_user.full_name,
         "is_active": current_user.is_active,
-        "has_subscription": current_user.has_subscription,
-        "created_at": current_user.created_at.isoformat() if current_user.created_at else None
+        "has_subscription": current_user.has_subscription
     }
 
     token_data = {
@@ -355,7 +353,6 @@ async def delete_api_key(
                 <p><strong>Full Name:</strong> {user_data['full_name']}</p>
                 <p><strong>Active:</strong> {user_data['is_active']}</p>
                 <p><strong>Has Subscription:</strong> {user_data['has_subscription']}</p>
-                <p><strong>Created At:</strong> {user_data['created_at']}</p>
                 
                 <h2>Deleted API Key Details</h2>
                 <p><strong>Token Preview:</strong> {token_data['token_preview']}</p>
