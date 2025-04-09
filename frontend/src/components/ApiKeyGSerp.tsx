@@ -127,7 +127,7 @@ const ApiKeyGSerp: React.FC<ApiKeyGSerpProps> = ({ token }) => {
         throw new Error("Invalid key preview format. Expected format: first8...last8");
       }
       const lastEight = parts[1];
-      console.log("Deleting key with preview:", lastEight);
+      console.log("Attempting to delete key with preview:", lastEight); // Debug log
 
       const response = await fetch(`${API_URL}/api-keys/${lastEight}`, {
         method: "DELETE",
@@ -140,8 +140,10 @@ const ApiKeyGSerp: React.FC<ApiKeyGSerpProps> = ({ token }) => {
         const errorData = await response.json();
         throw new Error(`Failed to delete API key: ${response.status} - ${errorData.detail || "Unknown error"}`);
       }
+      console.log("Successfully deleted key:", lastEight); // Success log
       await fetchApiKeys();
     } catch (err) {
+      console.error("Delete error:", err); // Error log
       setError(err instanceof Error ? err.message : "An error occurred");
     } finally {
       setLoading(false);
@@ -277,7 +279,7 @@ const ApiKeyGSerp: React.FC<ApiKeyGSerpProps> = ({ token }) => {
                             deleteApiKey(key.key_preview, key.request_count || 0)
                           }
                           isLoading={loading}
-                          isDisabled={loading || !!key.request_count} // Changed to ensure boolean
+                          isDisabled={loading || (key.request_count || 0) > 0} // Explicitly check > 0
                         />
                       </Tooltip>
                     </Td>
