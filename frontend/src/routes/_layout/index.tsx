@@ -83,9 +83,6 @@ function Dashboard() {
 
   return (
     <Container maxW="5xl" py={12}>
-      <Heading as="h1" size="lg" mb={8} textAlign="center" color="gray.700">
-        Proxy Dashboard
-      </Heading>
       <SimpleGrid columns={{ base: 1, sm: 2 }} spacing={6}>
         {products.map((product) => (
           <Box

@@ -188,7 +188,7 @@ const TopNav = () => {
     >
       <Flex align="center" justify="space-between" maxW="1200px" mx="auto">
         {/* Logo */}
-        <Link href="https://dashboard.thedataproxy.com">
+        <Link href="https://cloud.thedataproxy.com">
           <Image src={Logo} alt="Logo" h="40px" />
         </Link>
 
