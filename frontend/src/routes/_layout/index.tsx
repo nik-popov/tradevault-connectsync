@@ -59,13 +59,6 @@ function Dashboard() {
       isActive: false,
     },
     {
-      id: "api-rate-limiter",
-      name: "API Rate Limiter",
-      description: "Control API request rates",
-      path: "",
-      isActive: false,
-    },
-    {
       id: "data-cache",
       name: "Data Cache",
       description: "Store and retrieve data fast",
