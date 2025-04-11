@@ -7,11 +7,11 @@ on:
 
 jobs:
   alembic-migrations:
-    uses: ./.github/workflows/alembic-migrations.yml  # Call the Alembic Migrations workflow
+    uses: ./.github/workflows/alembic-migrations.yml
 
   deploy:
     runs-on: ubuntu-latest
-    needs: alembic-migrations  # Ensure migrations run first
+    needs: alembic-migrations
     env:
       ENVIRONMENT: staging
 
@@ -19,7 +19,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0  # Full history for migration commits
+          fetch-depth: 0
 
       - name: Set up SSH
         run: |
@@ -131,10 +131,12 @@ jobs:
             DOCKER_BUILDKIT=1 docker compose -f docker-compose.yml --project-name dev-thedataproxy build &&
             echo 'Starting database first...' &&
             DOCKER_BUILDKIT=1 docker compose -f docker-compose.yml --project-name dev-thedataproxy up -d db &&
-            echo 'Waiting for database to be ready (60s)...' &&
-            sleep 60 &&
+            echo 'Waiting for database to be ready...' &&
+            until docker exec dev-thedataproxy-db-1 pg_isready -U ${{ secrets.POSTGRES_USER }} -d ${{ secrets.POSTGRES_DB }}; do echo 'Database not ready yet, waiting...'; sleep 5; done &&
             echo 'Testing database connectivity...' &&
             docker exec dev-thedataproxy-db-1 psql -U ${{ secrets.POSTGRES_USER }} -d ${{ secrets.POSTGRES_DB }} -c 'SELECT 1;' || { echo 'Database connection failed'; exit 1; } &&
+            echo 'Applying migrations...' &&
+            docker exec dev-thedataproxy-backend-1 alembic upgrade head && echo 'Migrations applied successfully' || { echo 'Migration failed'; docker logs dev-thedataproxy-backend-1; exit 1; } &&
             echo 'Starting prestart service...' &&
             DOCKER_BUILDKIT=1 docker compose -f docker-compose.yml --project-name dev-thedataproxy up -d prestart &&
             echo 'Waiting for prestart to complete (60s)...' &&
@@ -156,8 +158,6 @@ jobs:
             curl -f http://api.thedataproxy.com/api/v1/utils/health-check/ || echo 'External backend access to api.thedataproxy.com failed (possible 404 or Traefik issue)' &&
             echo 'Testing frontend access...' &&
             curl -f http://staging.cloud.thedataproxy.com || echo 'Frontend access to staging.cloud.thedataproxy.com failed (possible 404 or Traefik issue)' &&
-            echo 'Backend is ready, applying migrations...' &&
-            docker exec dev-thedataproxy-backend-1 alembic upgrade head && echo 'Migrations applied successfully' || { echo 'Migration failed'; docker logs dev-thedataproxy-backend-1; exit 1; } &&
             echo 'Capturing all service logs...' &&
             docker compose -f docker-compose.yml --project-name dev-thedataproxy logs > compose-logs.txt
           "
