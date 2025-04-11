@@ -53,7 +53,8 @@ jobs:
             -v /home/runner/work/platform-thedataproxy.com/platform-thedataproxy.com:/app \
             ${PROJECT_NAME}-backend:latest \
             bash -c "if ! command -v alembic >/dev/null 2>&1; then pip install alembic; fi && \
-                     if [ ! -f /app/alembic.ini ]; then echo '[alembic]\nscript_location = alembic' > /app/alembic.ini; fi && \
+                     if [ ! -f /app/alembic.ini ]; then echo '[alembic]\nscript_location = alembic\nsqlalchemy.url = ${DATABASE_URL}' > /app/alembic.ini; fi && \
+                     if [ ! -d /app/alembic ]; then mkdir -p /app/alembic/versions; echo 'from alembic import context' > /app/alembic/env.py; fi && \
                      alembic revision --autogenerate -m 'Auto-generated migration for model changes'"
 
       - name: Check for uncommitted migrations
