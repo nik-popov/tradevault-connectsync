@@ -11,6 +11,7 @@ on:
       - 'models/**'
       - 'alembic.ini'
       - 'alembic/**'
+  workflow_call:  # Add this to make it reusable
 
 jobs:
   alembic-migrations:
@@ -61,7 +62,7 @@ jobs:
         run: |
           alembic revision --autogenerate -m "Auto-generated migration for model changes"
         env:
-          SQLALCHEMY_URL: ${{ env.DATABASE_URL }}
+          SQLALCHEMY_URL: ${{          SQLALCHEMY_URL: ${{ env.DATABASE_URL }}
 
       - name: Apply migrations
         run: |
