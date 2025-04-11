@@ -120,13 +120,18 @@ jobs:
             sudo lsof -i :5432 | awk 'NR>1 {print $2}' | xargs -I {} sudo kill -9 {} || echo 'No process to kill on port 5432' &&
             DOCKER_BUILDKIT=1 docker compose -f docker-compose.yml --project-name dev-thedataproxy down || true &&
             DOCKER_BUILDKIT=1 docker compose -f docker-compose.yml --project-name dev-thedataproxy build &&
-            echo 'Starting services with extended timeout...' &&
+            echo 'Starting database first...' &&
+            DOCKER_BUILDKIT=1 docker compose -f docker-compose.yml --project-name dev-thedataproxy up -d db &&
+            echo 'Waiting for database to be ready (60s)...' &&
+            sleep 60 &&
+            echo 'Testing database connectivity...' &&
+            docker exec dev-thedataproxy-db-1 pg_isready -U ${{ secrets.POSTGRES_USER }} -d ${{ secrets.POSTGRES_DB }} || { echo 'Database not ready'; exit 1; } &&
+            echo 'Starting remaining services...' &&
             DOCKER_BUILDKIT=1 docker compose -f docker-compose.yml --project-name dev-thedataproxy up -d --timeout 120 &&
             echo 'Listing containers...' &&
             docker ps -a &&
-            echo 'Waiting for services to stabilize (60s)...' &&
-            sleep 60 &&  # Increased delay for db and prestart stability
             echo 'Checking prestart container logs...' &&
+            sleep 10 &&  # Short delay to capture logs
             docker logs dev-thedataproxy-prestart-1 || echo 'Failed to get logs for prestart container' &&
             docker inspect dev-thedataproxy-prestart-1 --format '{{.State.ExitCode}}' || echo 'Failed to inspect prestart container' &&
             echo 'Checking backend container logs...' &&
