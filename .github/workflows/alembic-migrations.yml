@@ -11,7 +11,7 @@ on:
       - 'models/**'
       - 'alembic.ini'
       - 'alembic/**'
-  workflow_call:  # Add this to make it reusable
+  workflow_call:
 
 jobs:
   alembic-migrations:
@@ -21,9 +21,9 @@ jobs:
       postgres:
         image: postgres:15
         env:
-          POSTGRES_USER: test_user
-          POSTGRES_PASSWORD: test_password
-          POSTGRES_DB: test_db
+          POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
+          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+          POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
         ports:
           - 5432:5432
         options: >-
@@ -33,11 +33,13 @@ jobs:
           --health-retries 5
 
     env:
-      DATABASE_URL: postgresql://test_user:test_password@localhost:5432/test_db
+      DATABASE_URL: postgresql://${{ secrets.POSTGRES_USER }}:${{ secrets.POSTGRES_PASSWORD }}@localhost:5432/${{ secrets.POSTGRES_DB }}
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Full history for Git operations
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -52,7 +54,7 @@ jobs:
 
       - name: Initialize database schema
         run: |
-          until psql $DATABASE_URL -c '\l'; do
+          until psql "$DATABASE_URL" -c '\l'; do
             echo "Waiting for PostgreSQL..."
             sleep 2
           done
@@ -62,7 +64,7 @@ jobs:
         run: |
           alembic revision --autogenerate -m "Auto-generated migration for model changes"
         env:
-          SQLALCHEMY_URL: ${{          SQLALCHEMY_URL: ${{ env.DATABASE_URL }}
+          SQLALCHEMY_URL: ${{ env.DATABASE_URL }}
 
       - name: Apply migrations
         run: |
