@@ -17,7 +17,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { Link as RouterLink } from "@tanstack/react-router";
 import { FiLogOut, FiMenu  , FiUsers, FiSearch , FiChevronDown, FiUser } from "react-icons/fi";
 
-import Logo from "/assets/images/data-proxy-logo.png";
+import Logo from "/assets/images/the-data-proxy-logo-dark.png";
 import type { UserPublic } from "../../client";
 import useAuth from "../../hooks/useAuth";
 
