@@ -107,10 +107,8 @@ jobs:
             echo 'BACKEND_CORS_ORIGINS=${{ secrets.BACKEND_CORS_ORIGINS }}' >> .env &&
             echo 'SENTRY_DSN=${{ secrets.SENTRY_DSN }}' >> .env &&
             echo 'ENVIRONMENT=staging' >> .env &&
-            docker stop dev-thedataproxy-db-1 || true &&
-            docker rm dev-thedataproxy-db-1 || true &&
-            docker stop dev-thedataproxy-adminer-1 || true &&
-            docker rm dev-thedataproxy-adminer-1 || true &&
+            docker ps -a | grep 'dev-thedataproxy' | awk '{print $1}' | xargs -I {} docker stop {} || true &&
+            docker ps -a | grep 'dev-thedataproxy' | awk '{print $1}' | xargs -I {} docker rm {} || true &&
             DOCKER_BUILDKIT=1 docker compose -f docker-compose.yml --project-name ${{ secrets.STACK_NAME }} build &&
             DOCKER_BUILDKIT=1 docker compose -f docker-compose.yml --project-name ${{ secrets.STACK_NAME }} up -d
           "
