@@ -34,6 +34,7 @@ jobs:
           ssh -i private_key -q ubuntu@${{ secrets.EC2_HOST }} "
             sudo apt-get update &&
             sudo apt-get install -y rsync curl iproute2 &&
+            sudo apt-get remove -y docker.io docker-ce docker-ce-cli containerd.io || true &&
             curl -fsSL https://get.docker.com -o get-docker.sh &&
             sudo sh get-docker.sh &&
             sudo systemctl start docker &&
@@ -109,6 +110,7 @@ jobs:
             echo 'ENVIRONMENT=staging' >> .env &&
             docker ps -a | grep 'dev-thedataproxy' | awk '{print $1}' | xargs -I {} docker stop {} || true &&
             docker ps -a | grep 'dev-thedataproxy' | awk '{print $1}' | xargs -I {} docker rm {} || true &&
+            DOCKER_BUILDKIT=1 docker compose -f docker-compose.yml --project-name ${{ secrets.STACK_NAME }} down || true &&
             DOCKER_BUILDKIT=1 docker compose -f docker-compose.yml --project-name ${{ secrets.STACK_NAME }} build &&
             DOCKER_BUILDKIT=1 docker compose -f docker-compose.yml --project-name ${{ secrets.STACK_NAME }} up -d
           "
