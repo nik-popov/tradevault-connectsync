@@ -118,22 +118,17 @@ jobs:
             DOCKER_BUILDKIT=1 docker compose -f docker-compose.yml --project-name dev-thedataproxy up -d &&
             echo 'Listing containers...' &&
             docker ps -a &&
-            echo 'Waiting for prestart to complete...' &&
-            sleep 15 &&  # Give prestart time to finish
             echo 'Checking prestart container logs...' &&
             docker logs dev-thedataproxy-prestart-1 || echo 'Failed to get logs for prestart container' &&
             echo 'Checking backend container logs...' &&
             docker logs dev-thedataproxy-backend-1 || echo 'Failed to get logs for backend container' &&
-            echo 'Testing internal healthcheck endpoint...' &&
-            docker exec dev-thedataproxy-backend-1 curl -f http://localhost:8000/api/v1/utils/health-check/ || echo 'Internal healthcheck failed (possible 404 or startup issue)' &&
-            echo 'Inspecting backend container health configuration...' &&
-            docker inspect dev-thedataproxy-backend-1 --format '{{json .State.Health}}' || echo 'No healthcheck defined or inspect failed' &&
-            echo 'Waiting for backend to be ready (timeout 60s)...' &&
-            timeout 60s bash -c "until docker exec dev-thedataproxy-backend-1 curl -f http://localhost:8000/api/v1/utils/health-check/; do echo 'Backend not ready yet, waiting...'; sleep 5; done" || { echo 'Backend failed to start properly'; docker logs dev-thedataproxy-backend-1; exit 1; } &&
-            echo 'Testing external backend access...' &&
-            curl -f http://api.thedataproxy.com/api/v1/utils/health-check/ || echo 'External access to api.thedataproxy.com failed (possible 404 or Traefik issue)' &&
-            echo 'Backend is ready, applying migrations...' &&
-            docker exec dev-thedataproxy-backend-1 alembic upgrade head && echo 'Migrations applied successfully' || { echo 'Migration failed'; docker logs dev-thedataproxy-backend-1; exit 1; } &&
+            echo 'Waiting for backend to be healthy...' &&
+            until docker inspect --format='{{.State.Health.Status}}' dev-thedataproxy-backend-1 | grep -q 'healthy'; do
+              echo 'Backend not healthy yet, waiting...'
+              sleep 5
+            done &&
+            echo 'Backend is healthy, applying migrations...' &&
+            docker exec dev-thedataproxy-backend-1 alembic upgrade head && echo 'Migrations applied successfully' || { echo 'Migration failed'; exit 1; } &&
             echo 'Capturing all service logs...' &&
             docker compose -f docker-compose.yml --project-name dev-thedataproxy logs > compose-logs.txt
           "
