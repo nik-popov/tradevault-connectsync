@@ -9,7 +9,6 @@ jobs:
     env:
       ENVIRONMENT: staging
     steps:
-      - Palceholder
       - name: Checkout
         uses: actions/checkout@v4
 
