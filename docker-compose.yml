@@ -140,7 +140,7 @@ services:
       - traefik.enable=true
       - traefik.docker.network=traefik-public
       - traefik.constraint-label=traefik-public
-      - traefik.http.routers.dashboard.rule=Host(`cloud.thedataproxy.com`)       
+      - traefik.http.routers.dashboard.rule=Host(`staging.cloud.thedataproxy.com`)       
       - traefik.http.routers.dashboard.entrypoints=http
       - traefik.http.services.dashboard.loadbalancer.server.port=80
 
