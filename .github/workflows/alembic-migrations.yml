@@ -29,24 +29,8 @@ jobs:
   alembic-migrations:
     runs-on: ubuntu-latest
 
-    services:
-      postgres:
-        image: postgres:12
-        env:
-          POSTGRES_USER: ${{ inputs.postgres_user }}
-          POSTGRES_PASSWORD: ${{ inputs.postgres_password || 'default_password' }}  # Fallback if empty
-          POSTGRES_DB: ${{ inputs.postgres_db }}
-        ports:
-          - 5432:5432
-        options: >-
-          --health-cmd "pg_isready -U ${{ inputs.postgres_user }} -d ${{ inputs.postgres_db }}"
-          --health-interval 5s
-          --health-timeout 5s
-          --health-retries 10
-          --health-start-period 30s
-
     env:
-      DATABASE_URL: postgresql://${{ inputs.postgres_user }}:${{ inputs.postgres_password || 'default_password' }}@postgres:5432/${{ inputs.postgres_db }}
+      DATABASE_URL: postgresql://${{ inputs.postgres_user }}:${{ inputs.postgres_password }}@db:5432/${{ inputs.postgres_db }}  # Matches EC2 hostname 'db'
       PROJECT_NAME: dev-thedataproxy
 
     steps:
@@ -58,46 +42,9 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      - name: Validate secrets
-        run: |
-          echo "Postgres User: ${{ inputs.postgres_user }}"
-          if [ -z "${{ inputs.postgres_password }}" ]; then
-            echo "Warning: POSTGRES_PASSWORD is empty or unset. Using fallback 'default_password'."
-          else
-            echo "POSTGRES_PASSWORD is set (length: ${#inputs.postgres_password} chars)."
-          fi
-          echo "Postgres DB: ${{ inputs.postgres_db }}"
-
       - name: Build backend image
         run: |
           docker build -t ${PROJECT_NAME}-backend:latest ./backend
-
-      - name: Debug postgres service
-        run: |
-          echo "Listing all containers:"
-          docker ps -a
-          echo "Checking postgres logs:"
-          docker logs $(docker ps -q -f name=postgres) || echo "No postgres container found"
-
-      - name: Wait for database and test connectivity
-        run: |
-          echo "Testing connectivity to postgres:5432 with user ${{ inputs.postgres_user }}"
-          for i in {1..12}; do
-            if docker run --rm postgres:12 pg_isready -h postgres -U ${{ inputs.postgres_user }} -d ${{ inputs.postgres_db }}; then
-              echo "Database is ready!"
-              docker run --rm postgres:12 psql -h postgres -U ${{ inputs.postgres_user }} -d ${{ inputs.postgres_db }} -c 'SELECT 1;'
-              break
-            else
-              echo "Attempt $i/12: postgres:5432 - no response, waiting..."
-              sleep 5
-            fi
-          done
-          if [ $i -eq 12 ]; then
-            echo "Error: Database not ready after 60 seconds"
-            docker ps -a
-            docker logs $(docker ps -q -f name=postgres) || echo "No postgres container logs available"
-            exit 1
-          fi
 
       - name: Run migrations in container
         run: |
@@ -105,7 +52,7 @@ jobs:
             -e SQLALCHEMY_URL="${DATABASE_URL}" \
             -v $(/home/runner/work/platform-thedataproxy.com/platform-thedataproxy.com):/app \
             ${PROJECT_NAME}-backend:latest \
-            bash -c "alembic revision --autogenerate -m 'Auto-generated migration for model changes' && alembic upgrade head"
+            bash -c "alembic revision --autogenerate -m 'Auto-generated migration for model changes'"
 
       - name: Check for uncommitted migrations
         id: check_migrations
