@@ -8,9 +8,11 @@ on:
     branches:
       - main
     paths:
-      - 'models/**'
+      - 'app/models/**'  # Adjusted to your app/models/ directory
       - 'alembic.ini'
       - 'alembic/**'
+      - 'pyproject.toml'
+      - 'uv.lock'
   workflow_call:
 
 jobs:
@@ -19,7 +21,7 @@ jobs:
 
     services:
       postgres:
-        image: postgres:15
+        image: postgres:12  # Matches your docker-compose.yml
         env:
           POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
           POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
@@ -39,18 +41,22 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0  # Full history for Git operations
+          fetch-depth: 0
 
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.10'
 
-      - name: Install dependencies
+      - name: Install uv
         run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt
-          pip install alembic sqlmodel psycopg2-binary
+          curl -LsSf https://astral.sh/uv/install.sh | sh
+          echo "PATH=$HOME/.cargo/bin:$PATH" >> $GITHUB_ENV
+
+      - name: Install dependencies with uv
+        run: |
+          uv sync --frozen
+        working-directory: .
 
       - name: Initialize database schema
         run: |
@@ -59,18 +65,22 @@ jobs:
             sleep 2
           done
           alembic init alembic || true
+        env:
+          PYTHONPATH: .
 
       - name: Generate Alembic migration
         run: |
           alembic revision --autogenerate -m "Auto-generated migration for model changes"
         env:
           SQLALCHEMY_URL: ${{ env.DATABASE_URL }}
+          PYTHONPATH: .
 
       - name: Apply migrations
         run: |
           alembic upgrade head
         env:
           SQLALCHEMY_URL: ${{ env.DATABASE_URL }}
+          PYTHONPATH: .
 
       - name: Check for uncommitted migrations
         id: check_migrations
@@ -93,9 +103,3 @@ jobs:
           git push
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Run tests (optional)
-        run: |
-          pytest
-        env:
-          DATABASE_URL: ${{ env.DATABASE_URL }}
