@@ -52,7 +52,7 @@ jobs:
             -e SQLALCHEMY_URL="${DATABASE_URL}" \
             -v /home/runner/work/platform-thedataproxy.com/platform-thedataproxy.com:/app \
             ${PROJECT_NAME}-backend:latest \
-            bash -c "alembic revision --autogenerate -m 'Auto-generated migration for model changes'"
+            bash -c "if ! command -v alembic >/dev/null 2>&1; then pip install alembic; fi && alembic revision --autogenerate -m 'Auto-generated migration for model changes'"
 
       - name: Check for uncommitted migrations
         id: check_migrations
