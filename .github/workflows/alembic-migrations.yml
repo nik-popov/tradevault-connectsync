@@ -40,9 +40,9 @@ jobs:
           - 5432:5432
         options: >-
           --health-cmd "pg_isready -U ${{ inputs.postgres_user }} -d ${{ inputs.postgres_db }}"
-          --health-interval 10s
+          --health-interval 5s
           --health-timeout 5s
-          --health-retries 5
+          --health-retries 10
           --health-start-period 30s
 
     env:
@@ -62,6 +62,13 @@ jobs:
         run: |
           docker build -t ${PROJECT_NAME}-backend:latest ./backend
 
+      - name: Debug postgres service
+        run: |
+          echo "Listing all containers:"
+          docker ps -a
+          echo "Checking postgres logs:"
+          docker logs $(docker ps -q -f name=postgres) || echo "No postgres container found"
+
       - name: Wait for database and test connectivity
         run: |
           echo "Testing connectivity to postgres:5432 with user ${{ inputs.postgres_user }}"
@@ -78,6 +85,7 @@ jobs:
           if [ $i -eq 12 ]; then
             echo "Error: Database not ready after 60 seconds"
             docker ps -a
+            docker logs $(docker ps -q -f name=postgres) || echo "No postgres container logs available"
             exit 1
           fi
 
