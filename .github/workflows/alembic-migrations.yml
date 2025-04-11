@@ -47,28 +47,26 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      - name: Create traefik-public network
-        run: |
-          docker network create traefik-public || true
-
       - name: Build backend image
         run: |
           docker build -t ${PROJECT_NAME}-backend:latest ./backend
 
       - name: Wait for database and test connectivity
         run: |
-          until docker run --rm --network ${PROJECT_NAME}_default \
+          until docker run --rm \
+            --network container:postgres \
             postgres:12 pg_isready -h postgres -U ${{ secrets.POSTGRES_USER }} -d ${{ secrets.POSTGRES_DB }}; do
             echo "Waiting for PostgreSQL..."
             sleep 5
           done
-          docker run --rm --network ${PROJECT_NAME}_default \
+          docker run --rm \
+            --network container:postgres \
             postgres:12 psql -h postgres -U ${{ secrets.POSTGRES_USER }} -d ${{ secrets.POSTGRES_DB }} -c 'SELECT 1;'
 
       - name: Run migrations in container
         run: |
           docker run --rm \
-            --network ${PROJECT_NAME}_default \
+            --network container:postgres \
             -e SQLALCHEMY_URL="${DATABASE_URL}" \
             -v $(/home/runner/work/platform-***.com/platform-***.com):/app \
             ${PROJECT_NAME}-backend:latest \
