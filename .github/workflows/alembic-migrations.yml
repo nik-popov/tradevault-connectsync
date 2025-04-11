@@ -30,7 +30,7 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      DATABASE_URL: postgresql://${{ inputs.postgres_user }}:${{ inputs.postgres_password }}@db:5432/${{ inputs.postgres_db }}  # Matches EC2 hostname 'db'
+      DATABASE_URL: postgresql://${{ inputs.postgres_user }}:${{ inputs.postgres_password }}@db:5432/${{ inputs.postgres_db }}
       PROJECT_NAME: dev-thedataproxy
 
     steps:
@@ -50,7 +50,7 @@ jobs:
         run: |
           docker run --rm \
             -e SQLALCHEMY_URL="${DATABASE_URL}" \
-            -v $(/home/runner/work/platform-thedataproxy.com/platform-thedataproxy.com):/app \
+            -v /home/runner/work/platform-thedataproxy.com/platform-thedataproxy.com:/app \
             ${PROJECT_NAME}-backend:latest \
             bash -c "alembic revision --autogenerate -m 'Auto-generated migration for model changes'"
 
