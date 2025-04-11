@@ -1,0 +1,98 @@
+name: Alembic Migrations
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'models/**'
+      - 'alembic.ini'
+      - 'alembic/**'
+
+jobs:
+  alembic-migrations:
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_USER: test_user
+          POSTGRES_PASSWORD: test_password
+          POSTGRES_DB: test_db
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    env:
+      DATABASE_URL: postgresql://test_user:test_password@localhost:5432/test_db
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install alembic sqlmodel psycopg2-binary
+
+      - name: Initialize database schema
+        run: |
+          until psql $DATABASE_URL -c '\l'; do
+            echo "Waiting for PostgreSQL..."
+            sleep 2
+          done
+          alembic init alembic || true
+
+      - name: Generate Alembic migration
+        run: |
+          alembic revision --autogenerate -m "Auto-generated migration for model changes"
+        env:
+          SQLALCHEMY_URL: ${{ env.DATABASE_URL }}
+
+      - name: Apply migrations
+        run: |
+          alembic upgrade head
+        env:
+          SQLALCHEMY_URL: ${{ env.DATABASE_URL }}
+
+      - name: Check for uncommitted migrations
+        id: check_migrations
+        run: |
+          if git diff --name-only | grep '^alembic/versions/'; then
+            echo "New migration files detected"
+            echo "has_migrations=true" >> $GITHUB_OUTPUT
+          else
+            echo "No new migration files"
+            echo "has_migrations=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Commit new migration files
+        if: steps.check_migrations.outputs.has_migrations == 'true' && github.event_name == 'push'
+        run: |
+          git config user.name "GitHub Actions"
+          git config user.email "actions@github.com"
+          git add alembic/versions/*
+          git commit -m "Add auto-generated Alembic migration"
+          git push
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Run tests (optional)
+        run: |
+          pytest
+        env:
+          DATABASE_URL: ${{ env.DATABASE_URL }}
