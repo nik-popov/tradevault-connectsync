@@ -13,9 +13,9 @@ jobs:
       postgres_password: ${{ env.POSTGRES_PASSWORD }}
       postgres_db: ${{ env.POSTGRES_DB }}
     env:
-      POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
-      POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
-      POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
+      POSTGRES_USER: "staging_user"           # New credential
+      POSTGRES_PASSWORD: "staging_pass_2025"  # New credential
+      POSTGRES_DB: "staging_db"               # New credential
 
   deploy:
     runs-on: ubuntu-latest
@@ -80,9 +80,9 @@ jobs:
 
       - name: Deploy to EC2
         env:
-          POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
-          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
-          POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
+          POSTGRES_USER: "staging_user"           # New credential
+          POSTGRES_PASSWORD: "staging_pass_2025"  # New credential
+          POSTGRES_DB: "staging_db"               # New credential
           SECRET_KEY: ${{ secrets.SECRET_KEY }}
           FIRST_SUPERUSER: ${{ secrets.FIRST_SUPERUSER }}
           FIRST_SUPERUSER_PASSWORD: ${{ secrets.FIRST_SUPERUSER_PASSWORD }}
@@ -104,10 +104,10 @@ jobs:
           ssh -i private_key -q ubuntu@${{ secrets.EC2_HOST }} "
             cd /home/ubuntu/app &&
             docker network create traefik-public || true &&
-            echo 'POSTGRES_USER=${{ secrets.POSTGRES_USER }}' > .env &&
-            echo 'POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}' >> .env &&
+            echo 'POSTGRES_USER=${{ env.POSTGRES_USER }}' > .env &&
+            echo 'POSTGRES_PASSWORD=${{ env.POSTGRES_PASSWORD }}' >> .env &&
             echo 'POSTGRES_PORT=5432' >> .env &&
-            echo 'POSTGRES_DB=${{ secrets.POSTGRES_DB }}' >> .env &&
+            echo 'POSTGRES_DB=${{ env.POSTGRES_DB }}' >> .env &&
             echo 'POSTGRES_SERVER=db' >> .env &&
             echo 'PROJECT_NAME=dev-thedataproxy' >> .env &&
             echo 'SECRET_KEY=${{ secrets.SECRET_KEY }}' >> .env &&
@@ -128,48 +128,4 @@ jobs:
             echo 'ENVIRONMENT=staging' >> .env &&
             echo 'Cleaning up old containers and checking ports...' &&
             docker ps -a &&
-            docker ps -a | grep 'dev-thedataproxy' | awk '{print $1}' | xargs -I {} docker stop {} || true &&
-            docker ps -a | grep 'dev-thedataproxy' | awk '{print $1}' | xargs -I {} docker rm {} || true &&
-            docker ps -a | grep 'platform-thedataproxycom' | awk '{print $1}' | xargs -I {} docker stop {} || true &&
-            docker ps -a | grep 'platform-thedataproxycom' | awk '{print $1}' | xargs -I {} docker rm {} || true &&
-            echo 'Checking and freeing port 5432...' &&
-            sudo netstat -tulnp | grep 5432 || echo 'No process found on port 5432' &&
-            sudo lsof -i :5432 | awk 'NR>1 {print $2}' | xargs -I {} sudo kill -9 {} || echo 'No process to kill on port 5432' &&
-            DOCKER_BUILDKIT=1 docker compose -f docker-compose.yml --project-name dev-thedataproxy down || true &&
-            DOCKER_BUILDKIT=1 docker compose -f docker-compose.yml --project-name dev-thedataproxy build &&
-            echo 'Starting database first...' &&
-            DOCKER_BUILDKIT=1 docker compose -f docker-compose.yml --project-name dev-thedataproxy up -d db &&
-            echo 'Waiting for database to be ready...' &&
-            until docker exec dev-thedataproxy-db-1 pg_isready -U ${{ secrets.POSTGRES_USER }} -d ${{ secrets.POSTGRES_DB }}; do echo 'Database not ready yet, waiting...'; sleep 5; done &&
-            echo 'Testing database connectivity...' &&
-            docker exec dev-thedataproxy-db-1 psql -U ${{ secrets.POSTGRES_USER }} -d ${{ secrets.POSTGRES_DB }} -c 'SELECT 1;' || { echo 'Database connection failed'; exit 1; } &&
-            echo 'Applying migrations...' &&
-            docker exec dev-thedataproxy-backend-1 alembic upgrade head && echo 'Migrations applied successfully' || { echo 'Migration failed'; docker logs dev-thedataproxy-backend-1; exit 1; } &&
-            echo 'Starting prestart service...' &&
-            DOCKER_BUILDKIT=1 docker compose -f docker-compose.yml --project-name dev-thedataproxy up -d prestart &&
-            echo 'Waiting for prestart to complete (60s)...' &&
-            sleep 60 &&
-            echo 'Checking prestart container logs...' &&
-            docker logs dev-thedataproxy-prestart-1 || echo 'Failed to get logs for prestart container' &&
-            docker inspect dev-thedataproxy-prestart-1 --format '{{.State.ExitCode}}' || echo 'Failed to inspect prestart container' &&
-            echo 'Starting remaining services...' &&
-            DOCKER_BUILDKIT=1 docker compose -f docker-compose.yml --project-name dev-thedataproxy up -d --timeout 120 &&
-            echo 'Listing containers...' &&
-            docker ps -a &&
-            echo 'Checking backend container logs...' &&
-            docker logs dev-thedataproxy-backend-1 || echo 'Failed to get logs for backend container' &&
-            echo 'Testing internal backend healthcheck...' &&
-            docker exec dev-thedataproxy-backend-1 curl -f http://localhost:8000/api/v1/utils/health-check/ || echo 'Internal backend healthcheck failed (possible 404 or startup issue)' &&
-            echo 'Waiting for backend to be ready (timeout 60s)...' &&
-            timeout 60s bash -c 'until docker exec dev-thedataproxy-backend-1 curl -f http://localhost:8000/api/v1/utils/health-check/; do echo "Backend not ready yet, waiting..."; sleep 5; done' || { echo 'Backend failed to start properly'; docker logs dev-thedataproxy-backend-1; docker ps -a; exit 1; } &&
-            echo 'Testing external backend access...' &&
-            curl -f http://api.thedataproxy.com/api/v1/utils/health-check/ || echo 'External backend access to api.thedataproxy.com failed (possible 404 or Traefik issue)' &&
-            echo 'Testing frontend access...' &&
-            curl -f http://staging.cloud.thedataproxy.com || echo 'Frontend access to staging.cloud.thedataproxy.com failed (possible 404 or Traefik issue)' &&
-            echo 'Capturing all service logs...' &&
-            docker compose -f docker-compose.yml --project-name dev-thedataproxy logs > compose-logs.txt
-          "
-
-      - name: Clean up
-        run: |
-          rm -f private_key
+            docker p
