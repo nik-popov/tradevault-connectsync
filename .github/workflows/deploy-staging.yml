@@ -9,6 +9,7 @@ jobs:
     env:
       ENVIRONMENT: staging
     steps:
+      - Palceholder
       - name: Checkout
         uses: actions/checkout@v4
 
@@ -57,7 +58,8 @@ jobs:
             groups ubuntu &&
             docker network ls &&
             ls -la /home/ubuntu/app || echo 'Directory /home/ubuntu/app does not exist' &&
-            cat /home/ubuntu/app/docker-compose.yml || echo 'docker-compose.yml not found'
+            cat /home/ubuntu/app/docker-compose.yml || echo 'docker-compose.yml not found' &&
+            cat /home/ubuntu/app/.env || echo '.env not found'
           "
 
       - name: Deploy to EC2
@@ -91,13 +93,13 @@ jobs:
             echo 'POSTGRES_PORT=5432' >> .env &&
             echo 'POSTGRES_DB=${{ secrets.POSTGRES_DB }}' >> .env &&
             echo 'POSTGRES_SERVER=db' >> .env &&
-            echo 'PROJECT_NAME=platform-thedataproxycom' >> .env &&
+            echo 'PROJECT_NAME=dev-thedataproxy' >> .env &&
             echo 'SECRET_KEY=${{ secrets.SECRET_KEY }}' >> .env &&
             echo 'FIRST_SUPERUSER=${{ secrets.FIRST_SUPERUSER }}' >> .env &&
             echo 'FIRST_SUPERUSER_PASSWORD=${{ secrets.FIRST_SUPERUSER_PASSWORD }}' >> .env &&
             echo 'STRIPE_SECRET_KEY=${{ secrets.STRIPE_SECRET_KEY }}' >> .env &&
             echo 'DOMAIN=${{ secrets.DOMAIN }}' >> .env &&
-            echo 'STACK_NAME=${{ secrets.STACK_NAME }}' >> .env &&
+            echo 'STACK_NAME=dev-thedataproxy' >> .env &&
             echo 'DOCKER_IMAGE_BACKEND=${{ secrets.DOCKER_IMAGE_BACKEND }}' >> .env &&
             echo 'DOCKER_IMAGE_FRONTEND=${{ secrets.DOCKER_IMAGE_FRONTEND }}' >> .env &&
             echo 'FRONTEND_HOST=${{ secrets.FRONTEND_HOST }}' >> .env &&
@@ -110,24 +112,26 @@ jobs:
             echo 'ENVIRONMENT=staging' >> .env &&
             docker ps -a | grep 'dev-thedataproxy' | awk '{print $1}' | xargs -I {} docker stop {} || true &&
             docker ps -a | grep 'dev-thedataproxy' | awk '{print $1}' | xargs -I {} docker rm {} || true &&
-            docker ps -a | grep '${{ secrets.STACK_NAME }}' | awk '{print $1}' | xargs -I {} docker stop {} || true &&
-            docker ps -a | grep '${{ secrets.STACK_NAME }}' | awk '{print $1}' | xargs -I {} docker rm {} || true &&
-            DOCKER_BUILDKIT=1 docker compose -f docker-compose.yml --project-name ${{ secrets.STACK_NAME }} down || true &&
-            DOCKER_BUILDKIT=1 docker compose -f docker-compose.yml --project-name ${{ secrets.STACK_NAME }} build &&
-            DOCKER_BUILDKIT=1 docker compose -f docker-compose.yml --project-name ${{ secrets.STACK_NAME }} up -d &&
+            docker ps -a | grep 'platform-thedataproxycom' | awk '{print $1}' | xargs -I {} docker stop {} || true &&
+            docker ps -a | grep 'platform-thedataproxycom' | awk '{print $1}' | xargs -I {} docker rm {} || true &&
+            DOCKER_BUILDKIT=1 docker compose -f docker-compose.yml --project-name dev-thedataproxy down || true &&
+            DOCKER_BUILDKIT=1 docker compose -f docker-compose.yml --project-name dev-thedataproxy build &&
+            DOCKER_BUILDKIT=1 docker compose -f docker-compose.yml --project-name dev-thedataproxy up -d &&
             echo 'Listing containers...' &&
             docker ps -a &&
+            echo 'Checking prestart container logs...' &&
+            docker logs dev-thedataproxy-prestart-1 || echo 'Failed to get logs for prestart container' &&
             echo 'Checking backend container logs...' &&
-            docker logs platform-thedataproxycom-backend-1 || echo 'Failed to get logs for backend container' &&
+            docker logs dev-thedataproxy-backend-1 || echo 'Failed to get logs for backend container' &&
             echo 'Waiting for backend to be healthy...' &&
-            until docker inspect --format='{{.State.Health.Status}}' platform-thedataproxycom-backend-1 | grep -q 'healthy'; do
+            until docker inspect --format='{{.State.Health.Status}}' dev-thedataproxy-backend-1 | grep -q 'healthy'; do
               echo 'Backend not healthy yet, waiting...'
               sleep 5
             done &&
             echo 'Backend is healthy, applying migrations...' &&
-            docker exec platform-thedataproxycom-backend-1 alembic upgrade head && echo 'Migrations applied successfully' || { echo 'Migration failed'; exit 1; } &&
+            docker exec dev-thedataproxy-backend-1 alembic upgrade head && echo 'Migrations applied successfully' || { echo 'Migration failed'; exit 1; } &&
             echo 'Capturing all service logs...' &&
-            docker compose -f docker-compose.yml --project-name ${{ secrets.STACK_NAME }} logs > compose-logs.txt
+            docker compose -f docker-compose.yml --project-name dev-thedataproxy logs > compose-logs.txt
           "
 
       - name: Clean up
