@@ -29,18 +29,22 @@ jobs:
             sudo truncate -s 0 /etc/motd
           "
 
-      - name: Ensure Docker permissions
+      - name: Ensure Docker and tools installed
         run: |
           ssh -i private_key -q ubuntu@${{ secrets.EC2_HOST }} "
-            sudo usermod -aG docker ubuntu &&
             sudo apt-get update &&
-            sudo apt-get install -y rsync docker.io docker-compose
+            sudo apt-get install -y rsync docker.io docker-compose &&
+            sudo systemctl start docker &&
+            sudo systemctl enable docker &&
+            sudo groupadd docker || true &&
+            sudo usermod -aG docker ubuntu
           "
 
       - name: Debug remote shell output
         run: |
           ssh -i private_key -q ubuntu@${{ secrets.EC2_HOST }} "bash --noprofile --norc -c 'echo TEST'"
           ssh -i private_key -q ubuntu@${{ secrets.EC2_HOST }} "rsync --version"
+          ssh -i private_key -q ubuntu@${{ secrets.EC2_HOST }} "groups ubuntu"
 
       - name: Deploy to EC2
         env:
