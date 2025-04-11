@@ -2,31 +2,67 @@ name: Deploy to Staging
 
 on:
   push:
-    branches:
-      - master
+    branches: [ master ]
+  workflow_dispatch:
 
 jobs:
   deploy:
-    # Do not deploy in the main repository, only in user projects
-    if: github.repository_owner != 'fastapi'
-    runs-on:
-      - self-hosted
-      - staging
+    runs-on: ubuntu-latest
     env:
       ENVIRONMENT: staging
-      DOMAIN: ${{ secrets.DOMAIN_STAGING }}
-      STACK_NAME: ${{ secrets.STACK_NAME_STAGING }}
-      SECRET_KEY: ${{ secrets.SECRET_KEY }}
-      FIRST_SUPERUSER: ${{ secrets.FIRST_SUPERUSER }}
-      FIRST_SUPERUSER_PASSWORD: ${{ secrets.FIRST_SUPERUSER_PASSWORD }}
-      SMTP_HOST: ${{ secrets.SMTP_HOST }}
-      SMTP_USER: ${{ secrets.SMTP_USER }}
-      SMTP_PASSWORD: ${{ secrets.SMTP_PASSWORD }}
-      EMAILS_FROM_EMAIL: ${{ secrets.EMAILS_FROM_EMAIL }}
-      POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
-      SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      - run: docker compose -f docker-compose.yml --project-name ${{ secrets.STACK_NAME_STAGING }} build
-      - run: docker compose -f docker-compose.yml --project-name ${{ secrets.STACK_NAME_STAGING }} up -d
+
+      - name: Set up SSH
+        run: |
+          echo "${{ secrets.EC2_SSH_KEY }}" > private_key
+          chmod 600 private_key
+
+      - name: Deploy to EC2
+        env:
+          POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
+          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+          POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
+          SECRET_KEY: ${{ secrets.SECRET_KEY }}
+          FIRST_SUPERUSER: ${{ secrets.FIRST_SUPERUSER }}
+          FIRST_SUPERUSER_PASSWORD: ${{ secrets.FIRST_SUPERUSER_PASSWORD }}
+          STRIPE_SECRET_KEY: ${{ secrets.STRIPE_SECRET_KEY }}
+          DOMAIN: ${{ secrets.DOMAIN }}
+          STACK_NAME: ${{ secrets.STACK_NAME }}
+          DOCKER_IMAGE_BACKEND: ${{ secrets.DOCKER_IMAGE_BACKEND }}
+          DOCKER_IMAGE_FRONTEND: ${{ secrets.DOCKER_IMAGE_FRONTEND }}
+          FRONTEND_HOST: ${{ secrets.FRONTEND_HOST }}
+          SMTP_HOST: ${{ secrets.SMTP_HOST }}
+          SMTP_USER: ${{ secrets.SMTP_USER }}
+          SMTP_PASSWORD: ${{ secrets.SMTP_PASSWORD }}
+          EMAILS_FROM_EMAIL: ${{ secrets.EMAILS_FROM_EMAIL }}
+          BACKEND_CORS_ORIGINS: ${{ secrets.BACKEND_CORS_ORIGINS }}
+          SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
+        run: |
+          rsync -avz --delete -e "ssh -i private_key -o StrictHostKeyChecking=no" \
+            ./ ubuntu@${{ secrets.EC2_HOST }}:/home/ubuntu/app
+          ssh -i private_key -o StrictHostKeyChecking=no ubuntu@${{ secrets.EC2_HOST }} '
+            cd /home/ubuntu/app &&
+            echo "POSTGRES_USER=${{ secrets.POSTGRES_USER }}" > .env &&
+            echo "POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}" >> .env &&
+            echo "POSTGRES_DB=${{ secrets.POSTGRES_DB }}" >> .env &&
+            echo "SECRET_KEY=${{ secrets.SECRET_KEY }}" >> .env &&
+            echo "FIRST_SUPERUSER=${{ secrets.FIRST_SUPERUSER }}" >> .env &&
+            echo "FIRST_SUPERUSER_PASSWORD=${{ secrets.FIRST_SUPERUSER_PASSWORD }}" >> .env &&
+            echo "STRIPE_SECRET_KEY=${{ secrets.STRIPE_SECRET_KEY }}" >> .env &&
+            echo "DOMAIN=${{ secrets.DOMAIN }}" >> .env &&
+            echo "STACK_NAME=${{ secrets.STACK_NAME }}" >> .env &&
+            echo "DOCKER_IMAGE_BACKEND=${{ secrets.DOCKER_IMAGE_BACKEND }}" >> .env &&
+            echo "DOCKER_IMAGE_FRONTEND=${{ secrets.DOCKER_IMAGE_FRONTEND }}" >> .env &&
+            echo "FRONTEND_HOST=${{ secrets.FRONTEND_HOST }}" >> .env &&
+            echo "SMTP_HOST=${{ secrets.SMTP_HOST }}" >> .env &&
+            echo "SMTP_USER=${{ secrets.SMTP_USER }}" >> .env &&
+            echo "SMTP_PASSWORD=${{ secrets.SMTP_PASSWORD }}" >> .env &&
+            echo "EMAILS_FROM_EMAIL=${{ secrets.EMAILS_FROM_EMAIL }}" >> .env &&
+            echo "BACKEND_CORS_ORIGINS=${{ secrets.BACKEND_CORS_ORIGINS }}" >> .env &&
+            echo "SENTRY_DSN=${{ secrets.SENTRY_DSN }}" >> .env &&
+            echo "ENVIRONMENT=staging" >> .env &&
+            docker compose -f docker-compose.yml --project-name ${{ secrets.STACK_NAME }} build &&
+            docker compose -f docker-compose.yml --project-name ${{ secrets.STACK_NAME }} up -d
+          '
