@@ -9,10 +9,10 @@ jobs:
   alembic-migrations:
     uses: ./.github/workflows/alembic-migrations.yml
     with:
-      postgres_user: ${{ secrets.POSTGRES_USER }}
-      postgres_password: ${{ secrets.POSTGRES_PASSWORD }}
-      postgres_db: ${{ secrets.POSTGRES_DB }}
-    secrets:
+      postgres_user: ${{ env.POSTGRES_USER }}
+      postgres_password: ${{ env.POSTGRES_PASSWORD }}
+      postgres_db: ${{ env.POSTGRES_DB }}
+    env:
       POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
       POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
       POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
