@@ -55,14 +55,15 @@ jobs:
         run: |
           docker build -t ${PROJECT_NAME}-backend:latest ./backend
 
-      - name: Start database and wait
+      - name: Wait for database and test connectivity
         run: |
-          docker compose -f docker-compose.yml --project-name ${PROJECT_NAME} up -d db
-          until docker exec ${PROJECT_NAME}-db-1 pg_isready -U ${{ secrets.POSTGRES_USER }} -d ${{ secrets.POSTGRES_DB }}; do
+          until docker run --rm --network ${PROJECT_NAME}_default \
+            postgres:12 pg_isready -h postgres -U ${{ secrets.POSTGRES_USER }} -d ${{ secrets.POSTGRES_DB }}; do
             echo "Waiting for PostgreSQL..."
             sleep 5
           done
-          docker exec ${PROJECT_NAME}-db-1 psql -U ${{ secrets.POSTGRES_USER }} -d ${{ secrets.POSTGRES_DB }} -c 'SELECT 1;'
+          docker run --rm --network ${PROJECT_NAME}_default \
+            postgres:12 psql -h postgres -U ${{ secrets.POSTGRES_USER }} -d ${{ secrets.POSTGRES_DB }} -c 'SELECT 1;'
 
       - name: Run migrations in container
         run: |
