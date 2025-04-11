@@ -23,18 +23,24 @@ jobs:
 
       - name: Clean remote shell environment
         run: |
-          ssh -i private_key -q root@${{ secrets.EC2_HOST }} "
-            echo -e '# Exit if non-interactive\n[[ \\$- != *i* ]] && return' > /root/.bashrc &&
-            rm -f /root/.bash_profile &&
-            truncate -s 0 /etc/motd &&
-            echo 'PrintMotd no' >> /etc/ssh/sshd_config &&
-            systemctl restart sshd || true
+          ssh -i private_key -q ubuntu@${{ secrets.EC2_HOST }} "
+            echo -e '# Exit if non-interactive\n[[ \\$- != *i* ]] && return' > /home/ubuntu/.bashrc &&
+            rm -f /home/ubuntu/.bash_profile &&
+            sudo truncate -s 0 /etc/motd
+          "
+
+      - name: Ensure Docker permissions
+        run: |
+          ssh -i private_key -q ubuntu@${{ secrets.EC2_HOST }} "
+            sudo usermod -aG docker ubuntu &&
+            sudo apt-get update &&
+            sudo apt-get install -y rsync docker.io docker-compose
           "
 
       - name: Debug remote shell output
         run: |
-          ssh -i private_key -q root@${{ secrets.EC2_HOST }} "bash --noprofile --norc -c 'echo TEST'"
-          ssh -i private_key -q root@${{ secrets.EC2_HOST }} "rsync --version"
+          ssh -i private_key -q ubuntu@${{ secrets.EC2_HOST }} "bash --noprofile --norc -c 'echo TEST'"
+          ssh -i private_key -q ubuntu@${{ secrets.EC2_HOST }} "rsync --version"
 
       - name: Deploy to EC2
         env:
@@ -57,10 +63,10 @@ jobs:
           BACKEND_CORS_ORIGINS: ${{ secrets.BACKEND_CORS_ORIGINS }}
           SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
         run: |
-          rsync -avz --delete -e "ssh -i private_key -q" \
-            ./ root@${{ secrets.EC2_HOST }}:/root/app
-          ssh -i private_key -q root@${{ secrets.EC2_HOST }} "
-            cd /root/app &&
+          rsync -avz --delete -e "ssh -i private_key -q -o UserKnownHostsFile=~/.ssh/known_hosts" \
+            ./ ubuntu@${{ secrets.EC2_HOST }}:/home/ubuntu/app
+          ssh -i private_key -q ubuntu@${{ secrets.EC2_HOST }} "
+            cd /home/ubuntu/app &&
             echo 'POSTGRES_USER=${{ secrets.POSTGRES_USER }}' > .env &&
             echo 'POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}' >> .env &&
             echo 'POSTGRES_DB=${{ secrets.POSTGRES_DB }}' >> .env &&
@@ -83,6 +89,7 @@ jobs:
             docker compose -f docker-compose.yml --project-name ${{ secrets.STACK_NAME }} build &&
             docker compose -f docker-compose.yml --project-name ${{ secrets.STACK_NAME }} up -d
           "
+
       - name: Clean up
         run: |
           rm -f private_key
