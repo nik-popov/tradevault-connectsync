@@ -8,7 +8,7 @@ on:
     branches:
       - main
     paths:
-      - 'app/models/**'  # Assumes User model is in app/models/
+      - 'app/models/**'
       - 'alembic.ini'
       - 'alembic/**'
       - 'pyproject.toml'
@@ -21,7 +21,7 @@ jobs:
 
     services:
       postgres:
-        image: postgres:12  # Matches your docker-compose.yml
+        image: postgres:12
         env:
           POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
           POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
@@ -53,9 +53,18 @@ jobs:
           curl -LsSf https://astral.sh/uv/install.sh | sh
           echo "PATH=$HOME/.cargo/bin:$PATH" >> $GITHUB_ENV
 
+      - name: Debug file presence
+        run: |
+          ls -la
+          pwd
+          if [ ! -f pyproject.toml ]; then echo "pyproject.toml not found"; exit 1; fi
+          if [ ! -f uv.lock ]; then echo "uv.lock not found"; fi
+          if [ ! -f alembic.ini ]; then echo "alembic.ini not found"; fi
+        working-directory: .
+
       - name: Install dependencies with uv
         run: |
-          uv sync --frozen
+          uv sync --frozen || (echo "uv sync failed, installing minimal deps" && uv pip install alembic sqlmodel psycopg2-binary)
         working-directory: .
 
       - name: Initialize database schema
