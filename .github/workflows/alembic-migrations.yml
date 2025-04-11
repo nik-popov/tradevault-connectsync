@@ -61,16 +61,16 @@ jobs:
             echo "ERROR: pyproject.toml not found in repository root. Please commit it."
             echo "Creating minimal pyproject.toml as fallback..."
             cat <<EOF > pyproject.toml
-            [project]
-            name = "platform-thedataproxy"
-            version = "0.1.0"
-            dependencies = [
-              "alembic>=1.13.3",
-              "sqlmodel>=0.0.21",
-              "psycopg2-binary>=2.9.10",
-              "fastapi>=0.115.2",
-            ]
-            EOF
+[project]
+name = "platform-thedataproxy"
+version = "0.1.0"
+dependencies = [
+  "alembic>=1.13.3",
+  "sqlmodel>=0.0.21",
+  "psycopg2-binary>=2.9.10",
+  "fastapi>=0.115.2",
+]
+EOF
             uv lock
           fi
           ls -la  # Confirm files after fallback
