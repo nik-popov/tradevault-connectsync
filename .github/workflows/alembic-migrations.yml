@@ -35,7 +35,8 @@ jobs:
           --health-retries 5
 
     env:
-      DATABASE_URL: postgresql://${{ secrets.POSTGRES_USER }}:${{ secrets.POSTGRES_PASSWORD }}@localhost:5432/${{ secrets.POSTGRES_DB }}
+      DATABASE_URL: postgresql://${{ secrets.POSTGRES_USER }}:${{ secrets.POSTGRES_PASSWORD }}@postgres:5432/${{ secrets.POSTGRES_DB }}
+      PROJECT_NAME: dev-thedataproxy
 
     steps:
       - name: Checkout code
@@ -43,67 +44,30 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.10'
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
 
-      - name: Install uv
+      - name: Build backend image
         run: |
-          curl -LsSf https://astral.sh/uv/install.sh | sh
-          echo "PATH=$HOME/.cargo/bin:$PATH" >> $GITHUB_ENV
+          docker build -t ${PROJECT_NAME}-backend:latest ./backend
 
-      - name: Debug file presence
+      - name: Start database and wait
         run: |
-          echo "Current directory: $(/home/runner/work/platform-***.com/platform-***.com)"
-          ls -la
-          if [ ! -f pyproject.toml ]; then
-            echo "ERROR: pyproject.toml not found in repository root. Please commit it."
-            echo "Creating minimal pyproject.toml as fallback..."
-            cat <<EOF > pyproject.toml
-[project]
-name = "platform-thedataproxy"
-version = "0.1.0"
-dependencies = [
-  "alembic>=1.13.3",
-  "sqlmodel>=0.0.21",
-  "psycopg2-binary>=2.9.10",
-  "fastapi>=0.115.2",
-]
-EOF
-            uv lock
-          fi
-          ls -la  # Confirm files after fallback
-        working-directory: .
-
-      - name: Install dependencies with uv
-        run: |
-          uv sync --frozen
-        working-directory: .
-
-      - name: Initialize database schema
-        run: |
-          until psql "$DATABASE_URL" -c '\l'; do
+          docker compose -f docker-compose.yml --project-name ${PROJECT_NAME} up -d db
+          until docker exec ${PROJECT_NAME}-db-1 pg_isready -U ${{ secrets.POSTGRES_USER }} -d ${{ secrets.POSTGRES_DB }}; do
             echo "Waiting for PostgreSQL..."
-            sleep 2
+            sleep 5
           done
-          alembic init alembic || true
-        env:
-          PYTHONPATH: .
+          docker exec ${PROJECT_NAME}-db-1 psql -U ${{ secrets.POSTGRES_USER }} -d ${{ secrets.POSTGRES_DB }} -c 'SELECT 1;'
 
-      - name: Generate Alembic migration
+      - name: Run migrations in container
         run: |
-          alembic revision --autogenerate -m "Auto-generated migration for model changes"
-        env:
-          SQLALCHEMY_URL: ${{ env.DATABASE_URL }}
-          PYTHONPATH: .
-
-      - name: Apply migrations
-        run: |
-          alembic upgrade head
-        env:
-          SQLALCHEMY_URL: ${{ env.DATABASE_URL }}
-          PYTHONPATH: .
+          docker run --rm \
+            --network ${PROJECT_NAME}_default \
+            -e SQLALCHEMY_URL="${DATABASE_URL}" \
+            -v $(/home/runner/work/platform-***.com/platform-***.com):/app \
+            ${PROJECT_NAME}-backend:latest \
+            bash -c "alembic revision --autogenerate -m 'Auto-generated migration for model changes' && alembic upgrade head"
 
       - name: Check for uncommitted migrations
         id: check_migrations
