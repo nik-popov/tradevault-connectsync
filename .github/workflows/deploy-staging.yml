@@ -110,6 +110,8 @@ jobs:
             echo 'ENVIRONMENT=staging' >> .env &&
             docker ps -a | grep 'dev-thedataproxy' | awk '{print $1}' | xargs -I {} docker stop {} || true &&
             docker ps -a | grep 'dev-thedataproxy' | awk '{print $1}' | xargs -I {} docker rm {} || true &&
+            docker ps -a | grep '${{ secrets.STACK_NAME }}' | awk '{print $1}' | xargs -I {} docker stop {} || true &&
+            docker ps -a | grep '${{ secrets.STACK_NAME }}' | awk '{print $1}' | xargs -I {} docker rm {} || true &&
             DOCKER_BUILDKIT=1 docker compose -f docker-compose.yml --project-name ${{ secrets.STACK_NAME }} down || true &&
             DOCKER_BUILDKIT=1 docker compose -f docker-compose.yml --project-name ${{ secrets.STACK_NAME }} build &&
             DOCKER_BUILDKIT=1 docker compose -f docker-compose.yml --project-name ${{ secrets.STACK_NAME }} up -d &&
@@ -117,9 +119,15 @@ jobs:
             docker ps -a &&
             echo 'Checking backend container logs...' &&
             docker logs platform-thedataproxycom-backend-1 || echo 'Failed to get logs for backend container' &&
-            sleep 30 &&  # Increase sleep to ensure backend is ready
-            docker inspect platform-thedataproxycom-backend-1 || echo 'Backend container not found' &&
-            docker exec platform-thedataproxycom-backend-1 alembic upgrade head || echo 'Failed to apply migrations'
+            echo 'Waiting for backend to be healthy...' &&
+            until docker inspect --format='{{.State.Health.Status}}' platform-thedataproxycom-backend-1 | grep -q 'healthy'; do
+              echo 'Backend not healthy yet, waiting...'
+              sleep 5
+            done &&
+            echo 'Backend is healthy, applying migrations...' &&
+            docker exec platform-thedataproxycom-backend-1 alembic upgrade head && echo 'Migrations applied successfully' || { echo 'Migration failed'; exit 1; } &&
+            echo 'Capturing all service logs...' &&
+            docker compose -f docker-compose.yml --project-name ${{ secrets.STACK_NAME }} logs > compose-logs.txt
           "
 
       - name: Clean up
