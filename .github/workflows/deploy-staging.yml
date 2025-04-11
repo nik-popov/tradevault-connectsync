@@ -21,6 +21,21 @@ jobs:
           ssh-keyscan -H ${{ secrets.EC2_HOST }} >> ~/.ssh/known_hosts
           chmod 600 ~/.ssh/known_hosts
 
+      - name: Clean remote shell environment
+        run: |
+          ssh -i private_key -q root@${{ secrets.EC2_HOST }} "
+            echo -e '# Exit if non-interactive\n[[ \\$- != *i* ]] && return' > /root/.bashrc &&
+            rm -f /root/.bash_profile &&
+            truncate -s 0 /etc/motd &&
+            echo 'PrintMotd no' >> /etc/ssh/sshd_config &&
+            systemctl restart sshd || true
+          "
+
+      - name: Debug remote shell output
+        run: |
+          ssh -i private_key -q root@${{ secrets.EC2_HOST }} "bash --noprofile --norc -c 'echo TEST'"
+          ssh -i private_key -q root@${{ secrets.EC2_HOST }} "rsync --version"
+
       - name: Deploy to EC2
         env:
           POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
