@@ -25,23 +25,8 @@ jobs:
             echo 'POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}' >> .env &&
             echo 'POSTGRES_DB=${{ secrets.POSTGRES_DB }}' >> .env &&
             echo 'SECRET_KEY=${{ secrets.SECRET_KEY }}' >> .env &&
-            echo 'FIRST_SUPERUSER=${{ secrets.FIRST_SUPERUSER }}' >> .env &&
-            echo 'FIRST_SUPERUSER_PASSWORD=${{ secrets.FIRST_SUPERUSER_PASSWORD }}' >> .env &&
-            echo 'STRIPE_SECRET_KEY=${{ secrets.STRIPE_SECRET_KEY }}' >> .env &&
-            echo 'DOMAIN=${{ secrets.DOMAIN }}' >> .env &&
-            echo 'STACK_NAME=${{ secrets.STACK_NAME }}' >> .env &&
-            echo 'DOCKER_IMAGE_BACKEND=${{ secrets.DOCKER_IMAGE_BACKEND }}' >> .env &&
-            echo 'DOCKER_IMAGE_FRONTEND=${{ secrets.DOCKER_IMAGE_FRONTEND }}' >> .env &&
-            echo 'FRONTEND_HOST=${{ secrets.FRONTEND_HOST }}' >> .env &&
-            echo 'SMTP_HOST=${{ secrets.SMTP_HOST }}' >> .env &&
-            echo 'SMTP_USER=${{ secrets.SMTP_USER }}' >> .env &&
-            echo 'SMTP_PASSWORD=${{ secrets.SMTP_PASSWORD }}' >> .env &&
-            echo 'EMAILS_FROM_EMAIL=${{ secrets.EMAILS_FROM_EMAIL }}' >> .env &&
-            echo 'BACKEND_CORS_ORIGINS=${{ secrets.BACKEND_CORS_ORIGINS }}' >> .env &&
-            echo 'SENTRY_DSN=${{ secrets.SENTRY_DSN }}' >> .env &&
             echo 'ENVIRONMENT=staging' >> .env &&
-            docker compose -f docker-compose.yml --project-name ${{ secrets.STACK_NAME }} build &&
-            docker compose -f docker-compose.yml --project-name ${{ secrets.STACK_NAME }} up -d
+            docker compose -f docker-compose.yml up -d
           "
       - name: Clean up
         run: rm -f private_key
