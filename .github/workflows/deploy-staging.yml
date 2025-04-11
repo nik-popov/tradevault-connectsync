@@ -33,18 +33,25 @@ jobs:
         run: |
           ssh -i private_key -q ubuntu@${{ secrets.EC2_HOST }} "
             sudo apt-get update &&
-            sudo apt-get install -y rsync docker.io docker-compose &&
+            sudo apt-get install -y rsync docker.io &&
             sudo systemctl start docker &&
             sudo systemctl enable docker &&
             sudo groupadd docker || true &&
-            sudo usermod -aG docker ubuntu
+            sudo usermod -aG docker ubuntu &&
+            sudo curl -SL https://github.com/docker/compose/releases/download/v2.24.7/docker-compose-linux-x86_64 -o /usr/libexec/docker/cli-plugins/docker-compose &&
+            sudo chmod +x /usr/libexec/docker/cli-plugins/docker-compose
           "
 
-      - name: Debug remote shell output
+      - name: Debug remote environment
         run: |
-          ssh -i private_key -q ubuntu@${{ secrets.EC2_HOST }} "bash --noprofile --norc -c 'echo TEST'"
-          ssh -i private_key -q ubuntu@${{ secrets.EC2_HOST }} "rsync --version"
-          ssh -i private_key -q ubuntu@${{ secrets.EC2_HOST }} "groups ubuntu"
+          ssh -i private_key -q ubuntu@${{ secrets.EC2_HOST }} "
+            bash --noprofile --norc -c 'echo TEST' &&
+            rsync --version &&
+            docker --version &&
+            docker compose version &&
+            groups ubuntu &&
+            ls -la /home/ubuntu/app || echo 'Directory /home/ubuntu/app does not exist'
+          "
 
       - name: Deploy to EC2
         env:
@@ -71,6 +78,7 @@ jobs:
             ./ ubuntu@${{ secrets.EC2_HOST }}:/home/ubuntu/app
           ssh -i private_key -q ubuntu@${{ secrets.EC2_HOST }} "
             cd /home/ubuntu/app &&
+            ls -la &&
             echo 'POSTGRES_USER=${{ secrets.POSTGRES_USER }}' > .env &&
             echo 'POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}' >> .env &&
             echo 'POSTGRES_DB=${{ secrets.POSTGRES_DB }}' >> .env &&
