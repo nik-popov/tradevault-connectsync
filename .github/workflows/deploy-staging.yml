@@ -33,14 +33,17 @@ jobs:
         run: |
           ssh -i private_key -q ubuntu@${{ secrets.EC2_HOST }} "
             sudo apt-get update &&
-            sudo apt-get install -y rsync docker.io &&
+            sudo apt-get install -y rsync curl iproute2 &&
+            curl -fsSL https://get.docker.com -o get-docker.sh &&
+            sudo sh get-docker.sh &&
             sudo systemctl start docker &&
             sudo systemctl enable docker &&
-            sudo groupadd docker || true &&
             sudo usermod -aG docker ubuntu &&
             sudo mkdir -p /usr/libexec/docker/cli-plugins &&
             sudo curl -SL https://github.com/docker/compose/releases/download/v2.24.7/docker-compose-linux-x86_64 -o /usr/libexec/docker/cli-plugins/docker-compose &&
-            sudo chmod +x /usr/libexec/docker/cli-plugins/docker-compose
+            sudo chmod +x /usr/libexec/docker/cli-plugins/docker-compose &&
+            echo '{\"features\":{\"buildkit\":true}}' | sudo tee /etc/docker/daemon.json &&
+            sudo systemctl restart docker
           "
 
       - name: Debug remote environment
@@ -85,8 +88,9 @@ jobs:
             docker network create traefik-public || true &&
             echo 'POSTGRES_USER=${{ secrets.POSTGRES_USER }}' > .env &&
             echo 'POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}' >> .env &&
-            echo 'POSTGRES_PORT=${{ secrets.POSTGRES_PORT }}' >> .env &&
+            echo 'POSTGRES_PORT=5432' >> .env &&
             echo 'POSTGRES_DB=${{ secrets.POSTGRES_DB }}' >> .env &&
+            echo 'PROJECT_NAME=platform-thedataproxycom' >> .env &&
             echo 'SECRET_KEY=${{ secrets.SECRET_KEY }}' >> .env &&
             echo 'FIRST_SUPERUSER=${{ secrets.FIRST_SUPERUSER }}' >> .env &&
             echo 'FIRST_SUPERUSER_PASSWORD=${{ secrets.FIRST_SUPERUSER_PASSWORD }}' >> .env &&
@@ -103,8 +107,12 @@ jobs:
             echo 'BACKEND_CORS_ORIGINS=${{ secrets.BACKEND_CORS_ORIGINS }}' >> .env &&
             echo 'SENTRY_DSN=${{ secrets.SENTRY_DSN }}' >> .env &&
             echo 'ENVIRONMENT=staging' >> .env &&
-            docker compose -f docker-compose.yml --project-name ${{ secrets.STACK_NAME }} build &&
-            docker compose -f docker-compose.yml --project-name ${{ secrets.STACK_NAME }} up -d
+            docker stop dev-thedataproxy-db-1 || true &&
+            docker rm dev-thedataproxy-db-1 || true &&
+            docker stop dev-thedataproxy-adminer-1 || true &&
+            docker rm dev-thedataproxy-adminer-1 || true &&
+            DOCKER_BUILDKIT=1 docker compose -f docker-compose.yml --project-name ${{ secrets.STACK_NAME }} build &&
+            DOCKER_BUILDKIT=1 docker compose -f docker-compose.yml --project-name ${{ secrets.STACK_NAME }} up -d
           "
 
       - name: Clean up
