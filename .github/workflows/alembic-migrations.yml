@@ -48,7 +48,7 @@ jobs:
       POSTGRES_DB: ${{ inputs.postgres_db || 'app_db' }}
       FIRST_SUPERUSER: admin
       FIRST_SUPERUSER_PASSWORD: adminpassword
-      PROJECT_NAME_ENV: thedataproxy  # Added for PROJECT_NAME field
+      PROJECT_NAME_ENV: thedataproxy
 
     steps:
       - name: Checkout code
@@ -72,7 +72,7 @@ jobs:
       - name: Debug Python environment
         run: |
           docker run --rm \
-            --network host \
+            --network ${{ job.services.postgres.network }} \
             -e SQLALCHEMY_DATABASE_URI="${{ env.DATABASE_URL }}" \
             -e POSTGRES_SERVER="${{ env.POSTGRES_SERVER }}" \
             -e POSTGRES_USER="${{ env.POSTGRES_USER }}" \
@@ -91,7 +91,7 @@ jobs:
       - name: Debug inputs and prepare Alembic configuration
         run: |
           docker run --rm \
-            --network host \
+            --network ${{ job.services.postgres.network }} \
             -e SQLALCHEMY_DATABASE_URI="${{ env.DATABASE_URL }}" \
             -e POSTGRES_SERVER="${{ env.POSTGRES_SERVER }}" \
             -e POSTGRES_USER="${{ env.POSTGRES_USER }}" \
@@ -117,7 +117,7 @@ jobs:
       - name: Run migrations in container
         run: |
           docker run --rm \
-            --network host \
+            --network ${{ job.services.postgres.network }} \
             -e SQLALCHEMY_DATABASE_URI="${{ env.DATABASE_URL }}" \
             -e POSTGRES_SERVER="${{ env.POSTGRES_SERVER }}" \
             -e POSTGRES_USER="${{ env.POSTGRES_USER }}" \
