@@ -33,9 +33,9 @@ jobs:
       postgres:
         image: postgres:latest
         env:
-          POSTGRES_USER: ${{ inputs.postgres_user }}
-          POSTGRES_PASSWORD: ${{ inputs.postgres_password }}
-          POSTGRES_DB: ${{ inputs.postgres_db }}
+          POSTGRES_USER: ${{ inputs.postgres_user || 'default_user' }}
+          POSTGRES_PASSWORD: ${{ inputs.postgres_password || 'default_password' }}
+          POSTGRES_DB: ${{ inputs.postgres_db || 'default_db' }}
         ports:
           - 5432:5432
         options: >-
@@ -45,7 +45,7 @@ jobs:
           --health-retries 5
 
     env:
-      DATABASE_URL: postgresql://${{ inputs.postgres_user }}:${{ inputs.postgres_password }}@postgres:5432/${{ inputs.postgres_db }}
+      DATABASE_URL: postgresql://${{ inputs.postgres_user || 'default_user' }}:${{ inputs.postgres_password || 'default_password' }}@postgres:5432/${{ inputs.postgres_db || 'default_db' }}
       PROJECT_NAME: dev-thedataproxy
 
     steps:
@@ -59,18 +59,18 @@ jobs:
 
       - name: Build backend image
         run: |
-          docker build -t ${PROJECT_NAME}-backend:latest ./backend
+          docker build -t ${{ env.PROJECT_NAME }}-backend:latest ./backend
 
       - name: Debug inputs and prepare Alembic configuration
         run: |
           docker run --rm \
             --network host \
             -v /home/runner/work/platform-thedataproxy.com/platform-thedataproxy.com:/app \
-            ${PROJECT_NAME}-backend:latest \
-            bash -c "echo 'Debug: POSTGRES_USER=${{ inputs.postgres_user }}' && \
-                     echo 'Debug: POSTGRES_PASSWORD=${{ inputs.postgres_password }}' && \
-                     echo 'Debug: POSTGRES_DB=${{ inputs.postgres_db }}' && \
-                     printf '[alembic]\nscript_location = app/alembic\nsqlalchemy.url = ${DATABASE_URL}\n' > /app/alembic.ini && \
+            ${{ env.PROJECT_NAME }}-backend:latest \
+            bash -c "echo 'Debug: POSTGRES_USER=${{ inputs.postgres_user || 'default_user' }}' && \
+                     echo 'Debug: POSTGRES_PASSWORD=${{ inputs.postgres_password || 'default_password' }}' && \
+                     echo 'Debug: POSTGRES_DB=${{ inputs.postgres_db || 'default_db' }}' && \
+                     printf '[alembic]\nscript_location = app/alembic\nsqlalchemy.url = ${{ env.DATABASE_URL }}\n' > /app/alembic.ini && \
                      mkdir -p /app/app/alembic/versions && \
                      cat > /app/app/alembic/env.py << 'EOF'
 import os
@@ -119,9 +119,9 @@ EOF
         run: |
           docker run --rm \
             --network host \
-            -e SQLALCHEMY_URL="${DATABASE_URL}" \
+            -e SQLALCHEMY_URL="${{ env.DATABASE_URL }}" \
             -v /home/runner/work/platform-thedataproxy.com/platform-thedataproxy.com:/app \
-            ${PROJECT_NAME}-backend:latest \
+            ${{ env.PROJECT_NAME }}-backend:latest \
             bash -c "if ! command -v alembic >/dev/null 2>&1; then pip install alembic; fi && \
                      cat /app/alembic.ini && \
                      alembic revision --autogenerate -m 'Auto-generated migration for model changes'"
