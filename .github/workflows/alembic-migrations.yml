@@ -54,21 +54,21 @@ jobs:
             ${PROJECT_NAME}-backend:latest \
             bash -c "if ! command -v alembic >/dev/null 2>&1; then pip install alembic; fi && \
                      if [ ! -f /app/alembic.ini ]; then \
-                       echo '[alembic]\nscript_location = alembic\nsqlalchemy.url = ${DATABASE_URL}' > /app/alembic.ini; \
+                       echo '[alembic]\nscript_location = app/alembic\nsqlalchemy.url = ${DATABASE_URL}' > /app/alembic.ini; \
                      else \
-                       sed -i 's|script_location = .*|script_location = alembic|' /app/alembic.ini || \
-                       echo 'script_location = alembic' >> /app/alembic.ini; \
+                       sed -i 's|script_location = .*|script_location = app/alembic|' /app/alembic.ini || \
+                       echo 'script_location = app/alembic' >> /app/alembic.ini; \
                      fi && \
-                     if [ ! -d /app/alembic ]; then \
-                       mkdir -p /app/alembic/versions; \
-                       echo 'from alembic import context\nfrom sqlalchemy import engine_from_config, pool\nimport sqlmodel\nconnectable = engine_from_config(config.get_section(config.config_group), prefix=\"sqlalchemy.\", poolclass=pool.NullPool)\nwith connectable.connect() as connection:\n    context.configure(connection=connection, target_metadata=sqlmodel.SQLModel.metadata)\n    with context.begin_transaction():\n        context.run_migrations()' > /app/alembic/env.py; \
+                     if [ ! -d /app/app/alembic ]; then \
+                       mkdir -p /app/app/alembic/versions; \
+                       echo 'import os\nfrom alembic import context\nfrom app.models import SQLModel\nfrom app.core.config import settings\ntarget_metadata = SQLModel.metadata\ndef get_url():\n    return str(settings.SQLALCHEMY_DATABASE_URI)\nif context.is_offline_mode():\n    url = get_url()\n    context.configure(url=url, target_metadata=target_metadata, literal_binds=True, compare_type=True)\n    with context.begin_transaction():\n        context.run_migrations()' > /app/app/alembic/env.py; \
                      fi && \
                      alembic revision --autogenerate -m 'Auto-generated migration for model changes'"
 
       - name: Check for uncommitted migrations
         id: check_migrations
         run: |
-          if git diff --name-only | grep '^alembic/versions/'; then
+          if git diff --name-only | grep '^app/alembic/versions/'; then
             echo "New migration files detected"
             echo "has_migrations=true" >> $GITHUB_OUTPUT
           else
@@ -81,7 +81,7 @@ jobs:
         run: |
           git config user.name "GitHub Actions"
           git config user.email "actions@github.com"
-          git add alembic/versions/*
+          git add app/alembic/versions/*
           git commit -m "Add auto-generated Alembic migration"
           git push
         env:
