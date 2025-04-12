@@ -6,13 +6,14 @@ on:
       - main
   pull_request:
     branches:
+      - mainworking:
       - main
     paths:
-      - 'app/models/**'
-      - 'alembic.ini'
-      - 'alembic/**'
-      - 'pyproject.toml'
-      - 'uv.lock'
+      - 'backend/app/models/**'
+      - 'backend/alembic.ini'
+      - 'backend/alembic/**'
+      - 'backend/pyproject.toml'
+      - 'backend/uv.lock'
   workflow_call:
     inputs:
       postgres_user:
@@ -50,8 +51,12 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Debug workflow file
-        run: cat .github/workflows/alembic-migrations.yml
+      - name: Debug repository structure
+        run: |
+          echo "Repository root:"
+          ls -R .
+          echo "Backend directory:"
+          ls -R backend || echo "backend/ not found"
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
@@ -63,7 +68,6 @@ jobs:
         run: |
           docker run --rm \
             --network host \
-            -v $(pwd):/app \
             ${{ env.PROJECT_NAME }}-backend:latest \
             bash -c "echo 'Python version:' && python --version && \
                      echo 'Pip list:' && pip list && \
@@ -75,7 +79,6 @@ jobs:
         run: |
           docker run --rm \
             --network host \
-            -v $(pwd):/app \
             -e SQLALCHEMY_DATABASE_URI="${{ env.DATABASE_URL }}" \
             ${{ env.PROJECT_NAME }}-backend:latest \
             bash -c "echo 'Debug: POSTGRES_USER=${{ inputs.postgres_user || 'postgres' }}' && \
@@ -85,6 +88,7 @@ jobs:
                      mkdir -p /app/app/alembic/versions && \
                      echo -e 'import os\nfrom alembic import context\nfrom app.models import SQLModel\nfrom app.core.config import settings\n\ntarget_metadata = SQLModel.metadata\n\ndef get_url():\n    return os.getenv(\"SQLALCHEMY_DATABASE_URI\", str(settings.SQLALCHEMY_DATABASE_URI))\n\ndef run_migrations_offline() -> None:\n    url = get_url()\n    context.configure(\n        url=url,\n        target_metadata=target_metadata,\n        literal_binds=True,\n        compare_type=True,\n    )\n    with context.begin_transaction():\n        context.run_migrations()\n\ndef run_migrations_online() -> None:\n    from sqlalchemy import create_engine\n    connectable = create_engine(get_url())\n    with connectable.connect() as connection:\n        context.configure(\n            connection=connection,\n            target_metadata=target_metadata,\n            compare_type=True,\n        )\n        with context.begin_transaction():\n            context.run_migrations()\n\nif context.is_offline_mode():\n    run_migrations_offline()\nelse:\n    run_migrations_online()' > /app/app/alembic/env.py && \
                      echo 'Listing /app contents:' && ls -la /app && \
+                     echo 'Listing /app/app contents:' && ls -la /app/app && \
                      echo 'Listing /app/app/alembic contents:' && ls -la /app/app/alembic && \
                      echo 'Content of alembic.ini:' && cat /app/alembic.ini && \
                      echo 'Content of env.py:' && cat /app/app/alembic/env.py"
@@ -94,7 +98,6 @@ jobs:
           docker run --rm \
             --network host \
             -e SQLALCHEMY_DATABASE_URI="${{ env.DATABASE_URL }}" \
-            -v $(pwd):/app \
             ${{ env.PROJECT_NAME }}-backend:latest \
             bash -c "if ! command -v alembic >/dev/null 2>&1; then pip install alembic; fi && \
                      cat /app/alembic.ini && \
@@ -103,7 +106,7 @@ jobs:
       - name: Check for uncommitted migrations
         id: check_migrations
         run: |
-          if git diff --name-only | grep '^app/alembic/versions/'; then
+          if git diff --name-only | grep '^backend/app/alembic/versions/'; then
             echo "New migration files detected"
             echo "has_migrations=true" >> $GITHUB_OUTPUT
           else
@@ -116,7 +119,7 @@ jobs:
         run: |
           git config user.name "GitHub Actions"
           git config user.email "actions@github.com"
-          git add app/alembic/versions/*
+          git add backend/app/alembic/versions/*
           git commit -m "Add auto-generated Alembic migration"
           git push
         env:
