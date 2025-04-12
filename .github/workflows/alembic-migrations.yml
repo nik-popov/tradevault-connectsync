@@ -59,27 +59,41 @@ jobs:
       - name: Build backend image
         run: docker build -t ${{ env.PROJECT_NAME }}-backend:latest ./backend
 
+      - name: Debug Python environment
+        run: |
+          docker run --rm \
+            --network host \
+            -v $(pwd):/app \
+            ${{ env.PROJECT_NAME }}-backend:latest \
+            bash -c "echo 'Python version:' && python --version && \
+                     echo 'Pip list:' && pip list && \
+                     echo 'Directory structure:' && ls -R /app && \
+                     echo 'Python path:' && python -c 'import sys; print(sys.path)' && \
+                     echo 'Trying to import app.models:' && python -c 'from app.models import SQLModel'"
+
       - name: Debug inputs and prepare Alembic configuration
         run: |
           docker run --rm \
             --network host \
             -v $(pwd):/app \
+            -e SQLALCHEMY_DATABASE_URI="${{ env.DATABASE_URL }}" \
             ${{ env.PROJECT_NAME }}-backend:latest \
             bash -c "echo 'Debug: POSTGRES_USER=${{ inputs.postgres_user || 'postgres' }}' && \
                      echo 'Debug: POSTGRES_PASSWORD=${{ inputs.postgres_password || 'password' }}' && \
                      echo 'Debug: POSTGRES_DB=${{ inputs.postgres_db || 'app_db' }}' && \
                      printf '[alembic]\nscript_location = app/alembic\nsqlalchemy.url = ${{ env.DATABASE_URL }}\n' > /app/alembic.ini && \
                      mkdir -p /app/app/alembic/versions && \
-                     echo -e 'import os\nfrom alembic import context\nfrom app.models import SQLModel\nfrom app.core.config import settings\n\ntarget_metadata = SQLModel.metadata\n\ndef get_url():\n    return str(settings.SQLALCHEMY_DATABASE_URI)\n\ndef run_migrations_offline() -> None:\n    url = get_url()\n    context.configure(\n        url=url,\n        target_metadata=target_metadata,\n        literal_binds=True,\n        compare_type=True,\n    )\n    with context.begin_transaction():\n        context.run_migrations()\n\ndef run_migrations_online() -> None:\n    from sqlalchemy import create_engine\n    connectable = create_engine(get_url())\n    with connectable.connect() as connection:\n        context.configure(\n            connection=connection,\n            target_metadata=target_metadata,\n            compare_type=True,\n        )\n        with context.begin_transaction():\n            context.run_migrations()\n\nif context.is_offline_mode():\n    run_migrations_offline()\nelse:\n    run_migrations_online()' > /app/app/alembic/env.py && \
+                     echo -e 'import os\nfrom alembic import context\nfrom app.models import SQLModel\nfrom app.core.config import settings\n\ntarget_metadata = SQLModel.metadata\n\ndef get_url():\n    return os.getenv(\"SQLALCHEMY_DATABASE_URI\", str(settings.SQLALCHEMY_DATABASE_URI))\n\ndef run_migrations_offline() -> None:\n    url = get_url()\n    context.configure(\n        url=url,\n        target_metadata=target_metadata,\n        literal_binds=True,\n        compare_type=True,\n    )\n    with context.begin_transaction():\n        context.run_migrations()\n\ndef run_migrations_online() -> None:\n    from sqlalchemy import create_engine\n    connectable = create_engine(get_url())\n    with connectable.connect() as connection:\n        context.configure(\n            connection=connection,\n            target_metadata=target_metadata,\n            compare_type=True,\n        )\n        with context.begin_transaction():\n            context.run_migrations()\n\nif context.is_offline_mode():\n    run_migrations_offline()\nelse:\n    run_migrations_online()' > /app/app/alembic/env.py && \
                      echo 'Listing /app contents:' && ls -la /app && \
                      echo 'Listing /app/app/alembic contents:' && ls -la /app/app/alembic && \
-                     echo 'Content of alembic.ini:' && cat /app/alembic.ini"
+                     echo 'Content of alembic.ini:' && cat /app/alembic.ini && \
+                     echo 'Content of env.py:' && cat /app/app/alembic/env.py"
 
       - name: Run migrations in container
         run: |
           docker run --rm \
             --network host \
-            -e SQLALCHEMY_URL="${{ env.DATABASE_URL }}" \
+            -e SQLALCHEMY_DATABASE_URI="${{ env.DATABASE_URL }}" \
             -v $(pwd):/app \
             ${{ env.PROJECT_NAME }}-backend:latest \
             bash -c "if ! command -v alembic >/dev/null 2>&1; then pip install alembic; fi && \
