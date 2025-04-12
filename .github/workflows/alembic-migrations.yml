@@ -46,16 +46,20 @@ jobs:
         run: |
           docker build -t ${PROJECT_NAME}-backend:latest ./backend
 
-      - name: Prepare Alembic configuration
+      - name: Debug inputs and prepare Alembic configuration
         run: |
           docker run --rm \
             -v /home/runner/work/platform-thedataproxy.com/platform-thedataproxy.com:/app \
             ${PROJECT_NAME}-backend:latest \
-            bash -c "echo '[alembic]\nscript_location = app/alembic\nsqlalchemy.url = ${DATABASE_URL}' > /app/alembic.ini && \
+            bash -c "echo 'Debug: POSTGRES_USER=${{ inputs.postgres_user }}' && \
+                     echo 'Debug: POSTGRES_PASSWORD=${{ inputs.postgres_password }}' && \
+                     echo 'Debug: POSTGRES_DB=${{ inputs.postgres_db }}' && \
+                     printf '[alembic]\nscript_location = app/alembic\nsqlalchemy.url = ${DATABASE_URL}\n' > /app/alembic.ini && \
                      mkdir -p /app/app/alembic/versions && \
                      echo 'import os\nfrom alembic import context\nfrom app.models import SQLModel\nfrom app.core.config import settings\ntarget_metadata = SQLModel.metadata\ndef get_url():\n    return str(settings.SQLALCHEMY_DATABASE_URI)\nif context.is_offline_mode():\n    url = get_url()\n    context.configure(url=url, target_metadata=target_metadata, literal_binds=True, compare_type=True)\n    with context.begin_transaction():\n        context.run_migrations()' > /app/app/alembic/env.py && \
                      echo 'Listing /app contents:' && ls -la /app && \
-                     echo 'Listing /app/app/alembic contents:' && ls -la /app/app/alembic"
+                     echo 'Listing /app/app/alembic contents:' && ls -la /app/app/alembic && \
+                     echo 'Content of alembic.ini:' && cat /app/alembic.ini"
 
       - name: Run migrations in container
         run: |
