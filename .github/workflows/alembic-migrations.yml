@@ -6,7 +6,6 @@ on:
       - main
   pull_request:
     branches:
-      - mainworking:
       - main
     paths:
       - 'backend/app/models/**'
