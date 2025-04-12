@@ -72,7 +72,7 @@ jobs:
                      echo 'Debug: POSTGRES_DB=${{ inputs.postgres_db }}' && \
                      printf '[alembic]\nscript_location = app/alembic\nsqlalchemy.url = ${DATABASE_URL}\n' > /app/alembic.ini && \
                      mkdir -p /app/app/alembic/versions && \
-                     cat << 'EOF' > /app/app/alembic/env.py
+                     cat > /app/app/alembic/env.py << 'EOF'
 import os
 from alembic import context
 from app.models import SQLModel
