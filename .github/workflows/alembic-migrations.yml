@@ -46,6 +46,17 @@ jobs:
         run: |
           docker build -t ${PROJECT_NAME}-backend:latest ./backend
 
+      - name: Prepare Alembic configuration
+        run: |
+          docker run --rm \
+            -v /home/runner/work/platform-thedataproxy.com/platform-thedataproxy.com:/app \
+            ${PROJECT_NAME}-backend:latest \
+            bash -c "echo '[alembic]\nscript_location = app/alembic\nsqlalchemy.url = ${DATABASE_URL}' > /app/alembic.ini && \
+                     mkdir -p /app/app/alembic/versions && \
+                     echo 'import os\nfrom alembic import context\nfrom app.models import SQLModel\nfrom app.core.config import settings\ntarget_metadata = SQLModel.metadata\ndef get_url():\n    return str(settings.SQLALCHEMY_DATABASE_URI)\nif context.is_offline_mode():\n    url = get_url()\n    context.configure(url=url, target_metadata=target_metadata, literal_binds=True, compare_type=True)\n    with context.begin_transaction():\n        context.run_migrations()' > /app/app/alembic/env.py && \
+                     echo 'Listing /app contents:' && ls -la /app && \
+                     echo 'Listing /app/app/alembic contents:' && ls -la /app/app/alembic"
+
       - name: Run migrations in container
         run: |
           docker run --rm \
@@ -53,16 +64,7 @@ jobs:
             -v /home/runner/work/platform-thedataproxy.com/platform-thedataproxy.com:/app \
             ${PROJECT_NAME}-backend:latest \
             bash -c "if ! command -v alembic >/dev/null 2>&1; then pip install alembic; fi && \
-                     if [ ! -f /app/alembic.ini ]; then \
-                       echo '[alembic]\nscript_location = app/alembic\nsqlalchemy.url = ${DATABASE_URL}' > /app/alembic.ini; \
-                     else \
-                       sed -i 's|script_location = .*|script_location = app/alembic|' /app/alembic.ini || \
-                       echo 'script_location = app/alembic' >> /app/alembic.ini; \
-                     fi && \
-                     if [ ! -d /app/app/alembic ]; then \
-                       mkdir -p /app/app/alembic/versions; \
-                       echo 'import os\nfrom alembic import context\nfrom app.models import SQLModel\nfrom app.core.config import settings\ntarget_metadata = SQLModel.metadata\ndef get_url():\n    return str(settings.SQLALCHEMY_DATABASE_URI)\nif context.is_offline_mode():\n    url = get_url()\n    context.configure(url=url, target_metadata=target_metadata, literal_binds=True, compare_type=True)\n    with context.begin_transaction():\n        context.run_migrations()' > /app/app/alembic/env.py; \
-                     fi && \
+                     cat /app/alembic.ini && \
                      alembic revision --autogenerate -m 'Auto-generated migration for model changes'"
 
       - name: Check for uncommitted migrations
