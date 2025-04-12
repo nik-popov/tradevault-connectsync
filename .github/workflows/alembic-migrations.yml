@@ -48,6 +48,7 @@ jobs:
       POSTGRES_DB: ${{ inputs.postgres_db || 'app_db' }}
       FIRST_SUPERUSER: admin
       FIRST_SUPERUSER_PASSWORD: adminpassword
+      PROJECT_NAME_ENV: thedataproxy  # Added for PROJECT_NAME field
 
     steps:
       - name: Checkout code
@@ -78,6 +79,7 @@ jobs:
             -e POSTGRES_DB="${{ env.POSTGRES_DB }}" \
             -e FIRST_SUPERUSER="${{ env.FIRST_SUPERUSER }}" \
             -e FIRST_SUPERUSER_PASSWORD="${{ env.FIRST_SUPERUSER_PASSWORD }}" \
+            -e PROJECT_NAME="${{ env.PROJECT_NAME_ENV }}" \
             ${{ env.PROJECT_NAME }}-backend:latest \
             bash -c "echo 'Python version:' && python --version && \
                      echo 'Pip list:' && pip list && \
@@ -96,11 +98,13 @@ jobs:
             -e POSTGRES_DB="${{ env.POSTGRES_DB }}" \
             -e FIRST_SUPERUSER="${{ env.FIRST_SUPERUSER }}" \
             -e FIRST_SUPERUSER_PASSWORD="${{ env.FIRST_SUPERUSER_PASSWORD }}" \
+            -e PROJECT_NAME="${{ env.PROJECT_NAME_ENV }}" \
             ${{ env.PROJECT_NAME }}-backend:latest \
             bash -c "echo 'Debug: POSTGRES_USER=${{ env.POSTGRES_USER }}' && \
                      echo 'Debug: POSTGRES_DB=${{ env.POSTGRES_DB }}' && \
                      echo 'Debug: POSTGRES_SERVER=${{ env.POSTGRES_SERVER }}' && \
                      echo 'Debug: FIRST_SUPERUSER=${{ env.FIRST_SUPERUSER }}' && \
+                     echo 'Debug: PROJECT_NAME=${{ env.PROJECT_NAME_ENV }}' && \
                      printf '[alembic]\nscript_location = app/alembic\nsqlalchemy.url = ${{ env.DATABASE_URL }}\n' > /app/alembic.ini && \
                      mkdir -p /app/app/alembic/versions && \
                      echo -e 'import os\nfrom alembic import context\nfrom app.models import SQLModel\n\ntarget_metadata = SQLModel.metadata\n\ndef get_url():\n    return os.getenv(\"SQLALCHEMY_DATABASE_URI\")\n\ndef run_migrations_offline() -> None:\n    url = get_url()\n    context.configure(\n        url=url,\n        target_metadata=target_metadata,\n        literal_binds=True,\n        compare_type=True,\n    )\n    with context.begin_transaction():\n        context.run_migrations()\n\ndef run_migrations_online() -> None:\n    from sqlalchemy import create_engine\n    connectable = create_engine(get_url())\n    with connectable.connect() as connection:\n        context.configure(\n            connection=connection,\n            target_metadata=target_metadata,\n            compare_type=True,\n        )\n        with context.begin_transaction():\n            context.run_migrations()\n\nif context.is_offline_mode():\n    run_migrations_offline()\nelse:\n    run_migrations_online()' > /app/app/alembic/env.py && \
@@ -120,6 +124,7 @@ jobs:
             -e POSTGRES_DB="${{ env.POSTGRES_DB }}" \
             -e FIRST_SUPERUSER="${{ env.FIRST_SUPERUSER }}" \
             -e FIRST_SUPERUSER_PASSWORD="${{ env.FIRST_SUPERUSER_PASSWORD }}" \
+            -e PROJECT_NAME="${{ env.PROJECT_NAME_ENV }}" \
             ${{ env.PROJECT_NAME }}-backend:latest \
             bash -c "if ! command -v alembic >/dev/null 2>&1; then pip install alembic; fi && \
                      cat /app/alembic.ini && \
