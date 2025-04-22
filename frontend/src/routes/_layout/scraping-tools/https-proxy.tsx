@@ -116,8 +116,6 @@ const GoogleSerpPage = () => {
       title: "Playground",
       component: () => (
         <PlaygroundGSerp
-          hasSubscription={hasActiveSubscription}
-          isSerpEnabled={proxyApiAccess?.has_access || false}
         />
       ),
     },
