@@ -17,7 +17,7 @@ async function fetchSubscriptionStatus(): Promise<{
   }
 
   try {
-    const response = await fetch("https://api.thedataproxy.com/v2/subscription-status/serp", {
+    const response = await fetch("https://api.thedataproxy.com/v2/subscription-status", {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
