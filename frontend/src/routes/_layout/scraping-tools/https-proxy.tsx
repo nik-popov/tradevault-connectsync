@@ -26,7 +26,7 @@ async function fetchSubscriptions(): Promise<Subscription[]> {
   }
 
   try {
-    const response = await fetch("https://api.thedataproxy.com/v2/customer/subscriptions", {
+    const response = await fetch("https://api.thedataproxy.com/v2/subscription/customer/subscriptions", {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
