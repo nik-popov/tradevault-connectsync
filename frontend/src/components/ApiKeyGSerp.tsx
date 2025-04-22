@@ -27,24 +27,21 @@ interface ApiKey {
 
 interface ApiKeyGSerpProps {
   token: string | null;
-  hasSubscription?: boolean;
-  subscriptionPlan?: string | null;
-  isProxyApiEnabled?: boolean;
 }
 
 const API_URL = "https://api.thedataproxy.com/v2/proxy";
 
-const ApiKeyGSerp: React.FC<ApiKeyGSerpProps> = ({ token, hasSubscription, subscriptionPlan, isProxyApiEnabled }) => {
+const ApiKeyGSerp: React.FC<ApiKeyGSerpProps> = ({ token }) => {
   const [apiKeys, setApiKeys] = useState<ApiKey[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [fullKey, setFullKey] = useState<string | null>(null);
 
   useEffect(() => {
-    if (token && hasSubscription && isProxyApiEnabled) {
+    if (token) {
       fetchApiKeys();
     }
-  }, [token, hasSubscription, isProxyApiEnabled]);
+  }, [token]);
 
   const fetchApiKeys = async () => {
     if (!token) return;
@@ -75,7 +72,7 @@ const ApiKeyGSerp: React.FC<ApiKeyGSerpProps> = ({ token, hasSubscription, subsc
       );
       setApiKeys(sortedData);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "An error occurred while fetching API keys");
+      setError(err instanceof Error ? err.message : "An error occurred");
     } finally {
       setLoading(false);
     }
@@ -84,14 +81,6 @@ const ApiKeyGSerp: React.FC<ApiKeyGSerpProps> = ({ token, hasSubscription, subsc
   const generateKey = async () => {
     if (!token) {
       setError("No authentication token available");
-      return;
-    }
-    if (!hasSubscription) {
-      setError("No active subscription. Please subscribe to generate API keys.");
-      return;
-    }
-    if (!isProxyApiEnabled) {
-      setError("Your subscription plan does not include proxy API features. Please upgrade to a proxy-api-enabled plan.");
       return;
     }
     setLoading(true);
@@ -113,7 +102,7 @@ const ApiKeyGSerp: React.FC<ApiKeyGSerpProps> = ({ token, hasSubscription, subsc
       setFullKey(newKeyData.api_key);
       await fetchApiKeys();
     } catch (err) {
-      setError(err instanceof Error ? err.message : "An error occurred while generating API key");
+      setError(err instanceof Error ? err.message : "An error occurred");
     } finally {
       setLoading(false);
     }
@@ -124,14 +113,7 @@ const ApiKeyGSerp: React.FC<ApiKeyGSerpProps> = ({ token, hasSubscription, subsc
       setError("No authentication token available");
       return;
     }
-    if (!hasSubscription) {
-      setError("No active subscription. Please subscribe to manage API keys.");
-      return;
-    }
-    if (!isProxyApiEnabled) {
-      setError("Your subscription plan does not include proxy API features. Please upgrade to a proxy-api-enabled plan.");
-      return;
-    }
+
     if (requestCount > 0) {
       setError("Cannot delete API key with requests. Only keys with 0 requests can be deleted.");
       return;
@@ -149,7 +131,7 @@ const ApiKeyGSerp: React.FC<ApiKeyGSerpProps> = ({ token, hasSubscription, subsc
         url: `${API_URL}/api-keys/${lastEight}`,
         headers: {
           "Accept": "application/json",
-          "Authorization": `Bearer ${token.slice(0, 20)}...`,
+          "Authorization": `Bearer ${token.slice(0, 20)}...`, // Truncated for log readability
         },
       });
 
@@ -214,17 +196,13 @@ const ApiKeyGSerp: React.FC<ApiKeyGSerpProps> = ({ token, hasSubscription, subsc
                 colorScheme="blue"
                 onClick={generateKey}
                 isLoading={loading}
-                isDisabled={loading || !hasSubscription || !isProxyApiEnabled}
+                isDisabled={loading}
               >
                 Generate
               </Button>
             </Tooltip>
           </Flex>
-          {hasSubscription && (
-            <Text fontSize="sm" mb={2}>
-              Subscription Plan: {subscriptionPlan || "Unknown"}
-            </Text>
-          )}
+
           <Box
             mt={4}
             p={4}
@@ -271,74 +249,58 @@ const ApiKeyGSerp: React.FC<ApiKeyGSerpProps> = ({ token, hasSubscription, subsc
           </Alert>
         )}
 
-        {!hasSubscription && (
-          <Alert status="warning">
-            <AlertIcon />
-            No active subscription. Please subscribe to manage API keys.
-          </Alert>
-        )}
-
-        {hasSubscription && !isProxyApiEnabled && (
-          <Alert status="warning">
-            <AlertIcon />
-            Your subscription plan does not include proxy API features. Please upgrade to a proxy-api-enabled plan.
-          </Alert>
-        )}
-
-        {hasSubscription && isProxyApiEnabled && (
-          <Box>
-            <Text fontSize="md" fontWeight="semibold" mb={2}>
-              Existing API Keys
-            </Text>
-            <Box shadow="md" borderWidth="1px" borderRadius="md" overflowX="auto">
-              <Table variant="simple" size="sm">
-                <Thead>
-                  <Tr>
-                    <Th>Key Preview</Th>
-                    <Th>Created At</Th>
-                    <Th>Expires At</Th>
-                    <Th>Request Count</Th>
-                    <Th>Status</Th>
-                    <Th>Actions</Th>
-                  </Tr>
-                </Thead>
-                <Tbody>
-                  {apiKeys.map((key, index) => (
-                    <Tr key={index}>
-                      <Td>{key.key_preview}</Td>
-                      <Td>{new Date(key.created_at).toLocaleString()}</Td>
-                      <Td>{new Date(key.expires_at).toLocaleString()}</Td>
-                      <Td>{key.request_count}</Td>
-                      <Td>{key.is_active ? "Active" : "Inactive"}</Td>
-                      <Td>
-                        <Tooltip
-                          label={
-                            key.request_count && key.request_count > 0
-                              ? "Cannot delete key with requests"
-                              : "Delete API key"
+        <Box>
+          <Text fontSize="md" fontWeight="semibold" mb={2}>
+            Existing API Keys
+          </Text>
+          <Box shadow="md" borderWidth="1px" borderRadius="md" overflowX="auto">
+            <Table variant="simple" size="sm">
+              <Thead>
+                <Tr>
+                  <Th>Key Preview</Th>
+                  <Th>Created At</Th>
+                  <Th>Expires At</Th>
+                  <Th>Request Count</Th>
+                  <Th>Status</Th>
+                  <Th>Actions</Th>
+                </Tr>
+              </Thead>
+              <Tbody>
+                {apiKeys.map((key, index) => (
+                  <Tr key={index}>
+                    <Td>{key.key_preview}</Td>
+                    <Td>{new Date(key.created_at).toLocaleString()}</Td>
+                    <Td>{new Date(key.expires_at).toLocaleString()}</Td>
+                    <Td>{key.request_count}</Td>
+                    <Td>{key.is_active ? "Active" : "Inactive"}</Td>
+                    <Td>
+                      <Tooltip
+                        label={
+                          key.request_count && key.request_count > 0
+                            ? "Cannot delete key with requests"
+                            : "Delete API key"
+                        }
+                      >
+                        <IconButton
+                          aria-label="Delete key"
+                          icon={<DeleteIcon />}
+                          size="sm"
+                          colorScheme="red"
+                          variant="ghost"
+                          onClick={() =>
+                            deleteApiKey(key.key_preview, key.request_count || 0)
                           }
-                        >
-                          <IconButton
-                            aria-label="Delete key"
-                            icon={<DeleteIcon />}
-                            size="sm"
-                            colorScheme="red"
-                            variant="ghost"
-                            onClick={() =>
-                              deleteApiKey(key.key_preview, key.request_count || 0)
-                            }
-                            isLoading={loading}
-                            isDisabled={loading || (key.request_count || 0) > 0}
-                          />
-                        </Tooltip>
-                      </Td>
-                    </Tr>
-                  ))}
-                </Tbody>
-              </Table>
-            </Box>
+                          isLoading={loading}
+                          isDisabled={loading || (key.request_count || 0) > 0}
+                        />
+                      </Tooltip>
+                    </Td>
+                  </Tr>
+                ))}
+              </Tbody>
+            </Table>
           </Box>
-        )}
+        </Box>
       </Flex>
     </Box>
   );
