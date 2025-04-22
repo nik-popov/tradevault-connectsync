@@ -15,7 +15,7 @@ logger = logging.getLogger(__name__)
 
 # Load Stripe API key
 stripe.api_key = os.getenv("STRIPE_SECRET_KEY")
-stripe.api_version = "2024-06-25"  # Ensure consistent API version
+stripe.api_version = "2025-03-31.basil"  # Ensure consistent API version
 
 router = APIRouter(tags=["subscription"])
 
