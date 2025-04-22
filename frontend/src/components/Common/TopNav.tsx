@@ -263,7 +263,7 @@ const TopNav = () => {
               <Flex flexDir="column" gap={2}>
                 <Box
                   as={RouterLink}
-                  to="/profile" // Adjust path as needed
+                  to="/settings" // Adjust path as needed
                   p={2}
                   color={textColor}
                   _hover={{ color: hoverColor }}

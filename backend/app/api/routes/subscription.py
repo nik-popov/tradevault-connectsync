@@ -15,6 +15,7 @@ logger = logging.getLogger(__name__)
 
 # Load Stripe API key
 stripe.api_key = os.getenv("STRIPE_SECRET_KEY")
+stripe.api_version = "2024-06-25"  # Ensure consistent API version
 
 router = APIRouter(tags=["subscription"])
 
@@ -34,8 +35,8 @@ class SubscriptionResponse(BaseModel):
     plan_name: str | None
     product_id: str | None
     product_name: str | None
-    current_period_start: int
-    current_period_end: int
+    current_period_start: int | None  # Made optional
+    current_period_end: int | None    # Made optional
     trial_start: int | None
     trial_end: int | None
     cancel_at_period_end: bool
@@ -100,6 +101,11 @@ async def get_customer_subscriptions(current_user: Annotated[User, Depends(get_c
 
         subscription_list = []
         for sub in subscriptions.data:
+            # Skip subscriptions with missing current_period_start
+            if not hasattr(sub, "current_period_start") or sub.current_period_start is None:
+                logger.warning(f"Skipping subscription {sub.id} with missing current_period_start (status: {sub.status})")
+                continue
+
             plan_id = sub.plan.id if sub.plan else None
             plan_name = sub.plan.nickname if sub.plan and sub.plan.nickname else None
             product_id = sub.plan.product.id if sub.plan and sub.plan.product else None
@@ -123,7 +129,7 @@ async def get_customer_subscriptions(current_user: Annotated[User, Depends(get_c
                     product_id=product_id,
                     product_name=product_name,
                     current_period_start=sub.current_period_start,
-                    current_period_end=sub.current_period_end,
+                    current_period_end=sub.current_period_end if hasattr(sub, "current_period_end") else None,
                     trial_start=sub.trial_start,
                     trial_end=sub.trial_end,
                     cancel_at_period_end=sub.cancel_at_period_end,
