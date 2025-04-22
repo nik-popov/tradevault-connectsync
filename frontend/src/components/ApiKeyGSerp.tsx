@@ -29,21 +29,22 @@ interface ApiKeyGSerpProps {
   token: string | null;
   hasSubscription?: boolean;
   subscriptionPlan?: string | null;
+  isProxyApiEnabled?: boolean;
 }
 
 const API_URL = "https://api.thedataproxy.com/v2/proxy";
 
-const ApiKeyGSerp: React.FC<ApiKeyGSerpProps> = ({ token, hasSubscription, subscriptionPlan }) => {
+const ApiKeyGSerp: React.FC<ApiKeyGSerpProps> = ({ token, hasSubscription, subscriptionPlan, isProxyApiEnabled }) => {
   const [apiKeys, setApiKeys] = useState<ApiKey[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [fullKey, setFullKey] = useState<string | null>(null);
 
   useEffect(() => {
-    if (token && hasSubscription) {
+    if (token && hasSubscription && isProxyApiEnabled) {
       fetchApiKeys();
     }
-  }, [token, hasSubscription]);
+  }, [token, hasSubscription, isProxyApiEnabled]);
 
   const fetchApiKeys = async () => {
     if (!token) return;
@@ -74,7 +75,7 @@ const ApiKeyGSerp: React.FC<ApiKeyGSerpProps> = ({ token, hasSubscription, subsc
       );
       setApiKeys(sortedData);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "An error occurred");
+      setError(err instanceof Error ? err.message : "An error occurred while fetching API keys");
     } finally {
       setLoading(false);
     }
@@ -87,6 +88,10 @@ const ApiKeyGSerp: React.FC<ApiKeyGSerpProps> = ({ token, hasSubscription, subsc
     }
     if (!hasSubscription) {
       setError("No active subscription. Please subscribe to generate API keys.");
+      return;
+    }
+    if (!isProxyApiEnabled) {
+      setError("Your subscription plan does not include proxy API features. Please upgrade to a proxy-api-enabled plan.");
       return;
     }
     setLoading(true);
@@ -108,7 +113,7 @@ const ApiKeyGSerp: React.FC<ApiKeyGSerpProps> = ({ token, hasSubscription, subsc
       setFullKey(newKeyData.api_key);
       await fetchApiKeys();
     } catch (err) {
-      setError(err instanceof Error ? err.message : "An error occurred");
+      setError(err instanceof Error ? err.message : "An error occurred while generating API key");
     } finally {
       setLoading(false);
     }
@@ -121,6 +126,10 @@ const ApiKeyGSerp: React.FC<ApiKeyGSerpProps> = ({ token, hasSubscription, subsc
     }
     if (!hasSubscription) {
       setError("No active subscription. Please subscribe to manage API keys.");
+      return;
+    }
+    if (!isProxyApiEnabled) {
+      setError("Your subscription plan does not include proxy API features. Please upgrade to a proxy-api-enabled plan.");
       return;
     }
     if (requestCount > 0) {
@@ -205,7 +214,7 @@ const ApiKeyGSerp: React.FC<ApiKeyGSerpProps> = ({ token, hasSubscription, subsc
                 colorScheme="blue"
                 onClick={generateKey}
                 isLoading={loading}
-                isDisabled={loading || !hasSubscription}
+                isDisabled={loading || !hasSubscription || !isProxyApiEnabled}
               >
                 Generate
               </Button>
@@ -269,7 +278,14 @@ const ApiKeyGSerp: React.FC<ApiKeyGSerpProps> = ({ token, hasSubscription, subsc
           </Alert>
         )}
 
-        {hasSubscription && (
+        {hasSubscription && !isProxyApiEnabled && (
+          <Alert status="warning">
+            <AlertIcon />
+            Your subscription plan does not include proxy API features. Please upgrade to a proxy-api-enabled plan.
+          </Alert>
+        )}
+
+        {hasSubscription && isProxyApiEnabled && (
           <Box>
             <Text fontSize="md" fontWeight="semibold" mb={2}>
               Existing API Keys
