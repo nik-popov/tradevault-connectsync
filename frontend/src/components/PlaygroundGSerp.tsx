@@ -31,7 +31,7 @@ const REGIONS = [
   "middle-east"
 ];
 
-const API_URL = "https://api.thedataproxy.com/api/v1/proxy";
+const API_URL = "https://api.thedataproxy.com/api/v2/proxy";
 
 const PlaygroundGSerp: React.FC = () => {
   const [url, setUrl] = useState<string>("https://www.google.com/search?q=flowers&udm=2");
