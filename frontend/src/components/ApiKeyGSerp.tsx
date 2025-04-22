@@ -35,7 +35,7 @@ interface ApiKeyGSerpProps {
 
 const API_URL = "https://api.thedataproxy.com/v2/proxy";
 
-const ApiKeyGSerp: React.FC<ApiKeyGSerpProps> = ({ token, hasSubscription, subscriptionPlan, hasProxyApiAccess }) => {
+const ApiKeyGSerp: React.FC<ApiKeyGSerpProps> = ({ token, hasSubscription, hasProxyApiAccess }) => {
   const [apiKeys, setApiKeys] = useState<ApiKey[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
