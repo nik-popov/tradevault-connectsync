@@ -18,22 +18,18 @@ async def get_subscription_status(current_user: Annotated[User, Depends(get_curr
     """
     Retrieve the subscription status for the authenticated user from Stripe.
     """
-    # Check if the user has a Stripe customer ID
+    logger.info(f"Checking subscription for user: {current_user.id}")
     if not current_user.stripe_customer_id:
-        return SubscriptionStatus(
-            hasSubscription=False,
-            isTrial=False,
-            isDeactivated=True
-        )
-
+        logger.warning(f"No Stripe customer ID for user: {current_user.id}")
+        return SubscriptionStatus(hasSubscription=False, isTrial=False, isDeactivated=True)
     try:
-        # Fetch the customer's subscriptions from Stripe
         subscriptions = stripe.Subscription.list(
             customer=current_user.stripe_customer_id,
             status="all",
             limit=1
         )
-
+        logger.info(f"Retrieved subscriptions for customer: {current_user.stripe_customer_id}")
+        
         # Handle case where no subscriptions exist
         if not subscriptions.data:
             return SubscriptionStatus(
