@@ -12,11 +12,16 @@ interface Subscription {
   plan_name: string | null;
   product_id: string | null;
   product_name: string | null;
-  current_period_start: number;
-  current_period_end: number;
+  current_period_start: number | null; // Made nullable to match backend
+  current_period_end: number | null;   // Made nullable to match backend
   trial_start: number | null;
   trial_end: number | null;
   cancel_at_period_end: boolean;
+}
+
+interface ProxyApiAccess {
+  has_access: boolean;
+  message: string | null;
 }
 
 async function fetchSubscriptions(): Promise<Subscription[]> {
@@ -48,24 +53,57 @@ async function fetchSubscriptions(): Promise<Subscription[]> {
   }
 }
 
+async function fetchProxyApiAccess(): Promise<ProxyApiAccess> {
+  const token = localStorage.getItem("access_token");
+  if (!token) {
+    throw new Error("No access token found. Please log in again.");
+  }
+
+  try {
+    const response = await fetch("https://api.thedataproxy.com/v2/proxy-api/access", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(
+        errorData.detail || `Failed to check proxy API access: ${response.status}`
+      );
+    }
+
+    return response.json();
+  } catch (error) {
+    console.error("Proxy API access fetch error:", error);
+    throw error;
+  }
+}
+
 const GoogleSerpPage = () => {
-  const { data: subscriptions, isLoading, error } = useQuery({
+  const { data: subscriptions, isLoading: isSubscriptionsLoading, error: subscriptionsError } = useQuery({
     queryKey: ["subscriptions"],
     queryFn: fetchSubscriptions,
     staleTime: 5 * 60 * 1000,
   });
 
+  const { data: proxyApiAccess, isLoading: isAccessLoading, error: accessError } = useQuery({
+    queryKey: ["proxyApiAccess"],
+    queryFn: fetchProxyApiAccess,
+    staleTime: 5 * 60 * 1000,
+  });
+
   const token = localStorage.getItem("access_token");
 
-  // Determine subscription status and tier
+  // Determine subscription status
   const hasActiveSubscription = subscriptions?.some(
     (sub) => ["active", "trialing"].includes(sub.status)
   ) || false;
   const activeSubscription = subscriptions?.find(
     (sub) => ["active", "trialing"].includes(sub.status)
   );
-  // Check if the plan supports SERP features (customize based on your plans)
-  const isSerpEnabled = activeSubscription?.product_name?.toLowerCase().includes("serp") || false;
 
   const TabsConfig = [
     {
@@ -83,7 +121,7 @@ const GoogleSerpPage = () => {
       component: () => (
         <PlaygroundGSerp
           hasSubscription={hasActiveSubscription}
-          isSerpEnabled={isSerpEnabled}
+          isSerpEnabled={proxyApiAccess?.has_access || false}
         />
       ),
     },
@@ -96,15 +134,15 @@ const GoogleSerpPage = () => {
           <Text fontSize="xl">HTTPs Proxy API</Text>
           <Text fontSize="sm">Manage your proxy settings and API keys.</Text>
         </Flex>
-        {isLoading ? (
+        {isSubscriptionsLoading || isAccessLoading ? (
           <Text>Loading subscription details...</Text>
-        ) : error ? (
+        ) : subscriptionsError || accessError ? (
           <Text color="red.500">
-            Error: {error.message || "Failed to load subscription details. Please try again later."}
+            Error: {(subscriptionsError?.message || accessError?.message) || "Failed to load subscription details. Please try again later."}
           </Text>
         ) : !hasActiveSubscription ? (
           <Text color="red.500">
-            No active subscription. Please subscribe to use SERP features.
+            No active subscription. Please subscribe to use proxy API features.
           </Text>
         ) : (
           <>
@@ -114,9 +152,9 @@ const GoogleSerpPage = () => {
                 ? activeSubscription.status.charAt(0).toUpperCase() + activeSubscription.status.slice(1)
                 : "Unknown"})
             </Text>
-            {!isSerpEnabled && (
+            {!proxyApiAccess?.has_access && (
               <Text color="orange.500" mb={4}>
-                Your subscription plan does not include SERP features. Please upgrade to a SERP-enabled plan.
+                {proxyApiAccess?.message || "Your subscription plan does not include proxy API features. Please upgrade to a proxy-api-enabled plan."}
               </Text>
             )}
             <Tabs>
