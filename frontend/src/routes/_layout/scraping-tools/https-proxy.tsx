@@ -35,12 +35,13 @@ async function fetchSubscriptionStatus(): Promise<{
     return response.json();
   } catch (error) {
     console.error("Subscription status fetch error:", error);
-    throw error; // Let Tanstack Query handle the error
+    throw error;
   }
 }
+
 const GoogleSerpPage = () => {
   const { data: subscriptionStatus, isLoading, error } = useQuery({
-    queryKey: ["subscriptionStatus", "serp"],
+    queryKey: ["subscriptionStatus"],
     queryFn: fetchSubscriptionStatus,
     staleTime: 5 * 60 * 1000,
   });
