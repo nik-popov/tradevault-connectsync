@@ -109,11 +109,7 @@ const GoogleSerpPage = () => {
     {
       title: "API Keys",
       component: () => (
-        <ApiKeyGSerp
-          token={token}
-          hasSubscription={hasActiveSubscription}
-          subscriptionPlan={activeSubscription?.product_name || activeSubscription?.plan_name}
-        />
+        <ApiKeyGSerp token={token} />
       ),
     },
     {
