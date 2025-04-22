@@ -2,17 +2,18 @@ from fastapi import APIRouter, Depends, HTTPException
 from app.models import SubscriptionStatus, User
 from typing import Annotated, List
 from pydantic import BaseModel
-from app.api.deps import get_current_user
 import stripe
 from stripe.error import StripeError
 import os
 import logging
 from datetime import datetime
+from app.api.deps import get_current_user
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
+# Load Stripe API key
 stripe.api_key = os.getenv("STRIPE_SECRET_KEY")
 
 router = APIRouter(tags=["subscription"])
@@ -38,6 +39,7 @@ class SubscriptionResponse(BaseModel):
     trial_start: int | None
     trial_end: int | None
     cancel_at_period_end: bool
+    metadata: dict | None  # Added for potential tier-specific flags (e.g., serp_enabled)
 
 @router.get("/customer", response_model=CustomerResponse)
 async def get_customer(current_user: Annotated[User, Depends(get_current_user)]):
@@ -92,7 +94,7 @@ async def get_customer_subscriptions(current_user: Annotated[User, Depends(get_c
         subscriptions = stripe.Subscription.list(
             customer=current_user.stripe_customer_id,
             status="all",
-            expand=["data.plan.product"]  # Expand product details for tier name
+            expand=["data.plan.product"]
         )
         logger.info(f"Retrieved {len(subscriptions.data)} subscriptions for customer: {current_user.stripe_customer_id}")
 
@@ -104,6 +106,11 @@ async def get_customer_subscriptions(current_user: Annotated[User, Depends(get_c
             product_name = (
                 sub.plan.product.name
                 if sub.plan and sub.plan.product and hasattr(sub.plan.product, "name")
+                else None
+            )
+            metadata = (
+                sub.plan.product.metadata
+                if sub.plan and sub.plan.product and hasattr(sub.plan.product, "metadata")
                 else None
             )
 
@@ -119,7 +126,8 @@ async def get_customer_subscriptions(current_user: Annotated[User, Depends(get_c
                     current_period_end=sub.current_period_end,
                     trial_start=sub.trial_start,
                     trial_end=sub.trial_end,
-                    cancel_at_period_end=sub.cancel_at_period_end
+                    cancel_at_period_end=sub.cancel_at_period_end,
+                    metadata=metadata
                 )
             )
 
