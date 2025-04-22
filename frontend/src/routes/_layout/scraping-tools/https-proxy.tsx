@@ -12,19 +12,32 @@ async function fetchSubscriptionStatus(): Promise<{
   isDeactivated: boolean;
 }> {
   const token = localStorage.getItem("access_token");
-  const response = await fetch("https://api.thedataproxy.com/api/v1/subscription-status/serp", {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-      ...(token && { Authorization: `Bearer ${token}` }),
-    },
-  });
-  if (!response.ok) {
-    throw new Error(`Failed to fetch subscription status: ${response.status}`);
+  if (!token) {
+    throw new Error("No access token found. Please log in again.");
   }
-  return response.json();
-}
 
+  try {
+    const response = await fetch("https://api.thedataproxy.com/api/v1/subscription-status/serp", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(
+        errorData.detail || `Failed to fetch subscription status: ${response.status}`
+      );
+    }
+
+    return response.json();
+  } catch (error) {
+    console.error("Subscription status fetch error:", error);
+    throw error; // Let Tanstack Query handle the error
+  }
+}
 const GoogleSerpPage = () => {
   const { data: subscriptionStatus, isLoading } = useQuery({
     queryKey: ["subscriptionStatus", "serp"],
