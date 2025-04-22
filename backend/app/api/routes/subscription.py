@@ -15,7 +15,7 @@ logger = logging.getLogger(__name__)
 # Load environment variables
 stripe.api_key = os.getenv("STRIPE_SECRET_KEY")
 
-router = APIRouter(tags=["subscription", "proxy"])
+router = APIRouter(tags=["subscription"])
 
 # Pydantic model for customer response
 class CustomerResponse(BaseModel):
@@ -196,81 +196,3 @@ async def get_subscription_status(current_user: Annotated[User, Depends(get_curr
         logger.error(f"Internal server error for user {current_user.email}: {str(e)}")
         raise HTTPException(status_code=500, detail=f"Internal server error: {str(e)}")
 
-@router.post("/proxy/fetch", response_model=ProxyResponse)
-async def proxy_fetch(
-    request: ProxyRequest,
-    region: str,
-    current_user: Annotated[User, Depends(get_current_user)],
-    api_key: str = Depends(lambda: Depends(lambda x: x.headers.get("x-api-key")))
-):
-    """
-    Fetch a SERP result via proxy for the authenticated user, restricted to SERP-enabled subscription tiers.
-    """
-    logger.info(f"Processing SERP request for user: {current_user.email}, region: {region}")
-
-    if not stripe.api_key:
-        logger.error("Stripe API key is not configured")
-        raise HTTPException(status_code=500, detail="Server configuration error: Missing Stripe API key")
-
-    if not api_key:
-        logger.warning(f"No API key provided for user: {current_user.email}")
-        raise HTTPException(status_code=401, detail="API key required")
-
-    if not current_user.stripe_customer_id:
-        logger.warning(f"No Stripe customer ID for user: {current_user.email}")
-        raise HTTPException(status_code=403, detail="No active subscription")
-
-    try:
-        # Validate API key (simplified; replace with actual validation logic)
-        # Example: Check if api_key exists in a database for the user
-        # For now, assume it's valid if provided
-
-        # Check subscription tier
-        subscriptions = stripe.Subscription.list(
-            customer=current_user.stripe_customer_id,
-            status="all",
-            expand=["data.plan.product"],
-            limit=1
-        )
-        if not subscriptions.data:
-            logger.warning(f"No subscriptions found for user: {current_user.email}")
-            raise HTTPException(status_code=403, detail="No active subscription")
-
-        subscription = subscriptions.data[0]
-        if subscription.status not in ["active", "trialing"]:
-            logger.warning(f"Non-active subscription for user: {current_user.email}")
-            raise HTTPException(status_code=403, detail="No active subscription")
-
-        # Check if the subscription tier supports SERP (customize based on your plans)
-        product_name = (
-            subscription.plan.product.name
-            if subscription.plan and subscription.plan.product and hasattr(subscription.plan.product, "name")
-            else ""
-        )
-        is_serp_enabled = "serp" in product_name.lower()  # Example: Plans with "SERP" in product_name
-        if not is_serp_enabled:
-            logger.warning(f"SERP not enabled for user: {current_user.email}, product: {product_name}")
-            raise HTTPException(status_code=403, detail="Your subscription plan does not support SERP features")
-
-        # Simulate proxy fetch (replace with actual proxy logic)
-        # For example, use requests library to fetch the URL via a proxy
-        import requests
-        response = requests.post(
-            f"https://api.thedataproxy.com/v2/proxy/fetch?region={region}",
-            headers={"x-api-key": api_key},
-            json={"url": request.url}
-        )
-        if not response.ok:
-            logger.error(f"Proxy fetch failed for user: {current_user.email}, status: {response.status_code}")
-            raise HTTPException(status_code=response.status_code, detail="Failed to fetch SERP result")
-
-        result = response.json().get("result", "")
-        logger.info(f"SERP request successful for user: {current_user.email}")
-        return ProxyResponse(result=result)
-
-    except StripeError as e:
-        logger.error(f"Stripe error for user {current_user.email}: {str(e)}")
-        raise HTTPException(status_code=400, detail=f"Failed to verify subscription: {str(e)}")
-    except Exception as e:
-        logger.error(f"Internal server error for user {current_user.email}: {str(e)}")
-        raise HTTPException(status_code=500, detail=f"Internal server error: {str(e)}")
