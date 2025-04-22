@@ -37,8 +37,6 @@ const ApiKeyGSerp: React.FC<ApiKeyGSerpProps> = ({ token }) => {
   const [error, setError] = useState<string | null>(null);
   const [fullKey, setFullKey] = useState<string | null>(null);
   const [hasProxyApiAccess, setHasProxyApiAccess] = useState<boolean | null>(null);
-
-  #### Fetch Data on Mount
   useEffect(() => {
     if (token) {
       fetchProxyApiAccess();
@@ -46,7 +44,6 @@ const ApiKeyGSerp: React.FC<ApiKeyGSerpProps> = ({ token }) => {
     }
   }, [token]);
 
-  #### Check Proxy API Access
   const fetchProxyApiAccess = async () => {
     if (!token) return;
     try {
@@ -68,7 +65,6 @@ const ApiKeyGSerp: React.FC<ApiKeyGSerpProps> = ({ token }) => {
     }
   };
 
-  #### Fetch Existing API Keys
   const fetchApiKeys = async () => {
     if (!token) return;
     setLoading(true);
@@ -103,9 +99,7 @@ const ApiKeyGSerp: React.FC<ApiKeyGSerpProps> = ({ token }) => {
       setLoading(false);
     }
   };
-
-  #### Generate a New API Key
-  const generateKey = async () => {
+const generateKey = async () => {
     if (!token) {
       setError("No authentication token available");
       return;
@@ -143,7 +137,6 @@ const ApiKeyGSerp: React.FC<ApiKeyGSerpProps> = ({ token }) => {
     }
   };
 
-  #### Delete an API Key
   const deleteApiKey = async (keyPreview: string, requestCount: number) => {
     if (!token) {
       setError("No authentication token available");
@@ -186,12 +179,11 @@ const ApiKeyGSerp: React.FC<ApiKeyGSerpProps> = ({ token }) => {
     }
   };
 
-  #### Copy to Clipboard
+
   const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text);
   };
 
-  #### Render Logic
   if (!token) {
     return (
       <Box p={4} width="100%">
