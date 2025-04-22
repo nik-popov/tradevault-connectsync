@@ -17,7 +17,7 @@ from sqlmodel import SQLModel, Field
 from uuid import UUID
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
-
+from uuid import uuid4
 # Define regions and their corresponding endpoints
 REGION_ENDPOINTS = {
     "us-east": [
