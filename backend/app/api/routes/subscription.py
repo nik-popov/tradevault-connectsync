@@ -15,7 +15,7 @@ logger = logging.getLogger(__name__)
 
 # Load Stripe API key
 stripe.api_key = os.getenv("STRIPE_SECRET_KEY")
-stripe.api_version = "2025-03-31.basil"  # Ensure consistent API version
+stripe.api_version = "2023-10-16"  # Use stable version to avoid issues
 
 router = APIRouter(tags=["subscription"])
 
@@ -41,6 +41,11 @@ class SubscriptionResponse(BaseModel):
     trial_end: int | None
     cancel_at_period_end: bool
     metadata: dict | None
+
+# Pydantic model for proxy API access response
+class ProxyApiAccessResponse(BaseModel):
+    has_access: bool
+    message: str | None
 
 @router.get("/customer", response_model=CustomerResponse)
 async def get_customer(current_user: Annotated[User, Depends(get_current_user)]):
@@ -126,7 +131,7 @@ async def get_customer_subscriptions(current_user: Annotated[User, Depends(get_c
             }
             logger.info(f"Subscription details: {log_details}")
 
-            # Include active subscriptions even if current_period_start is missing
+            # Include active, trialing, or past_due subscriptions
             if sub.status not in ["active", "trialing", "past_due"]:
                 logger.warning(f"Skipping subscription {sub.id} with status {sub.status}")
                 continue
@@ -220,6 +225,72 @@ async def get_subscription_status(current_user: Annotated[User, Depends(get_curr
     except StripeError as e:
         logger.error(f"Stripe error for user {current_user.email}: {str(e)}")
         raise HTTPException(status_code=400, detail=f"Failed to fetch subscription status: {str(e)}")
+    except Exception as e:
+        logger.error(f"Internal server error for user {current_user.email}: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Internal server error: {str(e)}")
+
+@router.get("/proxy-api/access", response_model=ProxyApiAccessResponse)
+async def check_proxy_api_access(current_user: Annotated[User, Depends(get_current_user)]):
+    """
+    Check if the user has access to proxy API features based on the proxy-api tag in subscription metadata.
+    """
+    logger.info(f"Checking proxy API access for user: {current_user.email}")
+
+    if not stripe.api_key:
+        logger.error("Stripe API key is not configured")
+        raise HTTPException(status_code=500, detail="Server configuration error: Missing Stripe API key")
+
+    if not current_user.stripe_customer_id:
+        logger.warning(f"No Stripe customer ID for user: {current_user.email}")
+        return ProxyApiAccessResponse(
+            has_access=False,
+            message="No subscription found. Please subscribe to a plan with proxy API features."
+        )
+
+    try:
+        subscriptions = stripe.Subscription.list(
+            customer=current_user.stripe_customer_id,
+            status="all",
+            expand=["data.plan.product"]
+        )
+        logger.info(f"Retrieved {len(subscriptions.data)} subscriptions for customer: {current_user.stripe_customer_id}")
+
+        for sub in subscriptions.data:
+            # Log subscription details
+            log_details = {
+                "subscription_id": sub.id,
+                "status": sub.status,
+                "current_period_start": getattr(sub, "current_period_start", None),
+                "product_id": sub.plan.product.id if sub.plan and sub.plan.product else None,
+                "metadata": (
+                    sub.plan.product.metadata
+                    if sub.plan and sub.plan.product and hasattr(sub.plan.product, "metadata")
+                    else None
+                )
+            }
+            logger.info(f"Proxy API check - Subscription details: {log_details}")
+
+            # Check for active subscription with proxy-api tag
+            if sub.status in ["active", "trialing"]:
+                metadata = (
+                    sub.plan.product.metadata
+                    if sub.plan and sub.plan.product and hasattr(sub.plan.product, "metadata")
+                    else {}
+                )
+                if metadata.get("proxy-api") == "true":
+                    return ProxyApiAccessResponse(
+                        has_access=True,
+                        message="Access granted to proxy API features."
+                    )
+
+        return ProxyApiAccessResponse(
+            has_access=False,
+            message="Your subscription plan does not include proxy API features. Please upgrade to a proxy-api-enabled plan."
+        )
+
+    except StripeError as e:
+        logger.error(f"Stripe error for user {current_user.email}: {str(e)}")
+        raise HTTPException(status_code=400, detail=f"Failed to check proxy API access: {str(e)}")
     except Exception as e:
         logger.error(f"Internal server error for user {current_user.email}: {str(e)}")
         raise HTTPException(status_code=500, detail=f"Internal server error: {str(e)}")
