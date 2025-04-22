@@ -247,44 +247,42 @@ async def check_proxy_api_access(current_user: Annotated[User, Depends(get_curre
             message="No subscription found. Please subscribe to a plan with proxy API features."
         )
 
-   try:
+    try:
         subscriptions = stripe.Subscription.list(
             customer=current_user.stripe_customer_id,
             status="all",
             expand=["data.plan.product"]
         )
         logger.info(f"Retrieved {len(subscriptions.data)} subscriptions for customer: {current_user.stripe_customer_id}")
-        
+
         for sub in subscriptions.data:
+            # Log subscription details
             log_details = {
                 "subscription_id": sub.id,
                 "status": sub.status,
+                "current_period_start": getattr(sub, "current_period_start", None),
                 "product_id": sub.plan.product.id if sub.plan and sub.plan.product else None,
                 "metadata": (
                     sub.plan.product.metadata
                     if sub.plan and sub.plan.product and hasattr(sub.plan.product, "metadata")
-                    else {}
+                    else None
                 )
             }
             logger.info(f"Proxy API check - Subscription details: {log_details}")
-            
+
+            # Check for active subscription with proxy-api tag
             if sub.status in ["active", "trialing"]:
                 metadata = (
                     sub.plan.product.metadata
                     if sub.plan and sub.plan.product and hasattr(sub.plan.product, "metadata")
                     else {}
                 )
-                logger.info(f"Metadata for subscription {sub.id}: {metadata}")
                 if metadata.get("proxy-api") == "true":
-                    logger.info(f"Proxy API access granted for subscription {sub.id}")
                     return ProxyApiAccessResponse(
                         has_access=True,
                         message="Access granted to proxy API features."
                     )
-            else:
-                logger.info(f"Skipping subscription {sub.id} with status {sub.status}")
 
-        logger.warning(f"No proxy API access for user {current_user.email}")
         return ProxyApiAccessResponse(
             has_access=False,
             message="Your subscription plan does not include proxy API features. Please upgrade to a proxy-api-enabled plan."
