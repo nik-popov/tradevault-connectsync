@@ -27,8 +27,9 @@ interface ApiKey {
 
 interface ApiKeyGSerpProps {
   token: string | null;
-  hasSubscription?: boolean; // Optional, as it may not always be passed
-  subscriptionPlan?: string | null; // Matches the type passed by GoogleSerpPage
+  hasSubscription?: boolean;
+  subscriptionPlan?: string | null;
+  hasProxyApiAccess?: boolean; // New prop
 }
 
 const API_URL = "https://api.thedataproxy.com/v2/proxy";
