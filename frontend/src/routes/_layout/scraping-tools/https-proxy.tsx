@@ -1,4 +1,3 @@
-// src/pages/GoogleSerpPage.tsx
 import { createFileRoute } from "@tanstack/react-router";
 import { Container, Flex, Text, Tabs, TabList, TabPanels, Tab, TabPanel } from "@chakra-ui/react";
 import ProtectedComponent from "../../../components/ProtectedComponent";
@@ -49,8 +48,14 @@ const GoogleSerpPage = () => {
   const token = localStorage.getItem("access_token");
 
   const TabsConfig = [
-    { title: "API Keys", component: () => <ApiKeyGSerp token={token} /> },
-    { title: "Playground", component: () => <PlaygroundGSerp /> },
+    {
+      title: "API Keys",
+      component: () => <ApiKeyGSerp token={token} hasSubscription={subscriptionStatus?.hasSubscription} />,
+    },
+    {
+      title: "Playground",
+      component: () => <PlaygroundGSerp hasSubscription={subscriptionStatus?.hasSubscription} />,
+    },
   ];
 
   return (
@@ -65,6 +70,10 @@ const GoogleSerpPage = () => {
         ) : error ? (
           <Text color="red.500">
             Error: {error.message || "Failed to load subscription status. Please try again later."}
+          </Text>
+        ) : !subscriptionStatus?.hasSubscription ? (
+          <Text color="red.500">
+            No active subscription. Please subscribe to use SERP features.
           </Text>
         ) : (
           <Tabs>
