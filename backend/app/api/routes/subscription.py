@@ -35,12 +35,12 @@ class SubscriptionResponse(BaseModel):
     plan_name: str | None
     product_id: str | None
     product_name: str | None
-    current_period_start: int | None  # Made optional
-    current_period_end: int | None    # Made optional
+    current_period_start: int | None
+    current_period_end: int | None
     trial_start: int | None
     trial_end: int | None
     cancel_at_period_end: bool
-    metadata: dict | None  # Added for potential tier-specific flags (e.g., serp_enabled)
+    metadata: dict | None
 
 @router.get("/customer", response_model=CustomerResponse)
 async def get_customer(current_user: Annotated[User, Depends(get_current_user)]):
@@ -101,9 +101,34 @@ async def get_customer_subscriptions(current_user: Annotated[User, Depends(get_c
 
         subscription_list = []
         for sub in subscriptions.data:
-            # Skip subscriptions with missing current_period_start
-            if not hasattr(sub, "current_period_start") or sub.current_period_start is None:
-                logger.warning(f"Skipping subscription {sub.id} with missing current_period_start (status: {sub.status})")
+            # Log all subscriptions with detailed information
+            log_details = {
+                "subscription_id": sub.id,
+                "status": sub.status,
+                "current_period_start": getattr(sub, "current_period_start", None),
+                "current_period_end": getattr(sub, "current_period_end", None),
+                "plan_id": sub.plan.id if sub.plan else None,
+                "plan_name": sub.plan.nickname if sub.plan and sub.plan.nickname else None,
+                "product_id": sub.plan.product.id if sub.plan and sub.plan.product else None,
+                "product_name": (
+                    sub.plan.product.name
+                    if sub.plan and sub.plan.product and hasattr(sub.plan.product, "name")
+                    else None
+                ),
+                "metadata": (
+                    sub.plan.product.metadata
+                    if sub.plan and sub.plan.product and hasattr(sub.plan.product, "metadata")
+                    else None
+                ),
+                "trial_start": sub.trial_start,
+                "trial_end": sub.trial_end,
+                "cancel_at_period_end": sub.cancel_at_period_end
+            }
+            logger.info(f"Subscription details: {log_details}")
+
+            # Include active subscriptions even if current_period_start is missing
+            if sub.status not in ["active", "trialing", "past_due"]:
+                logger.warning(f"Skipping subscription {sub.id} with status {sub.status}")
                 continue
 
             plan_id = sub.plan.id if sub.plan else None
@@ -128,7 +153,7 @@ async def get_customer_subscriptions(current_user: Annotated[User, Depends(get_c
                     plan_name=plan_name,
                     product_id=product_id,
                     product_name=product_name,
-                    current_period_start=sub.current_period_start,
+                    current_period_start=sub.current_period_start if hasattr(sub, "current_period_start") else None,
                     current_period_end=sub.current_period_end if hasattr(sub, "current_period_end") else None,
                     trial_start=sub.trial_start,
                     trial_end=sub.trial_end,
