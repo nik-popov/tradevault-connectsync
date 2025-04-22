@@ -29,7 +29,7 @@ interface ApiKeyGSerpProps {
   token: string | null;
 }
 
-const API_URL = "https://api.thedataproxy.com/api/v1/proxy";
+const API_URL = "https://api.thedataproxy.com/v2/proxy";
 
 const ApiKeyGSerp: React.FC<ApiKeyGSerpProps> = ({ token }) => {
   const [apiKeys, setApiKeys] = useState<ApiKey[]>([]);
