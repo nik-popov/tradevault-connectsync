@@ -5,7 +5,6 @@ from pydantic import BaseModel
 from app.api.deps import get_current_user
 import stripe
 from stripe.error import StripeError
-from dotenv import load_dotenv
 import os
 import logging
 from datetime import datetime
@@ -14,8 +13,6 @@ from datetime import datetime
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-# Load environment variables
-load_dotenv()
 stripe.api_key = os.getenv("STRIPE_SECRET_KEY")
 
 router = APIRouter(tags=["subscription"])
