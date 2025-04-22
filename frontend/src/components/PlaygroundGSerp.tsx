@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import {
   Box,
   Text,
@@ -18,6 +18,11 @@ import {
 import { ExternalLinkIcon } from "@chakra-ui/icons";
 import { FiSend } from "react-icons/fi";
 
+interface PlaygroundGSerpProps {
+  hasSubscription?: boolean;
+  isSerpEnabled?: boolean;
+}
+
 // Define regions based on backend REGION_ENDPOINTS
 const REGIONS = [
   "us-east",
@@ -28,12 +33,12 @@ const REGIONS = [
   "asia",
   "australia",
   "europe",
-  "middle-east"
+  "middle-east",
 ];
 
 const API_URL = "https://api.thedataproxy.com/v2/proxy";
 
-const PlaygroundGSerp: React.FC = () => {
+const PlaygroundGSerp: React.FC<PlaygroundGSerpProps> = ({ hasSubscription, isSerpEnabled }) => {
   const [url, setUrl] = useState<string>("https://www.google.com/search?q=flowers&udm=2");
   const [region, setRegion] = useState<string>(REGIONS[0]);
   const [apiKey, setApiKey] = useState<string>("");
@@ -43,6 +48,15 @@ const PlaygroundGSerp: React.FC = () => {
   const [error, setError] = useState<string>("");
 
   const handleTestRequest = async () => {
+    if (!hasSubscription) {
+      setError("No active subscription. Please subscribe to make SERP requests.");
+      return;
+    }
+    if (!isSerpEnabled) {
+      setError("Your subscription plan does not support SERP features. Please upgrade.");
+      return;
+    }
+
     setIsLoading(true);
     setResponse("");
     setHtmlPreview("");
@@ -55,7 +69,7 @@ const PlaygroundGSerp: React.FC = () => {
           "Content-Type": "application/json",
           "x-api-key": apiKey,
         },
-        body: JSON.stringify({ url }), // Matches ProxyRequest model
+        body: JSON.stringify({ url }),
       });
 
       if (!res.ok) {
@@ -104,7 +118,7 @@ const PlaygroundGSerp: React.FC = () => {
                 onChange={(e) => setApiKey(e.target.value)}
                 placeholder="Enter your API key"
                 size="sm"
-                type="password" // Hide API key by default
+                type="password"
                 isRequired
               />
             </FormControl>
@@ -129,7 +143,7 @@ const PlaygroundGSerp: React.FC = () => {
                   colorScheme="blue"
                   onClick={handleTestRequest}
                   isLoading={isLoading}
-                  isDisabled={!url.trim() || !apiKey.trim() || !region}
+                  isDisabled={!hasSubscription || !isSerpEnabled || !url.trim() || !apiKey.trim() || !region}
                 >
                   <FiSend />
                 </Button>

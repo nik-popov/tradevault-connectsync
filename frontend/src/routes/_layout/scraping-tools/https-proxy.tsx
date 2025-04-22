@@ -60,7 +60,7 @@ const GoogleSerpPage = () => {
   // Determine subscription status and tier
   const hasActiveSubscription = subscriptions?.some(
     (sub) => ["active", "trialing"].includes(sub.status)
-  );
+  ) || false;
   const activeSubscription = subscriptions?.find(
     (sub) => ["active", "trialing"].includes(sub.status)
   );
@@ -110,7 +110,9 @@ const GoogleSerpPage = () => {
           <>
             <Text mb={4}>
               Your Plan: {activeSubscription?.product_name || activeSubscription?.plan_name || "Unknown"} (
-              {activeSubscription?.status.charAt(0).toUpperCase() + activeSubscription?.status.slice(1)})
+              {activeSubscription?.status
+                ? activeSubscription.status.charAt(0).toUpperCase() + activeSubscription.status.slice(1)
+                : "Unknown"})
             </Text>
             {!isSerpEnabled && (
               <Text color="orange.500" mb={4}>
