@@ -14,7 +14,7 @@ interface SubscriptionStatus {
 async function fetchSubscriptionStatus(): Promise<SubscriptionStatus> {
   const token = localStorage.getItem("access_token");
   const response = await fetch(
-    "https://api.thedataproxy.com/api/v1/subscription-status/serp",
+    "https://api.thedataproxy.com/v2/subscription-status/serp",
     {
       method: "GET",
       headers: {
