@@ -39,16 +39,16 @@ async function fetchSubscriptionStatus(): Promise<{
   }
 }
 const GoogleSerpPage = () => {
-  const { data: subscriptionStatus, isLoading } = useQuery({
+  const { data: subscriptionStatus, isLoading, error } = useQuery({
     queryKey: ["subscriptionStatus", "serp"],
     queryFn: fetchSubscriptionStatus,
     staleTime: 5 * 60 * 1000,
   });
 
-  const token = localStorage.getItem("access_token"); // Get token from localStorage
+  const token = localStorage.getItem("access_token");
 
   const TabsConfig = [
-    { title: "API Keys", component: () => <ApiKeyGSerp token={token} /> }, // Pass token here
+    { title: "API Keys", component: () => <ApiKeyGSerp token={token} /> },
     { title: "Playground", component: () => <PlaygroundGSerp /> },
   ];
 
@@ -56,11 +56,15 @@ const GoogleSerpPage = () => {
     <ProtectedComponent>
       <Container maxW="full">
         <Flex align="center" justify="space-between" py={6}>
-          <Text fontSize="xl">HTTPs Proxy API</Text> {/* Updated title for clarity */}
+          <Text fontSize="xl">HTTPs Proxy API</Text>
           <Text fontSize="sm">Manage your proxy settings and API keys.</Text>
         </Flex>
         {isLoading ? (
           <Text>Loading subscription status...</Text>
+        ) : error ? (
+          <Text color="red.500">
+            Error: {error.message || "Failed to load subscription status. Please try again later."}
+          </Text>
         ) : (
           <Tabs>
             <TabList>
