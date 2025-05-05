@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, Request, BackgroundTasks
 from fastapi.responses import RedirectResponse, JSONResponse
 from app.models import User, SubscriptionStatus
-from app.api.deps import get_db
+from app.api.deps import get_db,get_current_user
 from sqlalchemy.orm import Session
 from typing import Annotated, Dict, Optional, Any
 from pydantic import BaseModel, EmailStr, Field
