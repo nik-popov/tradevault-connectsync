@@ -68,8 +68,7 @@ async def create_temp_user(db: Annotated[Session, Depends(get_db)]):
         user = User(
             id=user_id,
             email=email,
-            first_name="Temp",
-            last_name="User",
+            full_name="Temp User",
             hashed_password=get_password_hash("temppassword")
         )
         db.add(user)
@@ -129,8 +128,7 @@ async def create_checkout_session(
         current_user = User(
             id=user_id,
             email=email,
-            first_name="Temp",
-            last_name="User",
+            full_name="Temp User",
             hashed_password=get_password_hash("temppassword")
         )
         db.add(current_user)
@@ -164,7 +162,7 @@ async def create_checkout_session(
         if not current_user.stripe_customer_id:
             customer = stripe.Customer.create(
                 email=current_user.email,
-                name=f"{current_user.first_name} {current_user.last_name}",
+                name=current_user.full_name,  # Updated to use full_name
                 metadata={"user_id": str(current_user.id)}
             )
             current_user.stripe_customer_id = customer.id
