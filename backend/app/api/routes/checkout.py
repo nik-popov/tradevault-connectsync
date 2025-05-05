@@ -28,10 +28,10 @@ webhook_secret = os.getenv("STRIPE_WEBHOOK_SECRET")
 stripe.api_version = "2023-10-16"
 
 # Email configuration
-EMAIL_SENDER = os.getenv("EMAIL_SENDER", "no-reply@thedataproxy.com")
-EMAIL_PASSWORD = os.getenv("EMAIL_PASSWORD")
-EMAIL_SERVER = os.getenv("EMAIL_SERVER", "smtp.gmail.com")
-EMAIL_PORT = int(os.getenv("EMAIL_PORT", 587))
+EMAIL_SENDER = os.getenv("EMAILS_FROM_EMAIL", "no-reply@thedataproxy.com")
+EMAIL_PASSWORD = os.getenv("SMTP_PASSWORD")
+EMAIL_SERVER = os.getenv("SMTP_HOST", "smtp.gmail.com")
+EMAIL_PORT = int(os.getenv("SMTP_PORT", 587))
 ACTIVATION_URL = os.getenv("ACTIVATION_URL", "https://api.thedataproxy.com/activate")
 
 # Create router
