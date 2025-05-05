@@ -14,7 +14,7 @@ from app.core.security import generate_api_key, verify_api_key
 from app.api.routes import users
 from sqlalchemy.orm import Session
 from sqlmodel import SQLModel, Field
-from uuid import UUID
+from uuid import UUID,uuid4
 from app.utils import generate_test_email, send_email
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
