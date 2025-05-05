@@ -124,6 +124,7 @@ async def activate_account(request: ActivateRequest, db: Annotated[Session, Depe
     logger.info(f"Account activated successfully for user: {user.email}")
     return {"message": "Account activated successfully"}
 
+
 @router.post("/stripe/webhook")
 async def stripe_webhook(request: Request, background_tasks: BackgroundTasks, db: Annotated[Session, Depends(get_db)]):
     """
@@ -315,7 +316,7 @@ async def update_user_subscription(db: Session, stripe_customer_id: str, subscri
         
         metadata = {}
         if subscription_data.get("plan") and subscription_data["plan"].get("product"):
-            product_id = subscription_data["plan"]["product"]
+            product_id = subscription_data["plan"].get("product")
             try:
                 product = stripe.Product.retrieve(product_id)
                 if hasattr(product, "metadata"):
