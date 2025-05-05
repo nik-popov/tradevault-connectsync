@@ -1,6 +1,7 @@
 import uuid
 from typing import Any
 from datetime import datetime, timedelta
+import logging
 
 from fastapi import APIRouter, Depends, HTTPException, BackgroundTasks
 from sqlmodel import col, delete, func, select
@@ -27,10 +28,14 @@ from app.models import (
 )
 from app.utils import generate_new_account_email, send_email
 
+logging.basicConfig(level=logging.DEBUG)
+logger = logging.getLogger(__name__)
+
 router = APIRouter(prefix="/users", tags=["users"])
 
 # Background task to check subscription expirations
 def check_subscription_expirations(session: SessionDep):
+    logger.debug("Starting check_subscription_expirations")
     users = session.exec(select(User)).all()
     for user in users:
         if user.has_subscription and user.expiry_date:
@@ -39,6 +44,7 @@ def check_subscription_expirations(session: SessionDep):
                 user.expiry_date = None
                 session.add(user)
     session.commit()
+    logger.debug("Completed check_subscription_expirations")
 
 @router.get(
     "/",
@@ -46,9 +52,7 @@ def check_subscription_expirations(session: SessionDep):
     response_model=UsersPublic,
 )
 def read_users(session: SessionDep, skip: int = 0, limit: int = 100) -> Any:
-    """
-    Retrieve users.
-    """
+    logger.debug(f"Reading users, skip={skip}, limit={limit}")
     count_statement = select(func.count()).select_from(User)
     count = session.exec(count_statement).one()
     statement = select(User).offset(skip).limit(limit)
@@ -66,22 +70,18 @@ def create_user(
     user_in: UserCreate,
     background_tasks: BackgroundTasks
 ) -> Any:
-    """
-    Create new user.
-    """
+    logger.debug(f"Creating user: {user_in.email}")
     user = crud.get_user_by_email(session=session, email=user_in.email)
     if user:
+        logger.info(f"Email already exists: {user_in.email}")
         raise HTTPException(
             status_code=400,
             detail="The user with this email already exists in the system.",
         )
 
-    # Set expiry date if trial is enabled
-    if user_in.is_trial:
-        user_in.expiry_date = datetime.utcnow() + timedelta(days=30)
-
-    user = crud.create_user(session=session, user_create=user_in)
+    user = crud.create_user(session=session, user_create=user_in, is_trial=user_in.is_trial)
     if settings.emails_enabled and user_in.email:
+        logger.debug(f"Sending email to: {user_in.email}")
         email_data = generate_new_account_email(
             email_to=user_in.email, 
             username=user_in.email, 
@@ -94,6 +94,7 @@ def create_user(
         )
     
     background_tasks.add_task(check_subscription_expirations, session)
+    logger.debug(f"User created: {user.id}")
     return user
 
 @router.patch("/me", response_model=UserPublic)
@@ -103,12 +104,11 @@ def update_user_me(
     user_in: UserUpdateMe, 
     current_user: CurrentUser
 ) -> Any:
-    """
-    Update own user.
-    """
+    logger.debug(f"Updating user: {current_user.email}")
     if user_in.email:
         existing_user = crud.get_user_by_email(session=session, email=user_in.email)
         if existing_user and existing_user.id != current_user.id:
+            logger.info(f"Email conflict: {user_in.email}")
             raise HTTPException(
                 status_code=409, 
                 detail="User with this email already exists"
@@ -118,6 +118,7 @@ def update_user_me(
     session.add(current_user)
     session.commit()
     session.refresh(current_user)
+    logger.debug(f"User updated: {current_user.email}")
     return current_user
 
 @router.patch("/me/password", response_model=Message)
@@ -127,12 +128,12 @@ def update_password_me(
     body: UpdatePassword, 
     current_user: CurrentUser
 ) -> Any:
-    """
-    Update own password.
-    """
+    logger.debug(f"Updating password for: {current_user.email}")
     if not verify_password(body.current_password, current_user.hashed_password):
+        logger.info("Incorrect password")
         raise HTTPException(status_code=400, detail="Incorrect password")
     if body.current_password == body.new_password:
+        logger.info("New password same as current")
         raise HTTPException(
             status_code=400, 
             detail="New password cannot be the same as the current one"
@@ -141,21 +142,19 @@ def update_password_me(
     current_user.hashed_password = hashed_password
     session.add(current_user)
     session.commit()
+    logger.debug("Password updated")
     return Message(message="Password updated successfully")
 
 @router.get("/me", response_model=UserPublic)
 def read_user_me(current_user: CurrentUser) -> Any:
-    """
-    Get current user.
-    """
+    logger.debug(f"Reading user: {current_user.email}")
     return current_user
 
 @router.delete("/me", response_model=Message)
 def delete_user_me(session: SessionDep, current_user: CurrentUser) -> Any:
-    """
-    Delete own user.
-    """
+    logger.debug(f"Deleting user: {current_user.email}")
     if current_user.is_superuser:
+        logger.info("Superuser deletion attempted")
         raise HTTPException(
             status_code=403, 
             detail="Super users are not allowed to delete themselves"
@@ -164,8 +163,8 @@ def delete_user_me(session: SessionDep, current_user: CurrentUser) -> Any:
     session.exec(statement)
     session.delete(current_user)
     session.commit()
+    logger.debug("User deleted")
     return Message(message="User deleted successfully")
-
 
 @router.post("/signup", response_model=UserPublic)
 def register_user(
@@ -196,21 +195,18 @@ def read_user_by_id(
     session: SessionDep, 
     current_user: CurrentUser
 ) -> Any:
-    """
-    Get a specific user by id.
-    """
+    logger.debug(f"Reading user by ID: {user_id}")
     user = session.get(User, user_id)
     if user == current_user:
         return user
     if not current_user.is_superuser:
+        logger.info(f"Unauthorized access attempt by: {current_user.email}")
         raise HTTPException(
             status_code=403,
             detail="The user doesn't have enough privileges",
         )
     return user
-import logging
-logging.basicConfig(level=logging.DEBUG)
-logger = logging.getLogger(__name__)
+
 @router.patch(
     "/{user_id}",
     dependencies=[Depends(get_current_active_superuser)],
@@ -242,7 +238,6 @@ def update_user(
                 detail="User with this email already exists"
             )
 
-    # Handle subscription expiration logic on db_user
     if user_in.is_trial and not db_user.expiry_date:
         db_user.expiry_date = datetime.utcnow() + timedelta(days=30)
         logger.debug(f"Set trial expiry: {db_user.expiry_date}")
@@ -263,13 +258,13 @@ def delete_user(
     current_user: CurrentUser, 
     user_id: uuid.UUID
 ) -> Message:
-    """
-    Delete a user.
-    """
+    logger.debug(f"Deleting user: {user_id}")
     user = session.get(User, user_id)
     if not user:
+        logger.info(f"User {user_id} not found")
         raise HTTPException(status_code=404, detail="User not found")
     if user == current_user:
+        logger.info("Superuser deletion attempted")
         raise HTTPException(
             status_code=403, 
             detail="Super users are not allowed to delete themselves"
@@ -278,4 +273,5 @@ def delete_user(
     session.exec(statement)
     session.delete(user)
     session.commit()
+    logger.debug("User deleted")
     return Message(message="User deleted successfully")
