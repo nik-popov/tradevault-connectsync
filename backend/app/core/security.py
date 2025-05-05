@@ -41,3 +41,26 @@ def verify_api_key(api_key: str) -> Optional[Dict]:
         return payload
     except JWTError:
         return None
+def create_session_token(user_id: str) -> str:
+    """Create a session token for a user"""
+    expires_delta = timedelta(hours=24)  # Session token valid for 24 hours
+    expire = datetime.now(timezone.utc) + expires_delta
+    to_encode = {
+        "sub": str(user_id),
+        "exp": expire,
+        "type": "session"  # Distinguish session tokens
+    }
+    return jwt.encode(to_encode, settings.SECRET_KEY, algorithm=ALGORITHM)
+
+def verify_session_token(token: str) -> Optional[str]:
+    """Verify a session token and return the user_id if valid"""
+    try:
+        payload = jwt.decode(token, settings.SECRET_KEY, algorithms=[ALGORITHM])
+        if payload.get("type") != "session":
+            return None
+        user_id: str = payload.get("sub")
+        if user_id is None:
+            return None
+        return user_id
+    except JWTError:
+        return None

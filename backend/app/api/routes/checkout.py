@@ -10,7 +10,7 @@ from stripe.error import StripeError
 import os
 import logging
 from app.api.deps import get_current_user
-from app.core.security import create_access_token, verify_session_token
+from app.core.security import create_session_token, verify_session_token
 from starlette.responses import JSONResponse
 
 # Configure logging
@@ -84,7 +84,7 @@ async def create_checkout_session(
         raise HTTPException(status_code=400, detail=f"Failed to create customer: {str(e)}")
     
     # Create session token to verify user when they return
-    session_token = create_access_token(current_user.id)
+    session_token = create_session_token(current_user.id)
     
     # Prepare success and cancel URLs with session token
     success_url = f"{APP_BASE_URL}{checkout_data.success_path}?session_id={{CHECKOUT_SESSION_ID}}&token={session_token}"
@@ -211,7 +211,7 @@ async def create_customer_portal(
         raise HTTPException(status_code=404, detail="No Stripe customer associated with this user")
     
     # Create session token
-    session_token = create_access_token(current_user.id)
+    session_token = create_session_token(current_user.id)
     
     # Create customer portal session
     try:
