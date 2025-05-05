@@ -1,4 +1,3 @@
-# app/core/security.py
 from datetime import datetime, timedelta, timezone
 from typing import Any, Optional, Dict
 import jwt
@@ -16,6 +15,17 @@ def create_access_token(subject: str | Any, expires_delta: timedelta) -> str:
     to_encode = {"exp": expire, "sub": str(subject)}
     encoded_jwt = jwt.encode(to_encode, settings.SECRET_KEY, algorithm=ALGORITHM)
     return encoded_jwt
+
+def verify_access_token(token: str) -> Optional[str]:
+    """Verify a JWT access token and return the user_id if valid"""
+    try:
+        payload = jwt.decode(token, settings.SECRET_KEY, algorithms=[ALGORITHM])
+        user_id: str = payload.get("sub")
+        if user_id is None:
+            return None
+        return user_id
+    except JWTError:
+        return None
 
 def verify_password(plain_password: str, hashed_password: str) -> bool:
     """Verify a plain password against its hash"""
@@ -41,6 +51,7 @@ def verify_api_key(api_key: str) -> Optional[Dict]:
         return payload
     except JWTError:
         return None
+
 def create_session_token(user_id: str) -> str:
     """Create a session token for a user"""
     expires_delta = timedelta(hours=24)  # Session token valid for 24 hours
