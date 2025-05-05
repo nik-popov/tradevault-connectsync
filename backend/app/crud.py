@@ -1,6 +1,8 @@
 import uuid
 from typing import List, Optional, Any
-
+import uuid
+from app.models import User, UserCreate
+from app.core.security import get_password_hash
 from fastapi import HTTPException
 from sqlalchemy.exc import IntegrityError
 from sqlmodel import Session, select
@@ -86,10 +88,7 @@ def delete_user_agent(session: Session, user_agent_id: uuid.UUID) -> bool:
     return True
 
 
-import uuid
-from sqlmodel import Session
-from app.models import User, UserCreate
-from app.core.security import get_password_hash
+
 
 def create_user(session: Session, user_create: UserCreate) -> User:
     """
