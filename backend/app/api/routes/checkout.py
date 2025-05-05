@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, Request, Response, Body
 from fastapi.responses import RedirectResponse
 from app.models import User, SubscriptionStatus
-from app.db.session import get_db
+from app.api.deps import get_db
 from sqlalchemy.orm import Session
 from typing import Annotated, Dict, Optional
 from pydantic import BaseModel

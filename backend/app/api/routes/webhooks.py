@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException, Request, BackgroundTasks
 from app.models import User, SubscriptionStatus
-from app.db.session import get_db
+from app.api.deps import get_db
 from sqlalchemy.orm import Session
 from typing import Annotated, Dict, Any
 import stripe
