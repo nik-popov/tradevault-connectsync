@@ -14,7 +14,6 @@ api_router.include_router(utils.router)
 api_router.include_router(items.router)
 api_router.include_router(subscription.router)  
 api_router.include_router(checkout.router)
-api_router.include_router(webhooks.router)
 
 
 # New user_agent routes
