@@ -166,26 +166,28 @@ def delete_user_me(session: SessionDep, current_user: CurrentUser) -> Any:
     session.commit()
     return Message(message="User deleted successfully")
 
+
 @router.post("/signup", response_model=UserPublic)
 def register_user(
     session: SessionDep, 
     user_in: UserRegister,
     background_tasks: BackgroundTasks
 ) -> Any:
-    """
-    Create new user without the need to be logged in.
-    """
+    logger.debug(f"Signup request received: {user_in.dict()}")
     user = crud.get_user_by_email(session=session, email=user_in.email)
     if user:
+        logger.info(f"Email already exists: {user_in.email}")
         raise HTTPException(
             status_code=400,
             detail="The user with this email already exists in the system",
         )
+    logger.debug("Converting UserRegister to UserCreate")
     user_create = UserCreate.model_validate(user_in)
-    user_create.is_trial = True  # Default to trial for new signups
-    user_create.expiry_date = datetime.utcnow() + timedelta(days=30)
-    user = crud.create_user(session=session, user_create=user_create)
+    logger.debug(f"Creating user: {user_create.dict()}")
+    user = crud.create_user(session=session, user_create=user_create, is_trial=True)
+    logger.debug(f"User created: {user.id}")
     background_tasks.add_task(check_subscription_expirations, session)
+    logger.debug("Background task scheduled")
     return user
 
 @router.get("/{user_id}", response_model=UserPublic)
