@@ -1,8 +1,6 @@
 import uuid
 from typing import List, Optional, Any
-import uuid
-from app.models import User, UserCreate
-from app.core.security import get_password_hash
+
 from fastapi import HTTPException
 from sqlalchemy.exc import IntegrityError
 from sqlmodel import Session, select
@@ -88,33 +86,18 @@ def delete_user_agent(session: Session, user_agent_id: uuid.UUID) -> bool:
     return True
 
 
-
-
-import uuid
-from sqlmodel import Session
-from app.models import User, UserCreate
-from app.core.security import get_password_hash
-
+# ✅ Fix create_user to store hashed passwords
 def create_user(session: Session, user_create: UserCreate) -> User:
     """
     Creates a new user and hashes the password before storing it.
     """
     hashed_password = get_password_hash(user_create.password)
-    db_obj = User(
-        email=user_create.email,
-        is_active=True,
-        is_superuser=user_create.is_superuser,
-        full_name=user_create.full_name,
-        has_subscription=False,
-        is_trial=False,
-        is_deactivated=False,
-        hashed_password=hashed_password,
-        id=uuid.uuid4()  # Matches database UUID
-    )
+    db_obj = User.model_validate(user_create, update={"hashed_password": hashed_password})
     session.add(db_obj)
     session.commit()
     session.refresh(db_obj)
     return db_obj
+
 
 # ✅ Fix update_user to properly handle password hashing
 def update_user(session: Session, db_user: User, user_in: UserUpdate) -> User:
