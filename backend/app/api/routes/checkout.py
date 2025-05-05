@@ -102,8 +102,8 @@ async def delete_temp_user(user_id: str, db: Annotated[Session, Depends(get_db)]
 async def create_checkout_session(
     request: Request,
     checkout_data: CheckoutSessionRequest,
+    db: Annotated[Session, Depends(get_db)],
     current_user: Annotated[Optional[User], Depends(get_current_user)] = None,
-    db: Annotated[Session, Depends(get_db)]
 ):
     """
     Create a Stripe Checkout Session and return the session URL.
