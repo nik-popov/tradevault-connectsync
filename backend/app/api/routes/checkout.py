@@ -33,7 +33,7 @@ PRICE_IDS = {
         "monthly": os.getenv("STRIPE_BASIC_TIER_MONTHLY_PRICE_ID"),
         "yearly": os.getenv("STRIPE_BASIC_TIER_YEARLY_PRICE_ID")
     },
-    "pro": {
+    "analyst": {
         "monthly": os.getenv("STRIPE_PRO_TIER_MONTHLY_PRICE_ID"),
         "yearly": os.getenv("STRIPE_PRO_TIER_YEARLY_PRICE_ID")
     },
