@@ -3,9 +3,8 @@ from fastapi.responses import RedirectResponse, JSONResponse
 from app.models import User, SubscriptionStatus
 from app.api.deps import get_db
 from sqlalchemy.orm import Session
-from typing import Dict, Optional, Any
+from typing import Annotated, Dict, Optional, Any
 from pydantic import BaseModel, EmailStr, Field
-from typing import Annotated
 import stripe
 from stripe.error import StripeError, InvalidRequestError
 import os
@@ -16,6 +15,7 @@ import smtplib
 from email.mime.text import MIMEText
 from datetime import datetime, timedelta
 from app.core.security import create_session_token, verify_session_token, create_access_token, get_password_hash
+from app.api.deps import get_current_user
 from starlette.responses import JSONResponse
 
 # Configure logging
@@ -61,6 +61,11 @@ class CheckoutSessionRequest(BaseModel):
     cancel_path: str = "/pricing"
     email: EmailStr
 
+class TempUserResponse(BaseModel):
+    user_id: str
+    email: str
+    token: str
+
 async def send_activation_email(email: str, activation_token: str):
     """
     Send an activation email with a link to set a permanent password.
@@ -82,6 +87,59 @@ async def send_activation_email(email: str, activation_token: str):
     except Exception as e:
         logger.error(f"Failed to send activation email to {email}: {str(e)}")
         raise
+
+@router.post("/create-temp-user", response_model=TempUserResponse, tags=["testing"])
+async def create_temp_user(db: Annotated[Session, Depends(get_db)]):
+    """
+    Create a temporary user and return a JWT token for testing purposes.
+    """
+    try:
+        user_id = str(uuid.uuid4())
+        email = f"temp_{user_id}@example.com"
+        
+        user = User(
+            id=user_id,
+            email=email,
+            full_name="Temp User",
+            hashed_password=get_password_hash("temppassword")
+        )
+        db.add(user)
+        db.commit()
+        db.refresh(user)
+        
+        token = create_access_token(subject=user_id, expires_delta=timedelta(hours=1))
+        
+        logger.info(f"Created temporary user: {email}")
+        return {
+            "user_id": user_id,
+            "email": email,
+            "token": token
+        }
+    
+    except Exception as e:
+        logger.error(f"Error creating temporary user: {str(e)}")
+        db.rollback()
+        raise HTTPException(status_code=500, detail=f"Failed to create temporary user: {str(e)}")
+
+@router.delete("/delete-temp-user/{user_id}", tags=["testing"])
+async def delete_temp_user(user_id: str, db: Annotated[Session, Depends(get_db)]):
+    """
+    Delete a temporary user by user_id.
+    """
+    try:
+        user = db.query(User).filter(User.id == user_id).first()
+        if not user:
+            raise HTTPException(status_code=404, detail="User not found")
+        
+        db.delete(user)
+        db.commit()
+        logger.info(f"Deleted temporary user: {user_id}")
+        return {"message": f"Deleted temporary user: {user_id}"}
+    
+    except Exception as e:
+        logger.error(f"Error deleting temporary user: {str(e)}")
+        db.rollback()
+        raise HTTPException(status_code=500, detail=f"Failed to delete temporary user: {str(e)}")
 
 @router.post("/create-checkout-session", response_class=JSONResponse)
 async def create_checkout_session(
@@ -130,7 +188,7 @@ async def create_checkout_session(
             mode="subscription",
             success_url=success_url,
             cancel_url=cancel_url,
-            client_reference_id=str(uuid.uuid4()),  # Temporary ID until user is created
+            client_reference_id=str(uuid.uuid4()),
             metadata={
                 "email": checkout_data.email,
                 "tier": checkout_data.tier,
@@ -147,6 +205,95 @@ async def create_checkout_session(
     except StripeError as e:
         logger.error(f"Stripe error creating checkout session: {str(e)}")
         raise HTTPException(status_code=400, detail=f"Failed to create checkout session: {str(e)}")
+
+@router.get("/subscription-success")
+async def subscription_success(
+    request: Request,
+    session_id: str,
+    token: str,
+    db: Annotated[Session, Depends(get_db)]
+):
+    """
+    Handle the user's return after successful Stripe checkout.
+    Updates subscription_id and completes signup.
+    """
+    user_id = verify_session_token(token)
+    if not user_id:
+        logger.warning(f"Invalid session token: {token}")
+        return RedirectResponse(url=f"{APP_BASE_URL}/login?error=invalid_session")
+    
+    user = db.query(User).filter(User.id == user_id).first()
+    if not user:
+        logger.warning(f"User not found for ID: {user_id}")
+        return RedirectResponse(url=f"{APP_BASE_URL}/login?error=user_not_found")
+    
+    try:
+        checkout_session = stripe.checkout.Session.retrieve(
+            session_id,
+            expand=["subscription"]
+        )
+        
+        if checkout_session.client_reference_id != str(user.id):
+            logger.warning(f"Session client_reference_id {checkout_session.client_reference_id} doesn't match user ID {user.id}")
+            return RedirectResponse(url=f"{APP_BASE_URL}/dashboard?error=session_mismatch")
+        
+        if checkout_session.status != "complete":
+            logger.warning(f"Checkout session {session_id} is not complete. Status: {checkout_session.status}")
+            return RedirectResponse(url=f"{APP_BASE_URL}/dashboard?error=session_incomplete")
+        
+        subscription_id = checkout_session.subscription
+        if subscription_id:
+            user.subscription_id = subscription_id
+            db.commit()
+            logger.info(f"Updated user {user.email} with subscription {subscription_id}")
+        
+        return RedirectResponse(url=f"{APP_BASE_URL}/dashboard?subscription=active")
+        
+    except StripeError as e:
+        logger.error(f"Stripe error verifying checkout session: {str(e)}")
+        return RedirectResponse(url=f"{APP_BASE_URL}/dashboard?error=stripe_error")
+
+@router.get("/subscription-cancel")
+async def subscription_cancel(
+    request: Request,
+    token: str
+):
+    """
+    Handle user's return after canceling Stripe checkout.
+    """
+    user_id = verify_session_token(token)
+    if not user_id:
+        logger.warning(f"Invalid session token: {token}")
+        return RedirectResponse(url=f"{APP_BASE_URL}/login?error=invalid_session")
+    
+    return RedirectResponse(url=f"{APP_BASE_URL}/pricing?status=canceled")
+
+@router.get("/customer-portal")
+async def create_customer_portal(
+    request: Request,
+    current_user: Annotated[User, Depends(get_current_user)]
+):
+    """
+    Create a Stripe Customer Portal session.
+    """
+    if not current_user.stripe_customer_id:
+        logger.warning(f"No Stripe customer ID for user: {current_user.email}")
+        raise HTTPException(status_code=404, detail="No Stripe customer associated with this user")
+    
+    session_token = create_session_token(current_user.id)
+    
+    try:
+        portal_session = stripe.billing_portal.Session.create(
+            customer=current_user.stripe_customer_id,
+            return_url=f"{APP_BASE_URL}/dashboard?token={session_token}"
+        )
+        
+        logger.info(f"Created customer portal session for user: {current_user.email}")
+        return {"portal_url": portal_session.url}
+        
+    except StripeError as e:
+        logger.error(f"Stripe error creating customer portal: {str(e)}")
+        raise HTTPException(status_code=400, detail=f"Failed to create customer portal: {str(e)}")
 
 @router.post("/stripe/webhook")
 async def stripe_webhook(request: Request, background_tasks: BackgroundTasks, db: Annotated[Session, Depends(get_db)]):
@@ -210,7 +357,7 @@ async def stripe_webhook(request: Request, background_tasks: BackgroundTasks, db
                             email=email,
                             full_name="New User",
                             hashed_password=get_password_hash(temporary_password),
-                            is_active=False,  # Require activation
+                            is_active=False,
                             stripe_customer_id=customer_id,
                             subscription_id=subscription_id
                         )
