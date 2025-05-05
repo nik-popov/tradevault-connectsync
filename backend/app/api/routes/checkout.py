@@ -14,7 +14,7 @@ import secrets
 import smtplib
 from email.mime.text import MIMEText
 from datetime import datetime, timedelta
-from app.core.security import create_access_token, get_password_hash, verify_access_token
+from app.core.security import create_access_token, get_password_hash, verify_access_token, create_session_token
 from app.api.deps import get_current_user
 from starlette.responses import JSONResponse
 
@@ -28,11 +28,13 @@ webhook_secret = os.getenv("STRIPE_WEBHOOK_SECRET")
 stripe.api_version = "2023-10-16"
 
 # Email configuration
+# Email configuration
 EMAIL_SENDER = os.getenv("EMAILS_FROM_EMAIL", "no-reply@thedataproxy.com")
 EMAIL_PASSWORD = os.getenv("SMTP_PASSWORD")
 EMAIL_SERVER = os.getenv("SMTP_HOST", "smtp.gmail.com")
 EMAIL_PORT = int(os.getenv("SMTP_PORT", 587))
 ACTIVATION_URL = os.getenv("ACTIVATION_URL", "https://api.thedataproxy.com/activate")
+APP_BASE_URL = os.getenv("APP_BASE_URL", "https://api.thedataproxy.com")
 
 # Create router
 router = APIRouter(tags=["webhook", "auth"])
@@ -45,6 +47,10 @@ async def send_activation_email(email: str, activation_token: str):
     """
     Send an activation email with a link to set a permanent password.
     """
+    if not EMAIL_SENDER or not EMAIL_PASSWORD:
+        logger.error(f"Email configuration missing for sending to {email}")
+        return
+    
     try:
         msg = MIMEText(
             f"Please activate your account by clicking this link: "
@@ -61,7 +67,8 @@ async def send_activation_email(email: str, activation_token: str):
         logger.info(f"Activation email sent to: {email}")
     except Exception as e:
         logger.error(f"Failed to send activation email to {email}: {str(e)}")
-        raise
+        # Do not raise exception to prevent application crash
+        pass
 
 async def create_user_if_not_exists(
     db: Session,
@@ -124,6 +131,32 @@ async def activate_account(request: ActivateRequest, db: Annotated[Session, Depe
     logger.info(f"Account activated successfully for user: {user.email}")
     return {"message": "Account activated successfully"}
 
+@router.get("/customer-portal")
+async def create_customer_portal(
+    request: Request,
+    current_user: Annotated[User, Depends(get_current_user)]
+):
+    """
+    Create a Stripe Customer Portal session.
+    """
+    if not current_user.stripe_customer_id:
+        logger.warning(f"No Stripe customer ID for user: {current_user.email}")
+        raise HTTPException(status_code=404, detail="No Stripe customer associated with this user")
+    
+    session_token = create_session_token(current_user.id)
+    
+    try:
+        portal_session = stripe.billing_portal.Session.create(
+            customer=current_user.stripe_customer_id,
+            return_url=f"{APP_BASE_URL}/dashboard?token={session_token}"
+        )
+        
+        logger.info(f"Created customer portal session for user: {current_user.email}")
+        return {"portal_url": portal_session.url}
+        
+    except StripeError as e:
+        logger.error(f"Stripe error creating customer portal: {str(e)}")
+        raise HTTPException(status_code=400, detail=f"Failed to create customer portal: {str(e)}")
 
 @router.post("/stripe/webhook")
 async def stripe_webhook(request: Request, background_tasks: BackgroundTasks, db: Annotated[Session, Depends(get_db)]):
