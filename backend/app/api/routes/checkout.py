@@ -11,7 +11,6 @@ import os
 import logging
 import uuid
 from datetime import datetime, timedelta
-from app.api.deps import get_current_user
 from app.core.security import create_session_token, verify_session_token, create_access_token, get_password_hash
 from starlette.responses import JSONResponse
 
@@ -33,7 +32,7 @@ PRICE_IDS = {
         "monthly": os.getenv("STRIPE_BASIC_TIER_MONTHLY_PRICE_ID"),
         "yearly": os.getenv("STRIPE_BASIC_TIER_YEARLY_PRICE_ID")
     },
-    "analyst": {
+    "pro": {
         "monthly": os.getenv("STRIPE_PRO_TIER_MONTHLY_PRICE_ID"),
         "yearly": os.getenv("STRIPE_PRO_TIER_YEARLY_PRICE_ID")
     },
@@ -50,9 +49,9 @@ class CheckoutSessionRequest(BaseModel):
     billing_interval: str = "monthly"
     success_path: str = "/dashboard"
     cancel_path: str = "/pricing"
-    email: Optional[EmailStr] = None  # For new user creation
-    password: Optional[str] = None  # For new user creation
-    full_name: Optional[str] = None  # For new user creation
+    email: EmailStr  # Required for user creation
+    password: str = Field(min_length=8, max_length=40)  # Required for user creation
+    full_name: Optional[str] = None  # Optional for user creation
 
 class TempUserResponse(BaseModel):
     user_id: str
@@ -116,54 +115,32 @@ async def delete_temp_user(user_id: str, db: Annotated[Session, Depends(get_db)]
 async def create_checkout_session(
     request: Request,
     checkout_data: CheckoutSessionRequest,
-    db: Annotated[Session, Depends(get_db)],
-    current_user: Annotated[Optional[User], Depends(get_current_user)] = None,
+    db: Annotated[Session, Depends(get_db)]
 ):
     """
     Create a Stripe Checkout Session and return the session URL.
     Supports monthly and yearly billing intervals and new user creation.
     """
     # Check if user exists or needs to be created
-    if not current_user:
-        if checkout_data.email and checkout_data.password:
-            # Check if user already exists
-            existing_user = db.query(User).filter(User.email == checkout_data.email).first()
-            if existing_user:
-                logger.error(f"User with email {checkout_data.email} already exists")
-                raise HTTPException(status_code=400, detail="Email already registered")
-            
-            # Create new user
-            user_id = str(uuid.uuid4())
-            current_user = User(
-                id=user_id,
-                email=checkout_data.email,
-                full_name=checkout_data.full_name or "New User",
-                hashed_password=get_password_hash(checkout_data.password),
-                is_active=True
-            )
-            db.add(current_user)
-            db.commit()
-            db.refresh(current_user)
-            logger.info(f"Created new user: {current_user.email}")
-        elif ENVIRONMENT == "development":
-            logger.warning("No authenticated user; creating temporary user for testing")
-            user_id = str(uuid.uuid4())
-            email = f"temp_{user_id}@example.com"
-            
-            current_user = User(
-                id=user_id,
-                email=email,
-                full_name="Temp User",
-                hashed_password=get_password_hash("temppassword")
-            )
-            db.add(current_user)
-            db.commit()
-            db.refresh(current_user)
-        else:
-            logger.error("No authenticated user provided and no user details for creation")
-            raise HTTPException(status_code=401, detail="Authentication required or provide email and password")
+    user = db.query(User).filter(User.email == checkout_data.email).first()
+    if user:
+        logger.info(f"Using existing user: {user.email}")
+    else:
+        # Create new user
+        user_id = str(uuid.uuid4())
+        user = User(
+            id=user_id,
+            email=checkout_data.email,
+            full_name=checkout_data.full_name or "New User",
+            hashed_password=get_password_hash(checkout_data.password),
+            is_active=True
+        )
+        db.add(user)
+        db.commit()
+        db.refresh(user)
+        logger.info(f"Created new user: {user.email}")
     
-    logger.info(f"Creating checkout session for user: {current_user.email}, tier: {checkout_data.tier}, billing_interval: {checkout_data.billing_interval}")
+    logger.info(f"Creating checkout session for user: {user.email}, tier: {checkout_data.tier}, billing_interval: {checkout_data.billing_interval}")
     
     price_id = PRICE_IDS.get(checkout_data.tier, {}).get(checkout_data.billing_interval)
     
@@ -173,37 +150,37 @@ async def create_checkout_session(
     
     # Validate or create Stripe customer
     try:
-        if current_user.stripe_customer_id:
+        if user.stripe_customer_id:
             try:
-                stripe.Customer.retrieve(current_user.stripe_customer_id)
-                logger.info(f"Using existing Stripe customer: {current_user.stripe_customer_id}")
+                stripe.Customer.retrieve(user.stripe_customer_id)
+                logger.info(f"Using existing Stripe customer: {user.stripe_customer_id}")
             except InvalidRequestError as e:
                 if "No such customer" in str(e):
-                    logger.warning(f"Invalid Stripe customer ID: {current_user.stripe_customer_id}. Creating new customer.")
-                    current_user.stripe_customer_id = None
+                    logger.warning(f"Invalid Stripe customer ID: {user.stripe_customer_id}. Creating new customer.")
+                    user.stripe_customer_id = None
                 else:
                     raise
-        if not current_user.stripe_customer_id:
+        if not user.stripe_customer_id:
             customer = stripe.Customer.create(
-                email=current_user.email,
-                name=current_user.full_name,
-                metadata={"user_id": str(current_user.id)}
+                email=user.email,
+                name=user.full_name,
+                metadata={"user_id": str(user.id)}
             )
-            current_user.stripe_customer_id = customer.id
+            user.stripe_customer_id = customer.id
             db.commit()
-            logger.info(f"Created new Stripe customer: {customer.id} for user: {current_user.email}")
+            logger.info(f"Created new Stripe customer: {customer.id} for user: {user.email}")
     
     except StripeError as e:
         logger.error(f"Stripe error creating customer: {str(e)}")
         raise HTTPException(status_code=400, detail=f"Failed to create customer: {str(e)}")
     
-    session_token = create_session_token(current_user.id)
+    session_token = create_session_token(user.id)
     success_url = f"{APP_BASE_URL}{checkout_data.success_path}?session_id={{CHECKOUT_SESSION_ID}}&token={session_token}"
     cancel_url = f"{APP_BASE_URL}{checkout_data.cancel_path}?token={session_token}"
     
     try:
         checkout_session = stripe.checkout.Session.create(
-            customer=current_user.stripe_customer_id,
+            customer=user.stripe_customer_id,
             payment_method_types=["card"],
             line_items=[
                 {
@@ -214,15 +191,15 @@ async def create_checkout_session(
             mode="subscription",
             success_url=success_url,
             cancel_url=cancel_url,
-            client_reference_id=str(current_user.id),
+            client_reference_id=str(user.id),
             metadata={
-                "user_id": str(current_user.id),
+                "user_id": str(user.id),
                 "tier": checkout_data.tier,
                 "billing_interval": checkout_data.billing_interval
             }
         )
         
-        logger.info(f"Created checkout session: {checkout_session.id} for user: {current_user.email}")
+        logger.info(f"Created checkout session: {checkout_session.id} for user: {user.email}")
         return {
             "checkout_url": checkout_session.url,
             "session_id": checkout_session.id
