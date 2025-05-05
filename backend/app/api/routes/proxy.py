@@ -15,9 +15,10 @@ from app.api.routes import users
 from sqlalchemy.orm import Session
 from sqlmodel import SQLModel, Field
 from uuid import UUID
-logging.basicConfig(level=logging.INFO)
+
+logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
-from uuid import uuid4
+
 # Define regions and their corresponding endpoints
 REGION_ENDPOINTS = {
     "us-east": [
@@ -145,47 +146,60 @@ async def verify_api_token(
     session: SessionDep,
     x_api_key: Annotated[str, Header()] = None
 ) -> User:
+    logger.debug(f"Verifying API key: {x_api_key[:8]}...")
     if not x_api_key:
         raise HTTPException(status_code=401, detail="API key required")
     
     token_data = verify_api_key(x_api_key)
     if not token_data or "user_id" not in token_data:
+        logger.info("Invalid API key")
         raise HTTPException(status_code=401, detail="Invalid API key")
     
     user = users.read_user_by_id(session=session, user_id=token_data["user_id"], current_user=CurrentUser)
     if not user or not user.is_active:
+        logger.info("Invalid or inactive user")
         raise HTTPException(status_code=401, detail="Invalid or inactive user")
     
-    if not user.has_subscription:
-        raise HTTPException(status_code=403, detail="Active subscription required")
+    if not user.has_subscription and not (user.is_trial and user.expiry_date and user.expiry_date > datetime.utcnow()):
+        logger.info("User lacks active subscription or trial")
+        raise HTTPException(status_code=403, detail="Active subscription or trial required")
     
+    logger.debug("API key verified")
     return user
 
 # API Endpoints
 @router.post("/generate-api-key", response_model=dict)
 async def generate_user_api_key(session: SessionDep, current_user: CurrentUser):
-    if not current_user.has_subscription:
-        raise HTTPException(status_code=403, detail="Active subscription required")
+    logger.debug(f"Generating API key for user: {current_user.email}")
+    if not current_user.has_subscription and not (current_user.is_trial and current_user.expiry_date and current_user.expiry_date > datetime.utcnow()):
+        logger.info(f"User {current_user.email} lacks active subscription or trial")
+        raise HTTPException(status_code=403, detail="Active subscription or trial required")
     
-    api_key = generate_api_key(user_id=str(current_user.id))
-    token = APIToken(
-        user_id=str(current_user.id),
-        token=api_key,
-        created_at=datetime.utcnow(),
-        expires_at=datetime.utcnow() + timedelta(days=365),
-        is_active=True,
-        request_count=0
-    )
-    session.add(token)
-    session.commit()
-    session.refresh(token)
-    return {"api_key": api_key}
+    try:
+        api_key = generate_api_key(user_id=str(current_user.id))
+        token = APIToken(
+            user_id=str(current_user.id),
+            token=api_key,
+            created_at=datetime.utcnow(),
+            expires_at=datetime.utcnow() + timedelta(days=365),
+            is_active=True,
+            request_count=0
+        )
+        session.add(token)
+        session.commit()
+        session.refresh(token)
+        logger.debug(f"API key generated for user: {current_user.email}")
+        return {"api_key": api_key}
+    except Exception as e:
+        logger.error(f"Failed to generate API key for user {current_user.email}: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Failed to generate API key: {str(e)}")
 
 @router.get("/regions", response_model=RegionsResponse)
 async def list_regions(
     user: Annotated[User, Depends(verify_api_token)],
     session: SessionDep
 ):
+    logger.debug(f"Listing regions for user: {user.email}")
     return RegionsResponse(regions=list(REGION_ENDPOINTS.keys()))
 
 @router.get("/status", response_model=ProxyStatusResponse)
@@ -194,7 +208,9 @@ async def get_proxy_status(
     user: Annotated[User, Depends(verify_api_token)],
     session: SessionDep
 ):
+    logger.debug(f"Checking proxy status for region: {region}, user: {user.email}")
     if region not in REGION_ENDPOINTS:
+        logger.info(f"Invalid region: {region}")
         raise HTTPException(status_code=400, detail=f"Invalid region. Available regions: {list(REGION_ENDPOINTS.keys())}")
     
     endpoints = REGION_ENDPOINTS[region]
@@ -213,6 +229,7 @@ async def get_proxy_status(
         total_endpoints=total_count,
         last_checked=results[0]["last_checked"] if results else datetime.utcnow()
     )
+    logger.debug(f"Proxy status retrieved for region: {region}")
     return ProxyStatusResponse(statuses=[status])
 
 @router.post("/fetch", response_model=ProxyResponse)
@@ -224,16 +241,18 @@ async def proxy_fetch(
     background_tasks: BackgroundTasks,
     x_api_key: Annotated[str, Header()] = None
 ):
+    logger.debug(f"Proxy fetch request for region: {region}, user: {user.email}")
     if region not in REGION_ENDPOINTS:
+        logger.info(f"Invalid region: {region}")
         raise HTTPException(status_code=400, detail=f"Invalid region. Available regions: {list(REGION_ENDPOINTS.keys())}")
     
-    # Verify and increment request counter
     token = session.query(APIToken).filter(
         APIToken.token == x_api_key,
         APIToken.user_id == str(user.id),
         APIToken.is_active == True
     ).first()
     if not token:
+        logger.info("Invalid API key for fetch")
         raise HTTPException(status_code=401, detail="Invalid API key")
     
     endpoints = REGION_ENDPOINTS[region]
@@ -242,6 +261,7 @@ async def proxy_fetch(
     
     healthy_endpoints = [endpoints[i] for i, result in enumerate(results) if result["is_healthy"]]
     if not healthy_endpoints:
+        logger.error(f"No healthy proxy endpoints in {region}")
         raise HTTPException(status_code=503, detail=f"No healthy proxy endpoints available in {region}")
     
     selected_endpoint = random.choice(healthy_endpoints)
@@ -255,10 +275,10 @@ async def proxy_fetch(
             response.raise_for_status()
             data = response.json()
             
-            # Increment request counter after successful fetch
             token.request_count += 1
             session.commit()
             
+            logger.debug(f"Proxy fetch successful in {region}")
             return ProxyResponse(
                 result=data["result"],
                 public_ip=data["public_ip"],
@@ -274,8 +294,10 @@ END_PREVIEW_LENGTH = 8
 
 @router.get("/api-keys", response_model=List[APIKeyResponse])
 async def list_user_api_keys(session: SessionDep, current_user: CurrentUser):
-    if not current_user.has_subscription:
-        raise HTTPException(status_code=403, detail="Active subscription required")
+    logger.debug(f"Listing API keys for user: {current_user.email}")
+    if not current_user.has_subscription and not (current_user.is_trial and current_user.expiry_date and current_user.expiry_date > datetime.utcnow()):
+        logger.info(f"User {current_user.email} lacks active subscription or trial")
+        raise HTTPException(status_code=403, detail="Active subscription or trial required")
     
     api_tokens = session.query(APIToken).filter(
         APIToken.user_id == str(current_user.id),
@@ -292,8 +314,9 @@ async def list_user_api_keys(session: SessionDep, current_user: CurrentUser):
         }
         for token in api_tokens
     ]
+    logger.debug(f"Retrieved {len(key_list)} API keys")
     return key_list
-# Add this new endpoint after your existing /api-keys GET endpoint
+
 @router.delete("/api-keys/{key_preview}", status_code=204)
 async def delete_api_key(
     key_preview: str,
@@ -301,12 +324,12 @@ async def delete_api_key(
     current_user: CurrentUser,
     background_tasks: BackgroundTasks
 ):
-    if not current_user.has_subscription:
-        raise HTTPException(status_code=403, detail="Active subscription required")
+    logger.debug(f"Deleting API key with preview: {key_preview}, user: {current_user.email}")
+    if not current_user.has_subscription and not (current_user.is_trial and current_user.expiry_date and current_user.expiry_date > datetime.utcnow()):
+        logger.info(f"User {current_user.email} lacks active subscription or trial")
+        raise HTTPException(status_code=403, detail="Active subscription or trial required")
 
-    # Take only the last 8 characters of the provided key_preview
-    key_preview_short = key_preview[-END_PREVIEW_LENGTH:]  # END_PREVIEW_LENGTH = 8
-
+    key_preview_short = key_preview[-END_PREVIEW_LENGTH:]
     token = session.query(APIToken).filter(
         APIToken.user_id == str(current_user.id),
         APIToken.token.like(f"%{key_preview_short}"),
@@ -317,7 +340,6 @@ async def delete_api_key(
         logger.info(f"API key deletion attempted but not found. User: {current_user.id}, Preview: {key_preview_short}")
         raise HTTPException(status_code=404, detail="API key not found")
 
-    # Prepare user data with only existing fields
     user_data = {
         "id": str(current_user.id),
         "email": current_user.email,
@@ -335,7 +357,6 @@ async def delete_api_key(
         "request_count": token.request_count
     }
 
-    # Delete the token
     session.delete(token)
     session.commit()
 
@@ -382,4 +403,5 @@ async def delete_api_key(
             logger.error(f"Error sending deletion notification email: {str(e)}")
 
     background_tasks.add_task(send_deletion_notification)
+    logger.debug("API key deleted")
     return None
