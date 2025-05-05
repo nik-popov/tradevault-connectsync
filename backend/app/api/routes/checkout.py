@@ -5,6 +5,7 @@ from app.api.deps import get_db
 from sqlalchemy.orm import Session
 from typing import Dict, Optional, Any
 from pydantic import BaseModel, EmailStr, Field
+from typing import Annotated
 import stripe
 from stripe.error import StripeError, InvalidRequestError
 import os
