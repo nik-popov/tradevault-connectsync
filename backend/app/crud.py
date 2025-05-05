@@ -90,6 +90,11 @@ def delete_user_agent(session: Session, user_agent_id: uuid.UUID) -> bool:
 
 
 
+import uuid
+from sqlmodel import Session
+from app.models import User, UserCreate
+from app.core.security import get_password_hash
+
 def create_user(session: Session, user_create: UserCreate) -> User:
     """
     Creates a new user and hashes the password before storing it.
@@ -110,7 +115,6 @@ def create_user(session: Session, user_create: UserCreate) -> User:
     session.commit()
     session.refresh(db_obj)
     return db_obj
-
 
 # ✅ Fix update_user to properly handle password hashing
 def update_user(session: Session, db_user: User, user_in: UserUpdate) -> User:
