@@ -1,11 +1,11 @@
 from fastapi import APIRouter, Depends, HTTPException, Request, BackgroundTasks
 from fastapi.responses import RedirectResponse, JSONResponse
 from app.models import User, SubscriptionStatus
-from pydantic import BaseModel, EmailStr
 from app.api.deps import get_db
 from sqlalchemy.orm import Session
 from typing import Annotated, Dict, Optional, Any
-from pydantic import BaseModel, EmailStr
+from pydantic import BaseModel, EmailStr, Field
+
 import stripe
 from stripe.error import StripeError, InvalidRequestError
 import os
@@ -51,7 +51,7 @@ class CheckoutSessionRequest(BaseModel):
     success_path: str = "/dashboard"
     cancel_path: str = "/pricing"
     email: EmailStr  # Required for user creation
-    password: str = Field(min_length=8, max_length=40)  # Required for user creation
+    password: str = Field(min_length=8, max_length=40)
     full_name: Optional[str] = None  # Optional for user creation
 
 class TempUserResponse(BaseModel):
