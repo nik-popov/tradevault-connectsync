@@ -6,7 +6,7 @@ from sqlalchemy.orm import Session
 from typing import Annotated, Dict, Optional, Any
 from pydantic import BaseModel
 import stripe
-from stripe.error import StripeError
+from stripe.error import StripeError, InvalidRequestError
 import os
 import logging
 import uuid
@@ -47,7 +47,7 @@ ENVIRONMENT = os.getenv("ENVIRONMENT", "development")
 
 class CheckoutSessionRequest(BaseModel):
     tier: str = "basic"
-    billing_interval: str = "monthly"  # Added to support monthly/yearly
+    billing_interval: str = "monthly"
     success_path: str = "/dashboard"
     cancel_path: str = "/pricing"
 
@@ -142,14 +142,25 @@ async def create_checkout_session(
     
     logger.info(f"Creating checkout session for user: {current_user.email}, tier: {checkout_data.tier}, billing_interval: {checkout_data.billing_interval}")
     
-    # Select Price ID based on tier and billing interval
     price_id = PRICE_IDS.get(checkout_data.tier, {}).get(checkout_data.billing_interval)
     
     if not price_id:
         logger.error(f"Price ID not configured for tier: {checkout_data.tier}, billing_interval: {checkout_data.billing_interval}")
         raise HTTPException(status_code=500, detail=f"Price ID not configured for tier: {checkout_data.tier}, billing_interval: {checkout_data.billing_interval}")
     
+    # Validate or create Stripe customer
     try:
+        if current_user.stripe_customer_id:
+            # Verify the customer exists in Stripe
+            try:
+                stripe.Customer.retrieve(current_user.stripe_customer_id)
+                logger.info(f"Using existing Stripe customer: {current_user.stripe_customer_id}")
+            except InvalidRequestError as e:
+                if "No such customer" in str(e):
+                    logger.warning(f"Invalid Stripe customer ID: {current_user.stripe_customer_id}. Creating new customer.")
+                    current_user.stripe_customer_id = None
+                else:
+                    raise
         if not current_user.stripe_customer_id:
             customer = stripe.Customer.create(
                 email=current_user.email,
@@ -159,8 +170,6 @@ async def create_checkout_session(
             current_user.stripe_customer_id = customer.id
             db.commit()
             logger.info(f"Created new Stripe customer: {customer.id} for user: {current_user.email}")
-        else:
-            logger.info(f"Using existing Stripe customer: {current_user.stripe_customer_id}")
     
     except StripeError as e:
         logger.error(f"Stripe error creating customer: {str(e)}")
