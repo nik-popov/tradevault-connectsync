@@ -27,15 +27,27 @@ stripe.api_version = "2023-10-16"
 # Create router
 router = APIRouter(tags=["checkout"])
 
-# Define price ID constants
-BASIC_TIER_PRICE_ID = os.getenv("STRIPE_BASIC_TIER_PRICE_ID")
-PRO_TIER_PRICE_ID = os.getenv("STRIPE_PRO_TIER_PRICE_ID")
-ENTERPRISE_TIER_PRICE_ID = os.getenv("STRIPE_ENTERPRISE_TIER_PRICE_ID")
+# Define price ID constants for monthly and yearly plans
+PRICE_IDS = {
+    "basic": {
+        "monthly": os.getenv("STRIPE_BASIC_TIER_MONTHLY_PRICE_ID"),
+        "yearly": os.getenv("STRIPE_BASIC_TIER_YEARLY_PRICE_ID")
+    },
+    "pro": {
+        "monthly": os.getenv("STRIPE_PRO_TIER_MONTHLY_PRICE_ID"),
+        "yearly": os.getenv("STRIPE_PRO_TIER_YEARLY_PRICE_ID")
+    },
+    "enterprise": {
+        "monthly": os.getenv("STRIPE_ENTERPRISE_TIER_MONTHLY_PRICE_ID"),
+        "yearly": os.getenv("STRIPE_ENTERPRISE_TIER_YEARLY_PRICE_ID")
+    }
+}
 APP_BASE_URL = os.getenv("APP_BASE_URL", "http://localhost:3000")
 ENVIRONMENT = os.getenv("ENVIRONMENT", "development")
 
 class CheckoutSessionRequest(BaseModel):
     tier: str = "basic"
+    billing_interval: str = "monthly"  # Added to support monthly/yearly
     success_path: str = "/dashboard"
     cancel_path: str = "/pricing"
 
@@ -107,7 +119,7 @@ async def create_checkout_session(
 ):
     """
     Create a Stripe Checkout Session and return the session URL.
-    Includes fallback for testing in development mode.
+    Supports monthly and yearly billing intervals.
     """
     if not current_user and ENVIRONMENT == "development":
         logger.warning("No authenticated user; creating temporary user for testing")
@@ -128,18 +140,14 @@ async def create_checkout_session(
         logger.error("No authenticated user provided")
         raise HTTPException(status_code=401, detail="Authentication required")
     
-    logger.info(f"Creating checkout session for user: {current_user.email}, tier: {checkout_data.tier}")
+    logger.info(f"Creating checkout session for user: {current_user.email}, tier: {checkout_data.tier}, billing_interval: {checkout_data.billing_interval}")
     
-    if checkout_data.tier == "pro":
-        price_id = PRO_TIER_PRICE_ID
-    elif checkout_data.tier == "enterprise":
-        price_id = ENTERPRISE_TIER_PRICE_ID
-    else:
-        price_id = BASIC_TIER_PRICE_ID
+    # Select Price ID based on tier and billing interval
+    price_id = PRICE_IDS.get(checkout_data.tier, {}).get(checkout_data.billing_interval)
     
     if not price_id:
-        logger.error(f"Price ID not configured for tier: {checkout_data.tier}")
-        raise HTTPException(status_code=500, detail=f"Price ID not configured for tier: {checkout_data.tier}")
+        logger.error(f"Price ID not configured for tier: {checkout_data.tier}, billing_interval: {checkout_data.billing_interval}")
+        raise HTTPException(status_code=500, detail=f"Price ID not configured for tier: {checkout_data.tier}, billing_interval: {checkout_data.billing_interval}")
     
     try:
         if not current_user.stripe_customer_id:
@@ -178,7 +186,8 @@ async def create_checkout_session(
             client_reference_id=str(current_user.id),
             metadata={
                 "user_id": str(current_user.id),
-                "tier": checkout_data.tier
+                "tier": checkout_data.tier,
+                "billing_interval": checkout_data.billing_interval
             }
         )
         
