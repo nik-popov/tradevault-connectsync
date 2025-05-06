@@ -55,6 +55,13 @@ import {
         status: response.status,
         statusText: response.statusText,
         body: errorData,
+        request: {
+          method: "POST",
+          url: apiUrl,
+          headers: {
+            "Content-Type": "application/json",
+          },
+        },
         message: errorData.detail || "Failed to activate account",
       }
       throw error
