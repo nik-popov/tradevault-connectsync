@@ -17,11 +17,6 @@ import {
   import useCustomToast from "../hooks/useCustomToast"
   import { confirmPasswordRules, handleError, passwordRules } from "../utils"
   
-  interface NewPasswordForm {
-    new_password: string
-    confirm_password: string
-  }
-  
   // Define the route for /activate
   export const Route = createFileRoute('/activate')({
     component: ActivateAccount,
@@ -34,13 +29,24 @@ import {
     },
   })
   
+  interface NewPasswordForm {
+    new_password: string
+    confirm_password: string
+  }
+  
   async function activateAccount(data: { new_password: string; token: string }) {
     const apiUrl = `${import.meta.env.VITE_API_URL}/v2/activate`
-    const response = await fetch(apiUrl, {
+    const requestOptions = {
       method: "POST",
+      url: apiUrl,
       headers: {
         "Content-Type": "application/json",
       },
+    }
+  
+    const response = await fetch(apiUrl, {
+      method: "POST",
+      headers: requestOptions.headers,
       body: JSON.stringify({
         token: data.token,
         new_password: data.new_password,
@@ -54,7 +60,7 @@ import {
         status: response.status,
         statusText: response.statusText,
         body: errorData,
-        request: null, // Request object not available in fetch; can be null if not used
+        request: requestOptions,
         message: errorData.detail || "Failed to activate account",
       }
       throw error
