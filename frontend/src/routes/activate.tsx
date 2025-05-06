@@ -12,10 +12,15 @@ import {
   import { createFileRoute, redirect, useNavigate } from "@tanstack/react-router"
   import { type SubmitHandler, useForm } from "react-hook-form"
   
-  import { type ApiError } from "../client"
+  import { type ApiError, type ApiRequestOptions } from "../client"
   import { isLoggedIn } from "../hooks/useAuth"
   import useCustomToast from "../hooks/useCustomToast"
   import { confirmPasswordRules, handleError, passwordRules } from "../utils"
+  
+  interface NewPasswordForm {
+    new_password: string
+    confirm_password: string
+  }
   
   // Define the route for /activate
   export const Route = createFileRoute('/activate')({
@@ -29,15 +34,10 @@ import {
     },
   })
   
-  interface NewPasswordForm {
-    new_password: string
-    confirm_password: string
-  }
-  
   async function activateAccount(data: { new_password: string; token: string }) {
     const apiUrl = `${import.meta.env.VITE_API_URL}/v2/activate`
-    const requestOptions = {
-      method: "POST",
+    const requestOptions: ApiRequestOptions = {
+      method: "POST" as const, // Explicitly type as literal "POST"
       url: apiUrl,
       headers: {
         "Content-Type": "application/json",
@@ -45,7 +45,7 @@ import {
     }
   
     const response = await fetch(apiUrl, {
-      method: "POST",
+      method: requestOptions.method,
       headers: requestOptions.headers,
       body: JSON.stringify({
         token: data.token,
