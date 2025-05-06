@@ -15,13 +15,12 @@ import { Route as SignupImport } from './routes/signup'
 import { Route as ResetPasswordImport } from './routes/reset-password'
 import { Route as RecoverPasswordImport } from './routes/recover-password'
 import { Route as LoginImport } from './routes/login'
+import { Route as ActivateImport } from './routes/activate'
 import { Route as LayoutImport } from './routes/_layout'
 import { Route as LayoutIndexImport } from './routes/_layout/index'
 import { Route as LayoutSettingsImport } from './routes/_layout/settings'
 import { Route as LayoutItemsImport } from './routes/_layout/items'
 import { Route as LayoutAdminImport } from './routes/_layout/admin'
-import { Route as LayoutScrapingToolsUserAgentsImport } from './routes/_layout/scraping-tools/user-agents'
-import { Route as LayoutScrapingToolsSearchProxiesImport } from './routes/_layout/scraping-tools/search-proxies'
 import { Route as LayoutScrapingToolsHttpsProxyImport } from './routes/_layout/scraping-tools/https-proxy'
 import { Route as LayoutAiIcongptImport } from './routes/_layout/ai/icongpt'
 import { Route as LayoutScrapingToolsScrapingJobsIndexImport } from './routes/_layout/scraping-tools/scraping-jobs/index'
@@ -57,6 +56,12 @@ const LoginRoute = LoginImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
+const ActivateRoute = ActivateImport.update({
+  id: '/activate',
+  path: '/activate',
+  getParentRoute: () => rootRoute,
+} as any)
+
 const LayoutRoute = LayoutImport.update({
   id: '/_layout',
   getParentRoute: () => rootRoute,
@@ -85,20 +90,6 @@ const LayoutAdminRoute = LayoutAdminImport.update({
   path: '/admin',
   getParentRoute: () => LayoutRoute,
 } as any)
-
-const LayoutScrapingToolsUserAgentsRoute =
-  LayoutScrapingToolsUserAgentsImport.update({
-    id: '/scraping-tools/user-agents',
-    path: '/scraping-tools/user-agents',
-    getParentRoute: () => LayoutRoute,
-  } as any)
-
-const LayoutScrapingToolsSearchProxiesRoute =
-  LayoutScrapingToolsSearchProxiesImport.update({
-    id: '/scraping-tools/search-proxies',
-    path: '/scraping-tools/search-proxies',
-    getParentRoute: () => LayoutRoute,
-  } as any)
 
 const LayoutScrapingToolsHttpsProxyRoute =
   LayoutScrapingToolsHttpsProxyImport.update({
@@ -164,6 +155,13 @@ declare module '@tanstack/react-router' {
       path: ''
       fullPath: ''
       preLoaderRoute: typeof LayoutImport
+      parentRoute: typeof rootRoute
+    }
+    '/activate': {
+      id: '/activate'
+      path: '/activate'
+      fullPath: '/activate'
+      preLoaderRoute: typeof ActivateImport
       parentRoute: typeof rootRoute
     }
     '/login': {
@@ -236,20 +234,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LayoutScrapingToolsHttpsProxyImport
       parentRoute: typeof LayoutImport
     }
-    '/_layout/scraping-tools/search-proxies': {
-      id: '/_layout/scraping-tools/search-proxies'
-      path: '/scraping-tools/search-proxies'
-      fullPath: '/scraping-tools/search-proxies'
-      preLoaderRoute: typeof LayoutScrapingToolsSearchProxiesImport
-      parentRoute: typeof LayoutImport
-    }
-    '/_layout/scraping-tools/user-agents': {
-      id: '/_layout/scraping-tools/user-agents'
-      path: '/scraping-tools/user-agents'
-      fullPath: '/scraping-tools/user-agents'
-      preLoaderRoute: typeof LayoutScrapingToolsUserAgentsImport
-      parentRoute: typeof LayoutImport
-    }
     '/_layout/scraping-tools/endpoints/$endpointId': {
       id: '/_layout/scraping-tools/endpoints/$endpointId'
       path: '/scraping-tools/endpoints/$endpointId'
@@ -304,8 +288,6 @@ interface LayoutRouteChildren {
   LayoutIndexRoute: typeof LayoutIndexRoute
   LayoutAiIcongptRoute: typeof LayoutAiIcongptRoute
   LayoutScrapingToolsHttpsProxyRoute: typeof LayoutScrapingToolsHttpsProxyRoute
-  LayoutScrapingToolsSearchProxiesRoute: typeof LayoutScrapingToolsSearchProxiesRoute
-  LayoutScrapingToolsUserAgentsRoute: typeof LayoutScrapingToolsUserAgentsRoute
   LayoutScrapingToolsEndpointsEndpointIdRoute: typeof LayoutScrapingToolsEndpointsEndpointIdRoute
   LayoutScrapingToolsScrapingJobsJobIdRoute: typeof LayoutScrapingToolsScrapingJobsJobIdRoute
   LayoutScrapingToolsSubmitFormGoogleSerpRoute: typeof LayoutScrapingToolsSubmitFormGoogleSerpRoute
@@ -321,8 +303,6 @@ const LayoutRouteChildren: LayoutRouteChildren = {
   LayoutIndexRoute: LayoutIndexRoute,
   LayoutAiIcongptRoute: LayoutAiIcongptRoute,
   LayoutScrapingToolsHttpsProxyRoute: LayoutScrapingToolsHttpsProxyRoute,
-  LayoutScrapingToolsSearchProxiesRoute: LayoutScrapingToolsSearchProxiesRoute,
-  LayoutScrapingToolsUserAgentsRoute: LayoutScrapingToolsUserAgentsRoute,
   LayoutScrapingToolsEndpointsEndpointIdRoute:
     LayoutScrapingToolsEndpointsEndpointIdRoute,
   LayoutScrapingToolsScrapingJobsJobIdRoute:
@@ -342,6 +322,7 @@ const LayoutRouteWithChildren =
 
 export interface FileRoutesByFullPath {
   '': typeof LayoutRouteWithChildren
+  '/activate': typeof ActivateRoute
   '/login': typeof LoginRoute
   '/recover-password': typeof RecoverPasswordRoute
   '/reset-password': typeof ResetPasswordRoute
@@ -352,8 +333,6 @@ export interface FileRoutesByFullPath {
   '/': typeof LayoutIndexRoute
   '/ai/icongpt': typeof LayoutAiIcongptRoute
   '/scraping-tools/https-proxy': typeof LayoutScrapingToolsHttpsProxyRoute
-  '/scraping-tools/search-proxies': typeof LayoutScrapingToolsSearchProxiesRoute
-  '/scraping-tools/user-agents': typeof LayoutScrapingToolsUserAgentsRoute
   '/scraping-tools/endpoints/$endpointId': typeof LayoutScrapingToolsEndpointsEndpointIdRoute
   '/scraping-tools/scraping-jobs/$jobId': typeof LayoutScrapingToolsScrapingJobsJobIdRoute
   '/scraping-tools/submit-form/google-serp': typeof LayoutScrapingToolsSubmitFormGoogleSerpRoute
@@ -363,6 +342,7 @@ export interface FileRoutesByFullPath {
 }
 
 export interface FileRoutesByTo {
+  '/activate': typeof ActivateRoute
   '/login': typeof LoginRoute
   '/recover-password': typeof RecoverPasswordRoute
   '/reset-password': typeof ResetPasswordRoute
@@ -373,8 +353,6 @@ export interface FileRoutesByTo {
   '/': typeof LayoutIndexRoute
   '/ai/icongpt': typeof LayoutAiIcongptRoute
   '/scraping-tools/https-proxy': typeof LayoutScrapingToolsHttpsProxyRoute
-  '/scraping-tools/search-proxies': typeof LayoutScrapingToolsSearchProxiesRoute
-  '/scraping-tools/user-agents': typeof LayoutScrapingToolsUserAgentsRoute
   '/scraping-tools/endpoints/$endpointId': typeof LayoutScrapingToolsEndpointsEndpointIdRoute
   '/scraping-tools/scraping-jobs/$jobId': typeof LayoutScrapingToolsScrapingJobsJobIdRoute
   '/scraping-tools/submit-form/google-serp': typeof LayoutScrapingToolsSubmitFormGoogleSerpRoute
@@ -386,6 +364,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRoute
   '/_layout': typeof LayoutRouteWithChildren
+  '/activate': typeof ActivateRoute
   '/login': typeof LoginRoute
   '/recover-password': typeof RecoverPasswordRoute
   '/reset-password': typeof ResetPasswordRoute
@@ -396,8 +375,6 @@ export interface FileRoutesById {
   '/_layout/': typeof LayoutIndexRoute
   '/_layout/ai/icongpt': typeof LayoutAiIcongptRoute
   '/_layout/scraping-tools/https-proxy': typeof LayoutScrapingToolsHttpsProxyRoute
-  '/_layout/scraping-tools/search-proxies': typeof LayoutScrapingToolsSearchProxiesRoute
-  '/_layout/scraping-tools/user-agents': typeof LayoutScrapingToolsUserAgentsRoute
   '/_layout/scraping-tools/endpoints/$endpointId': typeof LayoutScrapingToolsEndpointsEndpointIdRoute
   '/_layout/scraping-tools/scraping-jobs/$jobId': typeof LayoutScrapingToolsScrapingJobsJobIdRoute
   '/_layout/scraping-tools/submit-form/google-serp': typeof LayoutScrapingToolsSubmitFormGoogleSerpRoute
@@ -410,6 +387,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | ''
+    | '/activate'
     | '/login'
     | '/recover-password'
     | '/reset-password'
@@ -420,8 +398,6 @@ export interface FileRouteTypes {
     | '/'
     | '/ai/icongpt'
     | '/scraping-tools/https-proxy'
-    | '/scraping-tools/search-proxies'
-    | '/scraping-tools/user-agents'
     | '/scraping-tools/endpoints/$endpointId'
     | '/scraping-tools/scraping-jobs/$jobId'
     | '/scraping-tools/submit-form/google-serp'
@@ -430,6 +406,7 @@ export interface FileRouteTypes {
     | '/scraping-tools/scraping-jobs'
   fileRoutesByTo: FileRoutesByTo
   to:
+    | '/activate'
     | '/login'
     | '/recover-password'
     | '/reset-password'
@@ -440,8 +417,6 @@ export interface FileRouteTypes {
     | '/'
     | '/ai/icongpt'
     | '/scraping-tools/https-proxy'
-    | '/scraping-tools/search-proxies'
-    | '/scraping-tools/user-agents'
     | '/scraping-tools/endpoints/$endpointId'
     | '/scraping-tools/scraping-jobs/$jobId'
     | '/scraping-tools/submit-form/google-serp'
@@ -451,6 +426,7 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/_layout'
+    | '/activate'
     | '/login'
     | '/recover-password'
     | '/reset-password'
@@ -461,8 +437,6 @@ export interface FileRouteTypes {
     | '/_layout/'
     | '/_layout/ai/icongpt'
     | '/_layout/scraping-tools/https-proxy'
-    | '/_layout/scraping-tools/search-proxies'
-    | '/_layout/scraping-tools/user-agents'
     | '/_layout/scraping-tools/endpoints/$endpointId'
     | '/_layout/scraping-tools/scraping-jobs/$jobId'
     | '/_layout/scraping-tools/submit-form/google-serp'
@@ -474,6 +448,7 @@ export interface FileRouteTypes {
 
 export interface RootRouteChildren {
   LayoutRoute: typeof LayoutRouteWithChildren
+  ActivateRoute: typeof ActivateRoute
   LoginRoute: typeof LoginRoute
   RecoverPasswordRoute: typeof RecoverPasswordRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
@@ -482,6 +457,7 @@ export interface RootRouteChildren {
 
 const rootRouteChildren: RootRouteChildren = {
   LayoutRoute: LayoutRouteWithChildren,
+  ActivateRoute: ActivateRoute,
   LoginRoute: LoginRoute,
   RecoverPasswordRoute: RecoverPasswordRoute,
   ResetPasswordRoute: ResetPasswordRoute,
@@ -499,6 +475,7 @@ export const routeTree = rootRoute
       "filePath": "__root.tsx",
       "children": [
         "/_layout",
+        "/activate",
         "/login",
         "/recover-password",
         "/reset-password",
@@ -514,8 +491,6 @@ export const routeTree = rootRoute
         "/_layout/",
         "/_layout/ai/icongpt",
         "/_layout/scraping-tools/https-proxy",
-        "/_layout/scraping-tools/search-proxies",
-        "/_layout/scraping-tools/user-agents",
         "/_layout/scraping-tools/endpoints/$endpointId",
         "/_layout/scraping-tools/scraping-jobs/$jobId",
         "/_layout/scraping-tools/submit-form/google-serp",
@@ -523,6 +498,9 @@ export const routeTree = rootRoute
         "/_layout/scraping-tools/endpoints/",
         "/_layout/scraping-tools/scraping-jobs/"
       ]
+    },
+    "/activate": {
+      "filePath": "activate.tsx"
     },
     "/login": {
       "filePath": "login.tsx"
@@ -558,14 +536,6 @@ export const routeTree = rootRoute
     },
     "/_layout/scraping-tools/https-proxy": {
       "filePath": "_layout/scraping-tools/https-proxy.tsx",
-      "parent": "/_layout"
-    },
-    "/_layout/scraping-tools/search-proxies": {
-      "filePath": "_layout/scraping-tools/search-proxies.tsx",
-      "parent": "/_layout"
-    },
-    "/_layout/scraping-tools/user-agents": {
-      "filePath": "_layout/scraping-tools/user-agents.tsx",
       "parent": "/_layout"
     },
     "/_layout/scraping-tools/endpoints/$endpointId": {
