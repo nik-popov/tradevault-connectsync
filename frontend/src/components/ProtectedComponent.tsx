@@ -1,10 +1,10 @@
-// src/components/ProtectedComponent.tsx
 import React from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
-import { Text, VStack, Button, Flex } from "@chakra-ui/react";
+import { Text, VStack, Button, Flex, Spinner } from "@chakra-ui/react";
 import PromoSERP from "./ComingSoon"; // Adjust the import path as needed
 import useAuth from "../hooks/useAuth";
+
 interface SubscriptionStatus {
   hasSubscription: boolean;
   isTrial: boolean;
@@ -12,82 +12,133 @@ interface SubscriptionStatus {
 }
 
 async function fetchSubscriptionStatus(): Promise<SubscriptionStatus> {
-  const token = localStorage.getItem("access_token");
-  const response = await fetch(
-    "https://api.thedataproxy.com/v2/subscription-status",
-    {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        ...(token && { Authorization: `Bearer ${token}` }),
-      },
+  try {
+    const token = localStorage.getItem("access_token");
+    const response = await fetch(
+      "https://api.thedataproxy.com/v2/subscription-status",
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          ...(token && { Authorization: `Bearer ${token}` }),
+        },
+      }
+    );
+
+    if (!response.ok) {
+      if (response.status === 401 || response.status === 403) {
+        throw new Error("Unauthorized: Invalid or expired session.");
+      }
+      throw new Error(`Failed to fetch subscription status: ${response.status}`);
     }
-  );
-  if (!response.ok) {
-    if (response.status === 401 || response.status === 403) {
-      throw new Error("Unauthorized: Please log in again.");
+
+    const data = await response.json();
+    // Validate response shape
+    if (
+      typeof data.hasSubscription !== "boolean" ||
+      typeof data.isTrial !== "boolean" ||
+      typeof data.isDeactivated !== "boolean"
+    ) {
+      throw new Error("Invalid subscription status response");
     }
-    throw new Error(`Failed to fetch tools: ${response.status}`);
+
+    return data;
+  } catch (error) {
+    throw error instanceof Error
+      ? error
+      : new Error("Network error occurred while fetching subscription status");
   }
-  return response.json();
 }
 
-const ProtectedComponent: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+const ProtectedComponent: React.FC<{ children: React.ReactNode }> = ({
+  children,
+}) => {
   const navigate = useNavigate();
   const { logout } = useAuth();
 
   const handleLogout = async () => {
-    logout();
+    await logout();
+    navigate({ to: "/login" }); // Redirect to login after logout
   };
+
   const { data: subscriptionStatus, isLoading, error } = useQuery({
     queryKey: ["subscriptionStatus", "serp"],
     queryFn: fetchSubscriptionStatus,
     staleTime: 5 * 60 * 1000, // Cache for 5 minutes
     retry: (failureCount, error) => {
-      if (error.message.includes("Unauthorized")) return false;
-      return failureCount < 3;
+      if (
+        error instanceof Error &&
+        (error.message.includes("Unauthorized") ||
+          error.message.includes("Invalid subscription status"))
+      ) {
+        return false; // Don't retry on unauthorized or invalid response
+      }
+      return failureCount < 2; // Retry up to 2 times for other errors
     },
   });
 
   // Loading state
   if (isLoading) {
-    return <Text>Loading...</Text>;
-  }
-
-  // Error state (e.g., unauthorized or server error)
-  if (error) {
     return (
       <VStack spacing={4}>
-        <Text color="red.500">
-          {error.message === "Unauthorized: Please log in again."
-            ? "Session expired. Please log in again."
-            : "Error loading status. Please try again later."}
-        </Text>
-        {error.message.includes("Unauthorized") && (
-          <Button colorScheme="blue" onClick={()=>handleLogout()}>
-          Sign Out
-          </Button>
-        )}
+        <Spinner size="lg" />
+        <Text>Loading subscription status...</Text>
       </VStack>
     );
   }
 
-  // Extract subscription details with fallback values
-  const { hasSubscription, isTrial, isDeactivated } = subscriptionStatus || {
-    hasSubscription: false,
-    isTrial: false,
-    isDeactivated: false,
-  };
+  // Error state
+  if (error) {
+    return (
+      <VStack spacing={4}>
+        <Text color="red.500">
+          {error instanceof Error && error.message.includes("Unauthorized")
+            ? "Your session has expired. Please log in again."
+            : "An error occurred while loading your subscription status. Please try again later."}
+        </Text>
+        <Button
+          colorScheme="blue"
+          onClick={() =>
+            error instanceof Error && error.message.includes("Unauthorized")
+              ? navigate({ to: "/login" })
+              : window.location.reload()
+          }
+        >
+          {error instanceof Error && error.message.includes("Unauthorized")
+            ? "Log In"
+            : "Retry"}
+        </Button>
+      </VStack>
+    );
+  }
 
+  // Validate subscription status
+  if (!subscriptionStatus) {
+    return (
+      <VStack spacing={4}>
+        <Text color="red.500">
+          Unable to load subscription status. Please try again.
+        </Text>
+        <Button colorScheme="blue" onClick={() => window.location.reload()}>
+          Retry
+        </Button>
+      </VStack>
+    );
+  }
+
+  // Extract subscription details
+  const { hasSubscription, isTrial, isDeactivated } = subscriptionStatus;
+
+  // Define access conditions
   const isLocked = !hasSubscription && !isTrial; // No subscription or trial
   const isFullyDeactivated = isDeactivated && !hasSubscription; // Deactivated without subscription
 
-  // No access: show promotional content
+  // No access: show promotional content for non-subscribed users
   if (isLocked) {
     return <PromoSERP />;
   }
 
-  // Deactivated tools: prompt to reactivate
+  // Deactivated tools: prompt to reactivate (only for non-subscribed users)
   if (isFullyDeactivated) {
     return (
       <Flex
@@ -109,7 +160,30 @@ const ProtectedComponent: React.FC<{ children: React.ReactNode }> = ({ children 
     );
   }
 
-  // User has access: render the protected content
+  // Subscribed users: show protected content or development message
+  if (hasSubscription) {
+    // Since features are in development, show a placeholder message
+    // Replace this with actual protected content when features are ready
+    return (
+      <VStack spacing={4} p={4}>
+        <Text fontSize="xl" fontWeight="bold">
+          Welcome, Subscriber!
+        </Text>
+        <Text color="gray.600">
+          Our features are currently in development. Stay tuned for exciting
+          updates coming soon!
+        </Text>
+        <Button
+          colorScheme="blue"
+          onClick={() => navigate({ to: "/dashboard" })}
+        >
+          Go to Dashboard
+        </Button>
+      </VStack>
+    );
+  }
+
+  // Fallback for trial users or other cases: render protected content
   return <>{children}</>;
 };
 
