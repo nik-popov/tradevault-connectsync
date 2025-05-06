@@ -22,7 +22,8 @@ import {
     confirm_password: string
   }
   
-  export const Route = createFileRoute("/activate")({
+  // Define the route for /activate
+  export const Route = createFileRoute('/activate')({
     component: ActivateAccount,
     beforeLoad: async () => {
       if (isLoggedIn()) {
@@ -34,7 +35,8 @@ import {
   })
   
   async function activateAccount(data: { new_password: string; token: string }) {
-    const response = await fetch(`${import.meta.env.VITE_API_URL}/v2/activate`, {
+    const apiUrl = `${import.meta.env.VITE_API_URL}/v2/activate`
+    const response = await fetch(apiUrl, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -43,14 +45,22 @@ import {
         token: data.token,
         new_password: data.new_password,
       }),
-    });
+    })
   
     if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.detail || "Failed to activate account");
+      const errorData = await response.json()
+      const error: ApiError = {
+        url: apiUrl,
+        status: response.status,
+        statusText: response.statusText,
+        body: errorData,
+        request: null, // Request object not available in fetch; can be null if not used
+        message: errorData.detail || "Failed to activate account",
+      }
+      throw error
     }
   
-    return response.json();
+    return response.json()
   }
   
   function ActivateAccount() {
@@ -71,14 +81,14 @@ import {
     const showToast = useCustomToast()
     const navigate = useNavigate()
   
-    const mutation = useMutation({
+    const mutation = useMutation<{ message: string }, ApiError, { new_password: string; token: string }>({
       mutationFn: activateAccount,
       onSuccess: () => {
         showToast("Success!", "Account activated successfully.", "success")
         reset()
         navigate({ to: "/login" })
       },
-      onError: (err: Error) => {
+      onError: (err: ApiError) => {
         handleError(err, showToast)
       },
     })
