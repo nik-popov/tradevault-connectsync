@@ -17,7 +17,6 @@ from app.api.deps import get_current_user
 from app.core.config import settings
 from starlette.responses import JSONResponse
 import emails
-from emails.template import JinjaTemplate
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -145,7 +144,7 @@ async def create_user_if_not_exists(
     
     return user
 
-@router.post("/activate", tags=["auth"])
+@router.post("/activate")
 async def activate_account(request: ActivateRequest, db: Annotated[Session, Depends(get_db)]):
     """
     Activate a user account by setting a permanent password using an activation token.
@@ -165,6 +164,33 @@ async def activate_account(request: ActivateRequest, db: Annotated[Session, Depe
     db.commit()
     logger.info(f"Account activated successfully for user: {user.email}")
     return {"message": "Account activated successfully"}
+
+@router.get("/customer-portal")
+async def create_customer_portal(
+    request: Request,
+    current_user: Annotated[User, Depends(get_current_user)]
+):
+    """
+    Create a Stripe Customer Portal session.
+    """
+    if not current_user.stripe_customer_id:
+        logger.warning(f"No Stripe customer ID for user: {current_user.email}")
+        raise HTTPException(status_code=404, detail="No Stripe customer associated with this user")
+    
+    session_token = create_session_token(current_user.id)
+    
+    try:
+        portal_session = stripe.billing_portal.Session.create(
+            customer=current_user.stripe_customer_id,
+            return_url=f"{settings.APP_BASE_URL}/dashboard?token={session_token}"
+        )
+        
+        logger.info(f"Created customer portal session for user: {current_user.email}")
+        return {"portal_url": portal_session.url}
+        
+    except StripeError as e:
+        logger.error(f"Stripe error creating customer portal: {str(e)}")
+        raise HTTPException(status_code=400, detail=f"Failed to create customer portal: {str(e)}")
 
 @router.post("/stripe/webhook")
 async def stripe_webhook(request: Request, background_tasks: BackgroundTasks, db: Annotated[Session, Depends(get_db)]):
@@ -246,7 +272,6 @@ async def stripe_webhook(request: Request, background_tasks: BackgroundTasks, db
                     customer_id=customer_id,
                     background_tasks=background_tasks
                 )
-                # Optionally store charge details (requires schema update)
             except Exception as e:
                 logger.error(f"Error processing charge.succeeded: {str(e)}")
     
@@ -255,7 +280,6 @@ async def stripe_webhook(request: Request, background_tasks: BackgroundTasks, db
         product_id = data.get("id")
         logger.info(f"Processing {event_type}: product/price={product_id}")
         
-        # Attempt to find related customer email via subscriptions
         try:
             subscriptions = stripe.Subscription.list(
                 limit=10,
@@ -325,7 +349,7 @@ async def stripe_webhook(request: Request, background_tasks: BackgroundTasks, db
         try:
             user = db.query(User).filter(User.stripe_customer_id == customer_id).first()
             if user:
-                logger.info(f"Customer deleted: {customer_id} for user {user.email}")
+                logger.info(f"Customer deleted: {customer_id} for user: {user.email}")
                 user.has_subscription = False
                 user.is_trial = False
                 user.is_deactivated = True
