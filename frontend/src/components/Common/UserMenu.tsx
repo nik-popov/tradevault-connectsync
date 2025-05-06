@@ -18,23 +18,6 @@ const UserMenu = () => {
   const handleLogout = async () => {
     logout();
   };
-  // Error state (e.g., unauthorized or server error)
-  if (error) {
-    return (
-      <VStack spacing={4}>
-        <Text color="red.500">
-          {error.message === "Unauthorized: Please log in again."
-            ? "Session expired. Please log in again."
-            : "Error loading status. Please try again later."}
-        </Text>
-        {error.message.includes("Unauthorized") && (
-          <Button colorScheme="blue" onClick={()=>handleLogout()}>
-          Sign Out
-          </Button>
-        )}
-      </VStack>
-    );
-  }
 
   return (
     <>
