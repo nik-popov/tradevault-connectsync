@@ -12,7 +12,7 @@ import {
   import { createFileRoute, redirect, useNavigate } from "@tanstack/react-router"
   import { type SubmitHandler, useForm } from "react-hook-form"
   
-  import { type ApiError, type ApiRequestOptions } from "../client"
+  import { type ApiError } from "../client"
   import { isLoggedIn } from "../hooks/useAuth"
   import useCustomToast from "../hooks/useCustomToast"
   import { confirmPasswordRules, handleError, passwordRules } from "../utils"
@@ -36,17 +36,11 @@ import {
   
   async function activateAccount(data: { new_password: string; token: string }) {
     const apiUrl = `${import.meta.env.VITE_API_URL}/v2/activate`
-    const requestOptions: ApiRequestOptions = {
-      method: "POST" as const, // Explicitly type as literal "POST"
-      url: apiUrl,
+    const response = await fetch(apiUrl, {
+      method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-    }
-  
-    const response = await fetch(apiUrl, {
-      method: requestOptions.method,
-      headers: requestOptions.headers,
       body: JSON.stringify({
         token: data.token,
         new_password: data.new_password,
@@ -56,11 +50,11 @@ import {
     if (!response.ok) {
       const errorData = await response.json()
       const error: ApiError = {
+        name: "ApiError",
         url: apiUrl,
         status: response.status,
         statusText: response.statusText,
         body: errorData,
-        request: requestOptions,
         message: errorData.detail || "Failed to activate account",
       }
       throw error
