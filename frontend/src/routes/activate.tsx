@@ -12,10 +12,10 @@ import { useMutation } from "@tanstack/react-query"
 import { createFileRoute, redirect, useNavigate } from "@tanstack/react-router"
 import { type SubmitHandler, useForm } from "react-hook-form"
 
-import { type ApiError } from "../../client"
-import { isLoggedIn } from "../../hooks/useAuth"
-import useCustomToast from "../../hooks/useCustomToast"
-import { confirmPasswordRules, handleError, passwordRules } from "../../utils"
+import { type ApiError } from "./.../../../client"
+import { isLoggedIn } from "./.../../../hooks/useAuth"
+import useCustomToast from "./.../../../hooks/useCustomToast"
+import { confirmPasswordRules, handleError, passwordRules } from "./.../../../utils"
 
 interface NewPasswordForm {
   new_password: string
