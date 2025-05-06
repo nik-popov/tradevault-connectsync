@@ -4,7 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
 import { Text, VStack, Button, Flex } from "@chakra-ui/react";
 import PromoSERP from "./ComingSoon"; // Adjust the import path as needed
-
+import useAuth from "../../hooks/useAuth";
 interface SubscriptionStatus {
   hasSubscription: boolean;
   isTrial: boolean;
@@ -34,7 +34,11 @@ async function fetchSubscriptionStatus(): Promise<SubscriptionStatus> {
 
 const ProtectedComponent: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const navigate = useNavigate();
+  const { logout } = useAuth();
 
+  const handleLogout = async () => {
+    logout();
+  };
   const { data: subscriptionStatus, isLoading, error } = useQuery({
     queryKey: ["subscriptionStatus", "serp"],
     queryFn: fetchSubscriptionStatus,
@@ -60,8 +64,8 @@ const ProtectedComponent: React.FC<{ children: React.ReactNode }> = ({ children 
             : "Error loading status. Please try again later."}
         </Text>
         {error.message.includes("Unauthorized") && (
-          <Button colorScheme="blue" onClick={() => navigate({ to: "/login" })}>
-            Log In
+          <Button colorScheme="blue" onClick={handleLogout()}>
+          Sign Out
           </Button>
         )}
       </VStack>
