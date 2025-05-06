@@ -85,7 +85,7 @@ def send_email(
 def generate_activation_email(email_to: str, token: str) -> EmailData:
     project_name = settings.PROJECT_NAME
     subject = f"{project_name} - Activate Your Account"
-    link = f"https://api.thedataproxy.com/v2/activate?token={token}"
+    link = f"https://cloud.thedataproxy.com/activate?token={token}"
     html_content = f"""
     <html>
         <body>
