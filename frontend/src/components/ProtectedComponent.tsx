@@ -4,7 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
 import { Text, VStack, Button, Flex } from "@chakra-ui/react";
 import PromoSERP from "./ComingSoon"; // Adjust the import path as needed
-import useAuth from "../../hooks/useAuth";
+import useAuth from "../hooks/useAuth";
 interface SubscriptionStatus {
   hasSubscription: boolean;
   isTrial: boolean;
@@ -64,7 +64,7 @@ const ProtectedComponent: React.FC<{ children: React.ReactNode }> = ({ children 
             : "Error loading status. Please try again later."}
         </Text>
         {error.message.includes("Unauthorized") && (
-          <Button colorScheme="blue" onClick={handleLogout()}>
+          <Button colorScheme="blue" onClick={()=>handleLogout()}>
           Sign Out
           </Button>
         )}
