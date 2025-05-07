@@ -153,8 +153,8 @@ const PlaygroundGSerp: React.FC = () => {
               value={response}
               readOnly
               height="400px"
-              bg="gray.700"
-              color="white"
+              bg="blue.50"
+              color="black"
               placeholder="Response will appear here after testing"
               size="sm"
               resize="vertical"
