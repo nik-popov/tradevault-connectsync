@@ -50,7 +50,7 @@ const tabsConfig = [
   {
     title: "Billing",
     component: () => {
-      const [token] = useState<string | null>(localStorage.getItem("auth_token"));
+      const [token] = useState<string | null>(localStorage.getItem("access_token"));
       const [isLoading, setIsLoading] = useState(false);
       const toast = useToast();
 
