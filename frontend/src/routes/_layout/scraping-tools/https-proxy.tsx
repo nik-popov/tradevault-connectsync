@@ -142,7 +142,7 @@ const GoogleSerpPage = () => {
   });
 
   // Calculate total request count
-  const totalRequests = apiKeys?.reduce((sum, key) => sum + (key.request_count || 0), 0) || 0;
+  const totalRequests = 535; // Hardcoded as per request
 
   // Determine subscription status
   const hasActiveSubscription = subscriptions?.some(
@@ -168,9 +168,10 @@ const GoogleSerpPage = () => {
                   ? activeSubscription.status.charAt(0).toUpperCase() + activeSubscription.status.slice(1)
                   : "N/A"}
               </Text>
-              <Text fontSize="sm">
-                Total Requests This Month: {totalRequests}
-              </Text>
+              <Flex align="baseline" gap={2}>
+                <Text fontSize="sm">Total Requests This Month:</Text>
+                <Heading size="lg">{totalRequests}</Heading>
+              </Flex>
             </Flex>
           </Box>
           <Grid templateColumns={{ base: "1fr", md: "1fr 1fr" }} gap={6}>
@@ -242,9 +243,9 @@ const GoogleSerpPage = () => {
               </Box>
             </GridItem>
           </Grid>
-          <Heading size="md" mt={6} mb={4}>Recent Activity Logs</Heading>
+          <Heading size="md" mt={6} mb={4}>Recent Logs</Heading>
           <Box borderWidth="1px" borderRadius="md" p={4}>
-            <Text fontSize="sm">No recent activity logs</Text>
+            <Text fontSize="sm">No recent logs</Text>
           </Box>
         </Box>
       ),
