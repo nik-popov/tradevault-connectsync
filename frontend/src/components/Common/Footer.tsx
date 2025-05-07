@@ -10,7 +10,7 @@ import {
   
   const Footer = () => {
     const textColor = "gray.800";
-    const accentColor = "orange.300"
+    const accentColor = "orange.400"
     const hoverColor = "blue.600";
   
     return (
@@ -27,9 +27,20 @@ import {
         >
           {/* Company Info */}
           <VStack spacing={1} align={{ base: "center", md: "start" }}>
-            <Text fontWeight="bold" color={textColor} fontSize="sm">
-              The Data Proxy
-            </Text>
+          <Link
+      href="https://thedataproxy.com" 
+      isExternal
+      color={textColor}
+      _hover={{ color: accentColor }}
+    >
+      <Text
+        fontWeight="bold"
+        color={textColor}
+        fontSize="sm"
+      >
+        The Data Proxy
+      </Text>
+    </Link>
             <Text color={textColor} fontSize="xs" maxW="200px">
               Enterprise proxy and scraping solutions for web data.
             </Text>
