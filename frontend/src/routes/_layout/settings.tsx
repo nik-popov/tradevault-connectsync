@@ -40,7 +40,7 @@ const tabsConfig = [
 
             if (!authToken) {
               // Fetch token from /users/me
-              const response = await fetch("https://api.thedataproxy.com/users/me", {
+              const response = await fetch("https://api.thedataproxy.com/v2/users/me", {
                 method: "GET",
                 headers: {
                   "Content-Type": "application/json",
