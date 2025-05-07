@@ -165,7 +165,7 @@ async def activate_account(request: ActivateRequest, db: Annotated[Session, Depe
     logger.info(f"Account activated successfully for user: {user.email}")
     return {"message": "Account activated successfully"}
 
-@router.get("/v2/customer-portal")
+@router.get("/customer-portal")
 async def create_customer_portal(
     request: Request,
     current_user: Annotated[User, Depends(get_current_user)]
