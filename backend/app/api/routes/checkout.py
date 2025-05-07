@@ -165,32 +165,33 @@ async def activate_account(request: ActivateRequest, db: Annotated[Session, Depe
     logger.info(f"Account activated successfully for user: {user.email}")
     return {"message": "Account activated successfully"}
 
-@router.get("/customer-portal")
+@router.get("/v2/customer-portal")
 async def create_customer_portal(
     request: Request,
     current_user: Annotated[User, Depends(get_current_user)]
 ):
     """
-    Create a Stripe Customer Portal session.
+    Create a Stripe Customer Portal session for the authenticated user.
     """
     if not current_user.stripe_customer_id:
         logger.warning(f"No Stripe customer ID for user: {current_user.email}")
         raise HTTPException(status_code=404, detail="No Stripe customer associated with this user")
     
-    session_token = create_session_token(current_user.id)
-    
     try:
         portal_session = stripe.billing_portal.Session.create(
             customer=current_user.stripe_customer_id,
-            return_url=f"{settings.APP_BASE_URL}/dashboard?token={session_token}"
+            return_url="https://cloud.thedataproxy.com"
         )
         
-        logger.info(f"Created customer portal session for user: {current_user.email}")
+        logger.info(f"Created customer portal session for user: {current_user.email}, url: {portal_session.url}")
         return {"portal_url": portal_session.url}
         
     except StripeError as e:
-        logger.error(f"Stripe error creating customer portal: {str(e)}")
+        logger.error(f"Stripe error creating customer portal: {str(e)}, user: {current_user.email}, customer_id: {current_user.stripe_customer_id}")
         raise HTTPException(status_code=400, detail=f"Failed to create customer portal: {str(e)}")
+    except Exception as e:
+        logger.error(f"Unexpected error creating customer portal: {str(e)}, user: {current_user.email}")
+        raise HTTPException(status_code=500, detail="Internal server error")
 
 @router.post("/stripe/webhook")
 async def stripe_webhook(request: Request, background_tasks: BackgroundTasks, db: Annotated[Session, Depends(get_db)]):
