@@ -10,6 +10,7 @@ import {
   
   const Footer = () => {
     const textColor = "gray.800";
+    const accentColor = "orange.300"
     const hoverColor = "blue.600";
   
     return (
@@ -157,13 +158,13 @@ import {
         <Link
           href="https://thedataproxy.com"
           color={textColor}
-          _hover={{ color: hoverColor }}
+          _hover={{ color: accentColor }}
         >
           The Data Proxy
         </Link>
         ,{" "}
         <Link
-          href="https://cobaltdatanetwork.com"
+          href="https://cobaltdata.net"
           color={textColor}
           _hover={{ color: hoverColor }}
         >
