@@ -2,8 +2,6 @@ import React from 'react';
 import { 
   Box, 
   Text, 
-  Alert, 
-  AlertIcon, 
   VStack, 
   Button,
   Link
@@ -19,19 +17,13 @@ const ComingSoon: React.FC = () => {
         maxW="600px"
         mx="auto"
       >
-        <Alert 
-          status="info" 
-          borderRadius="md" 
-          bg="gray.50"
-          color="gray.800"
-          role="alert"
-          p={4}
+        <Text 
+          fontSize={{ base: "sm", md: "md" }} 
+          color="gray.600" 
+          textAlign="center"
         >
-          <AlertIcon color="blue.500" /> 
-          <Text fontSize={{ base: "sm", md: "md" }} textAlign="center">
-            Account is not linked to a valid subscription
-          </Text>
-        </Alert>
+          Account is not linked to a valid subscription
+        </Text>
         <Button
           as="a"
           href="https://thedataproxy.com/pricing"
