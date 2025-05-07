@@ -169,12 +169,6 @@ const GoogleSerpPage = () => {
               <Heading size="md" mb={4}>Details</Heading>
               <Box shadow="md" borderWidth="1px" borderRadius="md" overflowX="auto">
                 <Table variant="simple" size="sm">
-                  <Thead>
-                    <Tr>
-                      <Th><Text fontSize="sm">Field</Text></Th>
-                      <Th><Text fontSize="sm">Value</Text></Th>
-                    </Tr>
-                  </Thead>
                   <Tbody>
                     <Tr>
                       <Td><Text fontSize="sm">Plan Name</Text></Td>
