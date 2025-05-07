@@ -285,9 +285,12 @@ async def proxy_fetch(
                 device_id=data["device_id"],
                 region_used=region
             )
+    except httpx.HTTPStatusError as e:
+        logger.error(f"Proxy fetch failed in {region}: HTTP {e.response.status_code}")
+        raise HTTPException(status_code=502, detail=f"Proxy request failed in {region}")
     except Exception as e:
         logger.error(f"Proxy fetch failed in {region}: {str(e)}")
-        raise HTTPException(status_code=500, detail=f"Proxy request failed in {region}: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Proxy request failed in {region}")
 
 FRONT_PREVIEW_LENGTH = 8
 END_PREVIEW_LENGTH = 8
