@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { Container, Flex, Text, Tabs, TabList, TabPanels, Tab, TabPanel } from "@chakra-ui/react";
+import { Container, Flex, Text, Tabs, TabList, TabPanels, Tab, TabPanel, Box, Heading } from "@chakra-ui/react";
 import ProtectedComponent from "../../../components/ProtectedComponent";
 import PlaygroundGSerp from "../../../components/PlaygroundGSerp";
 import ApiKeyGSerp from "../../../components/ApiKeyGSerp";
@@ -12,8 +12,8 @@ interface Subscription {
   plan_name: string | null;
   product_id: string | null;
   product_name: string | null;
-  current_period_start: number | null; // Made nullable to match backend
-  current_period_end: number | null;   // Made nullable to match backend
+  current_period_start: number | null;
+  current_period_end: number | null;
   trial_start: number | null;
   trial_end: number | null;
   cancel_at_period_end: boolean;
@@ -107,6 +107,24 @@ const GoogleSerpPage = () => {
 
   const TabsConfig = [
     {
+      title: "Overview",
+      component: () => (
+        <Box>
+          <Heading size="md" mb={4}>Monthly Request Overview</Heading>
+          <Box borderWidth="1px" borderRadius="lg" p={4} mb={4}>
+            <Text>Total Requests This Month: [Placeholder for request count]</Text>
+            <Box mt={4} height="200px" bg="gray.100" display="flex" alignItems="center" justifyContent="center">
+              <Text>[Placeholder for request graph]</Text>
+            </Box>
+          </Box>
+          <Heading size="md" mb={4}>Recent Activity Logs</Heading>
+          <Box borderWidth="1px" borderRadius="lg" p={4}>
+            <Text>[Placeholder for API request logs]</Text>
+          </Box>
+        </Box>
+      ),
+    },
+    {
       title: "API Keys",
       component: () => (
         <ApiKeyGSerp token={token} />
@@ -115,8 +133,7 @@ const GoogleSerpPage = () => {
     {
       title: "Playground",
       component: () => (
-        <PlaygroundGSerp
-        />
+        <PlaygroundGSerp />
       ),
     },
   ];
