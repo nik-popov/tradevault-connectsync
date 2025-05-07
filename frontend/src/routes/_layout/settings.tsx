@@ -24,38 +24,40 @@ import UserInformation from "../../components/UserSettings/UserInformation";
 const tabsConfig = [
   { title: "My profile", component: UserInformation },
   { title: "Password", component: ChangePassword },
-  { title: "Close Account", component: DeleteAccount },
   {
-    title: "Manage Billing",
+    title: "Billing",
     component: () => (
       <VStack spacing={4} align="start">
         <Text>Manage your billing information and subscriptions</Text>
         <Button
           colorScheme="blue"
-          onClick={() => {
-            fetch("/customer-portal", {
-              method: "GET",
-              headers: {
-                "Content-Type": "application/json",
-                // Add any necessary authorization headers
-              },
-            })
-              .then((response) => response.json())
-              .then((data) => {
-                if (data.portal_url) {
-                  window.location.href = data.portal_url;
-                }
-              })
-              .catch((error) => {
-                console.error("Error accessing customer portal:", error);
+          onClick={async () => {
+            try {
+              const response = await fetch("https://api.thedataproxy.com/v2/customer-portal", {
+                method: "GET",
+                headers: {
+                  "Content-Type": "application/json",
+                  "Accept": "application/json",
+                  "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NDczMzcyMjMsInN1YiI6IjBkZGUyMGYwLTY5ZmUtNDg3Ni1hNDJiLTE2NWMzNWE5ODMzMiJ9.356ohg9iKldOpG34Xz5RtSYkUFmRiLzmNoPbdeckz4Y",
+                },
               });
+              const data = await response.json();
+              if (data.portal_url) {
+                window.location.href = data.portal_url;
+              } else {
+                console.error("No portal URL received");
+              }
+            } catch (error) {
+              console.error("Error accessing customer portal:", error);
+            }
           }}
         >
-          Go to Customer Portal
+          Manage Billing
         </Button>
       </VStack>
     ),
   },
+  { title: "Close Account", component: DeleteAccount }
 ];
 
 export const Route = createFileRoute("/_layout/settings")({
