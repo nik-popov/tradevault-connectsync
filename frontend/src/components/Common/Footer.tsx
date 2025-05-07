@@ -100,6 +100,7 @@ import {
           <VStack spacing={1} align={{ base: "center", md: "start" }}>
             <Link
               href="https://thedataproxy.com/resources/faq"
+              isExternal
               color={textColor}
               fontSize="xs"
               _hover={{ color: hoverColor }}
@@ -108,6 +109,7 @@ import {
             </Link>
             <Link
               href="https://thedataproxy.com/contact"
+              isExternal
               color={textColor}
               fontSize="xs"
               _hover={{ color: hoverColor }}
@@ -121,6 +123,7 @@ import {
           <VStack spacing={1} align={{ base: "center", md: "start" }}>
             <Link
               href="https://thedataproxy.com/privacy"
+              isExternal
               color={textColor}
               fontSize="xs"
               _hover={{ color: hoverColor }}
@@ -129,6 +132,7 @@ import {
             </Link>
             <Link
               href="https://thedataproxy.com/terms"
+              isExternal
               color={textColor}
               fontSize="xs"
               _hover={{ color: hoverColor }}
@@ -141,6 +145,7 @@ import {
           <VStack spacing={1} align={{ base: "center", md: "start" }}>
             <Link
               href="https://thedataproxy.com/cookie"
+              isExternal
               color={textColor}
               fontSize="xs"
               _hover={{ color: hoverColor }}
@@ -149,6 +154,7 @@ import {
             </Link>
             <Link
               href=" https://thedataproxy.com/compliance"
+              isExternal
               color={textColor}
               fontSize="xs"
               _hover={{ color: hoverColor }}
@@ -168,6 +174,7 @@ import {
         © 2025{" "}
         <Link
           href="https://thedataproxy.com"
+          isExternal
           color={textColor}
           _hover={{ color: accentColor }}
         >
@@ -176,6 +183,7 @@ import {
         ,{" "}
         <Link
           href="https://cobaltdata.net"
+          isExternal
           color={textColor}
           _hover={{ color: hoverColor }}
         >
