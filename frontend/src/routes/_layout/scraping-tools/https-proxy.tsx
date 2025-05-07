@@ -211,7 +211,7 @@ const GoogleSerpPage = () => {
               </Box>
             </GridItem>
             <GridItem>
-              <Heading size="md" mb={4}>Request Trend</Heading>
+              <Heading size="md" mb={4}>Request by Day</Heading>
               <Box height="300px" bg="gray.100" borderRadius="md" display="flex" alignItems="center" justifyContent="center">
                 <Text fontSize="xs" color="gray.500">Graph data unavailable</Text>
               </Box>
