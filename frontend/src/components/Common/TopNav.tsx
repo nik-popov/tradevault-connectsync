@@ -11,7 +11,8 @@ import {
 } from "@chakra-ui/react";
 import { useQueryClient } from "@tanstack/react-query";
 import { Link as RouterLink } from "@tanstack/react-router";
-import { FiLogOut, FiMenu, FiUsers, FiSearch, FiUser } from "react-icons/fi";
+import { FiLogOut, FiMenu, FiUsers, FiSearch } from "react-icons/fi";
+import { MdPerson } from "react-icons/md";
 
 import Logo from "/assets/images/the-data-proxy-logo-dark.png";
 import type { UserPublic } from "../../client";
@@ -68,7 +69,7 @@ const NavItems = ({ onClose, isMobile = false }: NavItemsProps) => {
 
       if (!enabled) {
         return (
-          <Tooltip key={title} label="Restricted" placement={isMobile ? "right" : "bottom"}>
+          <Tooltip key={title} label="Restricted" placement={isMobile ? "right" : "bottom">
             <Flex
               px={4}
               py={2}
@@ -191,7 +192,7 @@ const TopNav = () => {
                 }}
                 align="center"
               >
-                <Icon as={FiUser} mr={2} />
+                <Icon as={MdPerson} mr={2} />
                 <Text>Profile</Text>
               </Flex>
               <Flex
@@ -240,7 +241,7 @@ const TopNav = () => {
                   onClick={onClose}
                   align="center"
                 >
-                  <Icon as={FiUser} mr={2} />
+                  <Icon as={MdPerson} mr={2} />
                   <Text>Profile</Text>
                 </Flex>
                 <Flex
