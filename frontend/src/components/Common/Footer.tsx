@@ -32,35 +32,33 @@ import {
             <Text color={textColor} fontSize="xs" maxW="200px">
               Enterprise proxy and scraping solutions for web data.
             </Text>
-            <Flex
-              direction={{ base: "column", sm: "row" }}
-              gap={{ base: 1, sm: 4 }}
-              justify={{ base: "center", md: "start" }}
-            >
-              <Flex align="center" gap={1}>
-                <Icon as={FiPhone} color={textColor} boxSize="0.9em" />
-                <Text color={textColor} fontSize="xs">
-                  +1 (855) 440-2242
-                </Text>
-              </Flex>
-              <Flex align="center" gap={1}>
-                <Icon as={FiMail} color={textColor} boxSize="0.9em" />
-                <Link
-                  href="mailto:info@thedataproxy.com"
-                  color={textColor}
-                  fontSize="xs"
-                  _hover={{ color: hoverColor }}
-                >
-                  info@thedataproxy.com
-                </Link>
-              </Flex>
+          </VStack>
+  
+          {/* Contact Info */}
+          <VStack spacing={1} align={{ base: "center", md: "start" }}>
+            <Flex align="center" gap={1}>
+              <Icon as={FiPhone} color={textColor} boxSize="0.9em" />
+              <Text color={textColor} fontSize="xs">
+                +1 (855) 440-2242
+              </Text>
+            </Flex>
+            <Flex align="center" gap={1}>
+              <Icon as={FiMail} color={textColor} boxSize="0.9em" />
+              <Link
+                href="mailto:info@thedataproxy.com"
+                color={textColor}
+                fontSize="xs"
+                _hover={{ color: hoverColor }}
+              >
+                info@thedataproxy.com
+              </Link>
             </Flex>
           </VStack>
   
           {/* Support Links */}
           <VStack spacing={1} align={{ base: "center", md: "start" }}>
             <Link
-              href="https://cloud.thedataproxy.com/faq"
+              href="https://thedataproxy.com/resources/faq"
               color={textColor}
               fontSize="xs"
               _hover={{ color: hoverColor }}
@@ -68,7 +66,7 @@ import {
               FAQ
             </Link>
             <Link
-              href="https://cloud.thedataproxy.com/support"
+              href="https://thedataproxy.com/contact"
               color={textColor}
               fontSize="xs"
               _hover={{ color: hoverColor }}
@@ -110,7 +108,7 @@ import {
           {/* Legal Links */}
           <VStack spacing={1} align={{ base: "center", md: "start" }}>
             <Link
-              href="https://cloud.thedataproxy.com/privacy-policy"
+              href="https://thedataproxy.com/privacy"
               color={textColor}
               fontSize="xs"
               _hover={{ color: hoverColor }}
@@ -118,15 +116,19 @@ import {
               Privacy Policy
             </Link>
             <Link
-              href="https://cloud.thedataproxy.com/terms-of-service"
+              href="https://thedataproxy.com/terms"
               color={textColor}
               fontSize="xs"
               _hover={{ color: hoverColor }}
             >
               Terms of Service
             </Link>
+          </VStack>
+  
+          {/* Additional Legal Links */}
+          <VStack spacing={1} align={{ base: "center", md: "start" }}>
             <Link
-              href="https://cloud.thedataproxy.com/cookie-policy"
+              href="https://thedataproxy.com/cookie"
               color={textColor}
               fontSize="xs"
               _hover={{ color: hoverColor }}
@@ -134,7 +136,7 @@ import {
               Cookie Policy
             </Link>
             <Link
-              href="https://cloud.thedataproxy.com/compliance"
+              href=" https://thedataproxy.com/compliance"
               color={textColor}
               fontSize="xs"
               _hover={{ color: hoverColor }}
@@ -144,15 +146,31 @@ import {
           </VStack>
         </Flex>
   
-        {/* Copyright */}
-        <Text
+        {/* Copyright and Links */}
+      <Text
+        color={textColor}
+        fontSize="xs"
+        textAlign="center"
+        mt={{ base: 3, md: 2 }}
+      >
+        © 2025{" "}
+        <Link
+          href="https://thedataproxy.com"
           color={textColor}
-          fontSize="xs"
-          textAlign="center"
-          mt={{ base: 3, md: 2 }}
+          _hover={{ color: hoverColor }}
         >
-          © 2025 The Data Proxy, Cobalt Data Network. All rights reserved.
-        </Text>
+          The Data Proxy
+        </Link>
+        ,{" "}
+        <Link
+          href="https://cobaltdatanetwork.com"
+          color={textColor}
+          _hover={{ color: hoverColor }}
+        >
+          Cobalt Data Network
+        </Link>
+        . All rights reserved.
+      </Text>
       </Box>
     );
   };
