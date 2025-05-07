@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import {
   Box,
   Text,
@@ -14,6 +14,9 @@ import {
   Grid,
   GridItem,
   IconButton,
+  Heading,
+  Alert,
+  AlertIcon,
 } from "@chakra-ui/react";
 import { ExternalLinkIcon } from "@chakra-ui/icons";
 import { FiSend } from "react-icons/fi";
@@ -55,7 +58,7 @@ const PlaygroundGSerp: React.FC = () => {
           "Content-Type": "application/json",
           "x-api-key": apiKey,
         },
-        body: JSON.stringify({ url }), // Matches ProxyRequest model
+        body: JSON.stringify({ url }),
       });
 
       if (!res.ok) {
@@ -64,17 +67,12 @@ const PlaygroundGSerp: React.FC = () => {
       }
 
       const data = await res.json();
-      console.log("API Response:", data);
       setResponse(JSON.stringify(data, null, 2));
       if (data.result) {
-        console.log("Setting HTML preview:", data.result.substring(0, 100));
         setHtmlPreview(data.result);
-      } else {
-        console.log("No HTML content found in data.result");
       }
     } catch (error) {
       setError(error instanceof Error ? error.message : "Unknown error");
-      setResponse(`Error: ${error instanceof Error ? error.message : "Unknown error"}`);
     } finally {
       setIsLoading(false);
     }
@@ -82,10 +80,11 @@ const PlaygroundGSerp: React.FC = () => {
 
   return (
     <Box width="100%">
+      <Heading size="md" mb={4}>Test Proxy Request</Heading>
       <Box mb={6}>
         <Flex direction="column" gap={4}>
-          <Flex gap={4} alignItems="flex-end">
-            <FormControl flex="2">
+          <Flex direction="column" gap={4}>
+            <FormControl>
               <FormLabel fontSize="sm">Search URL</FormLabel>
               <Input
                 value={url}
@@ -95,55 +94,56 @@ const PlaygroundGSerp: React.FC = () => {
                 isRequired
               />
             </FormControl>
-          </Flex>
-          <Flex direction="row" gap={4} alignItems="flex-end">
-            <FormControl flex="1">
-              <FormLabel fontSize="sm">API Key</FormLabel>
-              <Input
-                value={apiKey}
-                onChange={(e) => setApiKey(e.target.value)}
-                placeholder="Enter your API key"
-                size="sm"
-                type="password" // Hide API key by default
-                isRequired
-              />
-            </FormControl>
-            <FormControl flex="1">
-              <FormLabel fontSize="sm">Region</FormLabel>
-              <Select
-                value={region}
-                onChange={(e) => setRegion(e.target.value)}
-                size="sm"
-              >
-                {REGIONS.map((reg) => (
-                  <option key={reg} value={reg}>
-                    {reg}
-                  </option>
-                ))}
-              </Select>
-            </FormControl>
-            <Box>
-              <Tooltip label="Send test request">
-                <Button
+            <Flex direction="row" gap={4}>
+              <FormControl flex="1">
+                <FormLabel fontSize="sm">API Key</FormLabel>
+                <Input
+                  value={apiKey}
+                  onChange={(e) => setApiKey(e.target.value)}
+                  placeholder="Enter your API key"
                   size="sm"
-                  colorScheme="blue"
-                  onClick={handleTestRequest}
-                  isLoading={isLoading}
-                  isDisabled={!url.trim() || !apiKey.trim() || !region}
+                  type="password"
+                  isRequired
+                />
+              </FormControl>
+              <FormControl flex="1">
+                <FormLabel fontSize="sm">Region</FormLabel>
+                <Select
+                  value={region}
+                  onChange={(e) => setRegion(e.target.value)}
+                  size="sm"
                 >
-                  <FiSend />
-                </Button>
-              </Tooltip>
-            </Box>
+                  {REGIONS.map((reg) => (
+                    <option key={reg} value={reg}>
+                      {reg}
+                    </option>
+                  ))}
+                </Select>
+              </FormControl>
+            </Flex>
+            <Tooltip label="Send test request">
+              <Button
+                size="sm"
+                colorScheme="blue"
+                onClick={handleTestRequest}
+                isLoading={isLoading}
+                isDisabled={!url.trim() || !apiKey.trim() || !region}
+              >
+                <FiSend />
+              </Button>
+            </Tooltip>
           </Flex>
           {error && (
-            <Text color="red.500" fontSize="sm">{error}</Text>
+            <Alert status="error">
+              <AlertIcon />
+              <Text fontSize="sm">{error}</Text>
+            </Alert>
           )}
         </Flex>
       </Box>
       <Grid templateColumns={{ base: "1fr", md: "1fr 1fr" }} gap={6}>
         <GridItem>
-          <Text fontSize="md" fontWeight="semibold" mb={2}>Response</Text>
+          <Heading size="md" mb={4}>Response</Heading>
           {isLoading ? (
             <Flex justify="center" align="center" h="400px">
               <Spinner size="xl" color="blue.500" />
@@ -162,36 +162,38 @@ const PlaygroundGSerp: React.FC = () => {
           )}
         </GridItem>
         <GridItem>
-          <Flex align="center" justify="space-between" mb={2}>
-            <Text fontSize="md" fontWeight="semibold">HTML Preview</Text>
+          <Flex align="center" justify="space-between" mb={4}>
+            <Heading size="md">HTML Preview</Heading>
             {htmlPreview && (
-              <Flex align="center" gap={2}>
-                <Tooltip label="Open preview in new tab">
-                  <IconButton
-                    aria-label="Open preview"
-                    icon={<ExternalLinkIcon />}
-                    size="sm"
-                    onClick={() => {
-                      const newWindow = window.open("", "_blank");
-                      if (newWindow) {
-                        newWindow.document.write(htmlPreview);
-                        newWindow.document.close();
-                      } else {
-                        alert("Popup blocked. Please allow popups for this site.");
-                      }
-                    }}
-                  />
-                </Tooltip>
-              </Flex>
+              <Tooltip label="Open preview in new tab">
+                <IconButton
+                  aria-label="Open preview"
+                  icon={<ExternalLinkIcon />}
+                  size="sm"
+                  onClick={() => {
+                    const newWindow = window.open("", "_blank");
+                    if (newWindow) {
+                      newWindow.document.write(htmlPreview);
+                      newWindow.document.close();
+                    } else {
+                      alert("Popup blocked. Please allow popups for this site.");
+                    }
+                  }}
+                />
+              </Tooltip>
             )}
           </Flex>
-          {htmlPreview && (
+          {htmlPreview ? (
             <iframe
               srcDoc={htmlPreview}
               style={{ width: "100%", height: "400px", border: "1px solid #ccc" }}
               title="HTML Preview"
               sandbox="allow-scripts allow-same-origin allow-popups allow-forms"
             />
+          ) : (
+            <Box height="400px" bg="gray.100" borderRadius="md" display="flex" alignItems="center" justifyContent="center">
+              <Text fontSize="sm" color="gray.500">No preview available</Text>
+            </Box>
           )}
         </GridItem>
       </Grid>
