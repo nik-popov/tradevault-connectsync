@@ -25,7 +25,7 @@ const tabsConfig = [
   { title: "My profile", component: UserInformation },
   { title: "Password", component: ChangePassword },
   {
-    title: "Manage Billing",
+    title: "Billing",
     component: () => {
       const [token, setToken] = useState(null);
       const [isLoading, setIsLoading] = useState(false);
