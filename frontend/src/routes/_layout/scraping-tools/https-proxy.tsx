@@ -112,14 +112,14 @@ const GoogleSerpPage = () => {
         <Box>
           <Heading size="md" mb={4}>Monthly Request Overview</Heading>
           <Box borderWidth="1px" borderRadius="lg" p={4} mb={4}>
-            <Text>Total Requests This Month: [Placeholder for request count]</Text>
+            <Text>No requests this month</Text>
             <Box mt={4} height="200px" bg="gray.100" display="flex" alignItems="center" justifyContent="center">
-              <Text>[Placeholder for request graph]</Text>
+              <Text color="gray.500">No request data available</Text>
             </Box>
           </Box>
           <Heading size="md" mb={4}>Recent Activity Logs</Heading>
           <Box borderWidth="1px" borderRadius="lg" p={4}>
-            <Text>[Placeholder for API request logs]</Text>
+            <Text>No recent activity logs</Text>
           </Box>
         </Box>
       ),
