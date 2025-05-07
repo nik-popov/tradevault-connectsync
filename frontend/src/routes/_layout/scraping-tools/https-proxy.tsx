@@ -170,7 +170,7 @@ const GoogleSerpPage = () => {
               </Text>
               <Flex align="baseline" gap={2}>
                 <Text fontSize="sm">Total Requests This Month:</Text>
-                <Heading size="sm">{totalRequests}</Heading>
+                <Heading size="md">{totalRequests}</Heading>
               </Flex>
             </Flex>
           </Box>
