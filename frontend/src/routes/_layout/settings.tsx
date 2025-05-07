@@ -12,6 +12,7 @@ import {
   Divider,
   Button,
   VStack,
+  useToast,
 } from "@chakra-ui/react";
 import { useQueryClient } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
@@ -27,36 +28,64 @@ const tabsConfig = [
   {
     title: "Billing",
     component: () => {
-      const [token, setToken] = useState(null);
+      const [token, setToken] = useState<string | null>(null);
       const [isLoading, setIsLoading] = useState(false);
+      const toast = useToast();
 
       useEffect(() => {
-        // Fetch the current user's token from /users/me
         const fetchToken = async () => {
           try {
-            const response = await fetch("/users/me", {
-              method: "GET",
-              headers: {
-                "Content-Type": "application/json",
-                "Accept": "application/json",
-              },
-              credentials: "include", // Include cookies if token is in a cookie
-            });
-            const userData = await response.json();
-            // Assuming token is returned in userData.token or available in localStorage
-            const authToken = userData.token || localStorage.getItem("auth_token");
+            // Try to get token from localStorage first
+            let authToken = localStorage.getItem("auth_token");
+
+            if (!authToken) {
+              // Fetch token from /users/me
+              const response = await fetch("https://api.thedataproxy.com/users/me", {
+                method: "GET",
+                headers: {
+                  "Content-Type": "application/json",
+                  "Accept": "application/json",
+                },
+                credentials: "include", // Send cookies if token is in a cookie
+              });
+
+              if (!response.ok) {
+                console.error(`Response status: ${response.status}, ${response.statusText}`);
+                throw new Error(`Failed to fetch user data: ${response.status}`);
+              }
+
+              const userData = await response.json();
+              authToken = userData.token || localStorage.getItem("auth_token");
+              if (authToken) {
+                localStorage.setItem("auth_token", authToken); // Cache token
+              }
+            }
+
             setToken(authToken);
           } catch (error) {
             console.error("Error fetching user token:", error);
+            toast({
+              title: "Error",
+              description: "Failed to authenticate. Please log in again.",
+              status: "error",
+              duration: 5000,
+              isClosable: true,
+            });
           }
         };
 
         fetchToken();
-      }, []);
+      }, [toast]);
 
       const handleBillingClick = async () => {
         if (!token) {
-          console.error("No token available");
+          toast({
+            title: "Authentication Required",
+            description: "Please log in to manage billing.",
+            status: "warning",
+            duration: 5000,
+            isClosable: true,
+          });
           return;
         }
 
@@ -70,14 +99,26 @@ const tabsConfig = [
               "Authorization": `Bearer ${token}`,
             },
           });
+
+          if (!response.ok) {
+            throw new Error(`Failed to fetch portal: ${response.status}`);
+          }
+
           const data = await response.json();
           if (data.portal_url) {
             window.location.href = data.portal_url;
           } else {
-            console.error("No portal URL received");
+            throw new Error("No portal URL received");
           }
         } catch (error) {
           console.error("Error accessing customer portal:", error);
+          toast({
+            title: "Error",
+            description: "Failed to access billing portal. Please try again.",
+            status: "error",
+            duration: 5000,
+            isClosable: true,
+          });
         } finally {
           setIsLoading(false);
         }
