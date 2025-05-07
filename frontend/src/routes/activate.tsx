@@ -34,9 +34,9 @@ export const Route = createFileRoute('/activate')({
   },
 })
 async function activateAccount(data: { new_password: string; token: string }) {
-  const baseUrl = import.meta.env.VITE_API_URL;
+  const baseUrl = 'https://api.thedataproxy.com';
   if (!baseUrl) {
-    console.error("VITE_API_URL is not defined");
+    console.error("base url is not defined");
     throw new Error("API URL is not configured");
   }
   const apiUrl = `${baseUrl}/v2/activate`;
