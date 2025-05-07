@@ -143,13 +143,13 @@ function UserSettings() {
         </TabList>
         <TabPanels>
           {finalTabs.map((tab, index) => (
-              <TabPanel key={index} bg="gray.50" p={4}>
+            <TabPanel key={index} bg="gray.50" p={4}>
               {React.createElement(tab.component)}
             </TabPanel>
           ))}
         </TabPanels>
       </Tabs>
-    </Space>
+    </Container>
   );
 }
 
