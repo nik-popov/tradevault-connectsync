@@ -4,7 +4,8 @@ import {
   Text, 
   Alert, 
   AlertIcon, 
-  VStack 
+  VStack, 
+  Button 
 } from "@chakra-ui/react";
 
 const ComingSoon: React.FC = () => {
@@ -16,12 +17,27 @@ const ComingSoon: React.FC = () => {
           borderRadius="md" 
           bg="gray.50"
           color="gray.800"
+          role="alert"
         >
           <AlertIcon color="blue.500" /> 
-          <Text fontSize="sm">
-           Features are in development. 
+          <Text fontSize={{ base: "sm", md: "md" }}>
+            Account not linked to a valid subscription
           </Text>
         </Alert>
+        <Button
+          as="a"
+          href="https://thedataproxy.com/pricing"
+          target="_blank"
+          rel="noopener noreferrer"
+          colorScheme="blue"
+          size="md"
+          alignSelf="start"
+        >
+          Explore Plans
+        </Button>
+        <Text fontSize={{ base: "sm", md: "md" }} color="gray.600">
+          If you have purchased a subscription, please contact support using the same email address used for the purchase.
+        </Text>
       </VStack>
     </Box>
   );
