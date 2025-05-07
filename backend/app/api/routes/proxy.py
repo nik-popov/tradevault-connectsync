@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, BackgroundTasks, Header
+from fastapi import APIRouter, Depends, HTTPException, BackgroundTasks, Header, Request, FastAPI
 from typing import Annotated, Dict, List, Optional
 from pydantic import BaseModel, HttpUrl
 import httpx
@@ -19,11 +19,22 @@ from uuid import UUID, uuid4
 from app.utils import generate_test_email, send_email
 from slowapi import Limiter
 from slowapi.util import get_remote_address
+from slowapi.errors import RateLimitExceeded
 
 # Configure logging based on environment
 log_level = logging.INFO if os.getenv("ENV") == "production" else logging.DEBUG
 logging.basicConfig(level=log_level)
 logger = logging.getLogger(__name__)
+try:
+    limiter = Limiter(
+        key_func=get_remote_address,
+        default_limits=["100/minute"]  # Default limit, overridden by endpoint-specific limits
+    )
+    SLOWAPI_AVAILABLE = True
+except Exception as e:
+    logger.warning(f"Failed to initialize Redis for slowapi: {str(e)}. Falling back to in-memory storage.")
+    limiter = Limiter(key_func=get_remote_address)  # In-memory fallback
+    SLOWAPI_AVAILABLE = True
 
 # Define regions and their corresponding endpoints (ideally load from env vars in prod)
 REGION_ENDPOINTS = {
@@ -101,9 +112,6 @@ class ProxyEndpointManager:
 endpoint_manager = ProxyEndpointManager()
 
 router = APIRouter(tags=["proxy"], prefix="/proxy")
-
-# Rate limiter
-limiter = Limiter(key_func=get_remote_address)
 
 # APIToken Model Definition
 class APIToken(SQLModel, table=True):
@@ -264,11 +272,12 @@ async def get_proxy_status(
     return ProxyStatusResponse(statuses=[status])
 
 @router.post("/fetch", response_model=ProxyResponse)
-@limiter.limit("100/minute")  # Rate limit to 100 requests per minute per IP
+@limiter.limit("100/minute")  # Apply rate limiting directly
 async def proxy_fetch(
+    request: Request,  # Required for slowapi
     session: SessionDep,
     region: str,
-    request: ProxyRequest,
+    proxy_request: ProxyRequest,
     user: Annotated[User, Depends(verify_api_token)],
     background_tasks: BackgroundTasks,
     x_api_key: Annotated[str, Header()] = None
@@ -303,7 +312,7 @@ async def proxy_fetch(
         async with httpx.AsyncClient(timeout=10.0) as client:
             response = await client.post(
                 f"{selected_endpoint}/fetch",
-                json={"url": str(request.url)}  # Ensure URL is string
+                json={"url": str(proxy_request.url)}  # Ensure URL is string
             )
             response.raise_for_status()
             data = response.json()
