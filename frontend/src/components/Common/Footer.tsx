@@ -79,7 +79,7 @@ import {
           {/* Social Media */}
           <VStack spacing={1} align={{ base: "center", md: "start" }}>
             <Flex gap={3}>
-              <Link href="https://twitter.com" isExternal>
+              <Link href="https://x.com/cobaltdata" isExternal>
                 <Icon
                   as={FiTwitter}
                   color={textColor}
@@ -95,7 +95,7 @@ import {
                   boxSize="1em"
                 />
               </Link>
-              <Link href="https://github.com" isExternal>
+              <Link href="https://github.com/cobaltdatanetwork" isExternal>
                 <Icon
                   as={FiGithub}
                   color={textColor}
