@@ -35,7 +35,8 @@ export const Route = createFileRoute('/activate')({
 })
 
 async function activateAccount(data: { new_password: string; token: string }) {
-  const apiUrl = `${import.meta.env.VITE_API_URL}/v2/activate`
+  const apiUrl = `${import.meta.env.VITE_API_URL}/activate`; // Changed from /v2/activate to /activate
+  console.log("Sending request to:", apiUrl, "with data:", data); // Debug log
   const response = await fetch(apiUrl, {
     method: "POST",
     headers: {
@@ -45,10 +46,12 @@ async function activateAccount(data: { new_password: string; token: string }) {
       token: data.token,
       new_password: data.new_password,
     }),
-  })
+  });
 
+  console.log("Response status:", response.status, response.statusText); // Debug log
   if (!response.ok) {
-    const errorData = await response.json()
+    const errorData = await response.json();
+    console.error("Error response:", errorData); // Debug log
     const error: ApiError = {
       name: "ApiError",
       url: apiUrl,
@@ -63,11 +66,11 @@ async function activateAccount(data: { new_password: string; token: string }) {
         },
       },
       message: errorData.detail || "Failed to activate account",
-    }
-    throw error
+    };
+    throw error;
   }
 
-  return response.json()
+  return response.json();
 }
 
 function ActivateAccount() {
