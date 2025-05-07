@@ -160,30 +160,12 @@ const ProtectedComponent: React.FC<{ children: React.ReactNode }> = ({
     );
   }
 
-  // Subscribed users: show protected content or development message
-  if (hasSubscription) {
-    // Since features are in development, show a placeholder message
-    // Replace this with actual protected content when features are ready
-    return (
-      <VStack spacing={4} p={4}>
-        <Text fontSize="xl" fontWeight="bold">
-          Welcome, Subscriber!
-        </Text>
-        <Text color="gray.600">
-          Our features are currently in development. Stay tuned for exciting
-          updates coming soon!
-        </Text>
-        <Button
-          colorScheme="blue"
-          onClick={() => navigate({ to: "/dashboard" })}
-        >
-          Go to Dashboard
-        </Button>
-      </VStack>
-    );
+  // Subscribed or trial users: render protected content
+  if (hasSubscription || isTrial) {
+    return <>{children}</>;
   }
 
-  // Fallback for trial users or other cases: render protected content
+  // Fallback: render protected content (should not be reached due to above conditions)
   return <>{children}</>;
 };
 
