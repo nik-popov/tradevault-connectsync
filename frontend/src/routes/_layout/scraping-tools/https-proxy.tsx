@@ -141,8 +141,8 @@ const GoogleSerpPage = () => {
     enabled: !!token,
   });
 
-  // Calculate total request count
-  const totalRequests = 535; // Hardcoded as per request
+  // Calculate total request count dynamically from API keys
+  const totalRequests = apiKeys?.reduce((sum, key) => sum + (key.request_count || 0), 0) || 0;
 
   // Determine subscription status
   const hasActiveSubscription = subscriptions?.some(
@@ -159,12 +159,10 @@ const GoogleSerpPage = () => {
         <Box>
           <Heading size="md" mb={4}>Usage</Heading>
           <Box borderWidth="1px" borderRadius="md" p={4} mb={4}>
-        
-              <Flex align="baseline" gap={2}>
-                <Text fontSize="sm">Total Requests This Month:</Text>
-                <Heading size="sm">{totalRequests}</Heading>
-              </Flex>
-          
+            <Flex align="baseline" gap={2}>
+              <Text fontSize="sm">Total Requests This Month:</Text>
+              <Heading size="sm">{totalRequests}</Heading>
+            </Flex>
           </Box>
           <Grid templateColumns={{ base: "1fr", md: "1fr 1fr" }} gap={6}>
             <GridItem>
@@ -178,10 +176,6 @@ const GoogleSerpPage = () => {
                     </Tr>
                   </Thead>
                   <Tbody>
-                    <Tr>
-                      <Td><Text fontSize="sm">Subscription ID</Text></Td>
-                      <Td><Text fontSize="sm">{activeSubscription?.id || "N/A"}</Text></Td>
-                    </Tr>
                     <Tr>
                       <Td><Text fontSize="sm">Plan Name</Text></Td>
                       <Td><Text fontSize="sm">{activeSubscription?.product_name || activeSubscription?.plan_name || "N/A"}</Text></Td>
@@ -202,18 +196,6 @@ const GoogleSerpPage = () => {
                       <Td><Text fontSize="sm">Period End</Text></Td>
                       <Td><Text fontSize="sm">{activeSubscription?.current_period_end
                         ? new Date(activeSubscription.current_period_end * 1000).toLocaleString()
-                        : "N/A"}</Text></Td>
-                    </Tr>
-                    <Tr>
-                      <Td><Text fontSize="sm">Trial Start</Text></Td>
-                      <Td><Text fontSize="sm">{activeSubscription?.trial_start
-                        ? new Date(activeSubscription.trial_start * 1000).toLocaleString()
-                        : "N/A"}</Text></Td>
-                    </Tr>
-                    <Tr>
-                      <Td><Text fontSize="sm">Trial End</Text></Td>
-                      <Td><Text fontSize="sm">{activeSubscription?.trial_end
-                        ? new Date(activeSubscription.trial_end * 1000).toLocaleString()
                         : "N/A"}</Text></Td>
                     </Tr>
                     <Tr>
