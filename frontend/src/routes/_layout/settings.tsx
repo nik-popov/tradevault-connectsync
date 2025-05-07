@@ -85,7 +85,7 @@ function UserSettings() {
         <Text fontSize="sm">Manage your settings</Text>
       </Flex>
 
-      <Divider myIcing my={4} borderColor="gray.200" />
+      <Divider my={4} borderColor="gray.200" />
 
       <Tabs colorScheme="blue">
         <TabList borderBottom="2px solid" borderColor="gray.200">
