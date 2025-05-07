@@ -14,6 +14,7 @@ import {
   IconButton,
   Alert,
   AlertIcon,
+  Heading,
 } from "@chakra-ui/react";
 import { CopyIcon, DeleteIcon } from "@chakra-ui/icons";
 
@@ -37,6 +38,7 @@ const ApiKeyGSerp: React.FC<ApiKeyGSerpProps> = ({ token }) => {
   const [error, setError] = useState<string | null>(null);
   const [fullKey, setFullKey] = useState<string | null>(null);
   const [hasProxyApiAccess, setHasProxyApiAccess] = useState<boolean | null>(null);
+
   useEffect(() => {
     if (token) {
       fetchProxyApiAccess();
@@ -99,7 +101,8 @@ const ApiKeyGSerp: React.FC<ApiKeyGSerpProps> = ({ token }) => {
       setLoading(false);
     }
   };
-const generateKey = async () => {
+
+  const generateKey = async () => {
     if (!token) {
       setError("No authentication token available");
       return;
@@ -179,7 +182,6 @@ const generateKey = async () => {
     }
   };
 
-
   const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text);
   };
@@ -189,7 +191,7 @@ const generateKey = async () => {
       <Box p={4} width="100%">
         <Alert status="error">
           <AlertIcon />
-          Please log in on the main page to access API key management
+          <Text fontSize="sm">Please log in on the main page to access API key management</Text>
         </Alert>
       </Box>
     );
@@ -198,11 +200,10 @@ const generateKey = async () => {
   return (
     <Box p={4} width="100%">
       <Flex direction="column" gap={6}>
+        <Heading size="md" mb={4}>Generate New API Key</Heading>
         <Box>
           <Flex justify="space-between" align="center" mb={2}>
-            <Text fontSize="md" fontWeight="semibold">
-              Generate New API Key
-            </Text>
+            <Text fontSize="sm" fontWeight="semibold">Create a new API key for proxy access</Text>
             <Tooltip label="Generate a new API key">
               <Button
                 size="sm"
@@ -215,7 +216,6 @@ const generateKey = async () => {
               </Button>
             </Tooltip>
           </Flex>
-
           <Box
             mt={4}
             p={4}
@@ -244,55 +244,53 @@ const generateKey = async () => {
                   />
                 </Flex>
                 <Text fontSize="xs" color="gray.500">
-                  Store this securely.
+                  Store this securely
                 </Text>
               </>
             ) : (
               <Text fontSize="sm" color="gray.500">
-                Generate a key to see it here.
+                Generate a key to see it here
               </Text>
             )}
           </Box>
         </Box>
 
-        {hasProxyApiAccess === null && <Text>Checking subscription status...</Text>}
+        {hasProxyApiAccess === null && <Text fontSize="sm">Checking subscription status...</Text>}
         {hasProxyApiAccess === false && (
           <Alert status="warning">
             <AlertIcon />
-            Your subscription plan does not include proxy API features.
+            <Text fontSize="sm">Your subscription plan does not include proxy API features</Text>
           </Alert>
         )}
         {error && (
           <Alert status="error">
             <AlertIcon />
-            {error}
+            <Text fontSize="sm">{error}</Text>
           </Alert>
         )}
 
         <Box>
-          <Text fontSize="md" fontWeight="semibold" mb={2}>
-            Existing API Keys
-          </Text>
+          <Heading size="md" mb={4}>Existing API Keys</Heading>
           <Box shadow="md" borderWidth="1px" borderRadius="md" overflowX="auto">
             <Table variant="simple" size="sm">
               <Thead>
                 <Tr>
-                  <Th>Key Preview</Th>
-                  <Th>Created At</Th>
-                  <Th>Expires At</Th>
-                  <Th>Request Count</Th>
-                  <Th>Status</Th>
-                  <Th>Actions</Th>
+                  <Th><Text fontSize="sm">Key Preview</Text></Th>
+                  <Th><Text fontSize="sm">Created At</Text></Th>
+                  <Th><Text fontSize="sm">Expires At</Text></Th>
+                  <Th><Text fontSize="sm">Request Count</Text></Th>
+                  <Th><Text fontSize="sm">Status</Text></Th>
+                  <Th><Text fontSize="sm">Actions</Text></Th>
                 </Tr>
               </Thead>
               <Tbody>
                 {apiKeys.map((key, index) => (
                   <Tr key={index}>
-                    <Td>{key.key_preview}</Td>
-                    <Td>{new Date(key.created_at).toLocaleString()}</Td>
-                    <Td>{new Date(key.expires_at).toLocaleString()}</Td>
-                    <Td>{key.request_count}</Td>
-                    <Td>{key.is_active ? "Active" : "Inactive"}</Td>
+                    <Td><Text fontSize="sm">{key.key_preview}</Text></Td>
+                    <Td><Text fontSize="sm">{new Date(key.created_at).toLocaleString()}</Text></Td>
+                    <Td><Text fontSize="sm">{new Date(key.expires_at).toLocaleString()}</Text></Td>
+                    <Td><Text fontSize="sm">{key.request_count}</Text></Td>
+                    <Td><Text fontSize="sm">{key.is_active ? "Active" : "Inactive"}</Text></Td>
                     <Td>
                       <Tooltip
                         label={
