@@ -55,29 +55,8 @@ import {
               </Link>
             </Flex>
           </VStack>
-  
-          {/* Support Links */}
-          <VStack spacing={1} align={{ base: "center", md: "start" }}>
-            <Link
-              href="https://thedataproxy.com/resources/faq"
-              color={textColor}
-              fontSize="xs"
-              _hover={{ color: hoverColor }}
-            >
-              FAQ
-            </Link>
-            <Link
-              href="https://thedataproxy.com/contact"
-              color={textColor}
-              fontSize="xs"
-              _hover={{ color: hoverColor }}
-            >
-              Help & Support
-            </Link>
-          </VStack>
-  
-          {/* Social Media */}
-          <VStack spacing={1} align={{ base: "center", md: "start" }}>
+    {/* Social Media */}
+    <VStack spacing={1} align={{ base: "center", md: "start" }}>
             <Flex gap={3}>
               <Link href="https://x.com/cobaltdata" isExternal>
                 <Icon
@@ -106,6 +85,27 @@ import {
             </Flex>
           </VStack>
   
+          {/* Support Links */}
+          <VStack spacing={1} align={{ base: "center", md: "start" }}>
+            <Link
+              href="https://thedataproxy.com/resources/faq"
+              color={textColor}
+              fontSize="xs"
+              _hover={{ color: hoverColor }}
+            >
+              FAQ
+            </Link>
+            <Link
+              href="https://thedataproxy.com/contact"
+              color={textColor}
+              fontSize="xs"
+              _hover={{ color: hoverColor }}
+            >
+              Help & Support
+            </Link>
+          </VStack>
+  
+    
           {/* Legal Links */}
           <VStack spacing={1} align={{ base: "center", md: "start" }}>
             <Link
