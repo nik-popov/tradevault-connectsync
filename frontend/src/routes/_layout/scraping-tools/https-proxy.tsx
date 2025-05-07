@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { Container, Flex, Text, Tabs, TabList, TabPanels, Tab, TabPanel, Box, Heading, Alert, AlertIcon } from "@chakra-ui/react";
+import { Container, Flex, Text, Tabs, TabList, TabPanels, Tab, TabPanel, Box, Heading, Alert, AlertIcon, Grid, GridItem, Table, Thead, Tbody, Tr, Th, Td } from "@chakra-ui/react";
 import ProtectedComponent from "../../../components/ProtectedComponent";
 import PlaygroundGSerp from "../../../components/PlaygroundGSerp";
 import ApiKeyGSerp from "../../../components/ApiKeyGSerp";
@@ -157,15 +157,93 @@ const GoogleSerpPage = () => {
       title: "Overview",
       component: () => (
         <Box>
-          <Heading size="md" mb={4}>Monthly Request Overview</Heading>
-          <Box borderWidth="1px" borderRadius="lg" p={4} mb={4}>
-            <Text fontSize="sm">Total Requests This Month: {totalRequests}</Text>
-            <Box mt={4} height="200px" bg="gray.100" borderRadius="md" display="flex" alignItems="center" justifyContent="center">
-              <Text fontSize="xs" color="gray.500">Graph visualization coming soon</Text>
-            </Box>
+          <Heading size="md" mb={4}>Subscription Summary</Heading>
+          <Box borderWidth="1px" borderRadius="md" p={4} mb={4}>
+            <Flex direction="column" gap={2}>
+              <Text fontSize="sm">
+                Plan: {activeSubscription?.product_name || activeSubscription?.plan_name || "N/A"}
+              </Text>
+              <Text fontSize="sm">
+                Status: {activeSubscription?.status
+                  ? activeSubscription.status.charAt(0).toUpperCase() + activeSubscription.status.slice(1)
+                  : "N/A"}
+              </Text>
+              <Text fontSize="sm">
+                Total Requests This Month: {totalRequests}
+              </Text>
+            </Flex>
           </Box>
-          <Heading size="md" mb={4}>Recent Activity Logs</Heading>
-          <Box borderWidth="1px" borderRadius="lg" p={4}>
+          <Grid templateColumns={{ base: "1fr", md: "1fr 1fr" }} gap={6}>
+            <GridItem>
+              <Heading size="md" mb={4}>Details</Heading>
+              <Box shadow="md" borderWidth="1px" borderRadius="md" overflowX="auto">
+                <Table variant="simple" size="sm">
+                  <Thead>
+                    <Tr>
+                      <Th><Text fontSize="sm">Field</Text></Th>
+                      <Th><Text fontSize="sm">Value</Text></Th>
+                    </Tr>
+                  </Thead>
+                  <Tbody>
+                    <Tr>
+                      <Td><Text fontSize="sm">Subscription ID</Text></Td>
+                      <Td><Text fontSize="sm">{activeSubscription?.id || "N/A"}</Text></Td>
+                    </Tr>
+                    <Tr>
+                      <Td><Text fontSize="sm">Plan Name</Text></Td>
+                      <Td><Text fontSize="sm">{activeSubscription?.product_name || activeSubscription?.plan_name || "N/A"}</Text></Td>
+                    </Tr>
+                    <Tr>
+                      <Td><Text fontSize="sm">Status</Text></Td>
+                      <Td><Text fontSize="sm">{activeSubscription?.status
+                        ? activeSubscription.status.charAt(0).toUpperCase() + activeSubscription.status.slice(1)
+                        : "N/A"}</Text></Td>
+                    </Tr>
+                    <Tr>
+                      <Td><Text fontSize="sm">Period Start</Text></Td>
+                      <Td><Text fontSize="sm">{activeSubscription?.current_period_start
+                        ? new Date(activeSubscription.current_period_start * 1000).toLocaleString()
+                        : "N/A"}</Text></Td>
+                    </Tr>
+                    <Tr>
+                      <Td><Text fontSize="sm">Period End</Text></Td>
+                      <Td><Text fontSize="sm">{activeSubscription?.current_period_end
+                        ? new Date(activeSubscription.current_period_end * 1000).toLocaleString()
+                        : "N/A"}</Text></Td>
+                    </Tr>
+                    <Tr>
+                      <Td><Text fontSize="sm">Trial Start</Text></Td>
+                      <Td><Text fontSize="sm">{activeSubscription?.trial_start
+                        ? new Date(activeSubscription.trial_start * 1000).toLocaleString()
+                        : "N/A"}</Text></Td>
+                    </Tr>
+                    <Tr>
+                      <Td><Text fontSize="sm">Trial End</Text></Td>
+                      <Td><Text fontSize="sm">{activeSubscription?.trial_end
+                        ? new Date(activeSubscription.trial_end * 1000).toLocaleString()
+                        : "N/A"}</Text></Td>
+                    </Tr>
+                    <Tr>
+                      <Td><Text fontSize="sm">Total Requests</Text></Td>
+                      <Td><Text fontSize="sm">{totalRequests}</Text></Td>
+                    </Tr>
+                    <Tr>
+                      <Td><Text fontSize="sm">Active API Keys</Text></Td>
+                      <Td><Text fontSize="sm">{apiKeys?.filter(key => key.is_active).length || 0}</Text></Td>
+                    </Tr>
+                  </Tbody>
+                </Table>
+              </Box>
+            </GridItem>
+            <GridItem>
+              <Heading size="md" mb={4}>Request Trend</Heading>
+              <Box height="300px" bg="gray.100" borderRadius="md" display="flex" alignItems="center" justifyContent="center">
+                <Text fontSize="xs" color="gray.500">Graph data unavailable</Text>
+              </Box>
+            </GridItem>
+          </Grid>
+          <Heading size="md" mt={6} mb={4}>Recent Activity Logs</Heading>
+          <Box borderWidth="1px" borderRadius="md" p={4}>
             <Text fontSize="sm">No recent activity logs</Text>
           </Box>
         </Box>
