@@ -143,7 +143,6 @@ function UserSettings() {
         </TabList>
         <TabPanels>
           {finalTabs.map((tab, index) => (
-            <Tab事的
               <TabPanel key={index} bg="gray.50" p={4}>
               {React.createElement(tab.component)}
             </TabPanel>
