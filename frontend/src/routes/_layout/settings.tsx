@@ -24,7 +24,6 @@ import UserInformation from "../../components/UserSettings/UserInformation";
 const tabsConfig = [
   { title: "My profile", component: UserInformation },
   { title: "Password", component: ChangePassword },
-  { title: "Appearance", component: Appearance },
   { title: "Close Account", component: DeleteAccount },
 ];
 
