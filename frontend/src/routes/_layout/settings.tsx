@@ -113,8 +113,12 @@ function UserSettings() {
     queryKey: ["billingPortal"],
     queryFn: () => fetchBillingPortal(token!),
     enabled: !!token, // Only fetch if token exists
-    onError: (error) => {
-      console.error("Error fetching billing portal:", error);
+  });
+
+  // Show toast for billing fetch error when it occurs
+  React.useEffect(() => {
+    if (billingError) {
+      console.error("Error fetching billing portal:", billingError);
       toast({
         title: "Error",
         description: "Failed to load billing portal data. Please try again later.",
@@ -122,8 +126,8 @@ function UserSettings() {
         duration: 5000,
         isClosable: true,
       });
-    },
-  });
+    }
+  }, [billingError, toast]);
 
   if (!currentUser) {
     return (
