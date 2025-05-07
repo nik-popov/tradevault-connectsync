@@ -33,14 +33,19 @@ export const Route = createFileRoute('/activate')({
     }
   },
 })
-
 async function activateAccount(data: { new_password: string; token: string }) {
-  const apiUrl = `${import.meta.env.VITE_API_URL}/activate`; // Changed from /v2/activate to /activate
+  const baseUrl = import.meta.env.VITE_API_URL;
+  if (!baseUrl) {
+    console.error("VITE_API_URL is not defined");
+    throw new Error("API URL is not configured");
+  }
+  const apiUrl = `${baseUrl}/v2/activate`;
   console.log("Sending request to:", apiUrl, "with data:", data); // Debug log
   const response = await fetch(apiUrl, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
+      "accept": "application/json"
     },
     body: JSON.stringify({
       token: data.token,
@@ -63,6 +68,7 @@ async function activateAccount(data: { new_password: string; token: string }) {
         url: apiUrl,
         headers: {
           "Content-Type": "application/json",
+          "accept": "application/json"
         },
       },
       message: errorData.detail || "Failed to activate account",
@@ -72,7 +78,6 @@ async function activateAccount(data: { new_password: string; token: string }) {
 
   return response.json();
 }
-
 function ActivateAccount() {
   const {
     register,
