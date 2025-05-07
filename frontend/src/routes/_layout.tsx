@@ -2,6 +2,7 @@ import { Flex, Spinner } from "@chakra-ui/react";
 import { Outlet, createFileRoute, redirect } from "@tanstack/react-router";
 
 import TopNav from "../components/Common/TopNav";
+import Footer from "../components/Common/Footer"; // Assuming Footer is in a Common directory
 import useAuth, { isLoggedIn } from "../hooks/useAuth";
 
 export const Route = createFileRoute("/_layout")({
@@ -32,10 +33,12 @@ function Layout() {
           maxW="1200px"
           mx="auto"
           w="100%"
+          as="main"
         >
           <Outlet />
         </Flex>
       )}
+      <Footer />
     </Flex>
   );
 }
