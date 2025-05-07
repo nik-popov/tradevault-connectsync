@@ -1,12 +1,13 @@
 from fastapi import APIRouter, Depends, HTTPException, BackgroundTasks, Header
 from typing import Annotated, Dict, List, Optional
-from pydantic import BaseModel
+from pydantic import BaseModel, HttpUrl
 import httpx
 import logging
 import asyncio
 import time
 import random
 import uuid
+import os
 from datetime import datetime, timedelta
 from app.api.deps import SessionDep, CurrentUser
 from app.models import User
@@ -14,12 +15,17 @@ from app.core.security import generate_api_key, verify_api_key
 from app.api.routes import users
 from sqlalchemy.orm import Session
 from sqlmodel import SQLModel, Field
-from uuid import UUID,uuid4
+from uuid import UUID, uuid4
 from app.utils import generate_test_email, send_email
-logging.basicConfig(level=logging.DEBUG)
+from slowapi import Limiter
+from slowapi.util import get_remote_address
+
+# Configure logging based on environment
+log_level = logging.INFO if os.getenv("ENV") == "production" else logging.DEBUG
+logging.basicConfig(level=log_level)
 logger = logging.getLogger(__name__)
 
-# Define regions and their corresponding endpoints
+# Define regions and their corresponding endpoints (ideally load from env vars in prod)
 REGION_ENDPOINTS = {
     "us-east": [
         "https://us-east4-proxy1-454912.cloudfunctions.net/main",
@@ -74,7 +80,30 @@ REGION_ENDPOINTS = {
     ]
 }
 
+# Endpoint Manager for abstraction
+class ProxyEndpointManager:
+    def __init__(self):
+        self.endpoints = REGION_ENDPOINTS
+        self.endpoint_ids = {
+            region: {f"{region}_{i}": url for i, url in enumerate(urls)}
+            for region, urls in REGION_ENDPOINTS.items()
+        }
+
+    def get_endpoints(self, region: str) -> List[str]:
+        return self.endpoints.get(region, [])
+
+    def get_endpoint_id(self, region: str, url: str) -> Optional[str]:
+        for endpoint_id, endpoint_url in self.endpoint_ids.get(region, {}).items():
+            if endpoint_url == url:
+                return endpoint_id
+        return None
+
+endpoint_manager = ProxyEndpointManager()
+
 router = APIRouter(tags=["proxy"], prefix="/proxy")
+
+# Rate limiter
+limiter = Limiter(key_func=get_remote_address)
 
 # APIToken Model Definition
 class APIToken(SQLModel, table=True):
@@ -110,7 +139,7 @@ class ProxyStatusResponse(BaseModel):
     statuses: List[ProxyStatus]
 
 class ProxyRequest(BaseModel):
-    url: str
+    url: HttpUrl  # Stricter validation for URLs
 
 class ProxyResponse(BaseModel):
     result: str
@@ -121,11 +150,13 @@ class ProxyResponse(BaseModel):
 # Health check function
 async def check_proxy_health(endpoint: str, region: str) -> Dict:
     start_time = time.time()
+    endpoint_id = endpoint_manager.get_endpoint_id(region, endpoint) or "unknown"
     try:
         async with httpx.AsyncClient(timeout=5.0) as client:
             response = await client.get(f"{endpoint}/health")
             response.raise_for_status()
             response_time = time.time() - start_time
+            logger.debug(f"Health check succeeded for proxy {endpoint_id} in {region}")
             return {
                 "region": region,
                 "is_healthy": True,
@@ -133,7 +164,7 @@ async def check_proxy_health(endpoint: str, region: str) -> Dict:
                 "last_checked": datetime.utcnow()
             }
     except Exception as e:
-        logger.error(f"Health check failed for {endpoint} in {region}: {str(e)}")
+        logger.error(f"Health check failed for proxy {endpoint_id} in {region}: {str(e)}")
         return {
             "region": region,
             "is_healthy": False,
@@ -188,11 +219,11 @@ async def generate_user_api_key(session: SessionDep, current_user: CurrentUser):
         session.add(token)
         session.commit()
         session.refresh(token)
-        logger.debug(f"API key generated for user: {current_user.email}")
+        logger.info(f"API key generated for user: {current_user.email}")
         return {"api_key": api_key}
     except Exception as e:
         logger.error(f"Failed to generate API key for user {current_user.email}: {str(e)}")
-        raise HTTPException(status_code=500, detail=f"Failed to generate API key: {str(e)}")
+        raise HTTPException(status_code=500, detail="Failed to generate API key")
 
 @router.get("/regions", response_model=RegionsResponse)
 async def list_regions(
@@ -200,7 +231,7 @@ async def list_regions(
     session: SessionDep
 ):
     logger.debug(f"Listing regions for user: {user.email}")
-    return RegionsResponse(regions=list(REGION_ENDPOINTS.keys()))
+    return RegionsResponse(regions=list(endpoint_manager.endpoints.keys()))
 
 @router.get("/status", response_model=ProxyStatusResponse)
 async def get_proxy_status(
@@ -209,11 +240,11 @@ async def get_proxy_status(
     session: SessionDep
 ):
     logger.debug(f"Checking proxy status for region: {region}, user: {user.email}")
-    if region not in REGION_ENDPOINTS:
+    if region not in endpoint_manager.endpoints:
         logger.info(f"Invalid region: {region}")
-        raise HTTPException(status_code=400, detail=f"Invalid region. Available regions: {list(REGION_ENDPOINTS.keys())}")
+        raise HTTPException(status_code=400, detail="Invalid region. Use /regions to list available regions")
     
-    endpoints = REGION_ENDPOINTS[region]
+    endpoints = endpoint_manager.get_endpoints(region)
     status_tasks = [check_proxy_health(endpoint, region) for endpoint in endpoints]
     results = await asyncio.gather(*status_tasks)
     
@@ -233,6 +264,7 @@ async def get_proxy_status(
     return ProxyStatusResponse(statuses=[status])
 
 @router.post("/fetch", response_model=ProxyResponse)
+@limiter.limit("100/minute")  # Rate limit to 100 requests per minute per IP
 async def proxy_fetch(
     session: SessionDep,
     region: str,
@@ -242,9 +274,9 @@ async def proxy_fetch(
     x_api_key: Annotated[str, Header()] = None
 ):
     logger.debug(f"Proxy fetch request for region: {region}, user: {user.email}")
-    if region not in REGION_ENDPOINTS:
+    if region not in endpoint_manager.endpoints:
         logger.info(f"Invalid region: {region}")
-        raise HTTPException(status_code=400, detail=f"Invalid region. Available regions: {list(REGION_ENDPOINTS.keys())}")
+        raise HTTPException(status_code=400, detail="Invalid region. Use /regions to list available regions")
     
     token = session.query(APIToken).filter(
         APIToken.token == x_api_key,
@@ -255,22 +287,23 @@ async def proxy_fetch(
         logger.info("Invalid API key for fetch")
         raise HTTPException(status_code=401, detail="Invalid API key")
     
-    endpoints = REGION_ENDPOINTS[region]
+    endpoints = endpoint_manager.get_endpoints(region)
     status_tasks = [check_proxy_health(endpoint, region) for endpoint in endpoints]
     results = await asyncio.gather(*status_tasks)
     
     healthy_endpoints = [endpoints[i] for i, result in enumerate(results) if result["is_healthy"]]
     if not healthy_endpoints:
         logger.error(f"No healthy proxy endpoints in {region}")
-        raise HTTPException(status_code=503, detail=f"No healthy proxy endpoints available in {region}")
+        raise HTTPException(status_code=503, detail="No healthy proxy endpoints available in region")
     
     selected_endpoint = random.choice(healthy_endpoints)
+    endpoint_id = endpoint_manager.get_endpoint_id(region, selected_endpoint) or "unknown"
     
     try:
         async with httpx.AsyncClient(timeout=10.0) as client:
             response = await client.post(
                 f"{selected_endpoint}/fetch",
-                json={"url": request.url}
+                json={"url": str(request.url)}  # Ensure URL is string
             )
             response.raise_for_status()
             data = response.json()
@@ -278,7 +311,7 @@ async def proxy_fetch(
             token.request_count += 1
             session.commit()
             
-            logger.debug(f"Proxy fetch successful in {region}")
+            logger.info(f"Proxy fetch successful in {region} (endpoint: {endpoint_id})")
             return ProxyResponse(
                 result=data["result"],
                 public_ip=data["public_ip"],
@@ -286,11 +319,11 @@ async def proxy_fetch(
                 region_used=region
             )
     except httpx.HTTPStatusError as e:
-        logger.error(f"Proxy fetch failed in {region}: HTTP {e.response.status_code}")
-        raise HTTPException(status_code=502, detail=f"Proxy request failed in {region}")
+        logger.error(f"Proxy fetch failed in {region} (endpoint: {endpoint_id}): HTTP {e.response.status_code}")
+        raise HTTPException(status_code=502, detail="Proxy request failed in region")
     except Exception as e:
-        logger.error(f"Proxy fetch failed in {region}: {str(e)}")
-        raise HTTPException(status_code=500, detail=f"Proxy request failed in {region}")
+        logger.error(f"Proxy fetch failed in {region} (endpoint: {endpoint_id}): {str(e)}")
+        raise HTTPException(status_code=500, detail="Proxy request failed in region")
 
 FRONT_PREVIEW_LENGTH = 8
 END_PREVIEW_LENGTH = 8
@@ -317,7 +350,7 @@ async def list_user_api_keys(session: SessionDep, current_user: CurrentUser):
         }
         for token in api_tokens
     ]
-    logger.debug(f"Retrieved {len(key_list)} API keys")
+    logger.debug(f"Retrieved {len(key_list)} API keys for user: {current_user.email}")
     return key_list
 
 @router.delete("/api-keys/{key_preview}", status_code=204)
@@ -353,7 +386,6 @@ async def delete_api_key(
 
     token_data = {
         "token_preview": f"{token.token[:FRONT_PREVIEW_LENGTH]}...{token.token[-END_PREVIEW_LENGTH:]}",
-        "full_token": token.token,
         "created_at": token.created_at.isoformat(),
         "expires_at": token.expires_at.isoformat(),
         "is_active": token.is_active,
@@ -380,7 +412,6 @@ async def delete_api_key(
                 
                 <h2>Deleted API Key Details</h2>
                 <p><strong>Token Preview:</strong> {token_data['token_preview']}</p>
-                <p><strong>Full Token:</strong> {token_data['full_token']}</p>
                 <p><strong>Created At:</strong> {token_data['created_at']}</p>
                 <p><strong>Expires At:</strong> {token_data['expires_at']}</p>
                 <p><strong>Was Active:</strong> {token_data['is_active']}</p>
@@ -406,5 +437,5 @@ async def delete_api_key(
             logger.error(f"Error sending deletion notification email: {str(e)}")
 
     background_tasks.add_task(send_deletion_notification)
-    logger.debug("API key deleted")
+    logger.info(f"API key deleted for user: {current_user.email}")
     return None
