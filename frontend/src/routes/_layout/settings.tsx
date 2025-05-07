@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
   Container,
   Flex,
@@ -28,54 +28,9 @@ const tabsConfig = [
   {
     title: "Billing",
     component: () => {
-      const [token, setToken] = useState<string | null>(null);
+      const [token] = useState<string | null>(localStorage.getItem("auth_token"));
       const [isLoading, setIsLoading] = useState(false);
       const toast = useToast();
-
-      useEffect(() => {
-        const fetchToken = async () => {
-          try {
-            // Try to get token from localStorage first
-            let authToken = localStorage.getItem("auth_token");
-
-            if (!authToken) {
-              // Fetch token from /users/me
-              const response = await fetch("https://api.thedataproxy.com/v2/users/me", {
-                method: "GET",
-                headers: {
-                  "Content-Type": "application/json",
-                  "Accept": "application/json",
-                },
-                credentials: "include", // Send cookies if token is in a cookie
-              });
-
-              if (!response.ok) {
-                console.error(`Response status: ${response.status}, ${response.statusText}`);
-                throw new Error(`Failed to fetch user data: ${response.status}`);
-              }
-
-              const userData = await response.json();
-              authToken = userData.token || localStorage.getItem("auth_token");
-              if (authToken) {
-                localStorage.setItem("auth_token", authToken); // Cache token
-              }
-            }
-
-            setToken(authToken);
-          } catch (error) {
-            console.error("Error fetching user token:", error);
-            toast({
-              title: "Error",
-              description: "Failed to authenticate. Please log in again.",
-              status: "error",
-              duration: 5000,
-              isClosable: true,
-            });
-          }
-        };
-
-        fetchToken();
-      }, [toast]);
 
       const handleBillingClick = async () => {
         if (!token) {
