@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { Container, Flex, Text, Tabs, TabList, TabPanels, Tab, TabPanel, Box, Heading } from "@chakra-ui/react";
+import { Container, Flex, Text, Tabs, TabList, TabPanels, Tab, TabPanel, Box, Heading, Alert, AlertIcon } from "@chakra-ui/react";
 import ProtectedComponent from "../../../components/ProtectedComponent";
 import PlaygroundGSerp from "../../../components/PlaygroundGSerp";
 import ApiKeyGSerp from "../../../components/ApiKeyGSerp";
@@ -23,6 +23,16 @@ interface ProxyApiAccess {
   has_access: boolean;
   message: string | null;
 }
+
+interface ApiKey {
+  key_preview: string;
+  created_at: string;
+  expires_at: string;
+  is_active: boolean;
+  request_count?: number;
+}
+
+const API_URL = "https://api.thedataproxy.com/v2/proxy";
 
 async function fetchSubscriptions(): Promise<Subscription[]> {
   const token = localStorage.getItem("access_token");
@@ -82,6 +92,33 @@ async function fetchProxyApiAccess(): Promise<ProxyApiAccess> {
   }
 }
 
+async function fetchApiKeys(token: string): Promise<ApiKey[]> {
+  try {
+    const response = await fetch(`${API_URL}/api-keys`, {
+      method: "GET",
+      headers: {
+        "Accept": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    if (!response.ok) {
+      throw new Error(`Failed to fetch API keys: ${response.status}`);
+    }
+    const data: ApiKey[] = await response.json();
+    return data.map((key) => ({
+      ...key,
+      request_count: key.request_count ?? 0,
+      created_at: key.created_at || new Date().toISOString(),
+      expires_at: key.expires_at || new Date().toISOString(),
+      is_active: key.is_active ?? false,
+      key_preview: key.key_preview || "N/A",
+    }));
+  } catch (error) {
+    console.error("API keys fetch error:", error);
+    throw error;
+  }
+}
+
 const GoogleSerpPage = () => {
   const { data: subscriptions, isLoading: isSubscriptionsLoading, error: subscriptionsError } = useQuery({
     queryKey: ["subscriptions"],
@@ -96,6 +133,16 @@ const GoogleSerpPage = () => {
   });
 
   const token = localStorage.getItem("access_token");
+
+  const { data: apiKeys, isLoading: isApiKeysLoading, error: apiKeysError } = useQuery({
+    queryKey: ["apiKeys"],
+    queryFn: () => fetchApiKeys(token || ""),
+    staleTime: 5 * 60 * 1000,
+    enabled: !!token,
+  });
+
+  // Calculate total request count
+  const totalRequests = apiKeys?.reduce((sum, key) => sum + (key.request_count || 0), 0) || 0;
 
   // Determine subscription status
   const hasActiveSubscription = subscriptions?.some(
@@ -112,14 +159,14 @@ const GoogleSerpPage = () => {
         <Box>
           <Heading size="md" mb={4}>Monthly Request Overview</Heading>
           <Box borderWidth="1px" borderRadius="lg" p={4} mb={4}>
-            <Text>No requests this month</Text>
-            <Box mt={4} height="200px" bg="gray.100" display="flex" alignItems="center" justifyContent="center">
-              <Text color="gray.500">No request data available</Text>
+            <Text fontSize="sm">Total Requests This Month: {totalRequests}</Text>
+            <Box mt={4} height="200px" bg="gray.100" borderRadius="md" display="flex" alignItems="center" justifyContent="center">
+              <Text fontSize="xs" color="gray.500">Graph visualization coming soon</Text>
             </Box>
           </Box>
           <Heading size="md" mb={4}>Recent Activity Logs</Heading>
           <Box borderWidth="1px" borderRadius="lg" p={4}>
-            <Text>No recent activity logs</Text>
+            <Text fontSize="sm">No recent activity logs</Text>
           </Box>
         </Box>
       ),
@@ -141,37 +188,44 @@ const GoogleSerpPage = () => {
   return (
     <ProtectedComponent>
       <Container maxW="full">
-        <Flex align="center" justify="space-between" py={6}>
-          <Text fontSize="xl">HTTPs Proxy API</Text>
-          <Text fontSize="sm">Manage your proxy settings and API keys.</Text>
+        <Flex align="center" justify="space-between" py={6} gap={4}>
+          <Heading size="lg">HTTPS Proxy API</Heading>
+          <Text fontSize="sm" color="gray.500">Manage your proxy settings and API keys</Text>
         </Flex>
-        {isSubscriptionsLoading || isAccessLoading ? (
-          <Text>Loading subscription details...</Text>
-        ) : subscriptionsError || accessError ? (
-          <Text color="red.500">
-            Error: {(subscriptionsError?.message || accessError?.message) || "Failed to load subscription details. Please try again later."}
-          </Text>
+        {isSubscriptionsLoading || isAccessLoading || isApiKeysLoading ? (
+          <Text fontSize="sm">Loading subscription details...</Text>
+        ) : subscriptionsError || accessError || apiKeysError ? (
+          <Alert status="error">
+            <AlertIcon />
+            <Text fontSize="sm">
+              Error: {(subscriptionsError?.message || accessError?.message || apiKeysError?.message) || "Failed to load subscription details. Please try again later."}
+            </Text>
+          </Alert>
         ) : !hasActiveSubscription ? (
-          <Text color="red.500">
-            No active subscription. Please subscribe to use proxy API features.
-          </Text>
+          <Alert status="error">
+            <AlertIcon />
+            <Text fontSize="sm">No active subscription. Please subscribe to use proxy API features.</Text>
+          </Alert>
         ) : (
           <>
-            <Text mb={4}>
+            <Text fontSize="sm" mb={4}>
               Your Plan: {activeSubscription?.product_name || activeSubscription?.plan_name || "Unknown"} (
               {activeSubscription?.status
                 ? activeSubscription.status.charAt(0).toUpperCase() + activeSubscription.status.slice(1)
                 : "Unknown"})
             </Text>
             {!proxyApiAccess?.has_access && (
-              <Text color="orange.500" mb={4}>
-                {proxyApiAccess?.message || "Your subscription plan does not include proxy API features. Please upgrade to a proxy-api-enabled plan."}
-              </Text>
+              <Alert status="warning" mb={4}>
+                <AlertIcon />
+                <Text fontSize="sm">
+                  {proxyApiAccess?.message || "Your subscription plan does not include proxy API features. Please upgrade to a proxy-api-enabled plan."}
+                </Text>
+              </Alert>
             )}
             <Tabs>
               <TabList>
                 {TabsConfig.map((tab, index) => (
-                  <Tab key={index}>{tab.title}</Tab>
+                  <Tab key={index} fontSize="sm">{tab.title}</Tab>
                 ))}
               </TabList>
               <TabPanels>
