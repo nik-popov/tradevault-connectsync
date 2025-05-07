@@ -14,7 +14,7 @@ import {
   VStack,
   useToast,
 } from "@chakra-ui/react";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import type { UserPublic } from "../../client";
 import Appearance from "../../components/UserSettings/Appearance";
@@ -49,26 +49,16 @@ const tabsConfig = [
   { title: "Password", component: ChangePassword },
   {
     title: "Billing",
-    component: ({ portalUrl, isLoading, error }: { portalUrl?: string; isLoading: boolean; error: any }) => {
+    component: () => {
+      const [token] = useState<string | null>(localStorage.getItem("auth_token"));
+      const [isLoading, setIsLoading] = useState(false);
       const toast = useToast();
-      const [isRedirecting, setIsRedirecting] = useState(false);
 
-      const handleBillingClick = () => {
-        if (error) {
+      const handleBillingClick = async () => {
+        if (!token) {
           toast({
-            title: "Error",
-            description: "Failed to access billing portal. Please try again.",
-            status: "error",
-            duration: 5000,
-            isClosable: true,
-          });
-          return;
-        }
-
-        if (!portalUrl) {
-          toast({
-            title: "No Portal URL",
-            description: "Billing portal URL is not available.",
+            title: "Authentication Required",
+            description: "Please log in to manage billing.",
             status: "warning",
             duration: 5000,
             isClosable: true,
@@ -76,8 +66,22 @@ const tabsConfig = [
           return;
         }
 
-        setIsRedirecting(true);
-        window.location.href = portalUrl;
+        setIsLoading(true);
+        try {
+          const portalUrl = await fetchBillingPortal(token);
+          window.location.href = portalUrl;
+        } catch (error) {
+          console.error("Error accessing customer portal:", error);
+          toast({
+            title: "Error",
+            description: "Failed to access billing portal. Please try again.",
+            status: "error",
+            duration: 5000,
+            isClosable: true,
+          });
+        } finally {
+          setIsLoading(false);
+        }
       };
 
       return (
@@ -86,8 +90,8 @@ const tabsConfig = [
           <Button
             colorScheme="blue"
             onClick={handleBillingClick}
-            isLoading={isLoading || isRedirecting}
-            isDisabled={!portalUrl || !!error}
+            isLoading={isLoading}
+            isDisabled={!token} // Grey out button if no token
           >
             Manage Billing
           </Button>
@@ -105,29 +109,6 @@ export const Route = createFileRoute("/_layout/settings")({
 function UserSettings() {
   const queryClient = useQueryClient();
   const currentUser = queryClient.getQueryData<UserPublic>(["currentUser"]);
-  const token = localStorage.getItem("auth_token");
-  const toast = useToast();
-
-  // Fetch billing portal URL when component mounts
-  const { data: portalUrl, isLoading: isBillingLoading, error: billingError } = useQuery({
-    queryKey: ["billingPortal"],
-    queryFn: () => fetchBillingPortal(token!),
-    enabled: !!token, // Only fetch if token exists
-  });
-
-  // Show toast for billing fetch error when it occurs
-  React.useEffect(() => {
-    if (billingError) {
-      console.error("Error fetching billing portal:", billingError);
-      toast({
-        title: "Error",
-        description: "Failed to load billing portal data. Please try again later.",
-        status: "error",
-        duration: 5000,
-        isClosable: true,
-      });
-    }
-  }, [billingError, toast]);
 
   if (!currentUser) {
     return (
@@ -164,13 +145,7 @@ function UserSettings() {
         <TabPanels>
           {finalTabs.map((tab, index) => (
             <TabPanel key={index} bg="gray.50" p={4}>
-              {tab.title === "Billing"
-                ? React.createElement(tab.component, {
-                    portalUrl,
-                    isLoading: isBillingLoading,
-                    error: billingError,
-                  })
-                : React.createElement(tab.component)}
+              {React.createElement(tab.component)}
             </TabPanel>
           ))}
         </TabPanels>
