@@ -14,7 +14,7 @@ import {
   VStack,
   useToast,
 } from "@chakra-ui/react";
-import { useQueryClient } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import type { UserPublic } from "../../client";
 import Appearance from "../../components/UserSettings/Appearance";
@@ -22,51 +22,39 @@ import ChangePassword from "../../components/UserSettings/ChangePassword";
 import DeleteAccount from "../../components/UserSettings/DeleteAccount";
 import UserInformation from "../../components/UserSettings/UserInformation";
 
+const fetchBillingPortal = async (token: string) => {
+  const response = await fetch("https://api.thedataproxy.com/v2/customer-portal", {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      "Accept": "application/json",
+      "Authorization": `Bearer ${token}`,
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error(`Failed to fetch portal: ${response.status}`);
+  }
+
+  const data = await response.json();
+  if (!data.portal_url) {
+    throw new Error("No portal URL received");
+  }
+
+  return data.portal_url;
+};
+
 const tabsConfig = [
   { title: "My profile", component: UserInformation },
   { title: "Password", component: ChangePassword },
   {
     title: "Billing",
-    component: () => {
-      const [token] = useState<string | null>(localStorage.getItem("auth_token"));
-      const [isLoading, setIsLoading] = useState(false);
+    component: ({ portalUrl, isLoading, error }: { portalUrl?: string; isLoading: boolean; error: any }) => {
       const toast = useToast();
+      const [isRedirecting, setIsRedirecting] = useState(false);
 
-      const handleBillingClick = async () => {
-        if (!token) {
-          toast({
-            title: "Authentication Required",
-            description: "Please log in to manage billing.",
-            status: "warning",
-            duration: 5000,
-            isClosable: true,
-          });
-          return;
-        }
-
-        setIsLoading(true);
-        try {
-          const response = await fetch("https://api.thedataproxy.com/v2/customer-portal", {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-              "Accept": "application/json",
-              "Authorization": `Bearer ${token}`,
-            },
-          });
-
-          if (!response.ok) {
-            throw new Error(`Failed to fetch portal: ${response.status}`);
-          }
-
-          const data = await response.json();
-          if (data.portal_url) {
-            window.location.href = data.portal_url;
-          } else {
-            throw new Error("No portal URL received");
-          }
-        } catch (error) {
-          console.error("Error accessing customer portal:", error);
+      const handleBillingClick = () => {
+        if (error) {
           toast({
             title: "Error",
             description: "Failed to access billing portal. Please try again.",
@@ -74,9 +62,22 @@ const tabsConfig = [
             duration: 5000,
             isClosable: true,
           });
-        } finally {
-          setIsLoading(false);
+          return;
         }
+
+        if (!portalUrl) {
+          toast({
+            title: "No Portal URL",
+            description: "Billing portal URL is not available.",
+            status: "warning",
+            duration: 5000,
+            isClosable: true,
+          });
+          return;
+        }
+
+        setIsRedirecting(true);
+        window.location.href = portalUrl;
       };
 
       return (
@@ -85,8 +86,8 @@ const tabsConfig = [
           <Button
             colorScheme="blue"
             onClick={handleBillingClick}
-            isLoading={isLoading}
-            isDisabled={!token}
+            isLoading={isLoading || isRedirecting}
+            isDisabled={!portalUrl || !!error}
           >
             Manage Billing
           </Button>
@@ -104,6 +105,25 @@ export const Route = createFileRoute("/_layout/settings")({
 function UserSettings() {
   const queryClient = useQueryClient();
   const currentUser = queryClient.getQueryData<UserPublic>(["currentUser"]);
+  const token = localStorage.getItem("auth_token");
+  const toast = useToast();
+
+  // Fetch billing portal URL when component mounts
+  const { data: portalUrl, isLoading: isBillingLoading, error: billingError } = useQuery({
+    queryKey: ["billingPortal"],
+    queryFn: () => fetchBillingPortal(token!),
+    enabled: !!token, // Only fetch if token exists
+    onError: (error) => {
+      console.error("Error fetching billing portal:", error);
+      toast({
+        title: "Error",
+        description: "Failed to load billing portal data. Please try again later.",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+      });
+    },
+  });
 
   if (!currentUser) {
     return (
@@ -140,7 +160,13 @@ function UserSettings() {
         <TabPanels>
           {finalTabs.map((tab, index) => (
             <TabPanel key={index} bg="gray.50" p={4}>
-              {React.createElement(tab.component)}
+              {tab.title === "Billing"
+                ? React.createElement(tab.component, {
+                    portalUrl,
+                    isLoading: isBillingLoading,
+                    error: billingError,
+                  })
+                : React.createElement(tab.component)}
             </TabPanel>
           ))}
         </TabPanels>
