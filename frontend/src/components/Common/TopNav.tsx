@@ -6,16 +6,12 @@ import {
   IconButton,
   Image,
   Link,
-  Menu,
-  MenuButton,
-  MenuList,
-  MenuItem,
   Tooltip,
   useDisclosure,
 } from "@chakra-ui/react";
 import { useQueryClient } from "@tanstack/react-query";
 import { Link as RouterLink } from "@tanstack/react-router";
-import { FiLogOut, FiMenu  , FiUsers, FiSearch , FiChevronDown, FiUser } from "react-icons/fi";
+import { FiLogOut, FiMenu, FiUsers, FiSearch, FiUser } from "react-icons/fi";
 
 import Logo from "/assets/images/the-data-proxy-logo-dark.png";
 import type { UserPublic } from "../../client";
@@ -33,18 +29,7 @@ interface NavItemsProps {
   isMobile?: boolean;
 }
 
-const navStructure: NavItem[] = [
-  // {
-  //   title: "Scraping Tools",
-  //   subItems: [
-    
-  //     { title: "HTTPS Request API", path: "/scraping-tools/https-proxy" },
- 
-  //     { title: "Realtime Proxy Status", path: "/scraping-tools/search-proxies" },
-  //   ],
-  // icon: FiSearch,
-  // },
-];
+const navStructure: NavItem[] = [];
 
 const NavItems = ({ onClose, isMobile = false }: NavItemsProps) => {
   const queryClient = useQueryClient();
@@ -61,19 +46,19 @@ const NavItems = ({ onClose, isMobile = false }: NavItemsProps) => {
   }
   const isEnabled = (title: string) =>
     ["Home", "Scraping Tools", "Admin"].includes(title) ||
-    (title === "Jobs" && 
-      finalNavStructure.some(item => 
-        item.title === "Scraping Tools" && 
+    (title === "Jobs" &&
+      finalNavStructure.some(item =>
+        item.title === "Scraping Tools" &&
         item.subItems?.some(sub => sub.title === "Jobs")
       )) ||
-      (title === "HTTPS Request API" &&   
-        finalNavStructure.some(item => 
-        item.title === "Scraping Tools" && 
+    (title === "HTTPS Request API" &&
+      finalNavStructure.some(item =>
+        item.title === "Scraping Tools" &&
         item.subItems?.some(sub => sub.title === "HTTPS Request API")
       )) ||
-    (title === "Realtime Proxy Status" && 
-      finalNavStructure.some(item => 
-        item.title === "Scraping Tools" && 
+    (title === "Realtime Proxy Status" &&
+      finalNavStructure.some(item =>
+        item.title === "Scraping Tools" &&
         item.subItems?.some(sub => sub.title === "Realtime Proxy Status")
       ));
 
@@ -102,35 +87,19 @@ const NavItems = ({ onClose, isMobile = false }: NavItemsProps) => {
 
       if (subItems) {
         return (
-          <Menu key={title}>
-            <MenuButton
+          <Box key={title}>
+            <Flex
               px={4}
               py={2}
               color={textColor}
               _hover={{ color: hoverColor }}
-              _active={{ bg: bgActive, color: activeTextColor }}
+              align="center"
+              flexDir={isMobile ? "row" : "row"}
             >
-              <Flex align="center" flexDir={isMobile ? "row" : "row"}>
-                {icon && <Icon as={icon} mr={2} />}
-                <Text>{title}</Text>
-                <Icon as={FiChevronDown} ml={1} />
-              </Flex>
-            </MenuButton>
-            <MenuList>
-              {subItems.map((subItem) => (
-                <MenuItem
-                  key={subItem.title}
-                  as={RouterLink}
-                  to={subItem.path}
-                  color={textColor}
-                  _hover={{ color: hoverColor, bg: "gray.100" }}
-                  onClick={onClose}
-                >
-                  {subItem.title}
-                </MenuItem>
-              ))}
-            </MenuList>
-          </Menu>
+              {icon && <Icon as={icon} mr={2} />}
+              <Text>{title}</Text>
+            </Flex>
+          </Box>
         );
       }
 
@@ -169,6 +138,8 @@ const TopNav = () => {
   const currentUser = queryClient.getQueryData<UserPublic>(["currentUser"]);
   const textColor = "gray.800";
   const hoverColor = "blue.600";
+  const bgActive = "blue.100";
+  const activeTextColor = "blue.800";
 
   const handleLogout = async () => {
     logout();
@@ -207,37 +178,35 @@ const TopNav = () => {
         <Flex align="center" gap={4} display={{ base: "none", md: "flex" }}>
           <NavItems />
           {currentUser && (
-            <Menu>
-              <MenuButton
+            <>
+              <Flex
+                as={RouterLink}
+                to="/settings"
                 px={4}
                 py={2}
                 color={textColor}
                 _hover={{ color: hoverColor }}
+                activeProps={{
+                  style: { background: bgActive, color: activeTextColor },
+                }}
+                align="center"
               >
-                <Flex align="center">
-                  <Icon as={FiUser} mr={2} />
-                  <Text maxW="200px" isTruncated>{currentUser.email}</Text>
-                  <Icon as={FiChevronDown} ml={1} />
-                </Flex>
-              </MenuButton>
-              <MenuList>
-                <MenuItem
-                  as={RouterLink}
-                  to="/settings" // Adjust path as needed
-                  color={textColor}
-                  _hover={{ color: hoverColor, bg: "gray.100" }}
-                >
-                  Settings
-                </MenuItem>
-                <MenuItem
-                  onClick={handleLogout}
-                  color={textColor}
-                  _hover={{ color: hoverColor, bg: "gray.100" }}
-                >
-                  Log out
-                </MenuItem>
-              </MenuList>
-            </Menu>
+                <Icon as={FiUser} mr={2} />
+                <Text>Profile</Text>
+              </Flex>
+              <Flex
+                as="button"
+                onClick={handleLogout}
+                px={4}
+                py={2}
+                color={textColor}
+                _hover={{ color: hoverColor }}
+                align="center"
+              >
+                <Icon as={FiLogOut} mr={2} />
+                <Text>Log out</Text>
+              </Flex>
+            </>
           )}
         </Flex>
       </Flex>
@@ -261,25 +230,29 @@ const TopNav = () => {
                 Logged in as: {currentUser.email}
               </Text>
               <Flex flexDir="column" gap={2}>
-                <Box
+                <Flex
                   as={RouterLink}
-                  to="/settings" // Adjust path as needed
-                  p={2}
+                  to="/settings"
+                  px={4}
+                  py={2}
                   color={textColor}
                   _hover={{ color: hoverColor }}
                   onClick={onClose}
+                  align="center"
                 >
-                  Profile
-                </Box>
+                  <Icon as={FiUser} mr={2} />
+                  <Text>Profile</Text>
+                </Flex>
                 <Flex
                   as="button"
                   onClick={handleLogout}
-                  color={hoverColor}
-                  fontWeight="bold"
-                  alignItems="center"
-                  gap={2}
+                  px={4}
+                  py={2}
+                  color={textColor}
+                  _hover={{ color: hoverColor }}
+                  align="center"
                 >
-                  <FiLogOut />
+                  <Icon as={FiLogOut} mr={2} />
                   <Text>Log out</Text>
                 </Flex>
               </Flex>
