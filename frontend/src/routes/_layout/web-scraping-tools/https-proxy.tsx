@@ -234,7 +234,7 @@ const GoogleSerpPage = () => {
   <ProtectedComponent>
     <Container maxW="full">
       <Flex align="center" justify="space-between" py={6} gap={4}>
-        <Heading size="lg">HTTPS Request Proxy API</Heading>
+        <Heading size="md">HTTPS Request Proxy API</Heading>
         <Text fontSize="sm" color="gray.500">
           Active subscription: {activeSubscription?.product_name || activeSubscription?.plan_name || "None"}
         </Text>
