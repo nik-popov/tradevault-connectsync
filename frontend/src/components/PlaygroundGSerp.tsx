@@ -155,21 +155,12 @@ const PlaygroundGSerp: React.FC = () => {
             <Heading size="md">Response</Heading>
           </Flex>
           <Text fontSize="sm" mb={4}>
-            Explore structured data formats:{" "}
             <Link
               href="https://api.thedataproxy.com/scraping-api/structured/"
               isExternal
               color="blue.500"
             >
               Structured Data <ExternalLinkIcon mx="2px" />
-            </Link>{" "}
-            |{" "}
-            <Link
-              href="https://api.thedataproxy.com/scraping-api/structured/"
-              isExternal
-              color="blue.500"
-            >
-              API Docs <ExternalLinkIcon mx="2px" />
             </Link>
           </Text>
           {isLoading ? (
@@ -223,6 +214,15 @@ const PlaygroundGSerp: React.FC = () => {
               )}
             </Flex>
           </Flex>
+          <Text fontSize="sm" mb={4}>
+            <Link
+              href="https://api.thedataproxy.com/scraping-api/structured/"
+              isExternal
+              color="blue.500"
+            >
+              API Docs <ExternalLinkIcon mx="2px" />
+            </Link>
+          </Text>
           {htmlPreview ? (
             <iframe
               srcDoc={htmlPreview}
