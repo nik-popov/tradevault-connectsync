@@ -18,15 +18,6 @@ from sqlmodel import SQLModel, Field
 from uuid import UUID, uuid4
 from app.utils import generate_test_email, send_email
 
-# Attempt to import slowapi
-try:
-    from slowapi import Limiter
-    from slowapi.util import get_remote_address
-    SLOWAPI_AVAILABLE = True
-except ImportError:
-    SLOWAPI_AVAILABLE = False
-    Limiter = None
-    get_remote_address = None
 
 # Configure logging based on environment
 log_level = logging.INFO if os.getenv("ENV") == "production" else logging.DEBUG
@@ -109,9 +100,6 @@ class ProxyEndpointManager:
 endpoint_manager = ProxyEndpointManager()
 
 router = APIRouter(tags=["proxy"], prefix="/proxy")
-
-# Rate limiter (in-memory storage)
-limiter = Limiter(key_func=get_remote_address) if SLOWAPI_AVAILABLE else None
 
 # APIToken Model Definition
 class APIToken(SQLModel, table=True):
@@ -270,10 +258,10 @@ async def get_proxy_status(
     )
     logger.debug(f"Proxy status retrieved for region: {region}")
     return ProxyStatusResponse(statuses=[status])
-@limiter.limit("100/minute")
+
 @router.post("/fetch", response_model=ProxyResponse)
 async def proxy_fetch(
-    request: Request,  # Required for slowapi
+    request: Request,
     session: SessionDep,
     region: str,
     proxy_request: ProxyRequest,
