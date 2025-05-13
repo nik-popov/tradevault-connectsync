@@ -254,12 +254,6 @@ const GoogleSerpPage = () => {
           </Alert>
         ) : (
           <>
-            <Text fontSize="sm" mb={4}>
-              Your Plan: {activeSubscription?.product_name || activeSubscription?.plan_name || "Unknown"} (
-              {activeSubscription?.status
-                ? activeSubscription.status.charAt(0).toUpperCase() + activeSubscription.status.slice(1)
-                : "Unknown"})
-            </Text>
             {!proxyApiAccess?.has_access && (
               <Alert status="warning" mb={4}>
                 <AlertIcon />
