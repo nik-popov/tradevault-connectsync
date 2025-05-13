@@ -157,7 +157,6 @@ const GoogleSerpPage = () => {
       title: "Overview",
       component: () => (
         <Box>
-          <Heading size="md" mb={4}>Usage</Heading>
           <Box borderWidth="1px" borderRadius="md" p={4} mb={4}>
             <Flex align="baseline" gap={2}>
               <Text fontSize="sm">Total Requests This Month:</Text>

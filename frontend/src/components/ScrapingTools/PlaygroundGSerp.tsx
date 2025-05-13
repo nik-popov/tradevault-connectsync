@@ -145,7 +145,6 @@ const PlaygroundGSerp: React.FC = () => {
 
   return (
     <Box width="100%">
-      <Heading size="md" mb={4}>Test Proxy Request</Heading>
       <Box mb={6}>
         <Flex direction="column" gap={4}>
           <Flex direction="column" gap={4}>
