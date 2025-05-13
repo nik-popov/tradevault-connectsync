@@ -32,7 +32,7 @@ const REGIONS = [
   "asia",
   "australia",
   "europe",
-  "middle-east"
+  "middle-east",
 ];
 
 const API_URL = "https://api.thedataproxy.com/v2/proxy";
@@ -45,14 +45,32 @@ const PlaygroundGSerp: React.FC = () => {
   const [htmlPreview, setHtmlPreview] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
+  const [responseTime, setResponseTime] = useState<number | null>(null); // New state for response time
+
+  const generateCurlCommand = () => {
+    const requestUrl = `${API_URL}/fetch?region=${region}`;
+    return `curl -X POST "${requestUrl}" \\
+  -H "Content-Type: application/json" \\
+  -H "x-api-key: ${apiKey}" \\
+  -d '{"url": "${url}"}'`;
+  };
+
+  const handleCopyCurl = () => {
+    const curlCommand = generateCurlCommand();
+    navigator.clipboard.writeText(curlCommand).then(() => {
+      alert("cURL command copied to clipboard!");
+    });
+  };
 
   const handleTestRequest = async () => {
     setIsLoading(true);
     setResponse("");
     setHtmlPreview("");
     setError("");
+    setResponseTime(null);
 
     try {
+      const startTime = performance.now(); // Start timing
       const res = await fetch(`${API_URL}/fetch?region=${region}`, {
         method: "POST",
         headers: {
@@ -61,6 +79,10 @@ const PlaygroundGSerp: React.FC = () => {
         },
         body: JSON.stringify({ url }),
       });
+
+      const endTime = performance.now(); // End timing
+      const timeTaken = Math.round(endTime - startTime); // Calculate response time in ms
+      setResponseTime(timeTaken);
 
       if (!res.ok) {
         const errorData = await res.json();
@@ -164,23 +186,40 @@ const PlaygroundGSerp: React.FC = () => {
                 </Select>
               </FormControl>
             </Flex>
-            <Tooltip label="Send test request">
-              <Button
-                size="sm"
-                colorScheme="blue"
-                onClick={handleTestRequest}
-                isLoading={isLoading}
-                isDisabled={!url.trim() || !apiKey.trim() || !region}
-              >
-                <FiSend />
-              </Button>
-            </Tooltip>
+            <Flex gap={2} align="center">
+              <Tooltip label="Send test request">
+                <Button
+                  size="sm"
+                  colorScheme="blue"
+                  onClick={handleTestRequest}
+                  isLoading={isLoading}
+                  isDisabled={!url.trim() || !apiKey.trim() || !region}
+                >
+                  <FiSend />
+        
+                </Button>
+              </Tooltip>
+              <Tooltip label="Copy cURL command">
+                <IconButton
+                  aria-label="Copy cURL"
+                  icon={<CopyIcon />}
+                  size="sm"
+                  onClick={handleCopyCurl}
+                  isDisabled={!url.trim() || !apiKey.trim() || !region}
+                />
+              </Tooltip>
+            </Flex>
           </Flex>
           {error && (
             <Alert status="error">
               <AlertIcon />
               <Text fontSize="sm">{error}</Text>
             </Alert>
+          )}
+          {responseTime !== null && (
+            <Text fontSize="sm" color="gray.600">
+              Response Time: {responseTime} ms
+            </Text>
           )}
         </Flex>
       </Box>
