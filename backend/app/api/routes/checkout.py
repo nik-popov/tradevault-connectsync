@@ -90,9 +90,13 @@ def generate_activation_email(email_to: str, token: str, username: str = None) -
     link = f"https://cloud.thedataproxy.com/activate?token={token}"
     valid_hours = settings.EMAIL_RESET_TOKEN_EXPIRE_HOURS
 
-    # Set up Jinja2 environment
-    env = Environment(loader=FileSystemLoader("app/templates/emails"))
-    template = env.get_template("account_activation_email.html")
+    try:
+        # Set up Jinja2 environment
+        env = Environment(loader=FileSystemLoader("app/templates/emails"))
+        template = env.get_template("account_activation_email.html")
+    except Exception as e:
+        logger.error(f"Failed to load template account_activation_email.html: {str(e)}")
+        raise
 
     # Render HTML with dynamic data
     html_content = template.render(
@@ -102,6 +106,7 @@ def generate_activation_email(email_to: str, token: str, username: str = None) -
         valid_hours=valid_hours
     )
 
+    logger.debug(f"Successfully rendered activation email for: {email_to}")
     return EmailData(html_content=html_content, subject=subject)
 
 async def create_user_if_not_exists(
@@ -140,17 +145,22 @@ async def create_user_if_not_exists(
     
     # Send activation email
     if background_tasks:
-        email_data = generate_activation_email(
-            email_to=email,
-            token=activation_token,
-            username=user.full_name or email  # Pass full_name or email
-        )
-        background_tasks.add_task(
-            send_email,
-            email_to=email,
-            subject=email_data.subject,
-            html_content=email_data.html_content
-        )
+        try:
+            email_data = generate_activation_email(
+                email_to=email,
+                token=activation_token,
+                username=user.full_name or email  # Pass full_name or email
+            )
+            background_tasks.add_task(
+                send_email,
+                email_to=email,
+                subject=email_data.subject,
+                html_content=email_data.html_content
+            )
+            logger.info(f"Scheduled activation email for: {email}")
+        except Exception as e:
+            logger.error(f"Failed to generate activation email for {email}: {str(e)}")
+            raise
     
     return user
 
@@ -264,6 +274,10 @@ async def stripe_webhook(request: Request, background_tasks: BackgroundTasks, db
                     )
             except StripeError as e:
                 logger.error(f"Error processing checkout.session.completed: {str(e)}")
+                raise
+            except Exception as e:
+                logger.error(f"Error processing checkout.session.completed: {str(e)}")
+                raise
     
     elif event_type == "charge.succeeded":
         charge = event.data.object
@@ -285,6 +299,7 @@ async def stripe_webhook(request: Request, background_tasks: BackgroundTasks, db
                 )
             except Exception as e:
                 logger.error(f"Error processing charge.succeeded: {str(e)}")
+                raise
     
     elif event_type in ["product.created", "product.updated", "price.created"]:
         data = event.data.object
@@ -318,6 +333,7 @@ async def stripe_webhook(request: Request, background_tasks: BackgroundTasks, db
                         break
         except StripeError as e:
             logger.error(f"Error retrieving subscriptions for product: {str(e)}")
+            raise
     
     elif event_type.startswith("customer.subscription."):
         subscription_data = event.data.object
