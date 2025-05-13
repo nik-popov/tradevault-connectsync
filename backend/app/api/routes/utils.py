@@ -12,12 +12,12 @@ class EmailData:
 def generate_new_account_email(email_to: str, username: str, password: str) -> EmailData:
     logger.debug(f"Generating new account email for: {email_to}")
     project_name = settings.PROJECT_NAME
-    subject = f"{project_name} - Welcome to Your Account"
+    subject = f"{project_name} - Your Account Details"
     link = settings.FRONTEND_HOST  # e.g., http://localhost:5173
 
     # Set up Jinja2 environment
     env = Environment(loader=FileSystemLoader("app/templates/emails"))
-    template = env.get_template("account_welcome_email.html")
+    template = env.get_template("account_creation_email.html")
 
     # Render HTML with dynamic data
     html_content = template.render(
