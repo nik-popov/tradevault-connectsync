@@ -230,24 +230,25 @@ const GoogleSerpPage = () => {
       ),
     },
   ];
-
-  return (
-    <ProtectedComponent>
-      <Container maxW="full">
-        <Flex align="center" justify="space-between" py={6} gap={4}>
-          <Heading size="lg">HTTPS Request Proxy API</Heading>
-          <Text fontSize="sm" color="gray.500">Active subscription: Analyst</Text>
-        </Flex>
-        {isSubscriptionsLoading || isAccessLoading || isApiKeysLoading ? (
-          <Text fontSize="sm">Loading user details...</Text>
-        ) : subscriptionsError || accessError || apiKeysError ? (
-          <Alert status="error">
-            <AlertIcon />
-            <Text fontSize="sm">
-              Error: {(subscriptionsError?.message || accessError?.message || apiKeysError?.message) || "Failed to load user details. Please try again later."}
-            </Text>
-          </Alert>
-        ) : !hasActiveSubscription ? (
+return (
+  <ProtectedComponent>
+    <Container maxW="full">
+      <Flex align="center" justify="space-between" py={6} gap={4}>
+        <Heading size="lg">HTTPS Request Proxy API</Heading>
+        <Text fontSize="sm" color="gray.500">
+          Active subscription: {subscriptions?.plan_name || "None"}
+        </Text>
+      </Flex>
+      {isSubscriptionsLoading || isAccessLoading || isApiKeysLoading ? (
+        <Text fontSize="sm">Loading user details...</Text>
+      ) : subscriptionsError || accessError || apiKeysError ? (
+        <Alert status="error">
+          <AlertIcon />
+          <Text fontSize="sm">
+            Error: {(subscriptionsError?.message || accessError?.message || apiKeysError?.message) || "Failed to load user details. Please try again later."}
+          </Text>
+        </Alert>
+      ) : !hasActiveSubscription ? (
           <Alert status="error">
             <AlertIcon />
             <Text fontSize="sm">No active products associated with your account.</Text>
