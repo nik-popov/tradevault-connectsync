@@ -1,7 +1,3 @@
-Icon Luxury Group is an integrated platform that combines a **Vite.JS** frontend with a **Python** backend. The backend is hosted at `api.thedataproxy.com`, and the frontend is available at [Icon Luxury Group Dashboard](https://dashboard.thedataproxy.com). The project is deployed using **Docker Compose** and **Traefik**, with a PostgreSQL database, email settings, and Sentry for error monitoring.
-
----
-
 ## Documentation Sections 📚
 
 1. **[Release Notes](release-notes.md)** 📝  
