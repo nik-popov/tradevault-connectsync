@@ -239,18 +239,18 @@ const GoogleSerpPage = () => {
           <Text fontSize="sm" color="gray.500">Manage your proxy settings and API keys</Text>
         </Flex>
         {isSubscriptionsLoading || isAccessLoading || isApiKeysLoading ? (
-          <Text fontSize="sm">Loading subscription details...</Text>
+          <Text fontSize="sm">Loading user details...</Text>
         ) : subscriptionsError || accessError || apiKeysError ? (
           <Alert status="error">
             <AlertIcon />
             <Text fontSize="sm">
-              Error: {(subscriptionsError?.message || accessError?.message || apiKeysError?.message) || "Failed to load subscription details. Please try again later."}
+              Error: {(subscriptionsError?.message || accessError?.message || apiKeysError?.message) || "Failed to load user details. Please try again later."}
             </Text>
           </Alert>
         ) : !hasActiveSubscription ? (
           <Alert status="error">
             <AlertIcon />
-            <Text fontSize="sm">No active subscription. Please subscribe to use proxy API features.</Text>
+            <Text fontSize="sm">No active products associated with your account.</Text>
           </Alert>
         ) : (
           <>
@@ -264,7 +264,7 @@ const GoogleSerpPage = () => {
               <Alert status="warning" mb={4}>
                 <AlertIcon />
                 <Text fontSize="sm">
-                  {proxyApiAccess?.message || "Your subscription plan does not include proxy API features. Please upgrade to a proxy-api-enabled plan."}
+                  {proxyApiAccess?.message || "Your account does not include https request proxy features. Please upgrade to a proxy api enabled plan."}
                 </Text>
               </Alert>
             )}
