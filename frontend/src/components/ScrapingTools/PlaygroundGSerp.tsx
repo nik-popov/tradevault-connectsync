@@ -147,7 +147,6 @@ const PlaygroundGSerp: React.FC = () => {
     <Box width="100%">
       <Box mb={6}>
         <Flex direction="column" gap={4}>
-          <Flex direction="column" gap={4}>
             <FormControl>
               <FormLabel fontSize="sm">Search URL</FormLabel>
               <Input
@@ -207,7 +206,6 @@ const PlaygroundGSerp: React.FC = () => {
                   isDisabled={!url.trim() || !apiKey.trim() || !region}
                 />
               </Tooltip>
-            </Flex>
           </Flex>
           {error && (
             <Alert status="error">
