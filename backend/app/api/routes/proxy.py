@@ -201,7 +201,7 @@ async def generate_user_api_key(session: SessionDep, current_user: CurrentUser):
     logger.debug(f"Generating API key for user: {current_user.email}")
     if not current_user.has_subscription and not (current_user.is_trial and current_user.expiry_date and current_user.expiry_date > datetime.utcnow()):
         logger.info(f"User {current_user.email} lacks active subscription or trial")
-        raise HTTPException XCT status_code=403, detail="Active subscription or trial required")
+        raise HTTPException(status_code=403, detail="Active subscription or trial required")
     
     try:
         api_key = generate_api_key(user_id=str(current_user.id))
