@@ -1,28 +1,31 @@
 import {
   Button,
   Container,
+  Flex,
   FormControl,
   FormErrorMessage,
   FormLabel,
-  Heading,
+  Image,
   Input,
+  Link,
   Text,
+  Box,
+  Heading,
 } from "@chakra-ui/react"
 import { useMutation } from "@tanstack/react-query"
 import { createFileRoute, redirect, useNavigate } from "@tanstack/react-router"
 import { type SubmitHandler, useForm } from "react-hook-form"
-
-import { type ApiError } from "./.../../../client"
-import { isLoggedIn } from "./.../../../hooks/useAuth"
-import useCustomToast from "./.../../../hooks/useCustomToast"
-import { confirmPasswordRules, handleError, passwordRules } from "./.../../../utils"
+import Logo from "/assets/images/the-data-proxy-logo-dark.png"
+import { type ApiError } from "../client"
+import { isLoggedIn } from "../hooks/useAuth"
+import useCustomToast from "../hooks/useCustomToast"
+import { confirmPasswordRules, handleError, passwordRules } from "../utils"
 
 interface NewPasswordForm {
   new_password: string
   confirm_password: string
 }
 
-// Define the route for /activate
 export const Route = createFileRoute('/activate')({
   component: ActivateAccount,
   beforeLoad: async () => {
@@ -33,14 +36,15 @@ export const Route = createFileRoute('/activate')({
     }
   },
 })
+
 async function activateAccount(data: { new_password: string; token: string }) {
-  const baseUrl = 'https://api.thedataproxy.com';
+  const baseUrl = 'https://api.thedataproxy.com'
   if (!baseUrl) {
-    console.error("base url is not defined");
-    throw new Error("API URL is not configured");
+    console.error("base url is not defined")
+    throw new Error("API URL is not configured")
   }
-  const apiUrl = `${baseUrl}/v2/activate`;
-  console.log("Sending request to:", apiUrl, "with data:", data); // Debug log
+  const apiUrl = `${baseUrl}/v2/activate`
+  console.log("Sending request to:", apiUrl, "with data:", data)
   const response = await fetch(apiUrl, {
     method: "POST",
     headers: {
@@ -51,12 +55,12 @@ async function activateAccount(data: { new_password: string; token: string }) {
       token: data.token,
       new_password: data.new_password,
     }),
-  });
+  })
 
-  console.log("Response status:", response.status, response.statusText); // Debug log
+  console.log("Response status:", response.status, response.statusText)
   if (!response.ok) {
-    const errorData = await response.json();
-    console.error("Error response:", errorData); // Debug log
+    const errorData = await response.json()
+    console.error("Error response:", errorData)
     const error: ApiError = {
       name: "ApiError",
       url: apiUrl,
@@ -72,19 +76,20 @@ async function activateAccount(data: { new_password: string; token: string }) {
         },
       },
       message: errorData.detail || "Failed to activate account",
-    };
-    throw error;
+    }
+    throw error
   }
 
-  return response.json();
+  return response.json()
 }
+
 function ActivateAccount() {
   const {
     register,
     handleSubmit,
     getValues,
     reset,
-    formState: { errors },
+    formState: { errors, isSubmitting },
   } = useForm<NewPasswordForm>({
     mode: "onBlur",
     criteriaMode: "all",
@@ -118,49 +123,123 @@ function ActivateAccount() {
   }
 
   return (
-    <Container
-      as="form"
-      onSubmit={handleSubmit(onSubmit)}
-      h="100vh"
-      maxW="sm"
-      alignItems="stretch"
+    <Container 
+      maxW="container.xl" 
+      p={{ base: 4, md: 0 }} 
+      minH="100vh" 
+      display="flex" 
+      alignItems="center"
       justifyContent="center"
-      gap={4}
-      centerContent
     >
-      <Heading size="xl" color="ui.main" textAlign="center" mb={2}>
-        Activate Account
-      </Heading>
-      <Text textAlign="center">
-        Please enter your new password and confirm it to activate your account.
-      </Text>
-      <FormControl mt={4} isInvalid={!!errors.new_password}>
-        <FormLabel htmlFor="password">Set Password</FormLabel>
-        <Input
-          id="password"
-          {...register("new_password", passwordRules())}
-          placeholder="Password"
-          type="password"
-        />
-        {errors.new_password && (
-          <FormErrorMessage>{errors.new_password.message}</FormErrorMessage>
-        )}
-      </FormControl>
-      <FormControl mt={4} isInvalid={!!errors.confirm_password}>
-        <FormLabel htmlFor="confirm_password">Confirm Password</FormLabel>
-        <Input
-          id="confirm_password"
-          {...register("confirm_password", confirmPasswordRules(getValues))}
-          placeholder="Confirm Password"
-          type="password"
-        />
-        {errors.confirm_password && (
-          <FormErrorMessage>{errors.confirm_password.message}</FormErrorMessage>
-        )}
-      </FormControl>
-      <Button variant="primary" type="submit">
-        Activate Account
-      </Button>
+      <Flex 
+        direction={{ base: "column", md: "row" }} 
+        width="100%"
+        maxW={{ base: "100%", md: "container.xl" }}
+        bg="white"
+        boxShadow={{ base: "sm", md: "md" }}
+        borderRadius={{ base: "lg", md: "md" }}
+        overflow="hidden"
+      >
+        {/* Left Column - Text Section */}
+        <Box
+          flex={{ md: 1 }}
+          bg="gray.50"
+          p={{ base: 6, md: 10 }}
+          display="flex"
+          flexDirection="column"
+          alignItems="flex-start"
+          borderRadius={{ base: "lg lg 0 0", md: "md 0 0 md" }}
+        >
+          <Heading 
+            as="h1" 
+            size={{ base: "lg", md: "xl" }} 
+            mb={{ base: 4, md: 6 }} 
+            color="gray.800"
+          >
+            Activate Your Account
+          </Heading>
+          <Text 
+            fontSize={{ base: "md", md: "lg" }} 
+            color="gray.600" 
+            mb={{ base: 3, md: 4 }}
+          >
+            Set your new password to unlock seamless data management and take control with confidence.
+          </Text>
+          <Text 
+            fontSize={{ base: "sm", md: "md" }} 
+            color="gray.500"
+          >
+            Need assistance? Our expert support team and comprehensive documentation are here to help.
+          </Text>
+        </Box>
+
+        {/* Right Column - Form Section */}
+        <Box
+          flex={{ md: 1 }}
+          as="form"
+          onSubmit={handleSubmit(onSubmit)}
+          p={{ base: 6, md: 10 }}
+          display="flex"
+          flexDirection="column"
+          alignItems="center"
+          gap={{ base: 4, md: 6 }}
+          width={{ base: "100%", md: "auto" }}
+        >
+          <Link href="https://thedataproxy.com" target="_blank" rel="noopener noreferrer">
+            <Image 
+              src={Logo} 
+              alt="logo" 
+              height="auto" 
+              maxW={{ base: "150px", md: "2xs" }} 
+              mb={{ base: 3, md: 4 }} 
+            />
+          </Link>
+
+          <FormControl id="new_password" isInvalid={!!errors.new_password} width="100%">
+            <FormLabel htmlFor="new_password" fontSize={{ base: "sm", md: "md" }}>
+              Set Password
+            </FormLabel>
+            <Input
+              id="new_password"
+              {...register("new_password", passwordRules())}
+              placeholder="Password"
+              type="password"
+              size={{ base: "md", md: "lg" }}
+            />
+            {errors.new_password && (
+              <FormErrorMessage>{errors.new_password.message}</FormErrorMessage>
+            )}
+          </FormControl>
+
+          <FormControl id="confirm_password" isInvalid={!!errors.confirm_password} width="100%">
+            <FormLabel htmlFor="confirm_password" fontSize={{ base: "sm", md: "md" }}>
+              Confirm Password
+            </FormLabel>
+            <Input
+              id="confirm_password"
+              {...register("confirm_password", confirmPasswordRules(getValues))}
+              placeholder="Confirm Password"
+              type="password"
+              size={{ base: "md", md: "lg" }}
+            />
+            {errors.confirm_password && (
+              <FormErrorMessage>{errors.confirm_password.message}</FormErrorMessage>
+            )}
+          </FormControl>
+
+          <Button 
+            variant="primary" 
+            type="submit" 
+            isLoading={isSubmitting}
+            width="100%"
+            size={{ base: "md", md: "lg" }}
+          >
+            Activate Account
+          </Button>
+        </Box>
+      </Flex>
     </Container>
   )
 }
+
+export default ActivateAccount
