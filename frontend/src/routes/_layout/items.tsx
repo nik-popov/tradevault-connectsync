@@ -71,7 +71,6 @@ function ItemsTable() {
   }, [page, queryClient, hasNextPage])
 
   return (
-    // ... rest of the component unchanged
     <>
       <TableContainer>
         <Table size={{ base: "sm", md: "md" }}>
@@ -131,7 +130,7 @@ function Items() {
   return (
     <Container maxW="full">
       <Heading size="lg" textAlign={{ base: "center", md: "left" }} pt={12}>
-        Items Management
+        Note Management
       </Heading>
       <Navbar type={"Item"} addModalAs={AddItem} />
       <ItemsTable />
