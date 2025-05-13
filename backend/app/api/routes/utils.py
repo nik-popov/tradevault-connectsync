@@ -5,6 +5,8 @@ from app.api.deps import get_current_active_superuser
 from app.models import Message
 from app.utils import generate_test_email, send_email
 from app.core.config import settings
+
+from app.core.exceptions import HTTPException
 import logging
 
 logger = logging.getLogger(__name__)
@@ -37,24 +39,40 @@ class EmailData:
         self.html_content = html_content
         self.subject = subject
 
-def generate_new_account_email(email_to: str, username: str, password: str) -> EmailData:
-    logger.debug(f"Generating new account email for: {email_to}")
+def generate_activation_email(email_to: str, token: str, username: str = None) -> EmailData:
+    logger.debug(f"Generating activation email for: {email_to}")
     project_name = settings.PROJECT_NAME
-    subject = f"{project_name} - Your Account Details"
-    link = settings.FRONTEND_HOST  # e.g., http://localhost:5173
+    subject = f"{project_name} - Activate Your Account"
+    link = f"https://cloud.thedataproxy.com/activate?token={token}"
+    valid_hours = settings.EMAIL_RESET_TOKEN_EXPIRE_HOURS
 
     # Set up Jinja2 environment
     env = Environment(loader=FileSystemLoader("app/templates/emails"))
-    template = env.get_template("account_creation_email.html")
+    try:
+        template = env.get_template("account_activation_email.html")
+    except Exception as e:
+        logger.error(f"Failed to load template account_activation_email.html for {email_to}: {str(e)}")
+        raise HTTPException(
+            status_code=500,
+            detail=f"Failed to load email template: {str(e)}"
+        )
 
     # Render HTML with dynamic data
-    html_content = template.render(
-        project_name=project_name,
-        username=username,
-        password=password,
-        link=link
-    )
+    try:
+        html_content = template.render(
+            project_name=project_name,
+            username=username or email_to.split("@")[0],
+            link=link,
+            valid_hours=valid_hours
+        )
+    except Exception as e:
+        logger.error(f"Failed to render template for {email_to}: {str(e)}")
+        raise HTTPException(
+            status_code=500,
+            detail=f"Failed to render email template: {str(e)}"
+        )
 
+    logger.debug(f"Successfully rendered activation email for: {email_to}")
     return EmailData(html_content=html_content, subject=subject)
 
 def send_email(email_to: str, subject: str, html_content: str) -> None:
