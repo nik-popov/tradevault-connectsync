@@ -200,7 +200,7 @@ const ApiKeyGSerp: React.FC<ApiKeyGSerpProps> = ({ token }) => {
   return (
     <Box p={4} width="100%">
       <Flex direction="column" gap={6}>
-        <Heading size="md" mb={4}>Generate New API Key</Heading>
+        <Heading size="md" mb={4}>Generate API Key</Heading>
         <Box>
           <Flex justify="space-between" align="center" mb={2}>
             <Text fontSize="sm" fontWeight="semibold">Create a new API key for proxy access</Text>
