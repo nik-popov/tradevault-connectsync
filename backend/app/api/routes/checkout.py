@@ -96,15 +96,19 @@ def generate_activation_email(email_to: str, token: str, username: str = None) -
         template = env.get_template("account_activation_email.html")
     except Exception as e:
         logger.error(f"Failed to load template account_activation_email.html: {str(e)}")
-        raise
+        raise HTTPException(status_code=500, detail=f"Template loading failed: {str(e)}")
 
     # Render HTML with dynamic data
-    html_content = template.render(
-        project_name=project_name,
-        username=username or email_to.split("@")[0],  # Default to email prefix
-        link=link,
-        valid_hours=valid_hours
-    )
+    try:
+        html_content = template.render(
+            project_name=project_name,
+            username=username or email_to.split("@")[0],  # Default to email prefix
+            link=link,
+            valid_hours=valid_hours
+        )
+    except Exception as e:
+        logger.error(f"Failed to render template for {email_to}: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Template rendering failed: {str(e)}")
 
     logger.debug(f"Successfully rendered activation email for: {email_to}")
     return EmailData(html_content=html_content, subject=subject)
@@ -141,7 +145,7 @@ async def create_user_if_not_exists(
     logger.info(f"Created new user: {email}")
     
     # Generate activation token
-    activation_token = create_access_token(subject=user_id, expires_delta=timedelta(hours=24))
+    activation_token = create_access_token(subject=user_id, expires_delta=timedelta(hours=settings.EMAIL_RESET_TOKEN_EXPIRE_HOURS))
     
     # Send activation email
     if background_tasks:
@@ -159,7 +163,7 @@ async def create_user_if_not_exists(
             )
             logger.info(f"Scheduled activation email for: {email}")
         except Exception as e:
-            logger.error(f"Failed to generate activation email for {email}: {str(e)}")
+            logger.error(f"Failed to generate or schedule activation email for {email}: {str(e)}")
             raise
     
     return user
