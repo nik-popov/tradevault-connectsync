@@ -270,7 +270,7 @@ async def get_proxy_status(
     )
     logger.debug(f"Proxy status retrieved for region: {region}")
     return ProxyStatusResponse(statuses=[status])
-
+@limiter.limit("100/minute")
 @router.post("/fetch", response_model=ProxyResponse)
 async def proxy_fetch(
     request: Request,  # Required for slowapi
@@ -281,11 +281,6 @@ async def proxy_fetch(
     background_tasks: BackgroundTasks,
     x_api_key: Annotated[str, Header()] = None
 ):
-    if SLOWAPI_AVAILABLE:
-        @limiter.limit("100/minute")
-        async def limited_fetch(request: Request, *args, **kwargs):
-            return await proxy_fetch_logic(request, session, region, proxy_request, user, x_api_key)
-        return await limited_fetch(request)
     
     return await proxy_fetch_logic(request, session, region, proxy_request, user, x_api_key)
 
