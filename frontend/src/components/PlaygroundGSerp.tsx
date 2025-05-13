@@ -17,8 +17,9 @@ import {
   Heading,
   Alert,
   AlertIcon,
+  Link,
 } from "@chakra-ui/react";
-import { ExternalLinkIcon } from "@chakra-ui/icons";
+import { ExternalLinkIcon, CopyIcon } from "@chakra-ui/icons";
 import { FiSend } from "react-icons/fi";
 
 // Define regions based on backend REGION_ENDPOINTS
@@ -75,6 +76,13 @@ const PlaygroundGSerp: React.FC = () => {
       setError(error instanceof Error ? error.message : "Unknown error");
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const handleCopyHtml = () => {
+    if (htmlPreview) {
+      navigator.clipboard.writeText(htmlPreview);
+      alert("HTML copied to clipboard!");
     }
   };
 
@@ -143,7 +151,27 @@ const PlaygroundGSerp: React.FC = () => {
       </Box>
       <Grid templateColumns={{ base: "1fr", md: "1fr 1fr" }} gap={6}>
         <GridItem>
-          <Heading size="md" mb={4}>Response</Heading>
+          <Flex align="center" justify="space-between" mb={4}>
+            <Heading size="md">Response</Heading>
+          </Flex>
+          <Text fontSize="sm" mb={4}>
+            Explore structured data formats:{" "}
+            <Link
+              href="https://api.thedataproxy.com/scraping-api/structured/"
+              isExternal
+              color="blue.500"
+            >
+              Structured Data <ExternalLinkIcon mx="2px" />
+            </Link>{" "}
+            |{" "}
+            <Link
+              href="https://api.thedataproxy.com/scraping-api/structured/"
+              isExternal
+              color="blue.500"
+            >
+              API Docs <ExternalLinkIcon mx="2px" />
+            </Link>
+          </Text>
           {isLoading ? (
             <Flex justify="center" align="center" h="400px">
               <Spinner size="xl" color="blue.500" />
@@ -164,24 +192,36 @@ const PlaygroundGSerp: React.FC = () => {
         <GridItem>
           <Flex align="center" justify="space-between" mb={4}>
             <Heading size="md">HTML Preview</Heading>
-            {htmlPreview && (
-              <Tooltip label="Open preview in new tab">
-                <IconButton
-                  aria-label="Open preview"
-                  icon={<ExternalLinkIcon />}
-                  size="sm"
-                  onClick={() => {
-                    const newWindow = window.open("", "_blank");
-                    if (newWindow) {
-                      newWindow.document.write(htmlPreview);
-                      newWindow.document.close();
-                    } else {
-                      alert("Popup blocked. Please allow popups for this site.");
-                    }
-                  }}
-                />
-              </Tooltip>
-            )}
+            <Flex gap={2}>
+              {htmlPreview && (
+                <>
+                  <Tooltip label="Copy HTML">
+                    <IconButton
+                      aria-label="Copy HTML"
+                      icon={<CopyIcon />}
+                      size="sm"
+                      onClick={handleCopyHtml}
+                    />
+                  </Tooltip>
+                  <Tooltip label="Open preview in new tab">
+                    <IconButton
+                      aria-label="Open preview"
+                      icon={<ExternalLinkIcon />}
+                      size="sm"
+                      onClick={() => {
+                        const newWindow = window.open("", "_blank");
+                        if (newWindow) {
+                          newWindow.document.write(htmlPreview);
+                          newWindow.document.close();
+                        } else {
+                          alert("Popup blocked. Please allow popups for this site.");
+                        }
+                      }}
+                    />
+                  </Tooltip>
+                </>
+              )}
+            </Flex>
           </Flex>
           {htmlPreview ? (
             <iframe
