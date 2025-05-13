@@ -45,8 +45,7 @@ const fetchBillingPortal = async (token: string) => {
 };
 
 const tabsConfig = [
-  { title: "My profile", component: UserInformation },
-  { title: "Password", component: ChangePassword },
+
   {
     title: "Billing",
     component: () => {
@@ -98,8 +97,7 @@ const tabsConfig = [
         </VStack>
       );
     },
-  },
-  { title: "Close Account", component: DeleteAccount },
+  }
 ];
 
 export const Route = createFileRoute("/_layout/settings")({
