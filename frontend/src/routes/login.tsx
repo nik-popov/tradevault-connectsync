@@ -58,69 +58,96 @@ function Login() {
   // Social media logo components
   const GitHubLogo = () => (
     <Link href="https://github.com/CobaltDataNet" target="_blank" rel="noopener noreferrer">
-      <Image src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png" alt="GitHub Logo" boxSize="32px" />
+      <Image src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png" alt="GitHub Logo" boxSize={{ base: "28px", md: "32px" }} />
     </Link>
   )
 
   const LinkedInLogo = () => (
     <Link href="https://www.linkedin.com/company/CobaltDataNet" target="_blank" rel="noopener noreferrer">
-      <Image src="https://upload.wikimedia.org/wikipedia/commons/c/ca/LinkedIn_logo_initials.png" alt="LinkedIn Logo" boxSize="32px" />
+      <Image src="https://upload.wikimedia.org/wikipedia/commons/c/ca/LinkedIn_logo_initials.png" alt="LinkedIn Logo" boxSize={{ base: "28px", md: "32px" }} />
     </Link>
   )
 
   const XLogo = () => (
     <Link href="https://twitter.com/cobaltdata" target="_blank" rel="noopener noreferrer">
-      <Image src="https://images.freeimages.com/image/large-previews/f35/x-twitter-logo-on-black-circle-5694247.png" alt="XLogo" boxSize="32px" />
+      <Image src="https://images.freeimages.com/image/large-previews/f35/x-twitter-logo-on-black-circle-5694247.png" alt="XLogo" boxSize={{ base: "28px", md: "32px" }} />
     </Link>
   )
 
   return (
-    <Container maxW="container.xl" p={0} height="100vh" display="flex" alignItems="center">
+    <Container 
+      maxW="container.xl" 
+      p={{ base: 4, md: 0 }} 
+      minH="100vh" 
+      display="flex" 
+      alignItems="center"
+      justifyContent="center"
+    >
       <Flex 
         direction={{ base: "column", md: "row" }} 
         width="100%"
-        maxW="container.xl"
+        maxW={{ base: "100%", md: "container.xl" }}
         bg="white"
-        boxShadow="md"
-        borderRadius="md"
+        boxShadow={{ base: "sm", md: "md" }}
+        borderRadius={{ base: "lg", md: "md" }}
+        overflow="hidden"
       >
         {/* Left Column - Text Section */}
         <Box
-          flex="1"
+          flex={{ md: 1 }}
           bg="gray.50"
-          p={10}
+          p={{ base: 6, md: 10 }}
           display="flex"
           flexDirection="column"
           alignItems="flex-start"
-          borderRadius={{ md: "md 0 0 md" }}
+          borderRadius={{ base: "lg lg 0 0", md: "md 0 0 md" }}
         >
-          <Heading as="h1" size="xl" mb={6} color="gray.800">
-          Unlock Your Data’s Potential
+          <Heading 
+            as="h1" 
+            size={{ base: "lg", md: "xl" }} 
+            mb={{ base: 4, md: 6 }} 
+            color="gray.800"
+          >
+            Unlock Your Data’s Potential
           </Heading>
-          <Text fontSize="lg" color="gray.600" mb={4}>
-          Sign in to experience seamless data management and take control with confidence.
+          <Text 
+            fontSize={{ base: "md", md: "lg" }} 
+            color="gray.600" 
+            mb={{ base: 3, md: 4 }}
+          >
+            Sign in to experience seamless data management and take control with confidence.
           </Text>
-          <Text fontSize="md" color="gray.500">
-Need a Boost? Our expert support team and comprehensive documentation are here to fuel your success.
+          <Text 
+            fontSize={{ base: "sm", md: "md" }} 
+            color="gray.500"
+          >
+            Need a Boost? Our expert support team and comprehensive documentation are here to fuel your success.
           </Text>
         </Box>
 
         {/* Right Column - Form Section */}
         <Box
-          flex="1"
+          flex={{ md: 1 }}
           as="form"
           onSubmit={handleSubmit(onSubmit)}
-          p={10}
+          p={{ base: 6, md: 10 }}
           display="flex"
           flexDirection="column"
           alignItems="center"
-          gap={6}
+          gap={{ base: 4, md: 6 }}
+          width={{ base: "100%", md: "auto" }}
         >
           <Link href="https://thedataproxy.com" target="_blank" rel="noopener noreferrer">
-            <Image src={Logo} alt="logo" height="auto" maxW="2xs" mb={4} />
+            <Image 
+              src={Logo} 
+              alt="logo" 
+              height="auto" 
+              maxW={{ base: "150px", md: "2xs" }} 
+              mb={{ base: 3, md: 4 }} 
+            />
           </Link>
 
-          <FormControl id="username" isInvalid={!!errors.username || !!error}>
+          <FormControl id="username" isInvalid={!!errors.username || !!error} width="100%">
             <Input
               id="username"
               {...register("username", {
@@ -130,47 +157,75 @@ Need a Boost? Our expert support team and comprehensive documentation are here t
               placeholder="Email"
               type="email"
               required
+              size={{ base: "md", md: "lg" }}
             />
             {errors.username && (
               <FormErrorMessage>{errors.username.message}</FormErrorMessage>
             )}
           </FormControl>
 
-          <FormControl id="password" isInvalid={!!error}>
+          <FormControl id="password" isInvalid={!!error} width="100%">
             <InputGroup>
               <Input
                 {...register("password", { required: "Password is required" })}
                 type={show ? "text" : "password"}
                 placeholder="Password"
                 required
+                size={{ base: "md", md: "lg" }}
               />
-              <InputRightElement color="ui.dim" _hover={{ cursor: "pointer" }}>
+              <InputRightElement 
+                color="ui.dim" 
+                _hover={{ cursor: "pointer" }}
+                pr={{ base: 2, md: 3 }}
+              >
                 <Icon
                   as={show ? ViewOffIcon : ViewIcon}
                   onClick={setShow.toggle}
                   aria-label={show ? "Hide password" : "Show password"}
+                  boxSize={{ base: 5, md: 6 }}
                 />
               </InputRightElement>
             </InputGroup>
             {error && <FormErrorMessage>{error}</FormErrorMessage>}
           </FormControl>
 
-          <Link as={RouterLink} to="/recover-password" color="blue.500">
+          <Link 
+            as={RouterLink} 
+            to="/recover-password" 
+            color="blue.500"
+            fontSize={{ base: "sm", md: "md" }}
+          >
             Forgot password?
           </Link>
 
-          <Button variant="primary" type="submit" isLoading={isSubmitting} width="full">
+          <Button 
+            variant="primary" 
+            type="submit" 
+            isLoading={isSubmitting} 
+            width="100%"
+            size={{ base: "md", md: "lg" }}
+          >
             Log In
           </Button>
 
-          <Text>
+          <Text fontSize={{ base: "sm", md: "md" }}>
             Don't have an account?{" "}
-            <Link as={RouterLink} to="/signup" color="blue.500">
+            <Link 
+              as={RouterLink} 
+              to="/signup" 
+              color="blue.500"
+            >
               Sign up
             </Link>
           </Text>
 
-          <Flex direction="row" justify="center" align="center" gap={4} mt={6}>
+          <Flex 
+            direction={{ base: "column", md: "row" }} 
+            justify="center" 
+            align="center" 
+            gap={{ base: 3, md: 4 }} 
+            mt={{ base: 4, md: 6 }}
+          >
             <GitHubLogo />
             <LinkedInLogo />
             <XLogo />
