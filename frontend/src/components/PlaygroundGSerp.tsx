@@ -19,7 +19,7 @@ import {
   AlertIcon,
   Link,
 } from "@chakra-ui/react";
-import { ExternalLinkIcon, CopyIcon } from "@chakra-ui/icons";
+import { ExternalLinkIcon, CopyIcon, DownloadIcon } from "@chakra-ui/icons";
 import { FiSend } from "react-icons/fi";
 
 // Define regions based on backend REGION_ENDPOINTS
@@ -93,6 +93,34 @@ const PlaygroundGSerp: React.FC = () => {
     }
   };
 
+  const handleDownloadResponse = () => {
+    if (response) {
+      const blob = new Blob([response], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "response.json";
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }
+  };
+
+  const handleDownloadHtml = () => {
+    if (htmlPreview) {
+      const blob = new Blob([htmlPreview], { type: "text/html" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "preview.html";
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }
+  };
+
   return (
     <Box width="100%">
       <Heading size="md" mb={4}>Test Proxy Request</Heading>
@@ -162,14 +190,24 @@ const PlaygroundGSerp: React.FC = () => {
             <Heading size="md">Response</Heading>
             <Flex gap={2}>
               {response && (
-                <Tooltip label="Copy Response">
-                  <IconButton
-                    aria-label="Copy Response"
-                    icon={<CopyIcon />}
-                    size="sm"
-                    onClick={handleCopyResponse}
-                  />
-                </Tooltip>
+                <>
+                  <Tooltip label="Copy Response">
+                    <IconButton
+                      aria-label="Copy Response"
+                      icon={<CopyIcon />}
+                      size="sm"
+                      onClick={handleCopyResponse}
+                    />
+                  </Tooltip>
+                  <Tooltip label="Download Response">
+                    <IconButton
+                      aria-label="Download Response"
+                      icon={<DownloadIcon />}
+                      size="sm"
+                      onClick={handleDownloadResponse}
+                    />
+                  </Tooltip>
+                </>
               )}
             </Flex>
           </Flex>
@@ -213,6 +251,14 @@ const PlaygroundGSerp: React.FC = () => {
                       onClick={handleCopyHtml}
                     />
                   </Tooltip>
+                  <Tooltip label="Download HTML">
+                    <IconButton
+                      aria-label="Download HTML"
+                      icon={<DownloadIcon />}
+                      size="sm"
+                      onClick={handleDownloadHtml}
+                    />
+                  </Tooltip>
                   <Tooltip label="Open preview in new tab">
                     <IconButton
                       aria-label="Open preview"
@@ -235,7 +281,7 @@ const PlaygroundGSerp: React.FC = () => {
           </Flex>
           <Text fontSize="sm" mb={4}>
             <Link
-              href="https://api.thedataproxy.com/redoc"
+              href="https://thedataproxy.com/redoc"
               isExternal
               color="blue.500"
             >
