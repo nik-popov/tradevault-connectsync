@@ -45,7 +45,7 @@ const PlaygroundGSerp: React.FC = () => {
   const [htmlPreview, setHtmlPreview] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
-  const [responseTime, setResponseTime] = useState<number | null>(null); // New state for response time
+  const [responseTime, setResponseTime] = useState<number | null>(null);
 
   const generateCurlCommand = () => {
     const requestUrl = `${API_URL}/fetch?region=${region}`;
@@ -70,7 +70,7 @@ const PlaygroundGSerp: React.FC = () => {
     setResponseTime(null);
 
     try {
-      const startTime = performance.now(); // Start timing
+      const startTime = performance.now();
       const res = await fetch(`${API_URL}/fetch?region=${region}`, {
         method: "POST",
         headers: {
@@ -80,8 +80,8 @@ const PlaygroundGSerp: React.FC = () => {
         body: JSON.stringify({ url }),
       });
 
-      const endTime = performance.now(); // End timing
-      const timeTaken = Math.round(endTime - startTime); // Calculate response time in ms
+      const endTime = performance.now();
+      const timeTaken = Math.round(endTime - startTime);
       setResponseTime(timeTaken);
 
       if (!res.ok) {
@@ -186,9 +186,10 @@ const PlaygroundGSerp: React.FC = () => {
                 </Select>
               </FormControl>
             </Flex>
-            <Flex gap={2} align="center">
+            <Flex direction={{ base: "column", sm: "row" }} gap={2} align="center">
               <Tooltip label="Send test request">
                 <Button
+                  width="full"
                   size="sm"
                   colorScheme="blue"
                   onClick={handleTestRequest}
@@ -196,7 +197,6 @@ const PlaygroundGSerp: React.FC = () => {
                   isDisabled={!url.trim() || !apiKey.trim() || !region}
                 >
                   <FiSend />
-        
                 </Button>
               </Tooltip>
               <Tooltip label="Copy cURL command">
@@ -335,7 +335,14 @@ const PlaygroundGSerp: React.FC = () => {
               sandbox="allow-scripts allow-same-origin allow-popups allow-forms"
             />
           ) : (
-            <Box height="400px" bg="gray.100" borderRadius="md" display="flex" alignItems="center" justifyContent="center">
+            <Box
+              height="400px"
+              bg="gray.100"
+              borderRadius="md"
+              display="flex"
+              alignItems="center"
+              justifyContent="center"
+            >
               <Text fontSize="sm" color="gray.500">No preview available</Text>
             </Box>
           )}

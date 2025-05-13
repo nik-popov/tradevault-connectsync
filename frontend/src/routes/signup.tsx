@@ -61,52 +61,79 @@ function SignUp() {
   }
 
   return (
-    <Container maxW="container.xl" p={0} height="100vh" display="flex" alignItems="center">
+    <Container 
+      maxW="container.xl" 
+      p={{ base: 4, md: 0 }} 
+      minH="100vh" 
+      display="flex" 
+      alignItems="center"
+      justifyContent="center"
+    >
       <Flex 
         direction={{ base: "column", md: "row" }} 
         width="100%"
-        maxW="container.xl"
+        maxW={{ base: "100%", md: "container.xl" }}
         bg="white"
-        boxShadow="md"
-        borderRadius="md"
+        boxShadow={{ base: "sm", md: "md" }}
+        borderRadius={{ base: "lg", md: "md" }}
+        overflow="hidden"
       >
         {/* Left Column - Text Section */}
         <Box
-          flex="1"
+          flex={{ md: 1 }}
           bg="gray.50"
-          p={10}
+          p={{ base: 6, md: 10 }}
           display="flex"
           flexDirection="column"
           alignItems="flex-start"
-          borderRadius={{ md: "md 0 0 md" }}
+          borderRadius={{ base: "lg lg 0 0", md: "md 0 0 md" }}
         >
-        <Heading as="h1" size="xl" mb={6} color="gray.800">
+          <Heading 
+            as="h1" 
+            size={{ base: "lg", md: "xl" }} 
+            mb={{ base: 4, md: 6 }} 
+            color="gray.800"
+          >
             Access Your Data Needs
           </Heading>
-          <Text fontSize="lg" color="gray.600" mb={4}>
+          <Text 
+            fontSize={{ base: "md", md: "lg" }} 
+            color="gray.600" 
+            mb={{ base: 3, md: 4 }}
+          >
             Sign up to wield cutting-edge tools and transform your data into pure power.
           </Text>
-          <Text fontSize="md" color="gray.500">
+          <Text 
+            fontSize={{ base: "sm", md: "md" }} 
+            color="gray.500"
+          >
             Curious how far you can go? Our expert crew and secret knowledge base are your launchpad to greatness.
           </Text>
         </Box>
 
         {/* Right Column - Form Section */}
         <Box
-          flex="1"
+          flex={{ md: 1 }}
           as="form"
           onSubmit={handleSubmit(onSubmit)}
-          p={10}
+          p={{ base: 6, md: 10 }}
           display="flex"
           flexDirection="column"
           alignItems="center"
-          gap={6}
+          gap={{ base: 4, md: 6 }}
+          width={{ base: "100%", md: "auto" }}
         >
           <Link href="https://thedataproxy.com" target="_blank" rel="noopener noreferrer">
-            <Image src={Logo} alt="logo" height="auto" maxW="2xs" mb={4} />
+            <Image 
+              src={Logo} 
+              alt="logo" 
+              height="auto" 
+              maxW={{ base: "150px", md: "2xs" }} 
+              mb={{ base: 3, md: 4 }} 
+            />
           </Link>
 
-          <FormControl id="full_name" isInvalid={!!errors.full_name}>
+          <FormControl id="full_name" isInvalid={!!errors.full_name} width="100%">
             <FormLabel htmlFor="full_name" srOnly>
               Full Name
             </FormLabel>
@@ -116,13 +143,14 @@ function SignUp() {
               {...register("full_name", { required: "Full Name is required" })}
               placeholder="Full Name"
               type="text"
+              size={{ base: "md", md: "lg" }}
             />
             {errors.full_name && (
               <FormErrorMessage>{errors.full_name.message}</FormErrorMessage>
             )}
           </FormControl>
 
-          <FormControl id="email" isInvalid={!!errors.email}>
+          <FormControl id="email" isInvalid={!!errors.email} width="100%">
             <FormLabel htmlFor="email" srOnly>
               Email
             </FormLabel>
@@ -134,13 +162,14 @@ function SignUp() {
               })}
               placeholder="Email"
               type="email"
+              size={{ base: "md", md: "lg" }}
             />
             {errors.email && (
               <FormErrorMessage>{errors.email.message}</FormErrorMessage>
             )}
           </FormControl>
 
-          <FormControl id="password" isInvalid={!!errors.password}>
+          <FormControl id="password" isInvalid={!!errors.password} width="100%">
             <FormLabel htmlFor="password" srOnly>
               Password
             </FormLabel>
@@ -149,13 +178,14 @@ function SignUp() {
               {...register("password", passwordRules())}
               placeholder="Password"
               type="password"
+              size={{ base: "md", md: "lg" }}
             />
             {errors.password && (
               <FormErrorMessage>{errors.password.message}</FormErrorMessage>
             )}
           </FormControl>
 
-          <FormControl id="confirm_password" isInvalid={!!errors.confirm_password}>
+          <FormControl id="confirm_password" isInvalid={!!errors.confirm_password} width="100%">
             <FormLabel htmlFor="confirm_password" srOnly>
               Confirm Password
             </FormLabel>
@@ -164,19 +194,30 @@ function SignUp() {
               {...register("confirm_password", confirmPasswordRules(getValues))}
               placeholder="Repeat Password"
               type="password"
+              size={{ base: "md", md: "lg" }}
             />
             {errors.confirm_password && (
               <FormErrorMessage>{errors.confirm_password.message}</FormErrorMessage>
             )}
           </FormControl>
 
-          <Button variant="primary" type="submit" isLoading={isSubmitting} width="full">
+          <Button 
+            variant="primary" 
+            type="submit" 
+            isLoading={isSubmitting} 
+            width="100%"
+            size={{ base: "md", md: "lg" }}
+          >
             Sign Up
           </Button>
 
-          <Text>
+          <Text fontSize={{ base: "sm", md: "md" }}>
             Already have an account?{" "}
-            <Link as={RouterLink} to="/login" color="blue.500">
+            <Link 
+              as={RouterLink} 
+              to="/login" 
+              color="blue.500"
+            >
               Log In
             </Link>
           </Text>
