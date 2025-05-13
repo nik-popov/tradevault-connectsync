@@ -236,7 +236,7 @@ const GoogleSerpPage = () => {
       <Container maxW="full">
         <Flex align="center" justify="space-between" py={6} gap={4}>
           <Heading size="lg">HTTPS Request Proxy API</Heading>
-          <Text fontSize="sm" color="gray.500">Manage your proxy settings and API keys</Text>
+          <Text fontSize="sm" color="gray.500">Active subscription: Analyst</Text>
         </Flex>
         {isSubscriptionsLoading || isAccessLoading || isApiKeysLoading ? (
           <Text fontSize="sm">Loading user details...</Text>

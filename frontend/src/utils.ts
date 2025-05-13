@@ -1,4 +1,5 @@
 import type { ApiError } from "./client"
+import type { RegisterOptions } from "react-hook-form"
 
 export const emailPattern = {
   value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
@@ -10,8 +11,8 @@ export const namePattern = {
   message: "Invalid name",
 }
 
-export const passwordRules = (isRequired = true) => {
-  const rules: any = {
+export const passwordRules = (isRequired = true): RegisterOptions => {
+  const rules: RegisterOptions = {
     minLength: {
       value: 8,
       message: "Password must be at least 8 characters",
@@ -26,10 +27,10 @@ export const passwordRules = (isRequired = true) => {
 }
 
 export const confirmPasswordRules = (
-  getValues: () => any,
+  getValues: () => { password?: string; new_password?: string },
   isRequired = true,
-) => {
-  const rules: any = {
+): RegisterOptions => {
+  const rules: RegisterOptions = {
     validate: (value: string) => {
       const password = getValues().password || getValues().new_password
       return value === password ? true : "The passwords do not match"
@@ -43,7 +44,7 @@ export const confirmPasswordRules = (
   return rules
 }
 
-export const handleError = (err: ApiError, showToast: any) => {
+export const handleError = (err: ApiError, showToast: (title: string, description: string, status: "error") => void) => {
   const errDetail = (err.body as any)?.detail
   let errorMessage = errDetail || "Something went wrong."
   if (Array.isArray(errDetail) && errDetail.length > 0) {

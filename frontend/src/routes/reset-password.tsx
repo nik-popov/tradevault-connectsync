@@ -7,6 +7,7 @@ import {
   FormLabel,
   Image,
   Link,
+  Input,
   Text,
   Box,
   Heading,
@@ -116,7 +117,7 @@ function ResetPassword() {
           <Heading 
             as="h1" 
             size={{ base: "lg", md: "xl" }} 
-            mb={{ base: 4, md: 6 }} 
+            mb={{ base: 4, md: 6 }}
             color="gray.800"
           >
             Reset Your Password
