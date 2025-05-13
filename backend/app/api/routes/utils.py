@@ -6,7 +6,7 @@ from app.models import Message
 from app.utils import generate_test_email, send_email
 from app.core.config import settings
 
-from app.core.exceptions import HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Request, BackgroundTasks
 import logging
 
 logger = logging.getLogger(__name__)
