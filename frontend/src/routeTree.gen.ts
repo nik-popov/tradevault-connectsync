@@ -21,14 +21,7 @@ import { Route as LayoutIndexImport } from './routes/_layout/index'
 import { Route as LayoutSettingsImport } from './routes/_layout/settings'
 import { Route as LayoutItemsImport } from './routes/_layout/items'
 import { Route as LayoutAdminImport } from './routes/_layout/admin'
-import { Route as LayoutScrapingToolsHttpsProxyImport } from './routes/_layout/web-scraping-tools/https-proxy'
-import { Route as LayoutAiIcongptImport } from './routes/_layout/ai/icongpt'
-import { Route as LayoutScrapingToolsScrapingJobsIndexImport } from './routes/_layout/web-scraping-tools/scraping-jobs/index'
-import { Route as LayoutScrapingToolsEndpointsIndexImport } from './routes/_layout/web-scraping-tools/endpoints/index'
-import { Route as LayoutScrapingToolsSubmitFormSuccessImport } from './routes/_layout/web-scraping-tools/submit-form/success'
-import { Route as LayoutScrapingToolsSubmitFormGoogleSerpImport } from './routes/_layout/web-scraping-tools/submit-form/google-serp'
-import { Route as LayoutScrapingToolsScrapingJobsJobIdImport } from './routes/_layout/web-scraping-tools/scraping-jobs/$jobId'
-import { Route as LayoutScrapingToolsEndpointsEndpointIdImport } from './routes/_layout/web-scraping-tools/endpoints/$endpointId'
+import { Route as LayoutWebScrapingToolsHttpsProxyImport } from './routes/_layout/web-scraping-tools/https-proxy'
 
 // Create/Update Routes
 
@@ -91,58 +84,10 @@ const LayoutAdminRoute = LayoutAdminImport.update({
   getParentRoute: () => LayoutRoute,
 } as any)
 
-const LayoutScrapingToolsHttpsProxyRoute =
-  LayoutScrapingToolsHttpsProxyImport.update({
-    id: '/scraping-tools/https-proxy',
-    path: '/scraping-tools/https-proxy',
-    getParentRoute: () => LayoutRoute,
-  } as any)
-
-const LayoutAiIcongptRoute = LayoutAiIcongptImport.update({
-  id: '/ai/icongpt',
-  path: '/ai/icongpt',
-  getParentRoute: () => LayoutRoute,
-} as any)
-
-const LayoutScrapingToolsScrapingJobsIndexRoute =
-  LayoutScrapingToolsScrapingJobsIndexImport.update({
-    id: '/scraping-tools/scraping-jobs/',
-    path: '/scraping-tools/scraping-jobs/',
-    getParentRoute: () => LayoutRoute,
-  } as any)
-
-const LayoutScrapingToolsEndpointsIndexRoute =
-  LayoutScrapingToolsEndpointsIndexImport.update({
-    id: '/scraping-tools/endpoints/',
-    path: '/scraping-tools/endpoints/',
-    getParentRoute: () => LayoutRoute,
-  } as any)
-
-const LayoutScrapingToolsSubmitFormSuccessRoute =
-  LayoutScrapingToolsSubmitFormSuccessImport.update({
-    id: '/scraping-tools/submit-form/success',
-    path: '/scraping-tools/submit-form/success',
-    getParentRoute: () => LayoutRoute,
-  } as any)
-
-const LayoutScrapingToolsSubmitFormGoogleSerpRoute =
-  LayoutScrapingToolsSubmitFormGoogleSerpImport.update({
-    id: '/scraping-tools/submit-form/google-serp',
-    path: '/scraping-tools/submit-form/google-serp',
-    getParentRoute: () => LayoutRoute,
-  } as any)
-
-const LayoutScrapingToolsScrapingJobsJobIdRoute =
-  LayoutScrapingToolsScrapingJobsJobIdImport.update({
-    id: '/scraping-tools/scraping-jobs/$jobId',
-    path: '/scraping-tools/scraping-jobs/$jobId',
-    getParentRoute: () => LayoutRoute,
-  } as any)
-
-const LayoutScrapingToolsEndpointsEndpointIdRoute =
-  LayoutScrapingToolsEndpointsEndpointIdImport.update({
-    id: '/scraping-tools/endpoints/$endpointId',
-    path: '/scraping-tools/endpoints/$endpointId',
+const LayoutWebScrapingToolsHttpsProxyRoute =
+  LayoutWebScrapingToolsHttpsProxyImport.update({
+    id: '/web-scraping-tools/https-proxy',
+    path: '/web-scraping-tools/https-proxy',
     getParentRoute: () => LayoutRoute,
   } as any)
 
@@ -220,60 +165,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LayoutIndexImport
       parentRoute: typeof LayoutImport
     }
-    '/_layout/ai/icongpt': {
-      id: '/_layout/ai/icongpt'
-      path: '/ai/icongpt'
-      fullPath: '/ai/icongpt'
-      preLoaderRoute: typeof LayoutAiIcongptImport
-      parentRoute: typeof LayoutImport
-    }
-    '/_layout/scraping-tools/https-proxy': {
-      id: '/_layout/scraping-tools/https-proxy'
-      path: '/scraping-tools/https-proxy'
-      fullPath: '/scraping-tools/https-proxy'
-      preLoaderRoute: typeof LayoutScrapingToolsHttpsProxyImport
-      parentRoute: typeof LayoutImport
-    }
-    '/_layout/scraping-tools/endpoints/$endpointId': {
-      id: '/_layout/scraping-tools/endpoints/$endpointId'
-      path: '/scraping-tools/endpoints/$endpointId'
-      fullPath: '/scraping-tools/endpoints/$endpointId'
-      preLoaderRoute: typeof LayoutScrapingToolsEndpointsEndpointIdImport
-      parentRoute: typeof LayoutImport
-    }
-    '/_layout/scraping-tools/scraping-jobs/$jobId': {
-      id: '/_layout/scraping-tools/scraping-jobs/$jobId'
-      path: '/scraping-tools/scraping-jobs/$jobId'
-      fullPath: '/scraping-tools/scraping-jobs/$jobId'
-      preLoaderRoute: typeof LayoutScrapingToolsScrapingJobsJobIdImport
-      parentRoute: typeof LayoutImport
-    }
-    '/_layout/scraping-tools/submit-form/google-serp': {
-      id: '/_layout/scraping-tools/submit-form/google-serp'
-      path: '/scraping-tools/submit-form/google-serp'
-      fullPath: '/scraping-tools/submit-form/google-serp'
-      preLoaderRoute: typeof LayoutScrapingToolsSubmitFormGoogleSerpImport
-      parentRoute: typeof LayoutImport
-    }
-    '/_layout/scraping-tools/submit-form/success': {
-      id: '/_layout/scraping-tools/submit-form/success'
-      path: '/scraping-tools/submit-form/success'
-      fullPath: '/scraping-tools/submit-form/success'
-      preLoaderRoute: typeof LayoutScrapingToolsSubmitFormSuccessImport
-      parentRoute: typeof LayoutImport
-    }
-    '/_layout/scraping-tools/endpoints/': {
-      id: '/_layout/scraping-tools/endpoints/'
-      path: '/scraping-tools/endpoints'
-      fullPath: '/scraping-tools/endpoints'
-      preLoaderRoute: typeof LayoutScrapingToolsEndpointsIndexImport
-      parentRoute: typeof LayoutImport
-    }
-    '/_layout/scraping-tools/scraping-jobs/': {
-      id: '/_layout/scraping-tools/scraping-jobs/'
-      path: '/scraping-tools/scraping-jobs'
-      fullPath: '/scraping-tools/scraping-jobs'
-      preLoaderRoute: typeof LayoutScrapingToolsScrapingJobsIndexImport
+    '/_layout/web-scraping-tools/https-proxy': {
+      id: '/_layout/web-scraping-tools/https-proxy'
+      path: '/web-scraping-tools/https-proxy'
+      fullPath: '/web-scraping-tools/https-proxy'
+      preLoaderRoute: typeof LayoutWebScrapingToolsHttpsProxyImport
       parentRoute: typeof LayoutImport
     }
   }
@@ -286,14 +182,7 @@ interface LayoutRouteChildren {
   LayoutItemsRoute: typeof LayoutItemsRoute
   LayoutSettingsRoute: typeof LayoutSettingsRoute
   LayoutIndexRoute: typeof LayoutIndexRoute
-  LayoutAiIcongptRoute: typeof LayoutAiIcongptRoute
-  LayoutScrapingToolsHttpsProxyRoute: typeof LayoutScrapingToolsHttpsProxyRoute
-  LayoutScrapingToolsEndpointsEndpointIdRoute: typeof LayoutScrapingToolsEndpointsEndpointIdRoute
-  LayoutScrapingToolsScrapingJobsJobIdRoute: typeof LayoutScrapingToolsScrapingJobsJobIdRoute
-  LayoutScrapingToolsSubmitFormGoogleSerpRoute: typeof LayoutScrapingToolsSubmitFormGoogleSerpRoute
-  LayoutScrapingToolsSubmitFormSuccessRoute: typeof LayoutScrapingToolsSubmitFormSuccessRoute
-  LayoutScrapingToolsEndpointsIndexRoute: typeof LayoutScrapingToolsEndpointsIndexRoute
-  LayoutScrapingToolsScrapingJobsIndexRoute: typeof LayoutScrapingToolsScrapingJobsIndexRoute
+  LayoutWebScrapingToolsHttpsProxyRoute: typeof LayoutWebScrapingToolsHttpsProxyRoute
 }
 
 const LayoutRouteChildren: LayoutRouteChildren = {
@@ -301,20 +190,7 @@ const LayoutRouteChildren: LayoutRouteChildren = {
   LayoutItemsRoute: LayoutItemsRoute,
   LayoutSettingsRoute: LayoutSettingsRoute,
   LayoutIndexRoute: LayoutIndexRoute,
-  LayoutAiIcongptRoute: LayoutAiIcongptRoute,
-  LayoutScrapingToolsHttpsProxyRoute: LayoutScrapingToolsHttpsProxyRoute,
-  LayoutScrapingToolsEndpointsEndpointIdRoute:
-    LayoutScrapingToolsEndpointsEndpointIdRoute,
-  LayoutScrapingToolsScrapingJobsJobIdRoute:
-    LayoutScrapingToolsScrapingJobsJobIdRoute,
-  LayoutScrapingToolsSubmitFormGoogleSerpRoute:
-    LayoutScrapingToolsSubmitFormGoogleSerpRoute,
-  LayoutScrapingToolsSubmitFormSuccessRoute:
-    LayoutScrapingToolsSubmitFormSuccessRoute,
-  LayoutScrapingToolsEndpointsIndexRoute:
-    LayoutScrapingToolsEndpointsIndexRoute,
-  LayoutScrapingToolsScrapingJobsIndexRoute:
-    LayoutScrapingToolsScrapingJobsIndexRoute,
+  LayoutWebScrapingToolsHttpsProxyRoute: LayoutWebScrapingToolsHttpsProxyRoute,
 }
 
 const LayoutRouteWithChildren =
@@ -331,14 +207,7 @@ export interface FileRoutesByFullPath {
   '/items': typeof LayoutItemsRoute
   '/settings': typeof LayoutSettingsRoute
   '/': typeof LayoutIndexRoute
-  '/ai/icongpt': typeof LayoutAiIcongptRoute
-  '/scraping-tools/https-proxy': typeof LayoutScrapingToolsHttpsProxyRoute
-  '/scraping-tools/endpoints/$endpointId': typeof LayoutScrapingToolsEndpointsEndpointIdRoute
-  '/scraping-tools/scraping-jobs/$jobId': typeof LayoutScrapingToolsScrapingJobsJobIdRoute
-  '/scraping-tools/submit-form/google-serp': typeof LayoutScrapingToolsSubmitFormGoogleSerpRoute
-  '/scraping-tools/submit-form/success': typeof LayoutScrapingToolsSubmitFormSuccessRoute
-  '/scraping-tools/endpoints': typeof LayoutScrapingToolsEndpointsIndexRoute
-  '/scraping-tools/scraping-jobs': typeof LayoutScrapingToolsScrapingJobsIndexRoute
+  '/web-scraping-tools/https-proxy': typeof LayoutWebScrapingToolsHttpsProxyRoute
 }
 
 export interface FileRoutesByTo {
@@ -351,14 +220,7 @@ export interface FileRoutesByTo {
   '/items': typeof LayoutItemsRoute
   '/settings': typeof LayoutSettingsRoute
   '/': typeof LayoutIndexRoute
-  '/ai/icongpt': typeof LayoutAiIcongptRoute
-  '/scraping-tools/https-proxy': typeof LayoutScrapingToolsHttpsProxyRoute
-  '/scraping-tools/endpoints/$endpointId': typeof LayoutScrapingToolsEndpointsEndpointIdRoute
-  '/scraping-tools/scraping-jobs/$jobId': typeof LayoutScrapingToolsScrapingJobsJobIdRoute
-  '/scraping-tools/submit-form/google-serp': typeof LayoutScrapingToolsSubmitFormGoogleSerpRoute
-  '/scraping-tools/submit-form/success': typeof LayoutScrapingToolsSubmitFormSuccessRoute
-  '/scraping-tools/endpoints': typeof LayoutScrapingToolsEndpointsIndexRoute
-  '/scraping-tools/scraping-jobs': typeof LayoutScrapingToolsScrapingJobsIndexRoute
+  '/web-scraping-tools/https-proxy': typeof LayoutWebScrapingToolsHttpsProxyRoute
 }
 
 export interface FileRoutesById {
@@ -373,14 +235,7 @@ export interface FileRoutesById {
   '/_layout/items': typeof LayoutItemsRoute
   '/_layout/settings': typeof LayoutSettingsRoute
   '/_layout/': typeof LayoutIndexRoute
-  '/_layout/ai/icongpt': typeof LayoutAiIcongptRoute
-  '/_layout/scraping-tools/https-proxy': typeof LayoutScrapingToolsHttpsProxyRoute
-  '/_layout/scraping-tools/endpoints/$endpointId': typeof LayoutScrapingToolsEndpointsEndpointIdRoute
-  '/_layout/scraping-tools/scraping-jobs/$jobId': typeof LayoutScrapingToolsScrapingJobsJobIdRoute
-  '/_layout/scraping-tools/submit-form/google-serp': typeof LayoutScrapingToolsSubmitFormGoogleSerpRoute
-  '/_layout/scraping-tools/submit-form/success': typeof LayoutScrapingToolsSubmitFormSuccessRoute
-  '/_layout/scraping-tools/endpoints/': typeof LayoutScrapingToolsEndpointsIndexRoute
-  '/_layout/scraping-tools/scraping-jobs/': typeof LayoutScrapingToolsScrapingJobsIndexRoute
+  '/_layout/web-scraping-tools/https-proxy': typeof LayoutWebScrapingToolsHttpsProxyRoute
 }
 
 export interface FileRouteTypes {
@@ -396,14 +251,7 @@ export interface FileRouteTypes {
     | '/items'
     | '/settings'
     | '/'
-    | '/ai/icongpt'
-    | '/scraping-tools/https-proxy'
-    | '/scraping-tools/endpoints/$endpointId'
-    | '/scraping-tools/scraping-jobs/$jobId'
-    | '/scraping-tools/submit-form/google-serp'
-    | '/scraping-tools/submit-form/success'
-    | '/scraping-tools/endpoints'
-    | '/scraping-tools/scraping-jobs'
+    | '/web-scraping-tools/https-proxy'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/activate'
@@ -415,14 +263,7 @@ export interface FileRouteTypes {
     | '/items'
     | '/settings'
     | '/'
-    | '/ai/icongpt'
-    | '/scraping-tools/https-proxy'
-    | '/scraping-tools/endpoints/$endpointId'
-    | '/scraping-tools/scraping-jobs/$jobId'
-    | '/scraping-tools/submit-form/google-serp'
-    | '/scraping-tools/submit-form/success'
-    | '/scraping-tools/endpoints'
-    | '/scraping-tools/scraping-jobs'
+    | '/web-scraping-tools/https-proxy'
   id:
     | '__root__'
     | '/_layout'
@@ -435,14 +276,7 @@ export interface FileRouteTypes {
     | '/_layout/items'
     | '/_layout/settings'
     | '/_layout/'
-    | '/_layout/ai/icongpt'
-    | '/_layout/scraping-tools/https-proxy'
-    | '/_layout/scraping-tools/endpoints/$endpointId'
-    | '/_layout/scraping-tools/scraping-jobs/$jobId'
-    | '/_layout/scraping-tools/submit-form/google-serp'
-    | '/_layout/scraping-tools/submit-form/success'
-    | '/_layout/scraping-tools/endpoints/'
-    | '/_layout/scraping-tools/scraping-jobs/'
+    | '/_layout/web-scraping-tools/https-proxy'
   fileRoutesById: FileRoutesById
 }
 
@@ -489,14 +323,7 @@ export const routeTree = rootRoute
         "/_layout/items",
         "/_layout/settings",
         "/_layout/",
-        "/_layout/ai/icongpt",
-        "/_layout/scraping-tools/https-proxy",
-        "/_layout/scraping-tools/endpoints/$endpointId",
-        "/_layout/scraping-tools/scraping-jobs/$jobId",
-        "/_layout/scraping-tools/submit-form/google-serp",
-        "/_layout/scraping-tools/submit-form/success",
-        "/_layout/scraping-tools/endpoints/",
-        "/_layout/scraping-tools/scraping-jobs/"
+        "/_layout/web-scraping-tools/https-proxy"
       ]
     },
     "/activate": {
@@ -530,36 +357,8 @@ export const routeTree = rootRoute
       "filePath": "_layout/index.tsx",
       "parent": "/_layout"
     },
-    "/_layout/ai/icongpt": {
-      "filePath": "_layout/ai/icongpt.tsx",
-      "parent": "/_layout"
-    },
-    "/_layout/scraping-tools/https-proxy": {
-      "filePath": "_layout/scraping-tools/https-proxy.tsx",
-      "parent": "/_layout"
-    },
-    "/_layout/scraping-tools/endpoints/$endpointId": {
-      "filePath": "_layout/scraping-tools/endpoints/$endpointId.tsx",
-      "parent": "/_layout"
-    },
-    "/_layout/scraping-tools/scraping-jobs/$jobId": {
-      "filePath": "_layout/scraping-tools/scraping-jobs/$jobId.tsx",
-      "parent": "/_layout"
-    },
-    "/_layout/scraping-tools/submit-form/google-serp": {
-      "filePath": "_layout/scraping-tools/submit-form/google-serp.tsx",
-      "parent": "/_layout"
-    },
-    "/_layout/scraping-tools/submit-form/success": {
-      "filePath": "_layout/scraping-tools/submit-form/success.tsx",
-      "parent": "/_layout"
-    },
-    "/_layout/scraping-tools/endpoints/": {
-      "filePath": "_layout/scraping-tools/endpoints/index.tsx",
-      "parent": "/_layout"
-    },
-    "/_layout/scraping-tools/scraping-jobs/": {
-      "filePath": "_layout/scraping-tools/scraping-jobs/index.tsx",
+    "/_layout/web-scraping-tools/https-proxy": {
+      "filePath": "_layout/web-scraping-tools/https-proxy.tsx",
       "parent": "/_layout"
     }
   }

@@ -2,7 +2,7 @@ import { Flex, Spinner } from "@chakra-ui/react";
 import { Outlet, createFileRoute, redirect } from "@tanstack/react-router";
 
 import TopNav from "../components/Common/TopNav";
-import Footer from "../components/Common/Footer"; // Assuming Footer is in a Common directory
+import Footer from "../components/Common/Footer"; 
 import useAuth, { isLoggedIn } from "../hooks/useAuth";
 
 export const Route = createFileRoute("/_layout")({

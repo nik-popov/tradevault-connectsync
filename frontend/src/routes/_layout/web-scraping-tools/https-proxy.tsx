@@ -287,7 +287,7 @@ const GoogleSerpPage = () => {
   );
 };
 
-export const Route = createFileRoute("/_layout/scraping-tools/https-proxy")({
+export const Route = createFileRoute("/_layout/web-scraping-tools/https-proxy")({
   component: GoogleSerpPage,
 });
 
