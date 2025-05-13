@@ -3,7 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
 import { Text, VStack, Button, Flex, Spinner } from "@chakra-ui/react";
 import PromoSERP from "./ComingSoon"; // Adjust the import path as needed
-import useAuth from "../hooks/useAuth";
+import useAuth from "../../hooks/useAuth";
 
 interface SubscriptionStatus {
   hasSubscription: boolean;

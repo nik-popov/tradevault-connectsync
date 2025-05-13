@@ -1,8 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Container, Flex, Text, Tabs, TabList, TabPanels, Tab, TabPanel, Box, Heading, Alert, AlertIcon, Grid, GridItem, Table, Thead, Tbody, Tr, Th, Td } from "@chakra-ui/react";
-import ProtectedComponent from "../../../components/ProtectedComponent";
-import PlaygroundGSerp from "../../../components/PlaygroundGSerp";
-import ApiKeyGSerp from "../../../components/ApiKeyGSerp";
+import ProtectedComponent from "../../../components/Common/ProtectedComponent";
+import PlaygroundGSerp from "../../../components/ScrapingTools/PlaygroundGSerp";
+import ApiKeyGSerp from "../../../components/ScrapingTools/ApiKeyGSerp";
 import { useQuery } from "@tanstack/react-query";
 
 interface Subscription {
