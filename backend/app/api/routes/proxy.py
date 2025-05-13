@@ -18,13 +18,12 @@ from sqlmodel import SQLModel, Field
 from uuid import UUID, uuid4
 from app.utils import generate_test_email, send_email
 
-
 # Configure logging based on environment
 log_level = logging.INFO if os.getenv("ENV") == "production" else logging.DEBUG
 logging.basicConfig(level=log_level)
 logger = logging.getLogger(__name__)
 
-# Define regions and their corresponding endpoints (ideally load from env vars in prod)
+# Define regions and their corresponding endpoints
 REGION_ENDPOINTS = {
     "us-east": [
         "https://us-east4-proxy1-454912.cloudfunctions.net/main",
@@ -135,7 +134,7 @@ class ProxyStatusResponse(BaseModel):
     statuses: List[ProxyStatus]
 
 class ProxyRequest(BaseModel):
-    url: HttpUrl  # Stricter validation for URLs
+    url: HttpUrl
 
 class ProxyResponse(BaseModel):
     result: str
@@ -157,7 +156,8 @@ async def check_proxy_health(endpoint: str, region: str) -> Dict:
                 "region": region,
                 "is_healthy": True,
                 "response_time": response_time,
-                "last_checked": datetime.utcnow()
+                "last_checked": datetime.utcnow(),
+                "endpoint": endpoint
             }
     except Exception as e:
         logger.error(f"Health check failed for proxy {endpoint_id} in {region}: {str(e)}")
@@ -165,7 +165,8 @@ async def check_proxy_health(endpoint: str, region: str) -> Dict:
             "region": region,
             "is_healthy": False,
             "response_time": time.time() - start_time,
-            "last_checked": datetime.utcnow()
+            "last_checked": datetime.utcnow(),
+            "endpoint": endpoint
         }
 
 # Custom dependency for API key verification
@@ -200,7 +201,7 @@ async def generate_user_api_key(session: SessionDep, current_user: CurrentUser):
     logger.debug(f"Generating API key for user: {current_user.email}")
     if not current_user.has_subscription and not (current_user.is_trial and current_user.expiry_date and current_user.expiry_date > datetime.utcnow()):
         logger.info(f"User {current_user.email} lacks active subscription or trial")
-        raise HTTPException(status_code=403, detail="Active subscription or trial required")
+        raise HTTPException XCT status_code=403, detail="Active subscription or trial required")
     
     try:
         api_key = generate_api_key(user_id=str(current_user.id))
@@ -269,7 +270,6 @@ async def proxy_fetch(
     background_tasks: BackgroundTasks,
     x_api_key: Annotated[str, Header()] = None
 ):
-    
     return await proxy_fetch_logic(request, session, region, proxy_request, user, x_api_key)
 
 async def proxy_fetch_logic(
@@ -294,43 +294,89 @@ async def proxy_fetch_logic(
         logger.info("Invalid API key for fetch")
         raise HTTPException(status_code=401, detail="Invalid API key")
     
+    MAX_RETRIES = 3
+    BASE_DELAY = 0.5  # seconds
+    MAX_DELAY = 5.0   # seconds
+
+    async def try_endpoint(endpoint: str, region: str, attempt: int) -> Optional[Dict]:
+        endpoint_id = endpoint_manager.get_endpoint_id(region, endpoint) or "unknown"
+        try:
+            async with httpx.AsyncClient(timeout=10.0) as client:
+                response = await client.post(
+                    f"{endpoint}/fetch",
+                    json={"url": str(proxy_request.url)}
+                )
+                response.raise_for_status()
+                data = response.json()
+                logger.info(f"Proxy fetch successful in {region} (endpoint: {endpoint_id}, attempt: {attempt})")
+                return data
+        except httpx.HTTPStatusError as e:
+            logger.error(f"Proxy fetch failed in {region} (endpoint: {endpoint_id}, attempt: {attempt}): HTTP {e.response.status_code}")
+            return None
+        except Exception as e:
+            logger.error(f"Proxy fetch failed in {region} (endpoint: {endpoint_id}, attempt: {attempt}): {str(e)}")
+            return None
+
+    # Try primary region first
     endpoints = endpoint_manager.get_endpoints(region)
     status_tasks = [check_proxy_health(endpoint, region) for endpoint in endpoints]
     results = await asyncio.gather(*status_tasks)
+    healthy_endpoints = [r["endpoint"] for r in results if r["is_healthy"]]
     
-    healthy_endpoints = [endpoints[i] for i, result in enumerate(results) if result["is_healthy"]]
     if not healthy_endpoints:
-        logger.error(f"No healthy proxy endpoints in {region}")
-        raise HTTPException(status_code=503, detail="No healthy proxy endpoints available in region")
+        logger.warning(f"No healthy endpoints in primary region: {region}")
+    else:
+        random.shuffle(healthy_endpoints)
+        for attempt in range(1, MAX_RETRIES + 1):
+            for endpoint in healthy_endpoints:
+                data = await try_endpoint(endpoint, region, attempt)
+                if data:
+                    token.request_count += 1
+                    session.commit()
+                    return ProxyResponse(
+                        result=data["result"],
+                        public_ip=data["public_ip"],
+                        device_id=data["device_id"],
+                        region_used=region
+                    )
+                delay = min(BASE_DELAY * (2 ** attempt) + random.uniform(0, 0.1), MAX_DELAY)
+                logger.debug(f"Retrying after delay: {delay}s")
+                await asyncio.sleep(delay)
     
-    selected_endpoint = random.choice(healthy_endpoints)
-    endpoint_id = endpoint_manager.get_endpoint_id(region, selected_endpoint) or "unknown"
+    # Fallback to other regions
+    logger.warning(f"Falling back to other regions after failing in {region}")
+    other_regions = [r for r in endpoint_manager.endpoints.keys() if r != region]
+    random.shuffle(other_regions)
     
-    try:
-        async with httpx.AsyncClient(timeout=10.0) as client:
-            response = await client.post(
-                f"{selected_endpoint}/fetch",
-                json={"url": str(proxy_request.url)}  # Ensure URL is string
-            )
-            response.raise_for_status()
-            data = response.json()
+    for fallback_region in other_regions:
+        endpoints = endpoint_manager.get_endpoints(fallback_region)
+        status_tasks = [check_proxy_health(endpoint, fallback_region) for endpoint in endpoints]
+        results = await asyncio.gather(*status_tasks)
+        healthy_endpoints = [r["endpoint"] for r in results if r["is_healthy"]]
+        
+        if not healthy_endpoints:
+            logger.warning(f"No healthy endpoints in fallback region: {fallback_region}")
+            continue
             
-            token.request_count += 1
-            session.commit()
-            
-            logger.info(f"Proxy fetch successful in {region} (endpoint: {endpoint_id})")
-            return ProxyResponse(
-                result=data["result"],
-                public_ip=data["public_ip"],
-                device_id=data["device_id"],
-                region_used=region
-            )
-    except httpx.HTTPStatusError as e:
-        logger.error(f"Proxy fetch failed in {region} (endpoint: {endpoint_id}): HTTP {e.response.status_code}")
-        raise HTTPException(status_code=502, detail="Proxy request failed in region")
-    except Exception as e:
-        logger.error(f"Proxy fetch failed in {region} (endpoint: {endpoint_id}): {str(e)}")
-        raise HTTPException(status_code=500, detail="Proxy request failed in region")
+        random.shuffle(healthy_endpoints)
+        for attempt in range(1, MAX_RETRIES + 1):
+            for endpoint in healthy_endpoints:
+                data = await try_endpoint(endpoint, fallback_region, attempt)
+                if data:
+                    token.request_count += 1
+                    session.commit()
+                    return ProxyResponse(
+                        result=data["result"],
+                        public_ip=data["public_ip"],
+                        device_id=data["device_id"],
+                        region_used=fallback_region
+                    )
+                delay = min(BASE_DELAY * (2 ** attempt) + random.uniform(0, 0.1), MAX_DELAY)
+                logger.debug(f"Retrying in fallback region {fallback_region} after delay: {delay}s")
+                await asyncio.sleep(delay)
+    
+    logger.error(f"All proxy fetch attempts failed for user: {user.email}")
+    raise HTTPException(status_code=503, detail="No healthy proxy endpoints available across all regions")
 
 FRONT_PREVIEW_LENGTH = 8
 END_PREVIEW_LENGTH = 8
