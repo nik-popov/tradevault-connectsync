@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ project_name }} - Activate Your Account</title>
+  <style>
+    body {
+      background-color: #fafbfc;
+      margin: 0;
+      padding: 0;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+    .container {
+      background-color: #fff;
+      margin: 40px auto;
+      padding: 40px 20px;
+      max-width: 600px;
+      text-align: center;
+    }
+    .title {
+      font-size: 20px;
+      color: #333;
+      padding: 35px;
+    }
+    .text {
+      font-size: 16px;
+      color: #555;
+      padding: 0 25px;
+      margin: 10px 0;
+    }
+    .button {
+      display: inline-block;
+      font-size: 18px;
+      background-color: #007BFF;
+      color: #fff;
+      text-decoration: none;
+      padding: 15px 30px;
+      border-radius: 8px;
+      margin: 15px 0;
+    }
+    .link {
+      font-size: 16px;
+      color: #007BFF;
+      text-decoration: underline;
+      word-break: break-all;
+    }
+    .divider {
+      border-top: 2px solid #ccc;
+      margin: 20px 0;
+    }
+    .footer {
+      font-size: 14px;
+      color: #555;
+      padding: 0 25px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="title">{{ project_name }} - Activate Your Account</div>
+    <div class="text">Hello {{ username }},</div>
+    <div class="text">Please activate your account by clicking the button below:</div>
+    <a href="{{ link }}" class="button">Activate Account</a>
+    <div class="text">Or copy and paste the following link into your browser:</div>
+    <div class="text"><a href="{{ link }}" class="link">{{ link }}</a></div>
+    <div class="text">This activation link will expire in {{ valid_hours }} hours.</div>
+    <div class="divider"></div>
+    <div class="footer">If you did not sign up for an account with {{ project_name }}, please contact our support team.</div>
+  </div>
+</body>
+</html>
