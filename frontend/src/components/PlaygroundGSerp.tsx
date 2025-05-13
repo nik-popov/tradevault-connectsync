@@ -235,7 +235,7 @@ const PlaygroundGSerp: React.FC = () => {
           </Flex>
           <Text fontSize="sm" mb={4}>
             <Link
-              href="https://api.thedataproxy.com/scraping-api/structured/"
+              href="https://api.thedataproxy.com/redoc"
               isExternal
               color="blue.500"
             >
