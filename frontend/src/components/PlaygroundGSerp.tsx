@@ -213,7 +213,7 @@ const PlaygroundGSerp: React.FC = () => {
           </Flex>
           <Text fontSize="sm" mb={4}>
             <Link
-              href="https://thedataproxy.com/scraping-api/structured/"
+              href="https://api.thedataproxy.com/redoc"
               isExternal
               color="blue.500"
             >
@@ -281,11 +281,11 @@ const PlaygroundGSerp: React.FC = () => {
           </Flex>
           <Text fontSize="sm" mb={4}>
             <Link
-              href="https://thedataproxy.com/redoc"
+              href="https://thedataproxy.com/browser"
               isExternal
               color="blue.500"
             >
-              API Docs <ExternalLinkIcon mx="2px" />
+              Browser Session <ExternalLinkIcon mx="2px" />
             </Link>
           </Text>
           {htmlPreview ? (
