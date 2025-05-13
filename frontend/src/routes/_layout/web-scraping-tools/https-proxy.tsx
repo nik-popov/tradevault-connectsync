@@ -230,13 +230,13 @@ const GoogleSerpPage = () => {
       ),
     },
   ];
-return (
+  return (
   <ProtectedComponent>
     <Container maxW="full">
       <Flex align="center" justify="space-between" py={6} gap={4}>
         <Heading size="lg">HTTPS Request Proxy API</Heading>
         <Text fontSize="sm" color="gray.500">
-          Active subscription: {subscriptions?.plan_name || "None"}
+          Active subscription: {activeSubscription?.product_name || activeSubscription?.plan_name || "None"}
         </Text>
       </Flex>
       {isSubscriptionsLoading || isAccessLoading || isApiKeysLoading ? (
@@ -249,37 +249,37 @@ return (
           </Text>
         </Alert>
       ) : !hasActiveSubscription ? (
-          <Alert status="error">
-            <AlertIcon />
-            <Text fontSize="sm">No active products associated with your account.</Text>
-          </Alert>
-        ) : (
-          <>
-            {!proxyApiAccess?.has_access && (
-              <Alert status="warning" mb={4}>
-                <AlertIcon />
-                <Text fontSize="sm">
-                  {proxyApiAccess?.message || "Your account does not include https request proxy features. Please upgrade to a proxy api enabled plan."}
-                </Text>
-              </Alert>
-            )}
-            <Tabs>
-              <TabList>
-                {TabsConfig.map((tab, index) => (
-                  <Tab key={index} fontSize="sm">{tab.title}</Tab>
-                ))}
-              </TabList>
-              <TabPanels>
-                {TabsConfig.map((tab, index) => (
-                  <TabPanel key={index}>{tab.component()}</TabPanel>
-                ))}
-              </TabPanels>
-            </Tabs>
-          </>
-        )}
-      </Container>
-    </ProtectedComponent>
-  );
+        <Alert status="error">
+          <AlertIcon />
+          <Text fontSize="sm">No active products associated with your account.</Text>
+        </Alert>
+      ) : (
+        <>
+          {!proxyApiAccess?.has_access && (
+            <Alert status="warning" mb={4}>
+              <AlertIcon />
+              <Text fontSize="sm">
+                {proxyApiAccess?.message || "Your account does not include https request proxy features. Please upgrade to a proxy api enabled plan."}
+              </Text>
+            </Alert>
+          )}
+          <Tabs>
+            <TabList>
+              {TabsConfig.map((tab, index) => (
+                <Tab key={index} fontSize="sm">{tab.title}</Tab>
+              ))}
+            </TabList>
+            <TabPanels>
+              {TabsConfig.map((tab, index) => (
+                <TabPanel key={index}>{tab.component()}</TabPanel>
+              ))}
+            </TabPanels>
+          </Tabs>
+        </>
+      )}
+    </Container>
+  </ProtectedComponent>
+);
 };
 
 export const Route = createFileRoute("/_layout/web-scraping-tools/https-proxy")({
