@@ -86,6 +86,13 @@ const PlaygroundGSerp: React.FC = () => {
     }
   };
 
+  const handleCopyResponse = () => {
+    if (response) {
+      navigator.clipboard.writeText(response);
+      alert("Response copied to clipboard!");
+    }
+  };
+
   return (
     <Box width="100%">
       <Heading size="md" mb={4}>Test Proxy Request</Heading>
@@ -153,6 +160,18 @@ const PlaygroundGSerp: React.FC = () => {
         <GridItem>
           <Flex align="center" justify="space-between" mb={4}>
             <Heading size="md">Response</Heading>
+            <Flex gap={2}>
+              {response && (
+                <Tooltip label="Copy Response">
+                  <IconButton
+                    aria-label="Copy Response"
+                    icon={<CopyIcon />}
+                    size="sm"
+                    onClick={handleCopyResponse}
+                  />
+                </Tooltip>
+              )}
+            </Flex>
           </Flex>
           <Text fontSize="sm" mb={4}>
             <Link
