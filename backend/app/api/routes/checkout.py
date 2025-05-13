@@ -17,6 +17,7 @@ from app.api.deps import get_current_user
 from app.core.config import settings
 from starlette.responses import JSONResponse
 import emails
+from jinja2 import Environment, FileSystemLoader
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -82,20 +83,25 @@ def send_email(
         logger.error(f"Exception sending email: {str(e)}")
         return False
 
-def generate_activation_email(email_to: str, token: str) -> EmailData:
+def generate_activation_email(email_to: str, token: str, username: str = None) -> EmailData:
+    logger.debug(f"Generating activation email for: {email_to}")
     project_name = settings.PROJECT_NAME
     subject = f"{project_name} - Activate Your Account"
     link = f"https://cloud.thedataproxy.com/activate?token={token}"
-    html_content = f"""
-    <html>
-        <body>
-            <h1>{project_name}</h1>
-            <p>Please activate your account by clicking the link below:</p>
-            <a href="{link}">{link}</a>
-            <p>This link is valid for {settings.EMAIL_RESET_TOKEN_EXPIRE_HOURS} hours.</p>
-        </body>
-    </html>
-    """
+    valid_hours = settings.EMAIL_RESET_TOKEN_EXPIRE_HOURS
+
+    # Set up Jinja2 environment
+    env = Environment(loader=FileSystemLoader("app/templates/emails"))
+    template = env.get_template("account_activation_email.html")
+
+    # Render HTML with dynamic data
+    html_content = template.render(
+        project_name=project_name,
+        username=username or email_to.split("@")[0],  # Default to email prefix
+        link=link,
+        valid_hours=valid_hours
+    )
+
     return EmailData(html_content=html_content, subject=subject)
 
 async def create_user_if_not_exists(
@@ -134,7 +140,11 @@ async def create_user_if_not_exists(
     
     # Send activation email
     if background_tasks:
-        email_data = generate_activation_email(email_to=email, token=activation_token)
+        email_data = generate_activation_email(
+            email_to=email,
+            token=activation_token,
+            username=user.full_name or email  # Pass full_name or email
+        )
         background_tasks.add_task(
             send_email,
             email_to=email,
