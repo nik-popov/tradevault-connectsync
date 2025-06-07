@@ -39,10 +39,11 @@ import {
   VStack,
   useToast,
 } from "@chakra-ui/react";
-import { ExternalLinkIcon, CopyIcon, DownloadIcon, ViewIcon } from "@chakra-ui/icons";
+import { ExternalLinkIcon, CopyIcon, DownloadIcon, ViewIcon, AddIcon, MinusIcon } from "@chakra-ui/icons";
 import { FiSend } from "react-icons/fi";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { vscDarkPlus } from "react-syntax-highlighter/dist/esm/styles/prism";
+import { FaTrash } from "react-icons/fa";
 
 // --- Custom CodeBlock with Syntax Highlighting ---
 const CodeBlock = ({ code, language, maxHeight = '60vh' }) => {
@@ -295,6 +296,16 @@ const PlaygroundGSerp: React.FC = () => {
                     
                     {/* --- BUTTONS --- */}
                     <HStack spacing={2}>
+                                   <Button
+                        size="sm"
+                        variant="solid"
+                        colorScheme="teal"
+                        color="white"
+                        leftIcon={<FaTrash />}
+                        onClick={() => setResultsData(null)} // This will hide the alert
+                      >
+                        Dismiss
+                      </Button>
                       <Button
                         size="sm"
                         variant="solid"
@@ -303,15 +314,7 @@ const PlaygroundGSerp: React.FC = () => {
                         leftIcon={<ViewIcon />}
                         onClick={onModalOpen}
                       >
-                        View Result
-                      </Button>
-                      <Button
-                        size="sm"
-                        variant="ghost"
-                        colorScheme="gray"
-                        onClick={() => setResultsData(null)} // This will hide the alert
-                      >
-                        Dismiss
+                      Response
                       </Button>
                     </HStack>
 
@@ -347,7 +350,7 @@ const PlaygroundGSerp: React.FC = () => {
               variant="ghost"
               color="orange.400" // Changed
               position="absolute"
-              top="0.6rem"
+              top="0.6rem" 
               right="0.5rem"
               zIndex={1}
               _hover={{ bg: "whiteAlpha.200", color: "orange.300" }} // Changed
