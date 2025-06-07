@@ -206,6 +206,17 @@ const ApiKeySerp: React.FC<ApiKeySerpProps> = ({ token }) => {
     );
   }
 
+  if (hasSerpApiAccess === false) {
+    return (
+      <Box p={4} width="100%">
+        <Alert status="error">
+          <AlertIcon />
+          <Text fontSize="sm">Your subscription plan does not include SERP API features</Text>
+        </Alert>
+      </Box>
+    );
+  }
+
   return (
     <Box p={4} width="100%">
       <Flex direction="column" gap={6}>
@@ -264,12 +275,6 @@ const ApiKeySerp: React.FC<ApiKeySerpProps> = ({ token }) => {
         </Box>
 
         {hasSerpApiAccess === null && <Text fontSize="sm">Checking subscription status...</Text>}
-        {hasSerpApiAccess === false && (
-          <Alert status="warning">
-            <AlertIcon />
-            <Text fontSize="sm">Your subscription plan does not include SERP API features</Text>
-          </Alert>
-        )}
         {error && (
           <Alert status="error">
             <AlertIcon />
