@@ -369,7 +369,7 @@ const HomePage = () => {
             </Grid>
              {activeSubscription.enabled_features && activeSubscription.enabled_features.length > 0 && (
               <VStack align="stretch" spacing={4} pt={4}>
-                <Heading size="md">Your Enabled Services</Heading>
+                <Heading size="md"> Enabled Services</Heading>
                 <Grid templateColumns={{ base: "1fr", md: "1fr 1fr", lg: "1fr 1fr 1fr" }} gap={6}>
                   {activeSubscription.enabled_features.map((featureSlug) => {
                     const details = featureDetails[featureSlug];
