@@ -52,7 +52,7 @@ import {
   // TabPanels and TabPanel are no longer needed here
 } from "@chakra-ui/react";
 import { CopyIcon, ChevronDownIcon, EditIcon, DeleteIcon, AddIcon, RepeatIcon } from "@chakra-ui/icons";
-
+import useAuth, { isLoggedIn } from "../../../hooks/useAuth"
 // --- API Configuration & Types (No changes) ---
 const API_BASE_URL = "https://api.thedataproxy.com/v2";
 
@@ -83,12 +83,6 @@ interface UpdateSourceResponse {
     new_agents_added: number;
     [key: string]: any;
 }
-
-// --- Mock Auth Hook (No changes) ---
-const useAuth = () => {
-  const [isSuperuser] = useState(true); // Set to true to see admin controls
-  return { isSuperuser };
-};
 
 // --- Utility & API Functions (No changes) ---
 function convertToCSV(data: UserAgentPublic[]): string {
@@ -423,66 +417,73 @@ function UserAgentsPage() {
             </TabList>
         </Tabs>
 
-        {/* --- ACTION HEADER & BUTTONS --- */}
-        <Flex 
-          direction={{ base: "column", md: "row" }} 
-          justify="space-between" 
-          align={{ base: "stretch", md: "center" }}
-          p="4"
-        >
-          <Box mb={{ base: 6, md: 0 }} maxW={{ base: "full", lg: "50%" }}>
-            <Text fontSize="md" mb={2} color="gray.600">
-              A dynamic repository of real-world user agent strings, continuously updated to reflect the most prevalent browser, OS, and device combinations.
-            </Text>
-          </Box>
-
-          {/* --- ACTION BUTTONS CONTAINER --- */}
-          <VStack 
-            spacing={3} 
-            align={{ base: "stretch", md: "flex-end" }} // Stretch on mobile, align right on desktop
-            w={{ base: "full", md: "auto" }} // Full-width on mobile, auto on desktop
-          >
-            {isSuperuser && (
-              <SimpleGrid 
-                columns={{ base: 1, sm: 2 }} // Stack on mobile, side-by-side on small+
-                spacing={3} 
-                w="full" // Grid takes full width to allow columns to form
-              >
-                <Button 
-                  leftIcon={<RepeatIcon />} 
-                  onClick={() => updateFromSourceMutation.mutate()} 
-                  isLoading={updateFromSourceMutation.isPending} 
-                  loadingText="Updating..."
+                    {/* --- ACTION HEADER & BUTTONS --- */}
+                <Flex
+                    direction={{ base: "column", md: "row" }}
+                    justify="space-between"
+                    align={{ base: "stretch", md: "center" }}
+                    p="4"
                 >
-                  Refresh Source
-                </Button>
-                <Button 
-                  leftIcon={<AddIcon />} 
-                  colorScheme="teal" 
-                  onClick={handleOpenAddModal}
-                >
-                  Add New
-                </Button>
-              </SimpleGrid>
-            )}
+                    <Box mb={{ base: 6, md: 0 }} maxW={{ base: "full", lg: "50%" }}>
+                        <Text fontSize="md" mb={2} color="gray.600">
+                            A dynamic repository of real-world user agent strings, continuously updated to reflect the most prevalent browser, OS, and device combinations.
+                        </Text>
+                    </Box>
 
+                    {/* --- ACTION BUTTONS CONTAINER --- */}
+                    <VStack
+                        spacing={3}
+                        align={{ base: "stretch", md: "flex-end" }}
+                        w={{ base: "full", md: "auto" }}
+                    >
+                        {/* 
+                          Direct conditional rendering for superuser actions.
+                          This is clean, easy to read, and avoids creating another file.
+                          The SimpleGrid ensures the buttons are responsive.
+                        */}
+                        {isSuperuser && (
+                            <SimpleGrid
+                                columns={{ base: 1, sm: 2 }} // Stack on mobile, side-by-side on small+
+                                spacing={3}
+                                w="full" // Grid takes full width to allow columns to form
+                            >
+                                <Button
+                                    leftIcon={<RepeatIcon />}
+                                    onClick={() => updateFromSourceMutation.mutate()}
+                                    isLoading={updateFromSourceMutation.isPending}
+                                    loadingText="Updating..."
+                                >
+                                    Refresh Source
+                                </Button>
+                                <Button
+                                    leftIcon={<AddIcon />}
+                                    colorScheme="teal"
+                                    onClick={handleOpenAddModal}
+                                >
+                                    Add New
+                                </Button>
+                            </SimpleGrid>
+                        )}
+
+                        {/* This Menu is for all users, so it's outside the conditional block */}
                         <Menu>
-              <MenuButton 
-                as={Button} 
-                rightIcon={<ChevronDownIcon />} 
-                isLoading={exportMutation.isPending} 
-                loadingText="Exporting"
-                w="full" // Make button take full width of its container
-              >
-                Export All
-              </MenuButton>
-              <MenuList>
-                <MenuItem onClick={() => exportMutation.mutate('csv')}>Export as CSV</MenuItem>
-                <MenuItem onClick={() => exportMutation.mutate('json')}>Export as JSON</MenuItem>
-              </MenuList>
-            </Menu>
-          </VStack>
-        </Flex>
+                            <MenuButton
+                                as={Button}
+                                rightIcon={<ChevronDownIcon />}
+                                isLoading={exportMutation.isPending}
+                                loadingText="Exporting"
+                                w="full" // Make button take full width of its container
+                            >
+                                Export All
+                            </MenuButton>
+                            <MenuList>
+                                <MenuItem onClick={() => exportMutation.mutate('csv')}>Export as CSV</MenuItem>
+                                <MenuItem onClick={() => exportMutation.mutate('json')}>Export as JSON</MenuItem>
+                            </MenuList>
+                        </Menu>
+                    </VStack>
+                </Flex>
+
 
         {/* --- TABLE & PAGINATION --- */}
         {isLoading && !data && (
