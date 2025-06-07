@@ -23,6 +23,7 @@ import {
   FiUserCheck,
 } from "react-icons/fi";
 import { MdPerson } from "react-icons/md";
+import { useRef } from "react"; // Added import
 
 import Logo from "../Common/Logo";
 import type { UserPublic } from "../../client";
@@ -51,15 +52,13 @@ const navStructure: NavItem[] = [
         title: "HTTPS Proxy API",
         path: "/web-scraping-tools/https-proxy",
         icon: FiShield,
-        description:
-          "Access web pages with our rotating proxy network.",
+        description: "Access web pages with our rotating proxy network.",
       },
       {
         title: "User Agents Today",
         path: "/web-scraping-tools/user-agents",
         icon: FiUserCheck,
-        description:
-          "Get lists of the most common user agents for your scrapers.",
+        description: "Get lists of the most common user agents for your scrapers.",
       },
     ],
   },
@@ -109,7 +108,7 @@ const MenuItemCard = ({
   );
 };
 
-// New component to handle the hover-to-open dropdown functionality for desktop
+// MODIFIED COMPONENT: Handles the hover-to-open dropdown with a delay
 const HoverableDropdown = ({
   item,
   onClose,
@@ -120,9 +119,27 @@ const HoverableDropdown = ({
   const { isOpen, onOpen, onClose: closeMenu } = useDisclosure();
   const textColor = "gray.800";
   const hoverColor = "orange.600";
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null); // To store timer
+
+  // Clear any pending close timer and open the menu
+  const handleMouseEnter = () => {
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+      timeoutRef.current = null;
+    }
+    onOpen();
+  };
+
+  // Set a timer to close the menu after a short delay
+  const handleMouseLeave = () => {
+    timeoutRef.current = setTimeout(() => {
+      closeMenu();
+    }, 150); // 150ms delay
+  };
 
   return (
-    <Box onMouseEnter={onOpen} onMouseLeave={closeMenu}>
+    // The hover area now uses the new handlers
+    <Box onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
       <Menu isOpen={isOpen} placement="bottom" gutter={16}>
         <MenuButton
           as={Flex}
@@ -160,6 +177,7 @@ const HoverableDropdown = ({
     </Box>
   );
 };
+
 
 const NavItems = ({ onClose, isMobile = false }: NavItemsProps) => {
   const queryClient = useQueryClient();
