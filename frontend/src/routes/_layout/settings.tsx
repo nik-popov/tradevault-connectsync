@@ -124,8 +124,8 @@ function UserSettings() {
   return (
     <Container maxW="full">
       <Flex align="center" justify="space-between" py={6}>
-        <Text fontSize="xl">Settings</Text>
-        <Text fontSize="sm">Manage your settings</Text>
+        <Text fontSize="xl" color="black">Settings</Text>
+        <Text fontSize="md" color="gray.600">Manage your settings</Text>
       </Flex>
       <Divider my={4} borderColor="gray.200" />
     <Tabs isLazy variant="enclosed-colored" colorScheme="orange">

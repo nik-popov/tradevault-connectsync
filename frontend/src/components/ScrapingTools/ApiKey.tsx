@@ -194,8 +194,8 @@ const ApiKeyModule: React.FC<ApiKeyProps> = ({ token }) => {
         <Flex direction={{ base: "column", md: "row" }} justify="space-between" align="center">
           <Box mb={{ base: 4, md: 0 }}>
 
-            <Text fontSize="md" mt={1}>Manage and generate API keys for programmatic access.</Text>
-                               <Text fontSize="md" mt={1}>Expiration time is set automatically</Text>
+            <Text fontSize="md" mb={6}>Manage and generate API keys for programmatic access.</Text>
+                               <Text fontSize="md" mb={4} >Expiration time is set automatically</Text>
           </Box>
           <Button
             leftIcon={<AddIcon />}
@@ -255,15 +255,16 @@ const ApiKeyModule: React.FC<ApiKeyProps> = ({ token }) => {
           {loading ? (
              <Flex justify="center" align="center" h="200px"><Spinner size="xl" /></Flex>
           ) : (
-            <Table variant="simple" size="sm">
+            <Table variant="simple">
+              
               <Thead bg="gray.50">
                 <Tr>
-                  <Th>Key Preview</Th>
-                  <Th>Created At</Th>
-                  <Th>Expires At</Th>
-                  <Th>Requests</Th>
-                  <Th>Status</Th>
-                  <Th isNumeric>Actions</Th>
+                  <Th color="black">Key Preview</Th>
+                  <Th color="black">reated At</Th>
+                  <Th color="black">Expires At</Th>
+                 <Th color="black">Requests</Th>
+                <Th color="black">Status</Th>
+                 <Th color="black" isNumeric>Actions</Th>
                 </Tr>
               </Thead>
               <Tbody>

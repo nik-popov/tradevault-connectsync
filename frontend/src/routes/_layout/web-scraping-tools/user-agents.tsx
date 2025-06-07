@@ -407,8 +407,8 @@ function UserAgentsPage() {
     <>
       <Container maxW="full" py={6}>
             <Flex align="center" justify="space-between" py={6}>
-            <Text fontSize="xl">Active User Agents</Text>
-            <Text fontSize="sm" color="gray.500">Manage and export user agents for web scraping.</Text>
+            <Text fontSize="xl" color="black">Active User Agents</Text>
+            <Text fontSize="md" color="gray.600">Manage and export user agents for web scraping.</Text>
         </Flex>
         <Divider my={4} />
 
@@ -460,6 +460,7 @@ function UserAgentsPage() {
           <Alert status="error" borderRadius="md"><AlertIcon />{error.message}</Alert>
         )}
         {data && (
+          
           <Box borderWidth="1px" borderRadius="lg" overflow="hidden">
             <UserAgentTable
                 agents={displayedAgents}
