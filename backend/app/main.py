@@ -21,7 +21,7 @@ app = FastAPI(
 )
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=['fictional-tribble-pjp4gqxr5pjx2rq6g-5173.app.github.dev','cloud.thedataproxy.com'],  # Specify your frontend origin
+    allow_origins=['fictional-tribble-pjp4gqxr5pjx2rq6g-5173.app.github.dev','cloud.thedataproxy.com'],  
     # allow_origins=["*"],  # Allow all origins
     allow_credentials=True,
     allow_methods=["GET", "POST", "PATCH", "OPTIONS","DELETE"],
