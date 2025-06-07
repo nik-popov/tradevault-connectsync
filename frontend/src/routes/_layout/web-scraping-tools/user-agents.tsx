@@ -54,7 +54,6 @@ interface UserAgentPublic {
   id: string;
   user_agent: string;
   created_at: string;
-  // Add other fields from backend if they exist
   device?: string;
   browser?: string;
   os?: string;
@@ -68,7 +67,6 @@ interface UserAgentsPublic {
 // Interfaces for creating/updating data
 interface UserAgentCreate {
     user_agent: string;
-    // Add other fields as needed by the backend `UserAgentCreate` model
 }
 
 interface UserAgentUpdate {
@@ -77,9 +75,6 @@ interface UserAgentUpdate {
 
 // --- Mock Auth Hook (replace with your actual auth logic) ---
 const useAuth = () => {
-  // In a real app, you would get this from your auth context/store,
-  // likely by decoding a JWT or from a user profile endpoint.
-  // For demonstration, we'll assume a superuser role is available.
   const [isSuperuser] = useState(true); // <-- CHANGE TO `false` to see the read-only view
   return { isSuperuser };
 };
@@ -356,10 +351,36 @@ function UserAgentsPage() {
     onError: handleMutationError,
   });
 
+  // ✅ FIXED: Restored full implementation of exportMutation
   const exportMutation = useMutation({
-    mutationFn: async (format: 'csv' | 'json') => { /* ... (export logic unchanged) ... */ },
-    onSuccess: () => { /* ... */ },
-    onError: (e: Error) => { /* ... */ }
+    mutationFn: async (format: 'csv' | 'json') => {
+        const allAgents = await fetchAllUserAgents();
+        if (format === 'csv') {
+            const csvContent = convertToCSV(allAgents);
+            downloadFile(csvContent, 'user-agents.csv', 'text/csv');
+        } else {
+            const jsonContent = JSON.stringify(allAgents, null, 2);
+            downloadFile(jsonContent, 'user-agents.json', 'application/json');
+        }
+    },
+    onSuccess: () => {
+        toast({
+            title: "Export started.",
+            description: "Your file is downloading.",
+            status: "success",
+            duration: 3000,
+            isClosable: true,
+        });
+    },
+    onError: (e: Error) => {
+        toast({
+            title: "Export Failed",
+            description: e.message,
+            status: "error",
+            duration: 5000,
+            isClosable: true,
+        });
+    }
   });
 
 
@@ -472,7 +493,6 @@ function UserAgentsPage() {
         )}
       </Container>
       
-      {/* Modals and Dialogs */}
       {isSuperuser && (
         <>
             <AddEditUserAgentModal
@@ -496,7 +516,6 @@ function UserAgentsPage() {
 }
 
 // --- Route Definition ---
-// Update the route to match your file's location
 export const Route = createFileRoute("/_layout/web-scraping-tools/user-agents")({
   component: UserAgentsPage,
 });
