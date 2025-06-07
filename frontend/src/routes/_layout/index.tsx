@@ -22,7 +22,7 @@ interface Subscription {
   trial_start: number | null;
   trial_end: number | null;
   cancel_at_period_end: boolean;
-  enabled_features: string[]; // <-- ADDED to match backend
+  enabled_features: string[];
 }
 
 interface ApiKey {
@@ -311,20 +311,20 @@ const HomePage = () => {
                             : "N/A"}
                         </Td>
                       </Tr>
-                      {/* --- Dynamically list enabled features --- */}
-                      {activeSubscription.enabled_features && activeSubscription.enabled_features.length > 0 && (
-                        <>
-                          <Tr>
-                            <Td colSpan={2} fontWeight="bold" pt={4}>Enabled Features</Td>
-                          </Tr>
-                          {activeSubscription.enabled_features.map(feature => (
-                            <Tr key={feature}>
-                              <Td pl={8} textTransform="capitalize">{feature.replace(/-/g, ' ')}</Td>
-                              <Td><Badge colorScheme="green">Active</Badge></Td>
-                            </Tr>
-                          ))}
-                        </>
-                      )}
+                    {/* --- Dynamically list enabled features --- */}
+                  {activeSubscription.enabled_features && activeSubscription.enabled_features.length > 0 && (
+                    <>
+                      <Tr>
+                        <Td colSpan={2} fontWeight="bold" pt={4}>Enabled Features</Td>
+                      </Tr>
+                      {activeSubscription.enabled_features.map(feature => (
+                        <Tr key={feature}>
+                          <Td pl={8} textTransform="capitalize">{feature.replace(/-/g, ' ')}</Td>
+                          <Td><Badge colorScheme="green">Active</Badge></Td>
+                        </Tr>
+                      ))}
+                    </>
+                  )}
                     </Tbody>
                   </Table>
                 </Box>
