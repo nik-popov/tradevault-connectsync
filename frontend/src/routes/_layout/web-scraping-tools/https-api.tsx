@@ -246,7 +246,7 @@ const GetStartedTab = () => {
 
 const pageTabsData = [
   { id: "get-started", label: "Get Started" },
-  { id: "keys", label: "API Keys" },
+  { id: "keys", label: "Keys" },
   { id: "playground", label: "Playground" },
 ];
 

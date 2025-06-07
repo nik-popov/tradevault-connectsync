@@ -26,7 +26,7 @@ import BillingTab from "../../components/Common/BillingTab"
 // --- Tab Configuration ---
 const tabsConfig = [
   {
-    title: "API Keys",
+    title: "Credentials",
     component: () => {
       const token = localStorage.getItem("access_token");
       // Render ApiKeyModule, passing the token if it exists.
