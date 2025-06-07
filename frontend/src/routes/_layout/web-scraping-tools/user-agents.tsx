@@ -49,7 +49,6 @@ import {
   Tab,
   Badge,
   VStack,
-  // TabPanels and TabPanel are no longer needed here
 } from "@chakra-ui/react";
 import { CopyIcon, ChevronDownIcon, EditIcon, DeleteIcon, AddIcon, RepeatIcon } from "@chakra-ui/icons";
 import type { UserPublic } from "../../../client";
@@ -307,7 +306,7 @@ const UserAgentTable = ({
   );
 };
 
-// --- Main Page Component (RESTRUCTURED AND FIXED) ---
+// --- Main Page Component ---
 function UserAgentsPage() {
   const [page, setPage] = useState(0);
   const [limit] = useState(50);
@@ -331,7 +330,7 @@ function UserAgentsPage() {
 
   const totalPages = data ? Math.ceil(data.count / limit) : 0;
 
-  // --- Mutations (No changes) ---
+  // --- Mutations ---
   const handleMutationError = (e: Error) => {
     toast({ title: "An error occurred", description: e.message, status: "error", duration: 5000, isClosable: true });
   };
@@ -373,7 +372,7 @@ function UserAgentsPage() {
     onError: (e: Error) => { toast({ title: "Export Failed", description: e.message, status: "error", duration: 5000, isClosable: true, }); }
   });
 
-  // --- Event Handlers (No changes) ---
+  // --- Event Handlers ---
   const handleOpenAddModal = () => { setEditingAgent(null); onAddEditModalOpen(); };
   const handleOpenEditModal = (agent: UserAgentPublic) => { setEditingAgent(agent); onAddEditModalOpen(); };
   const handleOpenDeleteAlert = (id: string) => { setDeletingAgentId(id); onDeleteAlertOpen(); }
@@ -401,14 +400,14 @@ function UserAgentsPage() {
 
   return (
     <>
-      <Container maxW="full" py={6}>
+      <Container maxW="full" py={9}>
+        {/* --- START: UPDATED HEADER --- */}
         <Flex align="center" justify="space-between" py={6}>
-            <Text fontSize="xl" color="black">Active User Agents</Text>
-            <Text fontSize="md" color="gray.600">Manage and export user agents for web scraping.</Text>
+            <Text fontSize="3xl" color="black">User Agents</Text>
+            <Text fontSize="lg" color="gray.600">A dynamic list of user agents for web scraping</Text>
         </Flex>
-        <Divider my={4} />
+        {/* --- END: UPDATED HEADER (Divider removed) --- */}
 
-        {/* --- TABS (FIXED) --- */}
         <Tabs isLazy variant="enclosed-colored" colorScheme="orange" onChange={(index) => setTabIndex(index)}>
             <TabList>
                 <Tab>All <Badge ml='2' colorScheme='green'>{allAgents.length}</Badge></Tab>
@@ -418,75 +417,64 @@ function UserAgentsPage() {
             </TabList>
         </Tabs>
 
-                    {/* --- ACTION HEADER & BUTTONS --- */}
-                <Flex
-                    direction={{ base: "column", md: "row" }}
-                    justify="space-between"
-                    align={{ base: "stretch", md: "center" }}
-                    p="4"
-                >
-                    <Box mb={{ base: 6, md: 0 }} maxW={{ base: "full", lg: "50%" }}>
-                        <Text fontSize="md" mb={2} color="gray.600">
-                            A dynamic repository of real-world user agent strings, continuously updated to reflect the most prevalent browser, OS, and device combinations.
-                        </Text>
-                    </Box>
+        <Flex
+            direction={{ base: "column", md: "row" }}
+            justify="space-between"
+            align={{ base: "stretch", md: "center" }}
+            p="4"
+        >
+            <Box mb={{ base: 6, md: 0 }} maxW={{ base: "full", lg: "50%" }}>
+                <Text fontSize="md" mb={2} color="gray.600">
+                    A dynamic repository of real-world user agent strings, continuously updated to reflect the most prevalent browser, OS, and device combinations.
+                </Text>
+            </Box>
 
-                    {/* --- ACTION BUTTONS CONTAINER --- */}
-                    <VStack
+            <VStack
+                spacing={3}
+                align={{ base: "stretch", md: "flex-end" }}
+                w={{ base: "full", md: "auto" }}
+            >
+               {currentUser?.is_superuser && (
+                    <SimpleGrid
+                        columns={{ base: 1, sm: 2 }}
                         spacing={3}
-                        align={{ base: "stretch", md: "flex-end" }}
-                        w={{ base: "full", md: "auto" }}
+                        w="full"
                     >
-                        {/* 
-                          Direct conditional rendering for superuser actions.
-                          This is clean, easy to read, and avoids creating another file.
-                          The SimpleGrid ensures the buttons are responsive.
-                        */}
-                       {currentUser?.is_superuser && (
-                            <SimpleGrid
-                                columns={{ base: 1, sm: 2 }} // Stack on mobile, side-by-side on small+
-                                spacing={3}
-                                w="full" // Grid takes full width to allow columns to form
-                            >
-                                <Button
-                                    leftIcon={<RepeatIcon />}
-                                    onClick={() => updateFromSourceMutation.mutate()}
-                                    isLoading={updateFromSourceMutation.isPending}
-                                    loadingText="Updating..."
-                                >
-                                    Refresh Source
-                                </Button>
-                                <Button
-                                    leftIcon={<AddIcon />}
-                                    colorScheme="teal"
-                                    onClick={handleOpenAddModal}
-                                >
-                                    Add New
-                                </Button>
-                            </SimpleGrid>
-                        )}
+                        <Button
+                            leftIcon={<RepeatIcon />}
+                            onClick={() => updateFromSourceMutation.mutate()}
+                            isLoading={updateFromSourceMutation.isPending}
+                            loadingText="Updating..."
+                        >
+                            Refresh Source
+                        </Button>
+                        <Button
+                            leftIcon={<AddIcon />}
+                            colorScheme="teal"
+                            onClick={handleOpenAddModal}
+                        >
+                            Add New
+                        </Button>
+                    </SimpleGrid>
+                )}
+                <Menu>
+                    <MenuButton
+                        as={Button}
+                        rightIcon={<ChevronDownIcon />}
+                        isLoading={exportMutation.isPending}
+                        loadingText="Exporting"
+                        w="full"
+                    >
+                        Export All
+                    </MenuButton>
+                    <MenuList>
+                        <MenuItem onClick={() => exportMutation.mutate('csv')}>Export as CSV</MenuItem>
+                        <MenuItem onClick={() => exportMutation.mutate('json')}>Export as JSON</MenuItem>
+                    </MenuList>
+                </Menu>
+            </VStack>
+        </Flex>
 
-                        {/* This Menu is for all users, so it's outside the conditional block */}
-                        <Menu>
-                            <MenuButton
-                                as={Button}
-                                rightIcon={<ChevronDownIcon />}
-                                isLoading={exportMutation.isPending}
-                                loadingText="Exporting"
-                                w="full" // Make button take full width of its container
-                            >
-                                Export All
-                            </MenuButton>
-                            <MenuList>
-                                <MenuItem onClick={() => exportMutation.mutate('csv')}>Export as CSV</MenuItem>
-                                <MenuItem onClick={() => exportMutation.mutate('json')}>Export as JSON</MenuItem>
-                            </MenuList>
-                        </Menu>
-                    </VStack>
-                </Flex>
-
-
-        {/* --- TABLE & PAGINATION --- */}
         {isLoading && !data && (
           <Flex justify="center" align="center" height="300px"><Spinner size="xl" /></Flex>
         )}
@@ -504,7 +492,6 @@ function UserAgentsPage() {
             />
             <Flex justify="space-between" p={4} align="center" borderTopWidth="1px" bg="gray.50">
                 <Text fontSize="sm" color="gray.600">
-                    {/* FIXED: Display count of visible agents */}
                     Showing <strong>{displayedAgents.length}</strong> results on this page
                 </Text>
                 <HStack>
@@ -521,7 +508,6 @@ function UserAgentsPage() {
         )}
       </Container>
 
-      {/* --- MODALS (Unchanged) --- */}
       {currentUser?.is_superuser && (
         <>
             <AddEditUserAgentModal isOpen={isAddEditModalOpen} onClose={onAddEditModalClose} onSubmit={handleFormSubmit} initialData={editingAgent} isLoading={createMutation.isPending || updateMutation.isPending}/>
