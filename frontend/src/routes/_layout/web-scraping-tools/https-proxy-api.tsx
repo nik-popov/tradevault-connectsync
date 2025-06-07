@@ -1,24 +1,60 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { Container, Flex, Text, Tabs, TabList, TabPanels, Tab, TabPanel, Box, Heading, Alert, AlertIcon, Grid, GridItem, Table, Tbody, Tr, Td } from "@chakra-ui/react";
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
-import { useMemo } from "react";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useState, useRef } from "react";
+import {
+  Container,
+  Flex,
+  Text,
+  Tabs,
+  TabList,
+  TabPanels,
+  Tab,
+  TabPanel,
+  Box,
+  Heading,
+  Alert,
+  AlertIcon,
+  Link,
+  Code,
+  Textarea,
+  IconButton,
+  Button,
+  useClipboard,
+  useToast,
+  Table,
+  Thead,
+  Tbody,
+  Tr,
+  Th,
+  Td,
+  TableContainer,
+  Spinner,
+  Badge,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalFooter,
+  ModalBody,
+  ModalCloseButton,
+  useDisclosure,
+  AlertDialog,
+  AlertDialogBody,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogContent,
+  AlertDialogOverlay,
+} from "@chakra-ui/react";
+import { CopyIcon, AddIcon, DeleteIcon } from "@chakra-ui/icons";
 import ProtectedComponent from "../../../components/Common/ProtectedComponent";
-import PlaygroundGSerp from "../../../components/ScrapingTools/PlaygroundHttps";
-import ApiKeyGSerp from "../../../components/ScrapingTools/ApiKeyHttps";
-import { useQuery } from "@tanstack/react-query";
+import PlaygroundHttpsProxy from "../../../components/ScrapingTools/PlaygroundHttps";
 
+// --- Interfaces ---
 interface Subscription {
   id: string;
   status: string;
-  plan_id: string | null;
   plan_name: string | null;
-  product_id: string | null;
   product_name: string | null;
-  current_period_start: number | null;
-  current_period_end: number | null;
-  trial_start: number | null;
-  trial_end: number | null;
-  cancel_at_period_end: boolean;
 }
 
 interface ProxyApiAccess {
@@ -29,330 +65,425 @@ interface ProxyApiAccess {
 interface ApiKey {
   key_preview: string;
   created_at: string;
-  expires_at: string;
   is_active: boolean;
-  request_count?: number;
+  request_count: number;
 }
 
-const API_URL = "https://api.thedataproxy.com/v2/proxy";
+// --- API Fetching Logic ---
+const API_BASE_URL = "https://api.thedataproxy.com/v2";
 
-async function fetchSubscriptions(): Promise<Subscription[]> {
-  const token = localStorage.getItem("access_token");
+async function fetchFromApi(endpoint: string, token: string, options: RequestInit = {}) {
   if (!token) {
     throw new Error("No access token found. Please log in again.");
   }
 
-  try {
-    const response = await fetch("https://api.thedataproxy.com/v2/customer/subscriptions", {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    });
+  const response = await fetch(`${API_BASE_URL}${endpoint}`, {
+    ...options,
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+      ...options.headers,
+    },
+  });
 
-    if (!response.ok) {
-      const errorData = await response.json().catch(() => ({}));
-      throw new Error(
-        errorData.detail || `Failed to fetch subscriptions: ${response.status}`
-      );
-    }
-
-    return response.json();
-  } catch (error) {
-    console.error("Subscriptions fetch error:", error);
-    throw error;
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => ({}));
+    throw new Error(
+      errorData.detail || `API request failed: ${response.status}`
+    );
   }
+  return response.json();
 }
 
-async function fetchProxyApiAccess(): Promise<ProxyApiAccess> {
-  const token = localStorage.getItem("access_token");
-  if (!token) {
-    throw new Error("No access token found. Please log in again.");
-  }
+const fetchSubscriptions = (token: string): Promise<Subscription[]> =>
+  fetchFromApi("/customer/subscriptions", token);
 
-  try {
-    const response = await fetch("https://api.thedataproxy.com/v2/proxy-api/access", {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    });
+const fetchProxyApiAccess = (token: string): Promise<ProxyApiAccess> =>
+  fetchFromApi("/proxy-api/access", token);
 
-    if (!response.ok) {
-      const errorData = await response.json().catch(() => ({}));
-      throw new Error(
-        errorData.detail || `Failed to check proxy API access: ${response.status}`
-      );
-    }
-
-    return response.json();
-  } catch (error) {
-    console.error("Proxy API access fetch error:", error);
-    throw error;
-  }
-}
-
-async function fetchApiKeys(token: string): Promise<ApiKey[]> {
-  try {
-    const response = await fetch(`${API_URL}/api-keys`, {
-      method: "GET",
-      headers: {
-        "Accept": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    if (!response.ok) {
-      throw new Error(`Failed to fetch API keys: ${response.status}`);
-    }
-    const data: ApiKey[] = await response.json();
-    return data.map((key) => ({
+const fetchApiKeys = (token: string): Promise<ApiKey[]> =>
+  fetchFromApi("/proxy/api-keys", token).then((data: any[]) =>
+    data.map((key) => ({
       ...key,
       request_count: key.request_count ?? 0,
-      created_at: key.created_at || new Date().toISOString(),
-      expires_at: key.expires_at || new Date().toISOString(),
-      is_active: key.is_active ?? false,
-      key_preview: key.key_preview || "N/A",
-    }));
-  } catch (error) {
-    console.error("API keys fetch error:", error);
-    throw error;
-  }
-}
+    }))
+  );
 
-/**
- * Generates plausible-looking chart data by distributing a total value
- * across a date range from a start date to today.
- */
-const generateChartDataForPeriod = (startTimestamp: number | null, totalValue: number) => {
-  if (!startTimestamp || !totalValue || totalValue <= 0) {
-    return [{ date: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric' }), Requests: 0 }];
-  }
+const createNewApiKey = (token: string): Promise<{ full_key: string }> =>
+  fetchFromApi("/proxy/api-keys", token, { method: "POST" });
 
-  const startDate = new Date(startTimestamp * 1000);
-  const today = new Date();
-  today.setHours(23, 59, 59, 999);
+const revokeExistingApiKey = (token: string, keyPreview: string): Promise<void> =>
+  fetchFromApi(`/proxy/api-keys/${keyPreview}`, token, { method: "DELETE" });
 
-  if (startDate > today) {
-    return [{ date: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric' }), Requests: 0 }];
-  }
 
-  const datePoints: Date[] = [];
-  for (let d = new Date(startDate); d <= today; d.setDate(d.getDate() + 1)) {
-    datePoints.push(new Date(d));
-  }
-  
-  if (datePoints.length === 0) {
-    return [{ date: 'No Data', Requests: 0 }];
-  }
+// --- Reusable Code Block Component ---
+const CodeBlock = ({ code }: { code: string }) => {
+  const { onCopy } = useClipboard(code);
+  const toast = useToast();
 
-  if (datePoints.length === 1) {
-    const dateStr = datePoints[0].toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-    return [{ date: dateStr, Requests: totalValue }];
-  }
+  const handleCopy = () => {
+    onCopy();
+    toast({
+      title: "Copied to clipboard",
+      status: "success",
+      duration: 2000,
+      isClosable: true,
+      position: "top-right",
+    });
+  };
 
-  const weights = datePoints.map(() => Math.random());
-  const totalWeight = weights.reduce((sum, w) => sum + w, 0);
-
-  let runningTotal = 0;
-  const data = weights.map((weight, i) => {
-    const isLast = i === weights.length - 1;
-    let requests;
-    if (isLast) {
-      requests = totalValue - runningTotal;
-    } else {
-      requests = Math.round((weight / totalWeight) * totalValue);
-      runningTotal += requests;
-    }
-    return {
-      date: datePoints[i].toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
-      Requests: requests >= 0 ? requests : 0,
-    };
-  });
-  
-  return data;
+  return (
+    <Box position="relative">
+      <Textarea
+        value={code}
+        readOnly
+        height="280px"
+        bg="gray.50"
+        fontFamily="monospace"
+        fontSize="sm"
+        p={4}
+        pt={12}
+        resize="none"
+        _dark={{ bg: "gray.700" }}
+      />
+      <IconButton
+        aria-label="Copy Code"
+        icon={<CopyIcon />}
+        size="sm"
+        position="absolute"
+        top="0.5rem"
+        right="0.5rem"
+        onClick={handleCopy}
+      />
+    </Box>
+  );
 };
 
 
-const GoogleSerpPage = () => {
+// --- Get Started Tab Component ---
+const GetStartedTab = () => {
+  const TARGET_URL_EXAMPLE = "https://api.ipify.org?format=json";
+  const PROXY_ENDPOINT = "https://api.thedataproxy.com/v2/proxy";
+
+  const CODE_EXAMPLES = {
+    curl: `curl -X GET "${PROXY_ENDPOINT}?url=${encodeURIComponent(TARGET_URL_EXAMPLE)}" \\
+  -H "x-api-key: YOUR_API_KEY"`,
+    python: `import requests
+import urllib.parse
+
+api_key = "YOUR_API_KEY"
+target_url = "${TARGET_URL_EXAMPLE}"
+proxy_endpoint = "${PROXY_ENDPOINT}"
+
+params = { "url": target_url }
+headers = { "x-api-key": api_key }
+
+response = requests.get(proxy_endpoint, params=params, headers=headers)
+
+if response.status_code == 200:
+    print(response.json())
+else:
+    print(f"Error: {response.status_code}")
+    print(response.text)`,
+    javascript: `// Using node-fetch, or native fetch in browser/deno/node 18+
+import fetch from 'node-fetch';
+
+const apiKey = 'YOUR_API_KEY';
+const targetUrl = '${TARGET_URL_EXAMPLE}';
+const proxyEndpoint = new URL('${PROXY_ENDPOINT}');
+proxyEndpoint.searchParams.append('url', targetUrl);
+
+const options = {
+    method: 'GET',
+    headers: { 'x-api-key': apiKey }
+};
+
+fetch(proxyEndpoint, options)
+    .then(res => {
+        if (!res.ok) {
+            throw new Error(\`HTTP error! status: \${res.status}\`);
+        }
+        return res.json();
+    })
+    .then(json => console.log(json))
+    .catch(err => console.error('error:' + err));`
+  };
+
+  return (
+    <Box>
+      <Text fontSize="md" mb={6}>
+        The HTTPS Proxy API allows you to route your HTTP/S requests through our network of premium proxies.
+        This is ideal for web scraping, data gathering, or accessing geo-restricted content.
+      </Text>
+
+      <Heading size="md" mb={4}>Quick Start Examples</Heading>
+      <Text mb={4}>
+        To make a request, provide the target URL as a query parameter. Remember to replace <Code>YOUR_API_KEY</Code> with a key from the "API Keys" tab.
+      </Text>
+
+      <Tabs variant="enclosed">
+        <TabList>
+          <Tab>cURL</Tab>
+          <Tab>Python</Tab>
+          <Tab>JavaScript (Node.js)</Tab>
+        </TabList>
+        <TabPanels>
+          <TabPanel p={0} pt={4}><CodeBlock code={CODE_EXAMPLES.curl} /></TabPanel>
+          <TabPanel p={0} pt={4}><CodeBlock code={CODE_EXAMPLES.python} /></TabPanel>
+          <TabPanel p={0} pt={4}><CodeBlock code={CODE_EXAMPLES.javascript} /></TabPanel>
+        </TabPanels>
+      </Tabs>
+
+      <Box mt={8} p={4} borderWidth="1px" borderRadius="md" bg="gray.50" _dark={{ bg: "gray.700" }}>
+        <Heading size="md" mb={2}>Need Help?</Heading>
+        <Text fontSize="md">
+          For detailed information, visit our{" "}
+          <Link color="blue.500" href="/documentation/https-proxy-api" isExternal>
+            API Documentation
+          </Link>.
+          If you have further questions, please contact our{" "}
+          <Link color="blue.500" href="/support" isExternal>
+            Support Center
+          </Link>.
+        </Text>
+      </Box>
+    </Box>
+  );
+};
+
+
+// --- API Keys Manager Tab Component ---
+const ProxyApiKeyManager = ({ token, keys, isLoading, error, onKeysUpdate }: {
+  token: string;
+  keys: ApiKey[];
+  isLoading: boolean;
+  error: Error | null;
+  onKeysUpdate: () => void;
+}) => {
+  const toast = useToast();
+  const [newApiKey, setNewApiKey] = useState<string | null>(null);
+  const [keyToRevoke, setKeyToRevoke] = useState<string | null>(null);
+  const { isOpen: isModalOpen, onOpen: onModalOpen, onClose: onModalClose } = useDisclosure();
+  const { isOpen: isAlertOpen, onOpen: onAlertOpen, onClose: onAlertClose } = useDisclosure();
+  const cancelRef = useRef<HTMLButtonElement>(null);
+  const { onCopy, setValue: setClipboardValue } = useClipboard("");
+
+  const createMutation = useMutation({
+    mutationFn: () => createNewApiKey(token),
+    onSuccess: (data) => {
+      setNewApiKey(data.full_key);
+      setClipboardValue(data.full_key);
+      onModalOpen();
+      onKeysUpdate();
+      toast({ title: "API Key created successfully!", status: "success", duration: 3000, isClosable: true });
+    },
+    onError: (e: Error) => toast({ title: "Error creating key", description: e.message, status: "error" })
+  });
+
+  const revokeMutation = useMutation({
+    mutationFn: (keyPreview: string) => revokeExistingApiKey(token, keyPreview),
+    onSuccess: () => {
+      onKeysUpdate();
+      toast({ title: "API Key revoked.", status: "info", duration: 3000, isClosable: true });
+    },
+    onError: (e: Error) => toast({ title: "Error revoking key", description: e.message, status: "error" }),
+    onSettled: () => {
+      setKeyToRevoke(null);
+      onAlertClose();
+    }
+  });
+  
+  const handleCopyNewKey = () => {
+    onCopy();
+    toast({ title: "New API key copied!", status: "success", duration: 2000, isClosable: true });
+  }
+
+  const handleRevokeClick = (keyPreview: string) => {
+    setKeyToRevoke(keyPreview);
+    onAlertOpen();
+  }
+
+  if (isLoading) return <Spinner />;
+  if (error) return <Alert status="error"><AlertIcon />{error.message}</Alert>;
+
+  return (
+    <Box>
+      <Flex justify="space-between" align="center" mb={4}>
+        <Box>
+          <Heading size="sm">Manage API Keys</Heading>
+          <Text fontSize="sm" color="gray.500">Use these keys to authenticate your API requests.</Text>
+        </Box>
+        <Button
+          leftIcon={<AddIcon />}
+          colorScheme="blue"
+          onClick={() => createMutation.mutate()}
+          isLoading={createMutation.isPending}
+        >
+          Create New Key
+        </Button>
+      </Flex>
+      <TableContainer borderWidth="1px" borderRadius="md">
+        <Table variant="simple">
+          {!keys.length && <TableContainer p={4}>You haven't created any API keys yet.</TableContainer>}
+          <Thead>
+            <Tr>
+              <Th>Key Preview</Th>
+              <Th>Status</Th>
+              <Th>Created On</Th>
+              <Th isNumeric>Requests</Th>
+              <Th>Actions</Th>
+            </Tr>
+          </Thead>
+          <Tbody>
+            {keys.map((key) => (
+              <Tr key={key.key_preview}>
+                <Td><Code>{key.key_preview}...</Code></Td>
+                <Td><Badge colorScheme={key.is_active ? "green" : "red"}>{key.is_active ? "Active" : "Inactive"}</Badge></Td>
+                <Td>{new Date(key.created_at).toLocaleDateString()}</Td>
+                <Td isNumeric>{key.request_count.toLocaleString()}</Td>
+                <Td>
+                  <IconButton
+                    aria-label="Revoke Key"
+                    icon={<DeleteIcon />}
+                    colorScheme="red"
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => handleRevokeClick(key.key_preview)}
+                    isLoading={revokeMutation.isPending && keyToRevoke === key.key_preview}
+                  />
+                </Td>
+              </Tr>
+            ))}
+          </Tbody>
+        </Table>
+      </TableContainer>
+
+      <Modal isOpen={isModalOpen} onClose={onModalClose} isCentered>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>Your New API Key</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>
+            <Text mb={2}>Please copy your new key. For security, <b>you will not see it again.</b></Text>
+            <Flex align="center" bg="gray.100" _dark={{bg: "gray.700"}} p={3} borderRadius="md">
+              <Code flex="1" mr={4}>{newApiKey}</Code>
+              <IconButton aria-label="Copy new key" icon={<CopyIcon />} onClick={handleCopyNewKey} />
+            </Flex>
+          </ModalBody>
+          <ModalFooter>
+            <Button colorScheme="blue" onClick={onModalClose}>I have copied my key</Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
+
+      <AlertDialog isOpen={isAlertOpen} leastDestructiveRef={cancelRef} onClose={onAlertClose} isCentered>
+        <AlertDialogOverlay>
+          <AlertDialogContent>
+            <AlertDialogHeader>Revoke API Key</AlertDialogHeader>
+            <AlertDialogBody>
+              Are you sure? This will permanently disable the key <Code>{keyToRevoke}...</Code>.
+            </AlertDialogBody>
+            <AlertDialogFooter>
+              <Button ref={cancelRef} onClick={onAlertClose}>Cancel</Button>
+              <Button colorScheme="red" onClick={() => revokeMutation.mutate(keyToRevoke!)} ml={3}>Revoke Key</Button>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialogOverlay>
+      </AlertDialog>
+    </Box>
+  );
+};
+
+
+// --- Main Page Component ---
+const HttpsProxyApiPage = () => {
+  const token = localStorage.getItem("access_token") || "";
+
   const { data: subscriptions, isLoading: isSubscriptionsLoading, error: subscriptionsError } = useQuery({
     queryKey: ["subscriptions"],
-    queryFn: fetchSubscriptions,
-    staleTime: 5 * 60 * 1000,
+    queryFn: () => fetchSubscriptions(token),
+    enabled: !!token,
   });
 
   const { data: proxyApiAccess, isLoading: isAccessLoading, error: accessError } = useQuery({
     queryKey: ["proxyApiAccess"],
-    queryFn: fetchProxyApiAccess,
-    staleTime: 5 * 60 * 1000,
-  });
-
-  const token = localStorage.getItem("access_token");
-
-  const { data: apiKeys, isLoading: isApiKeysLoading, error: apiKeysError } = useQuery({
-    queryKey: ["apiKeys"],
-    queryFn: () => fetchApiKeys(token || ""),
-    staleTime: 5 * 60 * 1000,
+    queryFn: () => fetchProxyApiAccess(token),
     enabled: !!token,
   });
 
-  const totalRequests = apiKeys?.reduce((sum, key) => sum + (key.request_count || 0), 0) || 0;
+  const { data: apiKeys, isLoading: isApiKeysLoading, error: apiKeysError, refetch: refetchApiKeys } = useQuery({
+    queryKey: ["apiKeys"],
+    queryFn: () => fetchApiKeys(token),
+    enabled: !!token,
+  });
 
   const hasActiveSubscription = subscriptions?.some(
-    (sub) => ["active", "trialing"].includes(sub.status)
+    (sub) => sub.status === "active" || sub.status === "trialing"
   ) || false;
-  const activeSubscription = subscriptions?.find(
-    (sub) => ["active", "trialing"].includes(sub.status)
-  );
 
-  const chartData = useMemo(() => {
-    return generateChartDataForPeriod(activeSubscription?.current_period_start || null, totalRequests);
-  }, [activeSubscription?.current_period_start, totalRequests]);
+  const isLoading = isSubscriptionsLoading || isAccessLoading || isApiKeysLoading;
+  const error = subscriptionsError || accessError || apiKeysError;
 
-  const TabsConfig = [
-    {
-      title: "Overview",
-      component: () => (
-        <Box>
-          <Box borderWidth="1px" borderRadius="md" p={4} mb={4}>
-            <Flex align="baseline" gap={2}>
-              <Text fontSize="sm">Total Requests:</Text>
-              <Heading size="sm">{totalRequests.toLocaleString()}</Heading>
-            </Flex>
-          </Box>
-          <Grid templateColumns={{ base: "1fr", md: "1fr 1fr" }} gap={6}>
-            <GridItem>
-              <Heading size="md" mb={4}>Tier Details</Heading>
-              <Box shadow="md" borderWidth="1px" borderRadius="md" overflow="auto" height="350px">
-                <Table variant="simple" size="sm">
-                  <Tbody>
-                    <Tr>
-                      <Td><Text fontSize="sm">Plan Name</Text></Td>
-                      <Td><Text fontSize="sm">{activeSubscription?.product_name || activeSubscription?.plan_name || "N/A"}</Text></Td>
-                    </Tr>
-                    <Tr>
-                      <Td><Text fontSize="sm">Status</Text></Td>
-                      <Td><Text fontSize="sm">{activeSubscription?.status
-                        ? activeSubscription.status.charAt(0).toUpperCase() + activeSubscription.status.slice(1)
-                        : "N/A"}</Text></Td>
-                    </Tr>
-                    <Tr>
-                      <Td><Text fontSize="sm">Period Start</Text></Td>
-                      <Td><Text fontSize="sm">{activeSubscription?.current_period_start
-                        ? new Date(activeSubscription.current_period_start * 1000).toLocaleString()
-                        : "N/A"}</Text></Td>
-                    </Tr>
-                    <Tr>
-                      <Td><Text fontSize="sm">Period End</Text></Td>
-                      <Td><Text fontSize="sm">{activeSubscription?.current_period_end
-                        ? new Date(activeSubscription.current_period_end * 1000).toLocaleString()
-                        : "N/A"}</Text></Td>
-                    </Tr>
-                    <Tr>
-                      <Td><Text fontSize="sm">Total Requests</Text></Td>
-                      <Td><Text fontSize="sm">{totalRequests.toLocaleString()}</Text></Td>
-                    </Tr>
-                    <Tr>
-                      <Td><Text fontSize="sm">Active API Keys</Text></Td>
-                      <Td><Text fontSize="sm">{apiKeys?.filter(key => key.is_active).length || 0}</Text></Td>
-                    </Tr>
-                  </Tbody>
-                </Table>
-              </Box>
-            </GridItem>
-            <GridItem>
-              <Heading size="md" mb={4}>Request Usage</Heading>
-              <Box shadow="md" borderWidth="1px" borderRadius="md" p={4} height="350px">
-                <ResponsiveContainer width="100%" height="100%">
-                  <LineChart
-                    data={chartData}
-                    margin={{
-                      top: 5, right: 20, left: 10, bottom: 5,
-                    }}
-                  >
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="date" fontSize="12px" angle={-20} textAnchor="end" height={40}/>
-                    <YAxis fontSize="12px" 
-                      tickFormatter={(value) => 
-                        typeof value === 'number' ? new Intl.NumberFormat('en-US', { notation: 'compact', compactDisplay: 'short' }).format(value) : value
-                      }
-                    />
-                    <Tooltip />
-                    <Legend />
-                    <Line type="monotone" dataKey="Requests" stroke="#3182CE" activeDot={{ r: 8 }} dot={false} />
-                  </LineChart>
-                </ResponsiveContainer>
-              </Box>
-            </GridItem>
-          </Grid>
-        </Box>
-      ),
-    },
-    {
-      title: "API Keys",
-      component: () => (
-        <ApiKeyGSerp token={token} />
-      ),
-    },
-    {
-      title: "Playground",
-      component: () => (
-        <PlaygroundGSerp />
-      ),
-    },
-  ];
   return (
-  <ProtectedComponent>
-    <Container maxW="full">
-      <Flex align="center" justify="space-between" py={6} gap={4}>
-        <Heading size="md">HTTPS Request API</Heading>
-      </Flex>
-      {isSubscriptionsLoading || isAccessLoading || isApiKeysLoading ? (
-        <Text fontSize="sm">Loading user details...</Text>
-      ) : subscriptionsError || accessError || apiKeysError ? (
-        <Alert status="error">
-          <AlertIcon />
-          <Text fontSize="sm">
-            Error: {(subscriptionsError?.message || accessError?.message || apiKeysError?.message) || "Failed to load user details. Please try again later."}
-          </Text>
-        </Alert>
-      ) : !hasActiveSubscription ? (
-        <Alert status="error">
-          <AlertIcon />
-          <Text fontSize="sm">No active products associated with your account.</Text>
-        </Alert>
-      ) : (
-        <>
-          {!proxyApiAccess?.has_access && (
-            <Alert status="warning" mb={4}>
-              <AlertIcon />
-              <Text fontSize="sm">
-                {proxyApiAccess?.message || "Your account does not include https request features. Please upgrade to a proxy api enabled plan."}
-              </Text>
-            </Alert>
-          )}
-          <Tabs>
-            <TabList>
-              {TabsConfig.map((tab, index) => (
-                <Tab key={index} fontSize="sm">{tab.title}</Tab>
-              ))}
-            </TabList>
-            <TabPanels>
-              {TabsConfig.map((tab, index) => (
-                <TabPanel key={index}>{tab.component()}</TabPanel>
-              ))}
-            </TabPanels>
-          </Tabs>
-        </>
-      )}
-    </Container>
-  </ProtectedComponent>
-);
+    <ProtectedComponent>
+      <Container maxW="full">
+        <Flex align="center" justify="space-between" py={6} gap={4}>
+          <Heading size="md">HTTPS Proxy API</Heading>
+        </Flex>
+
+        {isLoading ? (
+          <Text fontSize="sm">Loading account details...</Text>
+        ) : error ? (
+          <Alert status="error">
+            <AlertIcon />
+            <Text fontSize="sm">
+              Error: {error.message || "Failed to load details. Please try again."}
+            </Text>
+          </Alert>
+        ) : !hasActiveSubscription ? (
+          <Alert status="warning">
+            <AlertIcon />
+            <Text fontSize="sm">No active subscription found. Please subscribe to a plan to use the HTTPS Proxy API.</Text>
+          </Alert>
+        ) : (
+          <>
+            {!proxyApiAccess?.has_access && (
+              <Alert status="warning" mb={4}>
+                <AlertIcon />
+                <Text fontSize="sm">
+                  {proxyApiAccess?.message || "Your current plan does not include HTTPS Proxy API features. Please upgrade to an eligible plan."}
+                </Text>
+              </Alert>
+            )}
+            <Tabs isLazy>
+              <TabList>
+                <Tab fontSize="sm">Get Started</Tab>
+                <Tab fontSize="sm">API Keys</Tab>
+                <Tab fontSize="sm">Playground</Tab>
+              </TabList>
+              <TabPanels pt={4}>
+                <TabPanel><GetStartedTab /></TabPanel>
+                <TabPanel>
+                  <ProxyApiKeyManager
+                    token={token}
+                    keys={apiKeys || []}
+                    isLoading={isApiKeysLoading}
+                    error={apiKeysError as Error | null}
+                    onKeysUpdate={refetchApiKeys}
+                  />
+                </TabPanel>
+                <TabPanel><PlaygroundHttpsProxy /></TabPanel>
+              </TabPanels>
+            </Tabs>
+          </>
+        )}
+      </Container>
+    </ProtectedComponent>
+  );
 };
 
 export const Route = createFileRoute("/_layout/web-scraping-tools/https-proxy-api")({
-  component: GoogleSerpPage,
+  component: HttpsProxyApiPage,
 });
 
-export default GoogleSerpPage;
+export default HttpsProxyApiPage;

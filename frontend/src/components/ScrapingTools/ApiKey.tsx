@@ -27,13 +27,13 @@ interface ApiKey {
   request_count?: number;
 }
 
-interface ApiKeyHttpsProps {
+interface ApiKeyProps {
   token: string | null;
 }
 
 const API_URL = "https://api.thedataproxy.com/v2/proxy";
 
-const ApiKeyHttps: React.FC<ApiKeyHttpsProps> = ({ token }) => {
+const ApiKeyModule: React.FC<ApiKeyProps> = ({ token }) => {
   const [apiKeys, setApiKeys] = useState<ApiKey[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -332,4 +332,4 @@ const ApiKeyHttps: React.FC<ApiKeyHttpsProps> = ({ token }) => {
   );
 };
 
-export default ApiKeyHttps;
+export default ApiKeyModule;
