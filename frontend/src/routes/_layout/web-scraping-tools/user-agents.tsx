@@ -275,11 +275,11 @@ const UserAgentTable = ({
   return (
     <TableContainer>
       <Table variant="simple">
-        <Thead bg="gray.50">
+        <Thead>
           <Tr>
-            <Th>User Agent String</Th>
-            <Th>Device Info</Th>
-            <Th isNumeric>Actions</Th>
+            <Th color="black">User Agent String</Th>
+            <Th color="black">Device Info</Th>
+         <Th color="black" isNumeric>Actions</Th>
           </Tr>
         </Thead>
         <Tbody>
@@ -427,7 +427,7 @@ function UserAgentsPage() {
           <Box mb={{ base: 4, md: 0 }}>
             
             <Text fontSize="md" mb={6}>A dynamic repository of real-world user agent strings, continuously updated to reflect the most prevalent browser, OS, and device combinations.</Text>
-            <Text fontSize="md"  mb={6}>This user agent list is perfect for web scrapers looking to blend in, developers, website administrators, and researchers.</Text>
+            <Text fontSize="md"  mb={6}>For developers building robust web scrapers, QA engineers testing cross-browser compatibility, and administrators analyzing traffic patterns.</Text>
           </Box>
           <HStack spacing={2}>
             {isSuperuser && (
