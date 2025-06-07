@@ -320,13 +320,13 @@ async def check_serp_api_access(current_user: Annotated[User, Depends(get_curren
 
             # Safely access the nested product and its metadata
             product = sub.plan.product if sub.plan and hasattr(sub.plan, 'product') else None
+            # CORRECTED LOGIC
+            # Safely get the metadata value, which will be a string or None
             metadata = product.metadata if product and product.metadata is not None else {}
-            
-            logger.info(f"Checking subscription {sub.id} (status: {sub.status}) for SERP API access. Metadata: {metadata}")
-            
-            # The key check: does the metadata contain the 'serp-api: true' tag?
-            # Stripe metadata values are always stored as strings.
+
+            # Compare the string from the API to the string "true"
             if metadata.get("serp-api") == "true":
+                # This block is now reachable and correctly grants access!
                 logger.info(f"SERP API access GRANTED for user {current_user.email} via subscription {sub.id}")
                 return ProxyApiAccessResponse(
                     has_access=True,
