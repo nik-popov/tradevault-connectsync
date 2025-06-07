@@ -215,7 +215,7 @@ const HomePage = () => {
                     <Link href="https://docs.thedataproxy.com" isExternal display="flex" alignItems="center">
                       <Icon as={FaBook} mr={2} /> API Documentation
                     </Link>
-                    <Link as={RouterLink} to="/billing" display="flex" alignItems="center">
+                    <Link as={RouterLink} to="/settings" display="flex" alignItems="center">
                       <Icon as={FaCreditCard} mr={2} /> Billing Portal
                     </Link>
                   </VStack>
@@ -242,7 +242,7 @@ const HomePage = () => {
                       <Tr>
                         <Td fontWeight="bold">Current Period</Td>
                         <Td>
-                          {activeSubscription?.current_period_start
+                          {activeSubscription?.current_period_start && activeSubscription?.current_period_end
                             ? `${new Date(activeSubscription.current_period_start * 1000).toLocaleDateString()} - ${new Date(activeSubscription.current_period_end * 1000).toLocaleDateString()}`
                             : "N/A"}
                         </Td>
