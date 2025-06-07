@@ -6,16 +6,16 @@ import {
   IconButton,
   Tooltip,
   useDisclosure,
-  // MODIFIED: Added Menu components for dropdown
+  // MODIFIED: Menu components are used for the new hover dropdown
   Menu,
   MenuButton,
   MenuList,
   MenuItem,
+  VStack, // Added for vertical stacking of title/description
 } from "@chakra-ui/react";
 // MODIFIED: Added icon for dropdown
 import { ChevronDownIcon } from "@chakra-ui/icons";
 import { useQueryClient } from "@tanstack/react-query";
-// MODIFIED: useMatch is no longer needed, using useRouterState instead
 import { Link as RouterLink, useRouterState } from "@tanstack/react-router";
 import {
   FiLogOut,
@@ -26,18 +26,19 @@ import {
   FiUserCheck,
   FiSettings,
 } from "react-icons/fi";
-// MODIFIED: Added FaSitemap for the group icon
-import { FaBook, FaKey, FaCreditCard, FaGlobe, FaSearch, FaSitemap } from 'react-icons/fa';
+// MODIFIED: Added FaSitemap for the group icon and consolidated FaSearch
+import { FaBook, FaKey, FaCreditCard, FaGlobe, FaSitemap } from 'react-icons/fa';
 
 import Logo from "../Common/Logo";
 import type { UserPublic } from "../../client";
 import useAuth from "../../hooks/useAuth";
 
-// NavItem interface remains the same, supporting subItems
+// MODIFIED: NavItem interface now includes an optional description
 interface NavItem {
   title: string;
   icon?: any;
   path?: string;
+  description?: string; // Added for richer menu items
   subItems?: NavItem[];
 }
 
@@ -46,20 +47,23 @@ interface NavItemsProps {
   isMobile?: boolean;
 }
 
-// MODIFIED: Data structure for navigation is now nested
+// MODIFIED: Data structure for navigation is now nested with descriptions
 const navStructure: NavItem[] = [
   {
     title: "Web Scraping APIs",
+    icon: FaSitemap, // Group icon for mobile view
     subItems: [
       {
         title: "HTTPS API",
         path: "/web-scraping-tools/https-api",
         icon: FaGlobe,
+        description: "Access any webpage with our powerful rotating proxy network.",
       },
       {
         title: "SERP API",
         path: "/web-scraping-tools/serp-api",
         icon: FiSearch,
+        description: "Scrape search engine results pages from Google in real-time.",
       },
     ],
   },
@@ -71,6 +75,63 @@ const navStructure: NavItem[] = [
 ];
 
 
+// --- NEW COMPONENT: NavGroupDropdown ---
+// This component encapsulates the logic for a hover-activated dropdown menu on desktop.
+const NavGroupDropdown = ({ item, activeTextColor, bgActive, hoverColor, textColor }) => {
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const { location } = useRouterState();
+  const { pathname } = location;
+
+  const { title, subItems } = item;
+  const isGroupActive = subItems.some(sub => pathname.startsWith(sub.path!));
+
+  return (
+    <Box onMouseEnter={onOpen} onMouseLeave={onClose} position="relative">
+      <Menu isOpen={isOpen} gutter={4}>
+        <MenuButton
+          as={Flex}
+          px={4}
+          py={2}
+          align="center"
+          cursor="pointer"
+          color={isGroupActive ? activeTextColor : textColor}
+          bg={isGroupActive ? bgActive : "transparent"}
+          _hover={{ color: hoverColor, textDecoration: "none" }}
+          borderRadius="md"
+        >
+          <Text fontWeight="500">{title}</Text>
+
+        </MenuButton>
+        <MenuList boxShadow="lg" p={2} borderRadius="md" borderWidth={1} minW="320px">
+          {subItems.map((subItem) => (
+            <MenuItem
+              key={subItem.title}
+              as={RouterLink}
+              to={subItem.path}
+              onClick={onClose} // Close the dropdown on item click
+              borderRadius="md"
+              p={3}
+              _hover={{ bg: "orange.50" }}
+               activeProps={{
+                 style: { background: bgActive, color: activeTextColor },
+               }}
+            >
+              <Flex align="flex-start" w="100%">
+                <Icon as={subItem.icon} boxSize={6} color="orange.500" mt={1} mr={4} />
+                <VStack align="flex-start" spacing={0}>
+                  <Text fontWeight="600" color="gray.800">{subItem.title}</Text>
+                  <Text fontSize="sm" color="gray.500" whiteSpace="normal">{subItem.description}</Text>
+                </VStack>
+              </Flex>
+            </MenuItem>
+          ))}
+        </MenuList>
+      </Menu>
+    </Box>
+  );
+};
+
+
 const NavItems = ({ onClose, isMobile = false }: NavItemsProps) => {
   const queryClient = useQueryClient();
   const textColor = "gray.800";
@@ -79,9 +140,6 @@ const NavItems = ({ onClose, isMobile = false }: NavItemsProps) => {
   const bgActive = "orange.100";
   const activeTextColor = "orange.800";
   const currentUser = queryClient.getQueryData<UserPublic>(["currentUser"]);
-  // MODIFIED: Get current location to determine active state for dropdowns
-  const { location } = useRouterState();
-  const { pathname } = location;
 
   const finalNavStructure = [...navStructure];
   if (
@@ -108,48 +166,21 @@ const NavItems = ({ onClose, isMobile = false }: NavItemsProps) => {
 
       // --- RENDER DROPDOWN/GROUP FOR ITEMS WITH SUB-ITEMS ---
       if (hasSubItems) {
-        const isGroupActive = subItems.some(sub => pathname.startsWith(sub.path!));
-
-        // Desktop Dropdown Menu
+        // MODIFIED: Desktop uses the new hover-activated dropdown component
         if (!isMobile) {
           return (
-            <Menu key={title} placement="bottom">
-              <MenuButton
-                as={Flex}
-                px={4}
-                py={2}
-                align="center"
-                cursor="pointer"
-                color={isGroupActive ? activeTextColor : textColor}
-                bg={isGroupActive ? bgActive : "transparent"}
-                _hover={{ color: hoverColor, textDecoration: "none" }}
-                borderRadius="md"
-              >
-             
-                <Text fontWeight="500">{title}</Text>
-              
-              </MenuButton>
-              <MenuList>
-                {subItems.map((subItem) => (
-                  <MenuItem
-                    key={subItem.title}
-                    as={RouterLink}
-                    to={subItem.path}
-                    onClick={onClose}
-                    icon={<Icon as={subItem.icon} boxSize={4} />}
-                     activeProps={{
-                       style: { background: bgActive, color: activeTextColor },
-                     }}
-                  >
-                    {subItem.title}
-                  </MenuItem>
-                ))}
-              </MenuList>
-            </Menu>
+            <NavGroupDropdown
+              key={item.title}
+              item={item}
+              textColor={textColor}
+              hoverColor={hoverColor}
+              activeTextColor={activeTextColor}
+              bgActive={bgActive}
+            />
           );
         }
 
-        // Mobile Grouped List
+        // Mobile Grouped List (remains the same for better mobile UX)
         return (
           <Box key={title} w="100%">
             <Flex px={4} py={2} color={textColor} align="center">

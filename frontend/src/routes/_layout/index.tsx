@@ -351,7 +351,7 @@ const HomePage = () => {
                     {activeSubscription.enabled_features && activeSubscription.enabled_features.length > 0 && (
                       <>
                         <Tr>
-                          <Td colSpan={2} fontWeight="bold" pt={4}>Enabled Features</Td>
+                          <Td colSpan={2} fontWeight="bold" pt={4}>Enabled Services</Td>
                         </Tr>
                         {activeSubscription.enabled_features.map(feature => (
                           <Tr key={feature}>
