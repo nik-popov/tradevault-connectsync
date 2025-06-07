@@ -333,7 +333,7 @@ function UserAgentsPage() {
     <>
       <Container maxW="full" py={6}>
         <Flex justify="space-between" align="center" mb={6}>
-          <Heading size="lg">User Agents</Heading>
+          <Heading size="lg">Active User Agents</Heading>
           <HStack spacing={2}>
             {isSuperuser && (
               <>
@@ -344,10 +344,10 @@ function UserAgentsPage() {
                     isLoading={updateFromSourceMutation.isPending}
                     loadingText="Updating..."
                 >
-                    Update from Source
+                    Refresh
                 </Button>
                 <Button leftIcon={<AddIcon />} colorScheme="teal" onClick={handleOpenAddModal}>
-                    Add New
+                   sAdd
                 </Button>
               </>
             )}
