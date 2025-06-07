@@ -103,7 +103,7 @@ class ProxyEndpointManager:
 
 endpoint_manager = ProxyEndpointManager()
 
-router = APIRouter(tags=["proxy"], prefix="/proxy")
+router = APIRouter(tags=["serp"], prefix="/serp")
 
 # APIToken Model Definition
 class APIToken(SQLModel, table=True):
