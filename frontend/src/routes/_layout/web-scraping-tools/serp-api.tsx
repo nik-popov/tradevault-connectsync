@@ -297,7 +297,7 @@ const GetStartedTab = () => {
 
 const pageTabsData = [
   { id: "get-started", label: "Get Started", component: <GetStartedTab /> },
-  { id: "keys", label: "Keys" },
+  { id: "keys", label: "Credentials" },
   // { id: "playground", label: "Playground", component: <PlaygroundSerpApi /> },
 ];
 
