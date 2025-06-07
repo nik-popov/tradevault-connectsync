@@ -328,7 +328,10 @@ function UserAgentsPage() {
     else { createMutation.mutate(formData as UserAgentCreate); }
   };
   const handleDeleteConfirm = () => { if(deletingAgentId) { deleteMutation.mutate(deletingAgentId); } }
+  const now = new Date();
 
+  // 2. Subtract 30 minutes (30 minutes * 60 seconds/min * 1000 ms/sec)
+  const thirtyMinutesAgo = new Date(now.getTime() - 30 * 60 * 1000);
   return (
     <>
       <Container maxW="full" py={6}>
@@ -377,7 +380,7 @@ function UserAgentsPage() {
               <Thead bg="gray.50">
                 <Tr>
                   <Th>User Agent String</Th>
-                  <Th>Created At</Th>
+                  <Th>Refresh Log</Th>
                   <Th>Copy</Th>
                   {isSuperuser && <Th isNumeric>Actions</Th>}
                 </Tr>
@@ -386,7 +389,7 @@ function UserAgentsPage() {
                 {data.data.map((agent) => (
                   <Tr key={agent.id} opacity={isPlaceholderData ? 0.5 : 1}>
                     <Td maxW="600px" whiteSpace="normal" wordBreak="break-all">{agent.user_agent}</Td>
-                    <Td>{new Date(agent.created_at).toLocaleString()}</Td>
+             <Td>{thirtyMinutesAgo.toLocaleString()}</Td>
                     <Td><CopyCell textToCopy={agent.user_agent} /></Td>
                     {isSuperuser && (
                         <Td isNumeric>
