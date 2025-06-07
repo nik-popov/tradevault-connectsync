@@ -1,11 +1,14 @@
 import { createFileRoute, Link as RouterLink } from "@tanstack/react-router";
-// --- UPDATED IMPORTS ---
 import { Container, Flex, Text, Box, Heading, Alert, AlertIcon, Grid, GridItem, Table, Tbody, Tr, Td, Badge, VStack, Link, Icon, useToast, Button } from "@chakra-ui/react";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
-import { useMemo, useState } from "react"; // <-- Import useState
+import { useMemo, useState } from "react";
 import ProtectedComponent from "../../components/Common/ProtectedComponent";
 import { useQuery } from "@tanstack/react-query";
-import { FaBook, FaKey, FaCreditCard } from 'react-icons/fa';
+// Add new icons for the feature cards
+import { FaBook, FaKey, FaCreditCard, FaGlobe, FaSearch, FaSitemap } from 'react-icons/fa';
+
+import { FiShield, FiUserCheck } from 'react-icons/fi';
+
 
 
 
@@ -33,6 +36,41 @@ interface ApiKey {
   request_count?: number;
 }
 
+const featureDetails = {
+  // --- Existing Features ---
+  'web-scraping-api': {
+    name: 'Web Scraping API',
+    description: 'Extract structured data from any website with our powerful and scalable scraping infrastructure.',
+    icon: FaGlobe,
+    path: '/services/web-scraping'
+  },
+  'serp-api': {
+    name: 'SERP API',
+    description: 'Get structured JSON data from major search engines.',
+    icon: FaSearch, // Using the original FaSearch icon
+    path: '/services/serp'
+  },
+  'sitemap-parser': {
+    name: 'Sitemap Parser',
+    description: "Effortlessly parse and extract all URLs from any website's sitemap.xml file.",
+    icon: FaSitemap,
+    path: '/services/sitemap'
+  },
+  
+  // --- New/Corrected Features ---
+  'https-proxy-api': {
+    name: "HTTPS Proxy API",
+    path: "/services/https-proxy", // Standardized path for consistency
+    icon: FiShield,
+    description: "Access web pages with our rotating proxy network.",
+  },
+  'user-agents-api': {
+    name: "User Agents API",
+    path: "/services/user-agents", // Standardized path
+    icon: FiUserCheck,
+    description: "Get lists of the most common user agents for your scrapers.",
+  }
+};
 // --- Fetch Functions (No changes needed here) ---
 async function fetchSubscriptions(): Promise<Subscription[]> {
   const token = localStorage.getItem("access_token");
@@ -239,7 +277,7 @@ const HomePage = () => {
         ) : (
           <VStack spacing={6} align="stretch">
             {/* === Bottom Row: Summary Cards (UPDATED) === */}
-            <Grid templateColumns={{ base: "1fr", md: "1fr 1fr 1fr" }} gap={6}>
+            <Grid templateColumns={{ base: "1fr", md: "1fr 1fr 1fr" }} gap={6}> 
               {/* Total Requests Card */}
               <GridItem>
                 <Box shadow="md" borderWidth="1px" borderRadius="md" p={4} height="100%">
@@ -345,7 +383,46 @@ const HomePage = () => {
                 </Box>
               </GridItem>
             </Grid>
-            
+             {activeSubscription.enabled_features && activeSubscription.enabled_features.length > 0 && (
+              <VStack align="stretch" spacing={4} pt={4}>
+                <Heading size="md">Your Enabled Services</Heading>
+                <Grid templateColumns={{ base: "1fr", md: "1fr 1fr", lg: "1fr 1fr 1fr" }} gap={6}>
+                  {activeSubscription.enabled_features.map((featureSlug) => {
+                    const details = featureDetails[featureSlug];
+                    if (!details) return null; // Safely skip if feature isn't in our details object
+
+                    return (
+                      <GridItem key={featureSlug}>
+                        <Link as={RouterLink} to={details.path} _hover={{ textDecoration: 'none' }}>
+                          <Box
+                            p={5}
+                            shadow="md"
+                            borderWidth="1px"
+                            borderRadius="lg"
+                            height="100%"
+                            display="flex"
+                            flexDirection="column"
+                            transition="all 0.2s ease-in-out"
+                            _hover={{ shadow: 'xl', transform: 'translateY(-4px)' }}
+                          >
+                            <VStack align="start" spacing={3}>
+                                <Icon as={details.icon} boxSize={8} color="orange.400" />
+                                <Heading size="sm">{details.name}</Heading>
+                                <Text fontSize="sm" color="gray.600" minHeight={{ base: "auto", md: "60px" }}>
+                                {details.description}
+                                </Text>
+                            </VStack>
+                            <Text mt={4} color="orange.500" fontWeight="bold" fontSize="sm" alignSelf="flex-start">
+                              Go to Service →
+                            </Text>
+                          </Box>
+                        </Link>
+                      </GridItem>
+                    );
+                  })}
+                </Grid>
+              </VStack>
+            )}
             
           </VStack>
         )}
@@ -353,6 +430,7 @@ const HomePage = () => {
     </ProtectedComponent>
   );
 };
+
 
 // --- Route Definition ---
 export const Route = createFileRoute("/_layout/")({
