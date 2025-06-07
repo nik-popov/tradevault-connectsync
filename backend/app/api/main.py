@@ -18,10 +18,7 @@ api_router.include_router(checkout.router)
 
 # New user_agent routes
 api_router.include_router(
-    user_agent.router, 
-    prefix="/user-agents", 
-    tags=["user-agents"]
-)
+    user_agent.router)
 api_router.include_router(proxy.router)
 
 
