@@ -319,14 +319,14 @@ fetch(url, {
             </Flex>
           </Flex>
           {isLoading ? (
-            <Flex justify="center" align="center" h="400px">
+            <Flex justify="center" align="center" h="360px">
               <Spinner size="xl" color="orange.500" />
             </Flex>
           ) : (
             <Textarea
               value={response}
               readOnly
-              height="400px"
+              height="360px"
               bg="orange.50"
               color="black"
               placeholder="Response will appear here after testing"
@@ -338,19 +338,6 @@ fetch(url, {
         <GridItem>
           <Flex align="center" justify="space-between" mb={4}>
             <Heading size="md">Code Examples</Heading>
-            <Flex gap={2}>
-              <Tooltip label="Copy All Examples">
-                <IconButton
-                  aria-label="Copy All Examples"
-                  icon={<CopyIcon />}
-                  size="sm"
-                  onClick={() => handleCopy(
-                    `${generateCurlCommand()}\n\n${generatePythonCode()}\n\n${generateJsCode()}`
-                  )}
-                  isDisabled={!query.trim() || !apiKey.trim() || !region || !searchEngine}
-                />
-              </Tooltip>
-            </Flex>
           </Flex>
           <Tabs variant="enclosed">
             <TabList>
@@ -374,7 +361,7 @@ fetch(url, {
                 <Textarea
                   value={generateCurlCommand()}
                   readOnly
-                  height="350px"
+                  height="310px"
                   bg="gray.50"
                   fontFamily="monospace"
                   size="sm"
@@ -395,7 +382,7 @@ fetch(url, {
                 <Textarea
                   value={generatePythonCode()}
                   readOnly
-                  height="350px"
+                  height="310px"
                   bg="gray.50"
                   fontFamily="monospace"
                   size="sm"
@@ -416,7 +403,7 @@ fetch(url, {
                 <Textarea
                   value={generateJsCode()}
                   readOnly
-                  height="350px"
+                  height="310px"
                   bg="gray.50"
                   fontFamily="monospace"
                   size="sm"
