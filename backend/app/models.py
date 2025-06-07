@@ -1,8 +1,13 @@
 import uuid
-from typing import Optional
+from typing import Optional, List
 from pydantic import EmailStr
-from sqlmodel import Field, Relationship, SQLModel
+from sqlmodel import Field, Relationship, SQLModel, Column, DateTime
+from sqlalchemy.sql import func
 from datetime import datetime
+
+# ===============================================================================
+# User Models
+# ===============================================================================
 
 # Shared properties
 class UserBase(SQLModel):
@@ -13,7 +18,7 @@ class UserBase(SQLModel):
     has_subscription: bool = Field(default=False)
     is_trial: bool = Field(default=False)
     is_deactivated: bool = Field(default=False)
-    stripe_customer_id: Optional[str] = Field(default=None, nullable=True)  #
+    stripe_customer_id: Optional[str] = Field(default=None, unique=True, nullable=True)
 
 # Properties to receive via API on creation
 class UserCreate(UserBase):
@@ -39,27 +44,34 @@ class UpdatePassword(SQLModel):
 
 # Database model
 class User(UserBase, table=True):
-    __tablename__ = "user"  # Changed from "users" to "user"
     id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
     hashed_password: str
     expiry_date: Optional[datetime] = Field(default=None)
-    items: list["Item"] = Relationship(back_populates="owner", cascade_delete=True)
+    items: List["Item"] = Relationship(back_populates="owner", sa_relationship_kwargs={"cascade": "all, delete-orphan"})
+    
+    # ✅ Best Practice: Add created_at and updated_at timestamps
+    created_at: datetime = Field(
+        sa_column=Column(DateTime(timezone=True), nullable=False, server_default=func.now())
+    )
+    updated_at: datetime = Field(
+        sa_column=Column(DateTime(timezone=True), nullable=True, server_default=func.now(), onupdate=func.now())
+    )
 
 # Properties to return via API
 class UserPublic(UserBase):
     id: uuid.UUID
+    # ✅ Expose timestamps to the client
+    created_at: datetime
+    updated_at: Optional[datetime] = None
 
 class UsersPublic(SQLModel):
-    data: list[UserPublic]
+    data: List[UserPublic]
     count: int
 
-class SubscriptionStatus(SQLModel):
-    hasSubscription: bool
-    isTrial: bool
-    isDeactivated: bool
+# ===============================================================================
+# UserAgent Models
+# ===============================================================================
 
-
-# UserAgent models
 class UserAgentBase(SQLModel):
     user_agent: str = Field(unique=True, index=True, max_length=512)
     device: str = Field(default="desktop", max_length=50)
@@ -79,15 +91,29 @@ class UserAgentUpdate(SQLModel):
 
 class UserAgent(UserAgentBase, table=True):
     id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
+    
+    # ✅ Added created_at timestamp as requested
+    created_at: datetime = Field(
+        sa_column=Column(
+            DateTime(timezone=True),
+            nullable=False,
+            server_default=func.now()
+        )
+    )
 
 class UserAgentPublic(UserAgentBase):
     id: uuid.UUID
+    # ✅ Expose the created_at field
+    created_at: datetime
 
 class UserAgentsPublic(SQLModel):
-    data: list[UserAgentPublic]
+    data: List[UserAgentPublic]
     count: int
 
-# Item models
+# ===============================================================================
+# Item Models
+# ===============================================================================
+
 class ItemBase(SQLModel):
     title: str = Field(min_length=1, max_length=255)
     description: Optional[str] = Field(default=None, max_length=255)
@@ -100,19 +126,32 @@ class ItemUpdate(ItemBase):
 
 class Item(ItemBase, table=True):
     id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
-    title: str = Field(max_length=255)
-    owner_id: uuid.UUID = Field(foreign_key="user.id", nullable=False, ondelete="CASCADE")  # Updated to "user.id"
-    owner: Optional[User] = Relationship(back_populates="items")
+    owner_id: uuid.UUID = Field(foreign_key="user.id", nullable=False)
+    owner: User = Relationship(back_populates="items")
+
+    # ✅ Best Practice: Add created_at and updated_at timestamps
+    created_at: datetime = Field(
+        sa_column=Column(DateTime(timezone=True), nullable=False, server_default=func.now())
+    )
+    updated_at: datetime = Field(
+        sa_column=Column(DateTime(timezone=True), nullable=True, server_default=func.now(), onupdate=func.now())
+    )
 
 class ItemPublic(ItemBase):
     id: uuid.UUID
     owner_id: uuid.UUID
+    # ✅ Expose timestamps to the client
+    created_at: datetime
+    updated_at: Optional[datetime] = None
 
 class ItemsPublic(SQLModel):
-    data: list[ItemPublic]
+    data: List[ItemPublic]
     count: int
 
-# Miscellaneous
+# ===============================================================================
+# Miscellaneous Models
+# ===============================================================================
+
 class Message(SQLModel):
     message: str
 
@@ -126,3 +165,8 @@ class TokenPayload(SQLModel):
 class NewPassword(SQLModel):
     token: str
     new_password: str = Field(min_length=8, max_length=40)
+
+class SubscriptionStatus(SQLModel):
+    hasSubscription: bool
+    isTrial: bool
+    isDeactivated: bool
