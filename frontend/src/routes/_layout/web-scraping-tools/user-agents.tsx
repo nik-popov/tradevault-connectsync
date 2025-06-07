@@ -188,7 +188,7 @@ function UserAgentsReadOnlyPage() {
     <ProtectedComponent>
       <Container maxW="full" py={6}>
         <Flex justify="space-between" align="center" mb={6}>
-          <Heading size="lg">User Agents</Heading>
+          <Heading size="lg">Active User Agents</Heading>
           <Menu>
             <MenuButton
               as={Button}
