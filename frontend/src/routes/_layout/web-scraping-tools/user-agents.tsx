@@ -52,7 +52,7 @@ import {
   // TabPanels and TabPanel are no longer needed here
 } from "@chakra-ui/react";
 import { CopyIcon, ChevronDownIcon, EditIcon, DeleteIcon, AddIcon, RepeatIcon } from "@chakra-ui/icons";
-import type { ItemPublic, UserPublic } from "../../../client";
+import type { UserPublic } from "../../../client";
 // --- API Configuration & Types (No changes) ---
 const API_BASE_URL = "https://api.thedataproxy.com/v2";
 
