@@ -21,6 +21,7 @@ import { Route as LayoutIndexImport } from './routes/_layout/index'
 import { Route as LayoutSettingsImport } from './routes/_layout/settings'
 import { Route as LayoutItemsImport } from './routes/_layout/items'
 import { Route as LayoutAdminImport } from './routes/_layout/admin'
+import { Route as LayoutWebScrapingToolsUserAgentsImport } from './routes/_layout/web-scraping-tools/user-agents'
 import { Route as LayoutWebScrapingToolsHttpsProxyImport } from './routes/_layout/web-scraping-tools/https-proxy'
 
 // Create/Update Routes
@@ -83,6 +84,13 @@ const LayoutAdminRoute = LayoutAdminImport.update({
   path: '/admin',
   getParentRoute: () => LayoutRoute,
 } as any)
+
+const LayoutWebScrapingToolsUserAgentsRoute =
+  LayoutWebScrapingToolsUserAgentsImport.update({
+    id: '/web-scraping-tools/user-agents',
+    path: '/web-scraping-tools/user-agents',
+    getParentRoute: () => LayoutRoute,
+  } as any)
 
 const LayoutWebScrapingToolsHttpsProxyRoute =
   LayoutWebScrapingToolsHttpsProxyImport.update({
@@ -172,6 +180,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LayoutWebScrapingToolsHttpsProxyImport
       parentRoute: typeof LayoutImport
     }
+    '/_layout/web-scraping-tools/user-agents': {
+      id: '/_layout/web-scraping-tools/user-agents'
+      path: '/web-scraping-tools/user-agents'
+      fullPath: '/web-scraping-tools/user-agents'
+      preLoaderRoute: typeof LayoutWebScrapingToolsUserAgentsImport
+      parentRoute: typeof LayoutImport
+    }
   }
 }
 
@@ -183,6 +198,7 @@ interface LayoutRouteChildren {
   LayoutSettingsRoute: typeof LayoutSettingsRoute
   LayoutIndexRoute: typeof LayoutIndexRoute
   LayoutWebScrapingToolsHttpsProxyRoute: typeof LayoutWebScrapingToolsHttpsProxyRoute
+  LayoutWebScrapingToolsUserAgentsRoute: typeof LayoutWebScrapingToolsUserAgentsRoute
 }
 
 const LayoutRouteChildren: LayoutRouteChildren = {
@@ -191,6 +207,7 @@ const LayoutRouteChildren: LayoutRouteChildren = {
   LayoutSettingsRoute: LayoutSettingsRoute,
   LayoutIndexRoute: LayoutIndexRoute,
   LayoutWebScrapingToolsHttpsProxyRoute: LayoutWebScrapingToolsHttpsProxyRoute,
+  LayoutWebScrapingToolsUserAgentsRoute: LayoutWebScrapingToolsUserAgentsRoute,
 }
 
 const LayoutRouteWithChildren =
@@ -208,6 +225,7 @@ export interface FileRoutesByFullPath {
   '/settings': typeof LayoutSettingsRoute
   '/': typeof LayoutIndexRoute
   '/web-scraping-tools/https-proxy': typeof LayoutWebScrapingToolsHttpsProxyRoute
+  '/web-scraping-tools/user-agents': typeof LayoutWebScrapingToolsUserAgentsRoute
 }
 
 export interface FileRoutesByTo {
@@ -221,6 +239,7 @@ export interface FileRoutesByTo {
   '/settings': typeof LayoutSettingsRoute
   '/': typeof LayoutIndexRoute
   '/web-scraping-tools/https-proxy': typeof LayoutWebScrapingToolsHttpsProxyRoute
+  '/web-scraping-tools/user-agents': typeof LayoutWebScrapingToolsUserAgentsRoute
 }
 
 export interface FileRoutesById {
@@ -236,6 +255,7 @@ export interface FileRoutesById {
   '/_layout/settings': typeof LayoutSettingsRoute
   '/_layout/': typeof LayoutIndexRoute
   '/_layout/web-scraping-tools/https-proxy': typeof LayoutWebScrapingToolsHttpsProxyRoute
+  '/_layout/web-scraping-tools/user-agents': typeof LayoutWebScrapingToolsUserAgentsRoute
 }
 
 export interface FileRouteTypes {
@@ -252,6 +272,7 @@ export interface FileRouteTypes {
     | '/settings'
     | '/'
     | '/web-scraping-tools/https-proxy'
+    | '/web-scraping-tools/user-agents'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/activate'
@@ -264,6 +285,7 @@ export interface FileRouteTypes {
     | '/settings'
     | '/'
     | '/web-scraping-tools/https-proxy'
+    | '/web-scraping-tools/user-agents'
   id:
     | '__root__'
     | '/_layout'
@@ -277,6 +299,7 @@ export interface FileRouteTypes {
     | '/_layout/settings'
     | '/_layout/'
     | '/_layout/web-scraping-tools/https-proxy'
+    | '/_layout/web-scraping-tools/user-agents'
   fileRoutesById: FileRoutesById
 }
 
@@ -323,7 +346,8 @@ export const routeTree = rootRoute
         "/_layout/items",
         "/_layout/settings",
         "/_layout/",
-        "/_layout/web-scraping-tools/https-proxy"
+        "/_layout/web-scraping-tools/https-proxy",
+        "/_layout/web-scraping-tools/user-agents"
       ]
     },
     "/activate": {
@@ -359,6 +383,10 @@ export const routeTree = rootRoute
     },
     "/_layout/web-scraping-tools/https-proxy": {
       "filePath": "_layout/web-scraping-tools/https-proxy.tsx",
+      "parent": "/_layout"
+    },
+    "/_layout/web-scraping-tools/user-agents": {
+      "filePath": "_layout/web-scraping-tools/user-agents.tsx",
       "parent": "/_layout"
     }
   }

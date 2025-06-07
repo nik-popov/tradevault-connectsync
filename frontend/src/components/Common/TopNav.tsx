@@ -4,17 +4,27 @@ import {
   Icon,
   Text,
   IconButton,
-  Image,
-  Link,
   Tooltip,
   useDisclosure,
+  Menu,
+  MenuButton,
+  MenuList,
+  MenuItem,
 } from "@chakra-ui/react";
+import { ChevronDownIcon } from "@chakra-ui/icons";
 import { useQueryClient } from "@tanstack/react-query";
 import { Link as RouterLink } from "@tanstack/react-router";
-import { FiLogOut, FiMenu, FiUsers } from "react-icons/fi";
+import {
+  FiLogOut,
+  FiMenu,
+  FiUsers,
+  FiTool,
+  FiShield,
+  FiUserCheck,
+} from "react-icons/fi";
 import { MdPerson } from "react-icons/md";
 
-import Logo from "../Common/Logo"
+import Logo from "../Common/Logo";
 import type { UserPublic } from "../../client";
 import useAuth from "../../hooks/useAuth";
 
@@ -30,7 +40,24 @@ interface NavItemsProps {
   isMobile?: boolean;
 }
 
-const navStructure: NavItem[] = [];
+const navStructure: NavItem[] = [
+  {
+    title: "Web Scraping Tools",
+    icon: FiTool,
+    subItems: [
+      {
+        title: "HTTPS Proxy",
+        path: "/web-scraping-tools/https-proxy",
+        icon: FiShield,
+      },
+      {
+        title: "User Agents",
+        path: "/web-scraping-tools/user-agents",
+        icon: FiUserCheck,
+      },
+    ],
+  },
+];
 
 const NavItems = ({ onClose, isMobile = false }: NavItemsProps) => {
   const queryClient = useQueryClient();
@@ -45,25 +72,12 @@ const NavItems = ({ onClose, isMobile = false }: NavItemsProps) => {
   if (currentUser?.is_superuser && !finalNavStructure.some(item => item.title === "Admin")) {
     finalNavStructure.push({ title: "Admin", icon: FiUsers, path: "/admin" });
   }
-  const isEnabled = (title: string) =>
-    ["Home", "Scraping Tools", "Admin"].includes(title) ||
-    (title === "Jobs" &&
-      finalNavStructure.some(item =>
-        item.title === "Scraping Tools" &&
-        item.subItems?.some(sub => sub.title === "Jobs")
-      )) ||
-    (title === "HTTPS Request API" &&
-      finalNavStructure.some(item =>
-        item.title === "Scraping Tools" &&
-        item.subItems?.some(sub => sub.title === "HTTPS Request API")
-      )) ||
-    (title === "Realtime Proxy Status" &&
-      finalNavStructure.some(item =>
-        item.title === "Scraping Tools" &&
-        item.subItems?.some(sub => sub.title === "Realtime Proxy Status")
-      ));
 
-  const renderNavItems = (items: NavItem[]) =>
+  const isEnabled = (title: string) => {
+    return ["Admin", "Web Scraping Tools", "HTTPS Proxy", "User Agents"].includes(title);
+  }
+
+  const renderNavItems = (items: NavItem[], isSubItem = false) =>
     items.map(({ icon, title, path, subItems }) => {
       const enabled = isEnabled(title);
 
@@ -73,13 +87,13 @@ const NavItems = ({ onClose, isMobile = false }: NavItemsProps) => {
             <Flex
               px={4}
               py={2}
+              pl={isMobile && isSubItem ? 8 : 4}
               color={disabledColor}
               cursor="not-allowed"
-              _hover={{ color: hoverColor }}
               align="center"
-              flexDir={isMobile ? "row" : "column"}
+              flexDir="row"
             >
-              {icon && <Icon as={icon} mr={isMobile ? 2 : 0} mb={isMobile ? 0 : 1} color={disabledColor} />}
+              {icon && <Icon as={icon} mr={2} color={disabledColor} />}
               <Text>{title}</Text>
             </Flex>
           </Tooltip>
@@ -87,18 +101,51 @@ const NavItems = ({ onClose, isMobile = false }: NavItemsProps) => {
       }
 
       if (subItems) {
+        if (!isMobile) {
+          return (
+            <Menu key={title} placement="bottom">
+              <MenuButton
+                as={Flex}
+                px={4}
+                py={2}
+                color={textColor}
+                _hover={{ color: hoverColor }}
+                align="center"
+                cursor="pointer"
+              >
+                {icon && <Icon as={icon} mr={2} />}
+                <Text>{title}</Text>
+                <Icon as={ChevronDownIcon} ml={2} w={4} h={4} />
+              </MenuButton>
+              <MenuList zIndex="popover">
+                {subItems.map(subItem => (
+                  <MenuItem
+                    key={subItem.title}
+                    as={RouterLink}
+                    to={subItem.path}
+                    onClick={onClose}
+                    icon={subItem.icon && <Icon as={subItem.icon} />}
+                    _hover={{ color: hoverColor, bg: bgActive }}
+                    activeProps={{
+                      style: { background: bgActive, color: activeTextColor },
+                    }}
+                  >
+                    {subItem.title}
+                  </MenuItem>
+                ))}
+              </MenuList>
+            </Menu>
+          );
+        }
         return (
-          <Box key={title}>
-            <Flex
-              px={4}
-              py={2}
-              color={textColor}
-              _hover={{ color: hoverColor }}
-              align="center"
-              flexDir={isMobile ? "row" : "row"}
-            >
+          <Box key={title} w="100%">
+            <Flex px={4} py={2} color={textColor} align="center" w="100%">
               {icon && <Icon as={icon} mr={2} />}
-              <Text>{title}</Text>
+              <Text fontWeight="bold">{title}</Text>
+              <Icon as={ChevronDownIcon} ml="auto" w={5} h={5} />
+            </Flex>
+            <Flex direction="column" w="100%">
+              {renderNavItems(subItems, true)}
             </Flex>
           </Box>
         );
@@ -111,6 +158,7 @@ const NavItems = ({ onClose, isMobile = false }: NavItemsProps) => {
           to={path}
           px={4}
           py={2}
+          pl={isMobile && isSubItem ? 8 : 4}
           color={textColor}
           _hover={{ color: hoverColor }}
           activeProps={{
@@ -118,6 +166,7 @@ const NavItems = ({ onClose, isMobile = false }: NavItemsProps) => {
           }}
           align="center"
           onClick={onClose}
+          w={isMobile ? '100%' : 'auto'}
         >
           {icon && <Icon as={icon} mr={2} />}
           <Text>{title}</Text>
@@ -126,11 +175,12 @@ const NavItems = ({ onClose, isMobile = false }: NavItemsProps) => {
     });
 
   return (
-    <Flex align="center" gap={2} flexDir={isMobile ? "column" : "row"}>
+    <Flex align="center" gap={isMobile ? 2 : 0} flexDir={isMobile ? "column" : "row"} w={isMobile ? '100%' : 'auto'}>
       {renderNavItems(finalNavStructure)}
     </Flex>
   );
 };
+
 
 const TopNav = () => {
   const queryClient = useQueryClient();
@@ -162,10 +212,9 @@ const TopNav = () => {
         {/* Logo */}
         <Logo href="/" />
 
-
         {/* Mobile Menu Button */}
         <IconButton
-          onClick={onOpen}
+          onClick={isOpen ? onClose : onOpen}
           display={{ base: "flex", md: "none" }}
           aria-label="Open Menu"
           fontSize="20px"
@@ -176,6 +225,7 @@ const TopNav = () => {
 
         {/* Desktop Navigation */}
         <Flex align="center" gap={4} display={{ base: "none", md: "flex" }}>
+          {/* Use NavItems with gap={0} on its root to avoid double spacing with MenuButton's padding */}
           <NavItems />
           {currentUser && (
             <>
@@ -226,7 +276,7 @@ const TopNav = () => {
           <NavItems onClose={onClose} isMobile={true} />
           {currentUser && (
             <>
-              <Text color={textColor} fontSize="sm">
+              <Text color={textColor} fontSize="sm" mt={4} borderTopWidth="1px" pt={4}>
                 Logged in as: {currentUser.email}
               </Text>
               <Flex flexDir="column" gap={2}>
