@@ -98,7 +98,6 @@ function convertToCSV(data: UserAgentPublic[]): string {
     const rows = data.map(row => {
         const id = `"${row.id}"`;
         const userAgent = `"${row.user_agent.replace(/"/g, '""')}"`;
-        const createdAt = `"${row.created_at}"`;
         const device = `"${row.device ?? ''}"`;
         const browser = `"${row.browser ?? ''}"`;
         const os = `"${row.os ?? ''}"`;
@@ -448,7 +447,7 @@ function UserAgentsPage() {
                   All <Badge ml='2' colorScheme='green'>{allAgents.length}</Badge>
                 </Tab>
                 <Tab>
-                  Desktop <Badge ml='2' colorScheme='blue'>{desktopAgents.length}</Badge>
+                  Desktop <Badge ml='2' colorScheme='purple'>{desktopAgents.length}</Badge>
                 </Tab>
                 <Tab>
                   Mobile <Badge ml='2' colorScheme='purple'>{mobileAgents.length}</Badge>
