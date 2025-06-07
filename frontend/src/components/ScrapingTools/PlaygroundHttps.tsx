@@ -247,25 +247,25 @@ const PlaygroundGSerp: React.FC = () => {
               )}
             </Flex>
           </Flex>
-
           <Text fontSize="sm" mb={4}>
             <Link
-              color="orange.500"
+              href="https://api.thedataproxy.com/redoc"
+              isExternal
+              color="blue.500"
             >
-              RAW HTML <CopyIcon mx="2px" />
+              Structured Data <ExternalLinkIcon mx="2px" />
             </Link>
           </Text>
-
           {isLoading ? (
             <Flex justify="center" align="center" h="400px">
-              <Spinner size="xl" color="orange.500" />
+              <Spinner size="xl" color="blue.500" />
             </Flex>
           ) : (
             <Textarea
               value={response}
               readOnly
               height="400px"
-              bg="orange.50"
+              bg="blue.50"
               color="black"
               placeholder="Response will appear here after testing"
               size="sm"
@@ -317,11 +317,11 @@ const PlaygroundGSerp: React.FC = () => {
           </Flex>
           <Text fontSize="sm" mb={4}>
             <Link
-              href="/web-scraping-tools/serp-api"
+              href="https://thedataproxy.com/browser"
               isExternal
-              color="orange.500"
+              color="blue.500"
             >
-              Structured Response  <ExternalLinkIcon mx="2px" /> (json)
+              Browser Session <ExternalLinkIcon mx="2px" />
             </Link>
           </Text>
           {htmlPreview ? (
