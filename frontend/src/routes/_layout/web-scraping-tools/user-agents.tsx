@@ -445,16 +445,16 @@ function UserAgentsPage() {
             <Tabs isLazy variant="enclosed-colored" colorScheme="orange">
               <TabList>
                 <Tab>
-                  All <Badge ml='2' colorScheme='gray'>{allAgents.length}</Badge>
+                  All <Badge ml='2' colorScheme='green'>{allAgents.length}</Badge>
                 </Tab>
                 <Tab>
                   Desktop <Badge ml='2' colorScheme='blue'>{desktopAgents.length}</Badge>
                 </Tab>
                 <Tab>
-                  Mobile <Badge ml='2' colorScheme='green'>{mobileAgents.length}</Badge>
+                  Mobile <Badge ml='2' colorScheme='purple'>{mobileAgents.length}</Badge>
                 </Tab>
                 <Tab>
-                  Other <Badge ml='2' colorScheme='purple'>{otherAgents.length}</Badge>
+                  Other <Badge ml='2' colorScheme='gray'>{otherAgents.length}</Badge>
                 </Tab>
               </TabList>
               <TabPanels>
