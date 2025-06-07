@@ -423,10 +423,10 @@ function UserAgentsPage() {
         <Tabs isLazy variant="enclosed-colored" colorScheme="orange" onChange={(index) => setTabIndex(index)}>
             <TabList>
                 {[
-                  { label: "All", count: allAgents.length, color: "orange" },
+                  // { label: "All", count: allAgents.length, color: "orange" },
                   { label: "Desktop", count: desktopAgents.length, color: "orange" },
                   { label: "Mobile", count: mobileAgents.length, color: "orange" },
-                  { label: "Other", count: otherAgents.length, color: "gray" },
+                  // { label: "Other", count: otherAgents.length, color: "gray" },
                 ].map((tab, idx) => (
                     <Tab
                       key={idx}
