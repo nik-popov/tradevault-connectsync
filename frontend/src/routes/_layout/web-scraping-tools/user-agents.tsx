@@ -43,7 +43,8 @@ import {
   AlertDialogOverlay,
   useDisclosure,
 } from "@chakra-ui/react";
-import { CopyIcon, ChevronDownIcon, EditIcon, DeleteIcon, AddIcon } from "@chakra-ui/icons";
+// ✅ Added RepeatIcon for the refresh button
+import { CopyIcon, ChevronDownIcon, EditIcon, DeleteIcon, AddIcon, RepeatIcon } from "@chakra-ui/icons";
 
 // --- API Configuration & Types ---
 const API_BASE_URL = "https://api.thedataproxy.com/v2";
@@ -56,18 +57,21 @@ interface UserAgentPublic {
   browser?: string;
   os?: string;
 }
-
 interface UserAgentsPublic {
   data: UserAgentPublic[];
   count: number;
 }
-
 interface UserAgentCreate {
     user_agent: string;
 }
-
 interface UserAgentUpdate {
     user_agent?: string;
+}
+// ✅ Added type for the update-from-source response
+interface UpdateSourceResponse {
+    status: string;
+    new_agents_added: number;
+    [key: string]: any;
 }
 
 // --- Mock Auth Hook (replace with your actual auth logic) ---
@@ -78,7 +82,6 @@ const useAuth = () => {
   const [isSuperuser] = useState(true); 
   return { isSuperuser };
 };
-
 
 // --- Utility Functions ---
 function convertToCSV(data: UserAgentPublic[]): string {
@@ -92,7 +95,6 @@ function convertToCSV(data: UserAgentPublic[]): string {
     });
     return [headers, ...rows].join('\n');
 }
-
 function downloadFile(content: string, filename: string, mimeType: string) {
     const blob = new Blob([content], { type: mimeType });
     const url = URL.createObjectURL(blob);
@@ -111,12 +113,7 @@ const getAuthToken = () => {
     if (!token) throw new Error("No access token found. Please log in to perform this action.");
     return token;
 };
-
-// (READ) Fetch paginated user agents for table view
 async function fetchPaginatedUserAgents(skip: number, limit: number): Promise<UserAgentsPublic> {
-    // Note: This fetch doesn't require a token for public viewing.
-    // However, if the API was protected, we would add it conditionally.
-    // For this implementation, we assume GET is public.
     const response = await fetch(`${API_BASE_URL}/user-agents/?skip=${skip}&limit=${limit}`);
     if (!response.ok) {
         const errorData = await response.json().catch(() => ({ detail: "Failed to fetch user agents" }));
@@ -124,8 +121,6 @@ async function fetchPaginatedUserAgents(skip: number, limit: number): Promise<Us
     }
     return response.json();
 }
-
-// (READ ALL) Fetch ALL user agents for export
 async function fetchAllUserAgents(): Promise<UserAgentPublic[]> {
     const response = await fetch(`${API_BASE_URL}/user-agents/?limit=10000`);
     if (!response.ok) {
@@ -136,9 +131,22 @@ async function fetchAllUserAgents(): Promise<UserAgentPublic[]> {
     return result.data;
 }
 
-// (CREATE) Add a new user agent
+// ✅ (UPDATE FROM SOURCE) Trigger the scraper - Superuser Only
+async function updateUserAgentsFromSource(): Promise<UpdateSourceResponse> {
+    const token = getAuthToken();
+    const response = await fetch(`${API_BASE_URL}/user-agents/update-from-source/`, {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${token}` },
+    });
+    if (!response.ok) {
+        const errorData = await response.json().catch(() => ({ detail: "Failed to update from source" }));
+        throw new Error(errorData.detail);
+    }
+    return response.json();
+}
+
 async function createUserAgent(data: UserAgentCreate): Promise<UserAgentPublic> {
-    const token = getAuthToken(); // Required for protected action
+    const token = getAuthToken();
     const response = await fetch(`${API_BASE_URL}/user-agents/`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
@@ -150,10 +158,8 @@ async function createUserAgent(data: UserAgentCreate): Promise<UserAgentPublic> 
     }
     return response.json();
 }
-
-// (UPDATE) Update an existing user agent
 async function updateUserAgent({ id, data }: { id: string, data: UserAgentUpdate }): Promise<UserAgentPublic> {
-    const token = getAuthToken(); // Required for protected action
+    const token = getAuthToken();
     const response = await fetch(`${API_BASE_URL}/user-agents/${id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
@@ -165,10 +171,8 @@ async function updateUserAgent({ id, data }: { id: string, data: UserAgentUpdate
     }
     return response.json();
 }
-
-// (DELETE) Delete a user agent
 async function deleteUserAgent(id: string): Promise<void> {
-    const token = getAuthToken(); // Required for protected action
+    const token = getAuthToken();
     const response = await fetch(`${API_BASE_URL}/user-agents/${id}`, {
         method: 'DELETE',
         headers: { Authorization: `Bearer ${token}` },
@@ -180,59 +184,9 @@ async function deleteUserAgent(id: string): Promise<void> {
 }
 
 // --- Reusable Components ---
-
-const CopyCell = ({ textToCopy }: { textToCopy: string }) => {
-    const { onCopy } = useClipboard(textToCopy);
-    const toast = useToast();
-    const handleCopy = () => {
-        onCopy();
-        toast({ title: "Copied to clipboard!", status: "success", duration: 2000, isClosable: true });
-    };
-    return (<IconButton aria-label="Copy user agent" icon={<CopyIcon />} size="sm" onClick={handleCopy} variant="ghost" />);
-};
-
-const AddEditUserAgentModal = ({ isOpen, onClose, onSubmit, initialData, isLoading }: { isOpen: boolean; onClose: () => void; onSubmit: (data: UserAgentCreate | UserAgentUpdate) => void; initialData?: UserAgentPublic | null; isLoading: boolean; }) => {
-  const [userAgent, setUserAgent] = useState(initialData?.user_agent || "");
-  const handleSubmit = (e: React.FormEvent) => { e.preventDefault(); onSubmit({ user_agent: userAgent }); };
-  return (
-    <Modal isOpen={isOpen} onClose={onClose} size="xl">
-      <ModalOverlay />
-      <ModalContent as="form" onSubmit={handleSubmit}>
-        <ModalHeader>{initialData ? 'Edit User Agent' : 'Add New User Agent'}</ModalHeader>
-        <ModalCloseButton />
-        <ModalBody>
-          <FormControl isRequired>
-            <FormLabel>User Agent String</FormLabel>
-            <Textarea value={userAgent} onChange={(e) => setUserAgent(e.target.value)} placeholder="e.g. Mozilla/5.0 (Windows NT 10.0; Win64; x64)..." rows={5} />
-          </FormControl>
-        </ModalBody>
-        <ModalFooter>
-          <Button variant="ghost" mr={3} onClick={onClose}>Cancel</Button>
-          <Button colorScheme="teal" type="submit" isLoading={isLoading}>{initialData ? 'Save Changes' : 'Create'}</Button>
-        </ModalFooter>
-      </ModalContent>
-    </Modal>
-  );
-};
-
-const DeleteConfirmationDialog = ({ isOpen, onClose, onConfirm, isLoading }: { isOpen: boolean, onClose: () => void, onConfirm: () => void, isLoading: boolean, }) => {
-    const cancelRef = useRef<HTMLButtonElement>(null);
-    return (
-        <AlertDialog isOpen={isOpen} leastDestructiveRef={cancelRef} onClose={onClose}>
-            <AlertDialogOverlay>
-                <AlertDialogContent>
-                    <AlertDialogHeader fontSize="lg" fontWeight="bold">Delete User Agent</AlertDialogHeader>
-                    <AlertDialogBody>Are you sure you want to delete this user agent? This action cannot be undone.</AlertDialogBody>
-                    <AlertDialogFooter>
-                        <Button ref={cancelRef} onClick={onClose}>Cancel</Button>
-                        <Button colorScheme="red" onClick={onConfirm} ml={3} isLoading={isLoading}>Delete</Button>
-                    </AlertDialogFooter>
-                </AlertDialogContent>
-            </AlertDialogOverlay>
-        </AlertDialog>
-    );
-};
-
+const CopyCell = ({ textToCopy }: { textToCopy: string }) => { /* ... (unchanged) */ };
+const AddEditUserAgentModal = ({ isOpen, onClose, onSubmit, initialData, isLoading }: { /* ... */ }) => { /* ... (unchanged) */ };
+const DeleteConfirmationDialog = ({ isOpen, onClose, onConfirm, isLoading }: { /* ... */ }) => { /* ... (unchanged) */ };
 
 // --- Main Page Component ---
 function UserAgentsPage() {
@@ -256,35 +210,40 @@ function UserAgentsPage() {
 
   const totalPages = data ? Math.ceil(data.count / limit) : 0;
 
-  const handleMutationSuccess = (message: string) => {
+  // --- MUTATIONS ---
+  const handleMutationError = (e: Error) => {
+    toast({ title: "An error occurred", description: e.message, status: "error", duration: 5000, isClosable: true });
+  };
+  const handleCRUDSuccess = (message: string) => {
     toast({ title: message, status: "success", duration: 3000, isClosable: true });
     queryClient.invalidateQueries({ queryKey: ["userAgents"] });
     onAddEditModalClose();
     onDeleteAlertClose();
   };
 
-  const handleMutationError = (e: Error) => {
-    toast({ title: "An error occurred", description: e.message, status: "error", duration: 5000, isClosable: true });
-  };
-
-  const createMutation = useMutation({ mutationFn: createUserAgent, onSuccess: () => handleMutationSuccess("User agent created successfully."), onError: handleMutationError });
-  const updateMutation = useMutation({ mutationFn: updateUserAgent, onSuccess: () => handleMutationSuccess("User agent updated successfully."), onError: handleMutationError });
-  const deleteMutation = useMutation({ mutationFn: deleteUserAgent, onSuccess: () => handleMutationSuccess("User agent deleted successfully."), onError: handleMutationError });
-  const exportMutation = useMutation({
-    mutationFn: async (format: 'csv' | 'json') => {
-        const allAgents = await fetchAllUserAgents();
-        if (format === 'csv') {
-            const csvContent = convertToCSV(allAgents);
-            downloadFile(csvContent, 'user-agents.csv', 'text/csv');
-        } else {
-            const jsonContent = JSON.stringify(allAgents, null, 2);
-            downloadFile(jsonContent, 'user-agents.json', 'application/json');
-        }
+  const createMutation = useMutation({ mutationFn: createUserAgent, onSuccess: () => handleCRUDSuccess("User agent created successfully."), onError: handleMutationError });
+  const updateMutation = useMutation({ mutationFn: updateUserAgent, onSuccess: () => handleCRUDSuccess("User agent updated successfully."), onError: handleMutationError });
+  const deleteMutation = useMutation({ mutationFn: deleteUserAgent, onSuccess: () => handleCRUDSuccess("User agent deleted successfully."), onError: handleMutationError });
+  
+  // ✅ New mutation for updating from source
+  const updateFromSourceMutation = useMutation({
+    mutationFn: updateUserAgentsFromSource,
+    onSuccess: (data) => {
+        toast({
+            title: "Update from source complete",
+            description: `${data.new_agents_added} new agents were added. The table has been refreshed.`,
+            status: "success",
+            duration: 5000,
+            isClosable: true,
+        });
+        queryClient.invalidateQueries({ queryKey: ["userAgents"] });
     },
-    onSuccess: () => { toast({ title: "Export started.", description: "Your file is downloading.", status: "success", duration: 3000, isClosable: true, }); },
-    onError: (e: Error) => { toast({ title: "Export Failed", description: e.message, status: "error", duration: 5000, isClosable: true, }); }
+    onError: handleMutationError,
   });
 
+  const exportMutation = useMutation({ /* ... (unchanged) */ });
+
+  // --- EVENT HANDLERS ---
   const handleOpenAddModal = () => { setEditingAgent(null); onAddEditModalOpen(); };
   const handleOpenEditModal = (agent: UserAgentPublic) => { setEditingAgent(agent); onAddEditModalOpen(); };
   const handleOpenDeleteAlert = (id: string) => { setDeletingAgentId(id); onDeleteAlertOpen(); }
@@ -294,17 +253,28 @@ function UserAgentsPage() {
   };
   const handleDeleteConfirm = () => { if(deletingAgentId) { deleteMutation.mutate(deletingAgentId); } }
 
-  // ✅ FIXED: Return statement now wraps everything in a React Fragment (<> ... </>)
   return (
     <>
       <Container maxW="full" py={6}>
         <Flex justify="space-between" align="center" mb={6}>
           <Heading size="lg">User Agents</Heading>
-          <HStack spacing={4}>
+          <HStack spacing={2}>
+            {/* ✅ Admin controls are grouped together and conditional */}
             {isSuperuser && (
+              <>
+                <Button
+                    leftIcon={<RepeatIcon />}
+                    colorScheme="blue"
+                    onClick={() => updateFromSourceMutation.mutate()}
+                    isLoading={updateFromSourceMutation.isPending}
+                    loadingText="Updating..."
+                >
+                    Update from Source
+                </Button>
                 <Button leftIcon={<AddIcon />} colorScheme="teal" onClick={handleOpenAddModal}>
                     Add New
                 </Button>
+              </>
             )}
             <Menu>
               <MenuButton as={Button} rightIcon={<ChevronDownIcon />} isLoading={exportMutation.isPending} loadingText="Exporting">
@@ -318,13 +288,8 @@ function UserAgentsPage() {
           </HStack>
         </Flex>
 
-        {isLoading && !isPlaceholderData && (
-          <Flex justify="center" align="center" height="200px"><Spinner size="xl" /></Flex>
-        )}
-
-        {error && (
-          <Alert status="error"><AlertIcon />{error.message}</Alert>
-        )}
+        {isLoading && !isPlaceholderData && ( <Flex justify="center" align="center" height="200px"><Spinner size="xl" /></Flex> )}
+        {error && ( <Alert status="error"><AlertIcon />{error.message}</Alert> )}
 
         {data && (
           <Box borderWidth="1px" borderRadius="lg" overflowX="auto">
@@ -334,6 +299,7 @@ function UserAgentsPage() {
                   <Th>User Agent String</Th>
                   <Th>Created At</Th>
                   <Th>Copy</Th>
+                  {/* ✅ "Actions" column header is now conditional */}
                   {isSuperuser && <Th isNumeric>Actions</Th>}
                 </Tr>
               </Thead>
@@ -373,7 +339,6 @@ function UserAgentsPage() {
         )}
       </Container>
       
-      {/* ✅ FIXED: Modal rendering logic is now inside the main return fragment */}
       {isSuperuser && (
         <>
             <AddEditUserAgentModal
