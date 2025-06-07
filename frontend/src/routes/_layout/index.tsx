@@ -38,17 +38,17 @@ interface ApiKey {
 
 const featureDetails = {
   // --- Existing Features ---
-  'web-scraping-api': {
+  'proxy-api': {
     name: 'Web Scraping API',
     description: 'Extract structured data from any website with our powerful and scalable scraping infrastructure.',
     icon: FaGlobe,
-    path: '/services/web-scraping'
+    path: '/web-scraping-tools/https-proxy-api'
   },
   'serp-api': {
     name: 'SERP API',
     description: 'Get structured JSON data from major search engines.',
     icon: FaSearch, // Using the original FaSearch icon
-    path: '/services/serp'
+    path: '/web-scraping-tools/serp-api'
   },
   'sitemap-parser': {
     name: 'Sitemap Parser',
