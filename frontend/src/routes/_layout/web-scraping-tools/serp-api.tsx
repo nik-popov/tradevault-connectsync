@@ -260,6 +260,7 @@ const GetStartedTab = () => {
               key={tab.id}
               fontWeight="semibold"
               fontSize="lg"
+              color="gray.400"
               _selected={{ bg: "gray.800", color: "orange.400", borderColor: "inherit", borderBottomColor: "gray.800" }}
             >
               {tab.label}
@@ -363,7 +364,9 @@ const SerpApiPage = () => {
                   <Tab
                     key={tab.id}
                     fontSize="lg"
+                    fontWeight="semibold"
                     bg="white"
+                    color="gray.400"
                     _selected={{
                       bg: "gray.50",
                       color: "orange.600",
