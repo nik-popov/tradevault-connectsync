@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useCallback } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
 import { Text, VStack, Button, Flex, Spinner } from "@chakra-ui/react";
@@ -56,10 +56,10 @@ const ProtectedComponent: React.FC<{ children: React.ReactNode }> = ({
   const navigate = useNavigate();
   const { logout } = useAuth();
 
-  const handleLogout = async () => {
+  const handleLogout = useCallback(async () => {
     await logout();
     navigate({ to: "/login" }); // Redirect to login after logout
-  };
+  }, [logout, navigate]);
 
   const { data: subscriptionStatus, isLoading, error } = useQuery({
     queryKey: ["subscriptionStatus", "serp"],
@@ -77,6 +77,22 @@ const ProtectedComponent: React.FC<{ children: React.ReactNode }> = ({
     },
   });
 
+  // Effect to automatically log out on error after a delay
+  useEffect(() => {
+    const isUnauthorizedError =
+      error instanceof Error && error.message.includes("Unauthorized");
+
+    // Only set a timer for non-authentication errors
+    if (error && !isUnauthorizedError) {
+      const timer = setTimeout(() => {
+        handleLogout();
+      }, 30000); // 30 seconds
+
+      // Cleanup the timer if the component unmounts or error changes
+      return () => clearTimeout(timer);
+    }
+  }, [error, handleLogout]);
+
   // Loading state
   if (isLoading) {
     return (
@@ -89,24 +105,30 @@ const ProtectedComponent: React.FC<{ children: React.ReactNode }> = ({
 
   // Error state
   if (error) {
+    const isUnauthorizedError =
+      error instanceof Error && error.message.includes("Unauthorized");
+
+    // Handle session expiration immediately
+    if (isUnauthorizedError) {
+      return (
+        <VStack spacing={4}>
+          <Text color="red.500">Your session has expired. Please log in again.</Text>
+          <Button colorScheme="blue" onClick={() => navigate({ to: "/login" })}>
+            Log In
+          </Button>
+        </VStack>
+      );
+    }
+
+    // Handle other errors with a timed logout
     return (
       <VStack spacing={4}>
         <Text color="red.500">
-          {error instanceof Error && error.message.includes("Unauthorized")
-            ? "Your session has expired. Please log in again."
-            : "An error occurred while loading your subscription status. Please try again later."}
+          An error occurred while loading your subscription status.
         </Text>
-        <Button
-          colorScheme="blue"
-          onClick={() =>
-            error instanceof Error && error.message.includes("Unauthorized")
-              ? navigate({ to: "/login" })
-              : window.location.reload()
-          }
-        >
-          {error instanceof Error && error.message.includes("Unauthorized")
-            ? "Log In"
-            : "Retry"}
+        <Text>You will be logged out in 30 seconds to clear your session.</Text>
+        <Button colorScheme="red" onClick={handleLogout}>
+          Logout and Relogin Now
         </Button>
       </VStack>
     );
