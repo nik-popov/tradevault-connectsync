@@ -78,12 +78,11 @@ const HomePage = () => {
               {/* NEW: Combined Details Card in Top Right */}
               <GridItem>
                   <Box shadow="md" borderWidth="1px" borderRadius="md" p={4} height="200px" display="flex" flexDirection="column">
-                    <Heading size="sm" mb={4}>Subscription Details</Heading>
                     <Box flex="1" overflowY="auto" pr={2}>
                         <Table variant="simple" size="sm">
                             <Tbody>
-                                <Tr><Td fontWeight="bold">Tier Name</Td><Td>{activeSubscription?.product_name || activeSubscription?.plan_name || "N/A"}</Td></Tr>
-                                <Tr><Td fontWeight="bold">Status</Td><Td><Badge colorScheme={activeSubscription.status === "active" ? "green" : "yellow"} textTransform="capitalize">{activeSubscription?.status || "N/A"}</Badge></Td></Tr>
+                                {/* <Tr><Td fontWeight="bold">Tier Name</Td><Td>{activeSubscription?.product_name || activeSubscription?.plan_name || "N/A"}</Td></Tr> */}
+                                {/* <Tr><Td fontWeight="bold">Status</Td><Td><Badge colorScheme={activeSubscription.status === "active" ? "green" : "yellow"} textTransform="capitalize">{activeSubscription?.status || "N/A"}</Badge></Td></Tr> */}
                                 <Tr><Td fontWeight="bold">Current Period</Td><Td>{activeSubscription?.current_period_start && activeSubscription?.current_period_end ? `${new Date(activeSubscription.current_period_start * 1000).toLocaleDateString()} - ${new Date(activeSubscription.current_period_end * 1000).toLocaleDateString()}` : "N/A"}</Td></Tr>
                                 {activeSubscription.enabled_features?.length > 0 && (
                                     <>
