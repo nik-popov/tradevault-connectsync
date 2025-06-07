@@ -449,10 +449,10 @@ function UserAgentsPage() {
         >
             <Box mb={{ base: 4, md: 0 }}>
                 <Text fontSize="lg" mb={2} color="gray.700">
-                  Updated Daily
+                  Reflect the most prevalent browsers and devices.
                 </Text>
                 <Text fontSize="lg" mb={4} color="gray.700">
-                   Reflect the most prevalent browsers and devices.
+                Updated Daily
                 </Text>
             </Box>
 
