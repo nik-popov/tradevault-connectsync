@@ -238,7 +238,6 @@ const HomePage = () => {
     <ProtectedComponent>
       <Container maxW="full">
         <Flex align="center" justify="space-between" py={6} gap={4}>
-          <Heading size="lg">Overview</Heading>
         </Flex>
         {isLoading ? (
           <Text fontSize="sm">Loading your dashboard...</Text>
@@ -256,23 +255,23 @@ const HomePage = () => {
           </Alert>
         ) : (
           <VStack spacing={6} align="stretch">
-            {/* === Bottom Row: Summary Cards === */}
+            {/* === Bottom Row: Summary Cards (UPDATED FOR CONSISTENT TITLES) === */}
             <Grid templateColumns={{ base: "1fr", md: "1fr 1fr 1fr" }} gap={6}> 
               {/* Total Requests Card */}
               <GridItem>
                 <Box shadow="md" borderWidth="1px" borderRadius="md" p={4} height="100%">
-                    <VStack align="start">
-                        <Text fontSize="sm" color="gray.500">Total Requests (This Period)</Text>
-                        <Heading size="lg">{totalRequests.toLocaleString()}</Heading>
+                    <VStack align="start" spacing={3}>
+                        <Heading size="sm">Total Requests</Heading>
+                        <Text fontSize="4xl" fontWeight="bold">{totalRequests.toLocaleString()}</Text>
                     </VStack>
                 </Box>
               </GridItem>
               {/* Data Transferred Card */}
               <GridItem>
                 <Box shadow="md" borderWidth="1px" borderRadius="md" p={4} height="100%">
-                    <VStack align="start">
-                        <Text fontSize="sm" color="gray.500">Data Transferred (Est.)</Text>
-                        <Heading size="lg">{dataTransferredGB} GB</Heading>
+                    <VStack align="start" spacing={3}>
+                        <Heading size="sm">Data Transferred</Heading>
+                        <Text fontSize="4xl" fontWeight="bold">{dataTransferredGB} GB</Text>
                     </VStack>
                 </Box>
               </GridItem>
@@ -305,12 +304,12 @@ const HomePage = () => {
               </GridItem>
             </Grid>
 
-            {/* === Plan Details & Usage Chart (UPDATED) === */}
+            {/* === Plan Details & Usage Chart === */}
             <Grid templateColumns={{ base: "1fr", lg: "2.1fr 1fr" }} gap={6}>
               <GridItem>
                 {/* Request Usage Card */}
                 <Box shadow="md" borderWidth="1px" borderRadius="md" p={4} height="350px" display="flex" flexDirection="column">
-                  <Heading size="md" mb={4}>Request Usage</Heading>
+                  <Heading size="sm" mb={4}>Request Usage</Heading>
                   <Box flex="1" minHeight="0"> {/* Wrapper for ResponsiveContainer */}
                     <ResponsiveContainer width="100%" height="100%">
                       <LineChart data={chartData} margin={{ top: 5, right: 20, left: 10, bottom: 5 }}>
@@ -328,7 +327,7 @@ const HomePage = () => {
               <GridItem>
                 {/* Plan Details Card */}
                 <Box shadow="md" borderWidth="1px" borderRadius="md" p={4} height="350px" display="flex" flexDirection="column">
-                  <Heading size="md" mb={4}>Plan Details</Heading>
+                  <Heading size="sn" mb={4}>Plan Details</Heading>
                   <Box flex="1" overflow="auto"> {/* Wrapper to make only the table scrollable */}
                     <Table variant="simple" size="sm">
                       <Tbody>
