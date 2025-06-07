@@ -217,7 +217,6 @@ fetch(proxyEndpoint, options)
         This is ideal for web scraping, data gathering, or accessing geo-restricted content.
       </Text>
 
-      <Heading size="md" mb={4}>Quick Start Examples</Heading>
       <Text mb={4}>
         To make a request, provide the target URL as a query parameter. Remember to replace <Code>YOUR_API_KEY</Code> with a key from the "API Keys" tab.
       </Text>

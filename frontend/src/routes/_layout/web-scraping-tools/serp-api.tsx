@@ -235,11 +235,9 @@ fetch(url, options)
   return (
   <Box>
     <Text fontSize="md" mb={6}>
-      Welcome to the SERP API. This tool allows you to programmatically fetch search engine results pages.
+      This tool allows you to programmatically fetch search engine results pages.
       To get started, create an API key in the API Keys tab and use it in your requests.
     </Text>
-
-    <Heading size="md" mb={4}>Quick Start Examples</Heading>
     <Text mb={4}>
       Here are some basic examples to help you make your first request. Remember to replace <Code>YOUR_API_KEY</Code> with your actual key.
     </Text>

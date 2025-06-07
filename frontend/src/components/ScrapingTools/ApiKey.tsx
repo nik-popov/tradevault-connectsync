@@ -14,11 +14,15 @@ import {
   IconButton,
   Alert,
   AlertIcon,
-  Heading,
-  useToast, // Import useToast
+  useToast,
+  VStack,
+  Divider,
+  Code,
+  Spinner,
 } from "@chakra-ui/react";
-import { CopyIcon, DeleteIcon } from "@chakra-ui/icons";
+import { CopyIcon, DeleteIcon, AddIcon } from "@chakra-ui/icons";
 
+// --- Interfaces ---
 interface ApiKey {
   key_preview: string;
   created_at: string;
@@ -33,18 +37,48 @@ interface ApiKeyProps {
 
 const API_URL = "https://api.thedataproxy.com/v2/proxy";
 
+// --- START: New helper function to truncate the key display ---
+/**
+ * Truncates a long string by showing the start and end characters,
+ * separated by an ellipsis.
+ * @param {string} key The API key to truncate.
+ * @param {number} startChars Number of characters to show from the start.
+ * @param {number} endChars Number of characters to show from the end.
+ * @returns {string} The truncated key.
+ */
+const truncateApiKey = (key: string | null, startChars = 12, endChars = 8): string => {
+  if (!key || key.length <= startChars + endChars) {
+    return key || "";
+  }
+  const start = key.substring(0, startChars);
+  const end = key.substring(key.length - endChars);
+  return `${start}...${end}`;
+};
+// --- END: New helper function ---
+
 const ApiKeyModule: React.FC<ApiKeyProps> = ({ token }) => {
   const [apiKeys, setApiKeys] = useState<ApiKey[]>([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [isGenerating, setIsGenerating] = useState(false);
+  const [keyToDelete, setKeyToDelete] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [fullKey, setFullKey] = useState<string | null>(null);
   const [hasProxyApiAccess, setHasProxyApiAccess] = useState<boolean | null>(null);
-  const toast = useToast(); // Initialize useToast
+  const toast = useToast();
 
   useEffect(() => {
     if (token) {
-      fetchProxyApiAccess();
-      fetchApiKeys();
+      setApiKeys([]);
+      setFullKey(null);
+      setError(null);
+      setLoading(true);
+      
+      const fetchInitialData = async () => {
+        await fetchProxyApiAccess();
+        await fetchApiKeys();
+        setLoading(false);
+      };
+      fetchInitialData();
     }
   }, [token]);
 
@@ -52,73 +86,39 @@ const ApiKeyModule: React.FC<ApiKeyProps> = ({ token }) => {
     if (!token) return;
     try {
       const response = await fetch("https://api.thedataproxy.com/v2/proxy-api/access", {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`,
-        },
+        headers: { "Authorization": `Bearer ${token}` },
       });
-      if (!response.ok) {
-        throw new Error("Failed to fetch proxy API access");
-      }
+      if (!response.ok) throw new Error("Failed to fetch subscription status.");
       const data = await response.json();
       setHasProxyApiAccess(data.has_access);
     } catch (err) {
-      console.error("Error fetching proxy API access:", err);
+      setError(err instanceof Error ? err.message : "An unknown error occurred.");
       setHasProxyApiAccess(false);
     }
   };
 
   const fetchApiKeys = async () => {
     if (!token) return;
-    setLoading(true);
     setError(null);
     try {
       const response = await fetch(`${API_URL}/api-keys`, {
-        method: "GET",
-        headers: {
-          "Accept": "application/json",
-          "Authorization": `Bearer ${token}`,
-        },
+        headers: { "Accept": "application/json", "Authorization": `Bearer ${token}` },
       });
-      if (!response.ok) {
-        throw new Error(`Failed to fetch API keys: ${response.status}`);
-      }
+      if (!response.ok) throw new Error(`Failed to fetch API keys: ${response.status}`);
       const data: ApiKey[] = await response.json();
-      const normalizedData = data.map((key) => ({
-        ...key,
-        request_count: key.request_count ?? 0,
-        created_at: key.created_at || new Date().toISOString(),
-        expires_at: key.expires_at || new Date().toISOString(),
-        is_active: key.is_active ?? false,
-        key_preview: key.key_preview || "N/A",
-      }));
-      const sortedData = normalizedData.sort((a, b) =>
-        new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
-      );
+      const sortedData = data.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
       setApiKeys(sortedData);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "An error occurred");
-    } finally {
-      setLoading(false);
+      setError(err instanceof Error ? err.message : "An error occurred fetching keys.");
     }
   };
 
   const generateKey = async () => {
-    if (!token) {
-      setError("No authentication token available");
-      return;
-    }
-    if (hasProxyApiAccess === null) {
-      setError("Checking subscription status...");
-      return;
-    }
-    if (!hasProxyApiAccess) {
-      setError("Your subscription plan does not include proxy API features.");
-      return;
-    }
-    setLoading(true);
+    if (!token) return;
+    setIsGenerating(true);
+    setFullKey(null);
     setError(null);
+
     try {
       const response = await fetch(`${API_URL}/generate-api-key`, {
         method: "POST",
@@ -130,57 +130,42 @@ const ApiKeyModule: React.FC<ApiKeyProps> = ({ token }) => {
         body: JSON.stringify({}),
       });
       if (!response.ok) {
-        throw new Error(`Failed to generate API key: ${response.status}`);
+        const errorData = await response.json();
+        throw new Error(errorData.detail || `Failed to generate API key: ${response.status}`);
       }
       const newKeyData = await response.json();
       setFullKey(newKeyData.api_key);
       await fetchApiKeys();
     } catch (err) {
-      setError(err instanceof Error ? err.message : "An error occurred");
+      setError(err instanceof Error ? err.message : "An error occurred during key generation.");
     } finally {
-      setLoading(false);
+      setIsGenerating(false);
     }
   };
 
-  const deleteApiKey = async (keyPreview: string, requestCount: number) => {
-    if (!token) {
-      setError("No authentication token available");
-      return;
-    }
-    if (requestCount > 0) {
-      setError("Cannot delete API key with requests. Only keys with 0 requests can be deleted.");
-      return;
-    }
-    setLoading(true);
+  const deleteApiKey = async (key: ApiKey) => {
+    if (!token) return;
+    setKeyToDelete(key.key_preview);
     setError(null);
+
     try {
-      const parts = keyPreview.split("...");
-      if (parts.length !== 2 || parts[1].length !== 8) {
-        throw new Error("Invalid key preview format. Expected format: first8...last8");
-      }
-      const lastEight = parts[1];
-      const response = await fetch(`${API_URL}/api-keys/${lastEight}`, {
+      const parts = key.key_preview.split("...");
+      if (parts.length !== 2 || parts[1].length !== 8) throw new Error("Invalid key preview format.");
+      
+      const response = await fetch(`${API_URL}/api-keys/${parts[1]}`, {
         method: "DELETE",
-        headers: {
-          "Accept": "application/json",
-          "Authorization": `Bearer ${token}`,
-        },
+        headers: { "Accept": "application/json", "Authorization": `Bearer ${token}` },
       });
       if (!response.ok) {
-        let errorDetail = "Unknown error";
-        try {
-          const errorData = await response.json();
-          errorDetail = errorData.detail || errorDetail;
-        } catch (jsonErr) {
-          console.warn("Failed to parse error response:", jsonErr);
-        }
-        throw new Error(`Failed to delete API key: ${response.status} - ${errorDetail}`);
+        const errorData = await response.json();
+        throw new Error(errorData.detail || `Failed to delete API key: ${response.status}`);
       }
+      toast({ title: "API Key Deleted", status: "success", duration: 3000, isClosable: true });
       await fetchApiKeys();
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to delete API key due to a network error");
+      setError(err instanceof Error ? err.message : "An error occurred during key deletion.");
     } finally {
-      setLoading(false);
+      setKeyToDelete(null);
     }
   };
 
@@ -188,7 +173,7 @@ const ApiKeyModule: React.FC<ApiKeyProps> = ({ token }) => {
     navigator.clipboard.writeText(text);
     toast({
       title: "Copied!",
-      description: "API key copied to clipboard.",
+      description: "Full API key copied to clipboard.",
       status: "success",
       duration: 3000,
       isClosable: true,
@@ -197,115 +182,115 @@ const ApiKeyModule: React.FC<ApiKeyProps> = ({ token }) => {
 
   if (!token) {
     return (
-      <Box p={4} width="100%">
-        <Alert status="error">
-          <AlertIcon />
-          <Text fontSize="sm">Please log in on the main page to access API key management</Text>
-        </Alert>
+      <Box p={6} width="100%">
+        <Alert status="warning"><AlertIcon />Please log in to manage your API keys.</Alert>
       </Box>
     );
   }
 
   return (
-    <Box p={4} width="100%">
-      <Flex direction="column" gap={6}>
-        <Box>
-          <Flex justify="space-between" align="center" mb={2}>
-            <Text fontSize="md" fontWeight="semibold">Create a new API key for proxy access</Text>
-            <Tooltip label="Generate a new API key">
-              <Button
-                size="sm"
-                colorScheme="blue"
-                onClick={generateKey}
-                isLoading={loading}
-                isDisabled={loading || hasProxyApiAccess === false}
-              >
-                Generate
-              </Button>
-            </Tooltip>
-          </Flex>
-          <Box
-            mt={4}
-            p={4}
-            bg="gray.100"
-            borderRadius="md"
-            borderWidth="1px"
-            minH="100px"
-            display="flex"
-            flexDirection="column"
-            gap={2}
-          >
-            {fullKey ? (
-              <>
-                <Text fontSize="sm">
-                  Your new API key (copy it now as it won’t be shown again after refresh):
-                </Text>
-                <Flex gap={2} alignItems="center">
-                  <Text fontFamily="monospace" fontSize="sm" wordBreak="break-all">
-                    {fullKey}
-                  </Text>
-                  <IconButton
-                    aria-label="Copy full key"
-                    icon={<CopyIcon />}
-                    size="sm"
-                    onClick={() => copyToClipboard(fullKey)}
-                  />
-                </Flex>
-                <Text fontSize="xs" color="gray.500">
-                  Store this securely
-                </Text>
-              </>
-            ) : (
-              <Text fontSize="sm" color="gray.500">
-                Generate a key to see it here
-              </Text>
-            )}
-          </Box>
-        </Box>
+    <Box p={6} width="100%">
+      <VStack spacing={6} align="stretch">
+        <Flex direction={{ base: "column", md: "row" }} justify="space-between" align="center">
+          <Box mb={{ base: 4, md: 0 }}>
 
-        {hasProxyApiAccess === null && <Text fontSize="sm">Checking subscription status...</Text>}
+            <Text fontSize="md" mt={1}>Manage and generate API keys for programmatic access.</Text>
+                               <Text fontSize="md" mt={1}>Expiration time is set automatically</Text>
+          </Box>
+          <Button
+            leftIcon={<AddIcon />}
+            colorScheme="teal"
+            onClick={generateKey}
+            isLoading={isGenerating}
+            loadingText="Generating..."
+            isDisabled={isGenerating || hasProxyApiAccess === false}
+          >
+            Generate New Key
+          </Button>
+        </Flex>
+        <Divider />
+
         {hasProxyApiAccess === false && (
-          <Alert status="warning">
-            <AlertIcon />
-            <Text fontSize="sm">Your subscription plan does not include proxy API features</Text>
-          </Alert>
+          <Alert status="warning" borderRadius="md"><AlertIcon />Your current plan does not include Proxy API features. Please upgrade to use this feature.</Alert>
         )}
         {error && (
-          <Alert status="error">
-            <AlertIcon />
-            <Text fontSize="sm">{error}</Text>
+          <Alert status="error" borderRadius="md"><AlertIcon />{error}</Alert>
+        )}
+        
+        {/* --- START: Modified Key Display Block --- */}
+        {fullKey && (
+          <Alert status="success" borderRadius="md" variant="subtle" flexDirection="column" alignItems="start">
+            <Flex align="center" mb={2}>
+              <AlertIcon />
+              <Text fontWeight="bold">New Key Generated Successfully!</Text>
+            </Flex>
+            <Text fontSize="sm" mb={3}>
+              For your security, this key will not be shown again. Copy and store it in a safe place.
+            </Text>
+            <Flex
+              align="center"
+              justify="space-between" // Positions items at opposite ends
+              p={3}
+              bg="teal.50"
+              borderRadius="md"
+              border="1px solid"
+              borderColor="teal.200"
+              width="100%"
+            >
+              <Code bg="transparent" fontWeight="bold" noOfLines={1}>
+                {truncateApiKey(fullKey)}
+              </Code>
+              <IconButton
+                aria-label="Copy full key"
+                icon={<CopyIcon />}
+                size="sm"
+                onClick={() => copyToClipboard(fullKey)}
+              />
+            </Flex>
           </Alert>
         )}
+        {/* --- END: Modified Key Display Block --- */}
 
-        <Box>
-          <Heading size="md" mb={4}>Existing API Keys</Heading>
-          <Box shadow="md" borderWidth="1px" borderRadius="md" overflowX="auto">
+        <Box borderWidth="1px" borderRadius="lg" overflow="hidden">
+          {loading ? (
+             <Flex justify="center" align="center" h="200px"><Spinner size="xl" /></Flex>
+          ) : (
             <Table variant="simple" size="sm">
-              <Thead>
+              <Thead bg="gray.50">
                 <Tr>
-                  <Th><Text fontSize="sm">Key Preview</Text></Th>
-                  <Th><Text fontSize="sm">Created At</Text></Th>
-                  <Th><Text fontSize="sm">Expires At</Text></Th>
-                  <Th><Text fontSize="sm">Request Count</Text></Th>
-                  <Th><Text fontSize="sm">Status</Text></Th>
-                  <Th><Text fontSize="sm">Actions</Text></Th>
+                  <Th>Key Preview</Th>
+                  <Th>Created At</Th>
+                  <Th>Expires At</Th>
+                  <Th>Requests</Th>
+                  <Th>Status</Th>
+                  <Th isNumeric>Actions</Th>
                 </Tr>
               </Thead>
               <Tbody>
-                {apiKeys.map((key, index) => (
-                  <Tr key={index}>
-                    <Td><Text fontSize="sm">{key.key_preview}</Text></Td>
-                    <Td><Text fontSize="sm">{new Date(key.created_at).toLocaleString()}</Text></Td>
-                    <Td><Text fontSize="sm">{new Date(key.expires_at).toLocaleString()}</Text></Td>
-                    <Td><Text fontSize="sm">{key.request_count}</Text></Td>
-                    <Td><Text fontSize="sm">{key.is_active ? "Active" : "Inactive"}</Text></Td>
+                {apiKeys.length === 0 && !loading && (
+                    <Tr>
+                        <Td colSpan={6}>
+                            <Text textAlign="center" color="gray.500" py={10}>
+                                No API keys found. Generate one to get started.
+                            </Text>
+                        </Td>
+                    </Tr>
+                )}
+                {apiKeys.map((key) => (
+                  <Tr key={key.key_preview}>
+                    <Td><Code fontSize="xs">{key.key_preview}</Code></Td>
+                    <Td>{new Date(key.created_at).toLocaleDateString()}</Td>
+                    <Td>{new Date(key.expires_at).toLocaleDateString()}</Td>
+                    <Td>{key.request_count ?? 0}</Td>
                     <Td>
+                      <Text color={key.is_active ? "green.500" : "red.500"} fontWeight="medium">
+                        {key.is_active ? "Active" : "Inactive"}
+                      </Text>
+                    </Td>
+                    <Td isNumeric>
                       <Tooltip
-                        label={
-                          key.request_count && key.request_count > 0
-                            ? "Cannot delete key with requests"
-                            : "Delete API key"
-                        }
+                        label={ key.request_count && key.request_count > 0 ? "Cannot delete a key with usage." : "Delete API key"}
+                        hasArrow
                       >
                         <IconButton
                           aria-label="Delete key"
@@ -313,11 +298,9 @@ const ApiKeyModule: React.FC<ApiKeyProps> = ({ token }) => {
                           size="sm"
                           colorScheme="red"
                           variant="ghost"
-                          onClick={() =>
-                            deleteApiKey(key.key_preview, key.request_count || 0)
-                          }
-                          isLoading={loading}
-                          isDisabled={loading || (key.request_count || 0) > 0}
+                          onClick={() => deleteApiKey(key)}
+                          isLoading={keyToDelete === key.key_preview}
+                          isDisabled={key.request_count != null && key.request_count > 0}
                         />
                       </Tooltip>
                     </Td>
@@ -325,9 +308,9 @@ const ApiKeyModule: React.FC<ApiKeyProps> = ({ token }) => {
                 ))}
               </Tbody>
             </Table>
-          </Box>
+          )}
         </Box>
-      </Flex>
+      </VStack>
     </Box>
   );
 };
