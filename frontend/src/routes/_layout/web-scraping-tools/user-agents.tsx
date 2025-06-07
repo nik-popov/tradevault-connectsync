@@ -444,7 +444,7 @@ function UserAgentsPage() {
                         marginTop: "-1px",
                       }}
                     >
-                      {tab.label} <Badge ml='2' colorScheme={tab.color}>{tab.count}</Badge>
+                      {tab.label} 
                     </Tab>
                 ))}
             </TabList>
