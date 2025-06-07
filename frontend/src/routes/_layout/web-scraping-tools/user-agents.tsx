@@ -10,6 +10,7 @@ import {
   Thead,
   Tbody,
   Tr,
+  TableContainer,
   Th,
   Td,
   IconButton,
@@ -320,7 +321,7 @@ const UserAgentTable = ({
 // --- Main Page Component ---
 function UserAgentsPage() {
   const [page, setPage] = useState(0);
-  const [limit] = useState(25);
+  const [limit] = useState(50);
   const [editingAgent, setEditingAgent] = useState<UserAgentPublic | null>(null);
   const [deletingAgentId, setDeletingAgentId] = useState<string | null>(null);
 
@@ -441,7 +442,7 @@ function UserAgentsPage() {
             {/* ======================================================= */}
             {/* START: Tabbed Interface for User Agents               */}
             {/* ======================================================= */}
-            <Tabs isLazy variant="enclosed-colored">
+            <Tabs isLazy variant="enclosed-colored" colorScheme="orange">
               <TabList>
                 <Tab>
                   All <Badge ml='2' colorScheme='gray'>{allAgents.length}</Badge>
