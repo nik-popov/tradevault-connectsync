@@ -39,10 +39,11 @@ const REGIONS = [
   "middle-east",
 ];
 
+// CORRECTED: Matched search engines to backend support
 const SEARCH_ENGINES = [
   { value: "google", label: "Google" },
   { value: "bing", label: "Bing" },
-  { value: "yahoo", label: "Yahoo" },
+  { value: "duckduckgo", label: "DuckDuckGo" },
 ];
 
 // Define interface for structured result
@@ -53,7 +54,8 @@ interface SerpResult {
   snippet: string;
 }
 
-const API_URL = "https://api.thedataproxy.com/v2/serp";
+// CORRECTED: Changed endpoint to match the backend router prefix
+const API_URL = "https://api.thedataproxy.com/v2/proxy/serp";
 
 const PlaygroundSerpApi: React.FC = () => {
   const [query, setQuery] = useState<string>("best pizza in new york");

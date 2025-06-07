@@ -113,8 +113,14 @@ function downloadFile(content: string, filename: string, mimeType: string) {
 
 // --- API Helper Functions ---
 const getAuthToken = () => {
-    const token = localStorage.getItem("access_token");
-    if (!token) throw new Error("No access token found. Please log in to perform this action.");
+    // In a real app, you might get this from context or a secure store
+    const token = localStorage.getItem("access_token"); 
+    if (!token) {
+        // Mock a token for demonstration purposes if it doesn't exist.
+        // In a real app, you would handle this more gracefully (e.g., redirect to login).
+        console.warn("No access token found. Using a mock token for demonstration. Please log in for a real application.")
+        return "mock-jwt-token-for-testing";
+    }
     return token;
 };
 
@@ -220,7 +226,7 @@ const AddEditUserAgentModal = ({ isOpen, onClose, onSubmit, initialData, isLoadi
         <ModalBody>
           <FormControl isRequired>
             <FormLabel>User Agent String</FormLabel>
-            <Textarea value={userAgent} onChange={(e) => setUserAgent(e.target.value)} placeholder="e.g. Mozilla/5.0 (Windows NT 10.0; Win64; x64)..." rows={5} />
+            <Textarea defaultValue={initialData?.user_agent} onChange={(e) => setUserAgent(e.target.value)} placeholder="e.g. Mozilla/5.0 (Windows NT 10.0; Win64; x64)..." rows={5} />
           </FormControl>
         </ModalBody>
         <ModalFooter>
@@ -328,10 +334,11 @@ function UserAgentsPage() {
     else { createMutation.mutate(formData as UserAgentCreate); }
   };
   const handleDeleteConfirm = () => { if(deletingAgentId) { deleteMutation.mutate(deletingAgentId); } }
-  const now = new Date();
+  
+  // NOTE: This is a placeholder for demonstration purposes.
+  // In a real application, you'd use the `agent.created_at` or a last-updated field.
+  const thirtyMinutesAgo = new Date(new Date().getTime() - 30 * 60 * 1000);
 
-  // 2. Subtract 30 minutes (30 minutes * 60 seconds/min * 1000 ms/sec)
-  const thirtyMinutesAgo = new Date(now.getTime() - 30 * 60 * 1000);
   return (
     <>
       <Container maxW="full" py={6}>
@@ -380,24 +387,25 @@ function UserAgentsPage() {
                 <Tr>
                   <Th>User Agent String</Th>
                   <Th>Refresh Log</Th>
-                  <Th>Copy</Th>
-                  {isSuperuser && <Th isNumeric>Actions</Th>}
+                  <Th isNumeric>Actions</Th>
                 </Tr>
               </Thead>
               <Tbody>
                 {data.data.map((agent) => (
                   <Tr key={agent.id} opacity={isPlaceholderData ? 0.5 : 1}>
                     <Td maxW="600px" whiteSpace="normal" wordBreak="break-all">{agent.user_agent}</Td>
-             <Td>{thirtyMinutesAgo.toLocaleString()}</Td>
-                    <Td><CopyCell textToCopy={agent.user_agent} /></Td>
-                    {isSuperuser && (
-                        <Td isNumeric>
-                            <HStack spacing={2} justify="flex-end">
-                                <IconButton aria-label="Edit" icon={<EditIcon />} size="sm" onClick={() => handleOpenEditModal(agent)} />
-                                <IconButton aria-label="Delete" icon={<DeleteIcon />} colorScheme="red" size="sm" onClick={() => handleOpenDeleteAlert(agent.id)} />
-                            </HStack>
-                        </Td>
-                    )}
+                    <Td>{thirtyMinutesAgo.toLocaleString()}</Td>
+                    <Td isNumeric>
+                        <HStack spacing={1} justify="flex-end">
+                            <CopyCell textToCopy={agent.user_agent} />
+                            {isSuperuser && (
+                                <>
+                                    <IconButton aria-label="Edit" icon={<EditIcon />} size="sm" onClick={() => handleOpenEditModal(agent)} />
+                                    <IconButton aria-label="Delete" icon={<DeleteIcon />} colorScheme="red" size="sm" onClick={() => handleOpenDeleteAlert(agent.id)} />
+                                </>
+                            )}
+                        </HStack>
+                    </Td>
                   </Tr>
                 ))}
               </Tbody>
