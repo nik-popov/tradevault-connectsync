@@ -43,7 +43,6 @@ import {
   AlertDialogOverlay,
   useDisclosure,
 } from "@chakra-ui/react";
-// ✅ Added RepeatIcon for the refresh button
 import { CopyIcon, ChevronDownIcon, EditIcon, DeleteIcon, AddIcon, RepeatIcon } from "@chakra-ui/icons";
 
 // --- API Configuration & Types ---
@@ -57,17 +56,20 @@ interface UserAgentPublic {
   browser?: string;
   os?: string;
 }
+
 interface UserAgentsPublic {
   data: UserAgentPublic[];
   count: number;
 }
+
 interface UserAgentCreate {
     user_agent: string;
 }
+
 interface UserAgentUpdate {
     user_agent?: string;
 }
-// ✅ Added type for the update-from-source response
+
 interface UpdateSourceResponse {
     status: string;
     new_agents_added: number;
@@ -83,6 +85,7 @@ const useAuth = () => {
   return { isSuperuser };
 };
 
+
 // --- Utility Functions ---
 function convertToCSV(data: UserAgentPublic[]): string {
     if (data.length === 0) return "";
@@ -95,6 +98,7 @@ function convertToCSV(data: UserAgentPublic[]): string {
     });
     return [headers, ...rows].join('\n');
 }
+
 function downloadFile(content: string, filename: string, mimeType: string) {
     const blob = new Blob([content], { type: mimeType });
     const url = URL.createObjectURL(blob);
@@ -113,6 +117,8 @@ const getAuthToken = () => {
     if (!token) throw new Error("No access token found. Please log in to perform this action.");
     return token;
 };
+
+// (READ) Fetch paginated user agents for table view - Public
 async function fetchPaginatedUserAgents(skip: number, limit: number): Promise<UserAgentsPublic> {
     const response = await fetch(`${API_BASE_URL}/user-agents/?skip=${skip}&limit=${limit}`);
     if (!response.ok) {
@@ -121,6 +127,8 @@ async function fetchPaginatedUserAgents(skip: number, limit: number): Promise<Us
     }
     return response.json();
 }
+
+// (READ ALL) Fetch ALL user agents for export - Public
 async function fetchAllUserAgents(): Promise<UserAgentPublic[]> {
     const response = await fetch(`${API_BASE_URL}/user-agents/?limit=10000`);
     if (!response.ok) {
@@ -131,7 +139,7 @@ async function fetchAllUserAgents(): Promise<UserAgentPublic[]> {
     return result.data;
 }
 
-// ✅ (UPDATE FROM SOURCE) Trigger the scraper - Superuser Only
+// (UPDATE FROM SOURCE) Trigger the scraper - Superuser Only
 async function updateUserAgentsFromSource(): Promise<UpdateSourceResponse> {
     const token = getAuthToken();
     const response = await fetch(`${API_BASE_URL}/user-agents/update-from-source/`, {
@@ -145,6 +153,7 @@ async function updateUserAgentsFromSource(): Promise<UpdateSourceResponse> {
     return response.json();
 }
 
+// (CREATE) Add a new user agent - Superuser Only
 async function createUserAgent(data: UserAgentCreate): Promise<UserAgentPublic> {
     const token = getAuthToken();
     const response = await fetch(`${API_BASE_URL}/user-agents/`, {
@@ -158,6 +167,8 @@ async function createUserAgent(data: UserAgentCreate): Promise<UserAgentPublic> 
     }
     return response.json();
 }
+
+// (UPDATE) Update an existing user agent - Superuser Only
 async function updateUserAgent({ id, data }: { id: string, data: UserAgentUpdate }): Promise<UserAgentPublic> {
     const token = getAuthToken();
     const response = await fetch(`${API_BASE_URL}/user-agents/${id}`, {
@@ -171,6 +182,8 @@ async function updateUserAgent({ id, data }: { id: string, data: UserAgentUpdate
     }
     return response.json();
 }
+
+// (DELETE) Delete a user agent - Superuser Only
 async function deleteUserAgent(id: string): Promise<void> {
     const token = getAuthToken();
     const response = await fetch(`${API_BASE_URL}/user-agents/${id}`, {
@@ -183,10 +196,60 @@ async function deleteUserAgent(id: string): Promise<void> {
     }
 }
 
+
 // --- Reusable Components ---
-const CopyCell = ({ textToCopy }: { textToCopy: string }) => { /* ... (unchanged) */ };
-const AddEditUserAgentModal = ({ isOpen, onClose, onSubmit, initialData, isLoading }: { /* ... */ }) => { /* ... (unchanged) */ };
-const DeleteConfirmationDialog = ({ isOpen, onClose, onConfirm, isLoading }: { /* ... */ }) => { /* ... (unchanged) */ };
+const CopyCell = ({ textToCopy }: { textToCopy: string }) => {
+    const { onCopy } = useClipboard(textToCopy);
+    const toast = useToast();
+    const handleCopy = () => {
+        onCopy();
+        toast({ title: "Copied to clipboard!", status: "success", duration: 2000, isClosable: true });
+    };
+    return (<IconButton aria-label="Copy user agent" icon={<CopyIcon />} size="sm" onClick={handleCopy} variant="ghost" />);
+};
+
+const AddEditUserAgentModal = ({ isOpen, onClose, onSubmit, initialData, isLoading }: { isOpen: boolean; onClose: () => void; onSubmit: (data: UserAgentCreate | UserAgentUpdate) => void; initialData?: UserAgentPublic | null; isLoading: boolean; }) => {
+  const [userAgent, setUserAgent] = useState(initialData?.user_agent || "");
+  const handleSubmit = (e: React.FormEvent) => { e.preventDefault(); onSubmit({ user_agent: userAgent }); };
+  return (
+    <Modal isOpen={isOpen} onClose={onClose} size="xl">
+      <ModalOverlay />
+      <ModalContent as="form" onSubmit={handleSubmit}>
+        <ModalHeader>{initialData ? 'Edit User Agent' : 'Add New User Agent'}</ModalHeader>
+        <ModalCloseButton />
+        <ModalBody>
+          <FormControl isRequired>
+            <FormLabel>User Agent String</FormLabel>
+            <Textarea value={userAgent} onChange={(e) => setUserAgent(e.target.value)} placeholder="e.g. Mozilla/5.0 (Windows NT 10.0; Win64; x64)..." rows={5} />
+          </FormControl>
+        </ModalBody>
+        <ModalFooter>
+          <Button variant="ghost" mr={3} onClick={onClose}>Cancel</Button>
+          <Button colorScheme="teal" type="submit" isLoading={isLoading}>{initialData ? 'Save Changes' : 'Create'}</Button>
+        </ModalFooter>
+      </ModalContent>
+    </Modal>
+  );
+};
+
+const DeleteConfirmationDialog = ({ isOpen, onClose, onConfirm, isLoading }: { isOpen: boolean, onClose: () => void, onConfirm: () => void, isLoading: boolean, }) => {
+    const cancelRef = useRef<HTMLButtonElement>(null);
+    return (
+        <AlertDialog isOpen={isOpen} leastDestructiveRef={cancelRef} onClose={onClose}>
+            <AlertDialogOverlay>
+                <AlertDialogContent>
+                    <AlertDialogHeader fontSize="lg" fontWeight="bold">Delete User Agent</AlertDialogHeader>
+                    <AlertDialogBody>Are you sure you want to delete this user agent? This action cannot be undone.</AlertDialogBody>
+                    <AlertDialogFooter>
+                        <Button ref={cancelRef} onClick={onClose}>Cancel</Button>
+                        <Button colorScheme="red" onClick={onConfirm} ml={3} isLoading={isLoading}>Delete</Button>
+                    </AlertDialogFooter>
+                </AlertDialogContent>
+            </AlertDialogOverlay>
+        </AlertDialog>
+    );
+};
+
 
 // --- Main Page Component ---
 function UserAgentsPage() {
@@ -214,6 +277,7 @@ function UserAgentsPage() {
   const handleMutationError = (e: Error) => {
     toast({ title: "An error occurred", description: e.message, status: "error", duration: 5000, isClosable: true });
   };
+  
   const handleCRUDSuccess = (message: string) => {
     toast({ title: message, status: "success", duration: 3000, isClosable: true });
     queryClient.invalidateQueries({ queryKey: ["userAgents"] });
@@ -221,11 +285,10 @@ function UserAgentsPage() {
     onDeleteAlertClose();
   };
 
-  const createMutation = useMutation({ mutationFn: createUserAgent, onSuccess: () => handleCRUDSuccess("User agent created successfully."), onError: handleMutationError });
-  const updateMutation = useMutation({ mutationFn: updateUserAgent, onSuccess: () => handleCRUDSuccess("User agent updated successfully."), onError: handleMutationError });
-  const deleteMutation = useMutation({ mutationFn: deleteUserAgent, onSuccess: () => handleCRUDSuccess("User agent deleted successfully."), onError: handleMutationError });
+  const createMutation = useMutation({ mutationFn: createUserAgent, onSuccess: () => handleCRUDSuccess("User agent created."), onError: handleMutationError });
+  const updateMutation = useMutation({ mutationFn: updateUserAgent, onSuccess: () => handleCRUDSuccess("User agent updated."), onError: handleMutationError });
+  const deleteMutation = useMutation({ mutationFn: deleteUserAgent, onSuccess: () => handleCRUDSuccess("User agent deleted."), onError: handleMutationError });
   
-  // ✅ New mutation for updating from source
   const updateFromSourceMutation = useMutation({
     mutationFn: updateUserAgentsFromSource,
     onSuccess: (data) => {
@@ -241,7 +304,20 @@ function UserAgentsPage() {
     onError: handleMutationError,
   });
 
-  const exportMutation = useMutation({ /* ... (unchanged) */ });
+  const exportMutation = useMutation({
+    mutationFn: async (format: 'csv' | 'json') => {
+        const allAgents = await fetchAllUserAgents();
+        if (format === 'csv') {
+            const csvContent = convertToCSV(allAgents);
+            downloadFile(csvContent, 'user-agents.csv', 'text/csv');
+        } else {
+            const jsonContent = JSON.stringify(allAgents, null, 2);
+            downloadFile(jsonContent, 'user-agents.json', 'application/json');
+        }
+    },
+    onSuccess: () => { toast({ title: "Export started.", description: "Your file is downloading.", status: "success", duration: 3000, isClosable: true, }); },
+    onError: (e: Error) => { toast({ title: "Export Failed", description: e.message, status: "error", duration: 5000, isClosable: true, }); }
+  });
 
   // --- EVENT HANDLERS ---
   const handleOpenAddModal = () => { setEditingAgent(null); onAddEditModalOpen(); };
@@ -259,7 +335,6 @@ function UserAgentsPage() {
         <Flex justify="space-between" align="center" mb={6}>
           <Heading size="lg">User Agents</Heading>
           <HStack spacing={2}>
-            {/* ✅ Admin controls are grouped together and conditional */}
             {isSuperuser && (
               <>
                 <Button
@@ -288,8 +363,13 @@ function UserAgentsPage() {
           </HStack>
         </Flex>
 
-        {isLoading && !isPlaceholderData && ( <Flex justify="center" align="center" height="200px"><Spinner size="xl" /></Flex> )}
-        {error && ( <Alert status="error"><AlertIcon />{error.message}</Alert> )}
+        {isLoading && !isPlaceholderData && (
+          <Flex justify="center" align="center" height="200px"><Spinner size="xl" /></Flex>
+        )}
+
+        {error && (
+          <Alert status="error"><AlertIcon />{error.message}</Alert>
+        )}
 
         {data && (
           <Box borderWidth="1px" borderRadius="lg" overflowX="auto">
@@ -299,7 +379,6 @@ function UserAgentsPage() {
                   <Th>User Agent String</Th>
                   <Th>Created At</Th>
                   <Th>Copy</Th>
-                  {/* ✅ "Actions" column header is now conditional */}
                   {isSuperuser && <Th isNumeric>Actions</Th>}
                 </Tr>
               </Thead>
