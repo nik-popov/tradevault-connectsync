@@ -11,7 +11,7 @@ import re
 
 from app.api.deps import get_db
 from app.models import (
-    User,  # Import the placeholder User model
+    User,  
     UserAgent,
     UserAgentCreate,
     UserAgentUpdate,
@@ -29,7 +29,7 @@ from app.crud import (
 # --- Placeholder Admin Auth Dependency ---
 # NOTE: For a real application, move this to `app/api/deps.py` and
 # replace it with your actual authentication logic (e.g., OAuth2 with JWTs).
-from fastapi.security import OAuth2PasswordBearer
+from app.api.deps import CurrentUser, SessionDep
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 

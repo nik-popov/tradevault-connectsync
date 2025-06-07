@@ -28,11 +28,13 @@ import Logo from "../Common/Logo";
 import type { UserPublic } from "../../client";
 import useAuth from "../../hooks/useAuth";
 
+// Updated NavItem to include an optional description
 interface NavItem {
   title: string;
   icon?: any;
   path?: string;
   subItems?: NavItem[];
+  description?: string;
 }
 
 interface NavItemsProps {
@@ -40,6 +42,7 @@ interface NavItemsProps {
   isMobile?: boolean;
 }
 
+// Data structure for navigation, now with icons and descriptions
 const navStructure: NavItem[] = [
   {
     title: "Web Scraping Tools",
@@ -48,15 +51,115 @@ const navStructure: NavItem[] = [
         title: "HTTPS Proxy API",
         path: "/web-scraping-tools/https-proxy",
         icon: FiShield,
+        description:
+          "Access web pages with our rotating proxy network.",
       },
       {
         title: "User Agents Today",
         path: "/web-scraping-tools/user-agents",
         icon: FiUserCheck,
+        description:
+          "Get lists of the most common user agents for your scrapers.",
       },
     ],
   },
 ];
+
+// New component to render the menu item as a "card" with a description
+const MenuItemCard = ({
+  item,
+  onClose,
+}: {
+  item: NavItem;
+  onClose?: () => void;
+}) => {
+  const bgActive = "blue.100";
+  const hoverBg = "gray.50";
+
+  return (
+    <MenuItem
+      as={RouterLink}
+      to={item.path}
+      onClick={onClose}
+      _hover={{ bg: hoverBg, textDecoration: "none" }}
+      activeProps={{
+        style: { background: bgActive },
+      }}
+      borderRadius="lg"
+      p={3}
+      m={1}
+      transition="background-color 0.2s"
+    >
+      <Flex alignItems="center">
+        {item.icon && (
+          <Icon as={item.icon} mr={4} boxSize={6} color="blue.500" />
+        )}
+        <Box>
+          <Text fontWeight="600" color="gray.800">
+            {item.title}
+          </Text>
+          {item.description && (
+            <Text fontSize="sm" color="gray.500" whiteSpace="normal" mt={1}>
+              {item.description}
+            </Text>
+          )}
+        </Box>
+      </Flex>
+    </MenuItem>
+  );
+};
+
+// New component to handle the hover-to-open dropdown functionality for desktop
+const HoverableDropdown = ({
+  item,
+  onClose,
+}: {
+  item: NavItem;
+  onClose?: () => void;
+}) => {
+  const { isOpen, onOpen, onClose: closeMenu } = useDisclosure();
+  const textColor = "gray.800";
+  const hoverColor = "blue.600";
+
+  return (
+    <Box onMouseEnter={onOpen} onMouseLeave={closeMenu}>
+      <Menu isOpen={isOpen} placement="bottom" gutter={16}>
+        <MenuButton
+          as={Flex}
+          px={4}
+          py={2}
+          color={textColor}
+          _hover={{ color: hoverColor }}
+          align="center"
+          cursor="pointer"
+          sx={isOpen ? { color: hoverColor } : {}}
+        >
+          {item.icon && <Icon as={item.icon} mr={2} />}
+          <Text>{item.title}</Text>
+        </MenuButton>
+        <MenuList
+          zIndex="popover"
+          p={2}
+          borderRadius="xl"
+          boxShadow="lg"
+          border="1px solid"
+          borderColor="gray.100"
+        >
+          {item.subItems!.map((subItem) => (
+            <MenuItemCard
+              key={subItem.title}
+              item={subItem}
+              onClose={() => {
+                if (onClose) onClose();
+                closeMenu();
+              }}
+            />
+          ))}
+        </MenuList>
+      </Menu>
+    </Box>
+  );
+};
 
 const NavItems = ({ onClose, isMobile = false }: NavItemsProps) => {
   const queryClient = useQueryClient();
@@ -68,21 +171,34 @@ const NavItems = ({ onClose, isMobile = false }: NavItemsProps) => {
   const currentUser = queryClient.getQueryData<UserPublic>(["currentUser"]);
 
   const finalNavStructure = [...navStructure];
-  if (currentUser?.is_superuser && !finalNavStructure.some(item => item.title === "Admin")) {
+  if (
+    currentUser?.is_superuser &&
+    !finalNavStructure.some((item) => item.title === "Admin")
+  ) {
     finalNavStructure.push({ title: "Admin", icon: FiUsers, path: "/admin" });
   }
 
   const isEnabled = (title: string) => {
-    return ["Admin", "Web Scraping Tools", "HTTPS Proxy API", "User Agents Today"].includes(title);
-  }
+    return [
+      "Admin",
+      "Web Scraping Tools",
+      "HTTPS Proxy API",
+      "User Agents Today",
+    ].includes(title);
+  };
 
   const renderNavItems = (items: NavItem[], isSubItem = false) =>
-    items.map(({ icon, title, path, subItems }) => {
+    items.map((item) => {
+      const { icon, title, path, subItems } = item;
       const enabled = isEnabled(title);
 
       if (!enabled) {
         return (
-          <Tooltip key={title} label="Restricted" placement={isMobile ? "right" : "bottom"}>
+          <Tooltip
+            key={title}
+            label="Restricted"
+            placement={isMobile ? "right" : "bottom"}
+          >
             <Flex
               px={4}
               py={2}
@@ -100,41 +216,11 @@ const NavItems = ({ onClose, isMobile = false }: NavItemsProps) => {
       }
 
       if (subItems) {
+        // Use the new HoverableDropdown for desktop
         if (!isMobile) {
-          return (
-            <Menu key={title} placement="bottom">
-              <MenuButton
-                as={Flex}
-                px={4}
-                py={2}
-                color={textColor}
-                _hover={{ color: hoverColor }}
-                align="center"
-                cursor="pointer"
-              >
-                {icon && <Icon as={icon} mr={2} />}
-                <Text>{title}</Text>
-              </MenuButton>
-              <MenuList zIndex="popover">
-                {subItems.map(subItem => (
-                  <MenuItem
-                    key={subItem.title}
-                    as={RouterLink}
-                    to={subItem.path}
-                    onClick={onClose}
-                    icon={subItem.icon && <Icon as={subItem.icon} />}
-                    _hover={{ color: hoverColor, bg: bgActive }}
-                    activeProps={{
-                      style: { background: bgActive, color: activeTextColor },
-                    }}
-                  >
-                    {subItem.title}
-                  </MenuItem>
-                ))}
-              </MenuList>
-            </Menu>
-          );
+          return <HoverableDropdown key={title} item={item} onClose={onClose} />;
         }
+        // Keep the original collapsible section for mobile
         return (
           <Box key={title} w="100%">
             <Flex px={4} py={2} color={textColor} align="center" w="100%">
@@ -149,6 +235,7 @@ const NavItems = ({ onClose, isMobile = false }: NavItemsProps) => {
         );
       }
 
+      // Render a standard link for items without sub-items
       return (
         <Flex
           key={title}
@@ -164,7 +251,7 @@ const NavItems = ({ onClose, isMobile = false }: NavItemsProps) => {
           }}
           align="center"
           onClick={onClose}
-          w={isMobile ? '100%' : 'auto'}
+          w={isMobile ? "100%" : "auto"}
         >
           {icon && <Icon as={icon} mr={2} />}
           <Text>{title}</Text>
@@ -173,12 +260,16 @@ const NavItems = ({ onClose, isMobile = false }: NavItemsProps) => {
     });
 
   return (
-    <Flex align="center" gap={isMobile ? 2 : 0} flexDir={isMobile ? "column" : "row"} w={isMobile ? '100%' : 'auto'}>
+    <Flex
+      align="center"
+      gap={isMobile ? 2 : 0}
+      flexDir={isMobile ? "column" : "row"}
+      w={isMobile ? "100%" : "auto"}
+    >
       {renderNavItems(finalNavStructure)}
     </Flex>
   );
 };
-
 
 const TopNav = () => {
   const queryClient = useQueryClient();
@@ -223,7 +314,6 @@ const TopNav = () => {
 
         {/* Desktop Navigation */}
         <Flex align="center" gap={4} display={{ base: "none", md: "flex" }}>
-          {/* Use NavItems with gap={0} on its root to avoid double spacing with MenuButton's padding */}
           <NavItems />
           {currentUser && (
             <>
@@ -274,7 +364,13 @@ const TopNav = () => {
           <NavItems onClose={onClose} isMobile={true} />
           {currentUser && (
             <>
-              <Text color={textColor} fontSize="sm" mt={4} borderTopWidth="1px" pt={4}>
+              <Text
+                color={textColor}
+                fontSize="sm"
+                mt={4}
+                borderTopWidth="1px"
+                pt={4}
+              >
                 Logged in as: {currentUser.email}
               </Text>
               <Flex flexDir="column" gap={2}>
