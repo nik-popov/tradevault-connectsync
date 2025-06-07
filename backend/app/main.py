@@ -25,7 +25,6 @@ app.add_middleware(
     # allow_origins=["*"],  # Allow all origins
     allow_credentials=True,
     allow_methods=["GET", "POST", "PATCH", "OPTIONS","DELETE"],
-    ‘Access-Control-Allow-Origin
     allow_headers=["*"],
 )
 app.include_router(api_router, prefix=settings.API_V1_STR)
