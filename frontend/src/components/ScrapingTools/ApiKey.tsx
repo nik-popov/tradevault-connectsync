@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import {
   Box,
   Text,
@@ -19,6 +19,13 @@ import {
   Divider,
   Code,
   Spinner,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalFooter,
+  ModalBody,
+  ModalCloseButton,
 } from "@chakra-ui/react";
 import { CopyIcon, DeleteIcon, AddIcon } from "@chakra-ui/icons";
 
@@ -64,7 +71,37 @@ const ApiKeyModule: React.FC<ApiKeyProps> = ({ token }) => {
   const [error, setError] = useState<string | null>(null);
   const [fullKey, setFullKey] = useState<string | null>(null);
   const [hasProxyApiAccess, setHasProxyApiAccess] = useState<boolean | null>(null);
+  
+  // --- START: New state for modal and countdown ---
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [countdown, setCountdown] = useState(15);
+  // --- END: New state ---
+  
   const toast = useToast();
+
+  // --- START: New handler to close the modal ---
+  const handleCloseModal = useCallback(() => {
+    setIsModalOpen(false);
+    setFullKey(null); // Clear the key so the modal doesn't re-open
+  }, []);
+  // --- END: New handler ---
+
+  // --- START: New useEffect for countdown timer ---
+  useEffect(() => {
+    if (!isModalOpen) return;
+
+    if (countdown <= 0) {
+      handleCloseModal();
+      return;
+    }
+
+    const timerId = setInterval(() => {
+      setCountdown((prev) => prev - 1);
+    }, 1000);
+
+    return () => clearInterval(timerId);
+  }, [isModalOpen, countdown, handleCloseModal]);
+  // --- END: New useEffect ---
 
   useEffect(() => {
     if (token) {
@@ -134,8 +171,14 @@ const ApiKeyModule: React.FC<ApiKeyProps> = ({ token }) => {
         throw new Error(errorData.detail || `Failed to generate API key: ${response.status}`);
       }
       const newKeyData = await response.json();
+      
+      // --- START: Modified key generation success logic ---
       setFullKey(newKeyData.api_key);
-      await fetchApiKeys();
+      setCountdown(15); // Reset countdown
+      setIsModalOpen(true); // Open the modal
+      await fetchApiKeys(); 
+      // --- END: Modified key generation success logic ---
+
     } catch (err) {
       setError(err instanceof Error ? err.message : "An error occurred during key generation.");
     } finally {
@@ -190,14 +233,59 @@ const ApiKeyModule: React.FC<ApiKeyProps> = ({ token }) => {
 
   return (
     <Box>
+       {/* --- START: New Key Generated Modal --- */}
+       <Modal isOpen={isModalOpen} onClose={handleCloseModal} isCentered>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>New Key Generated Successfully!</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>
+            <VStack spacing={4} align="stretch">
+              <Text fontSize="sm">
+                For your security, this key will not be shown again. Copy and store it in a safe place.
+              </Text>
+              <Flex
+                align="center"
+                justify="space-between"
+                p={3}
+                bg="teal.50"
+                borderRadius="md"
+                border="1px solid"
+                borderColor="teal.200"
+                width="100%"
+              >
+                <Code bg="transparent" fontWeight="bold" noOfLines={1}>
+                  {truncateApiKey(fullKey)}
+                </Code>
+                <IconButton
+                  aria-label="Copy full key"
+                  icon={<CopyIcon />}
+                  size="sm"
+                  onClick={() => copyToClipboard(fullKey!)}
+                />
+              </Flex>
+            </VStack>
+          </ModalBody>
+          <ModalFooter>
+             <Flex justify="space-between" align="center" width="100%">
+                <Text fontSize="sm" color="gray.500">
+                    Auto-closing in {countdown}s...
+                </Text>
+            </Flex>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
+      {/* --- END: New Key Generated Modal --- */}
+
       <VStack spacing={2} align="stretch">
         <Flex direction={{ base: "column", md: "row" }} justify="space-between" align="center">
-    <Box>
-      <Text fontSize="lg" mb={2} color="gray.700">
-      Manage and generate API keys for programmatic access
-      </Text>
-      <Text fontSize="lg" mb={4} color="gray.700">
-  Expiration is set to 365 days by default</Text>
+          <Box>
+            <Text fontSize="lg" mb={2} color="gray.700">
+            Manage and generate API keys for programmatic access
+            </Text>
+            <Text fontSize="lg" mb={4} color="gray.700">
+              Expiration is set to 365 days by default
+            </Text>
           </Box>
           <Button
             leftIcon={<AddIcon />}
@@ -210,7 +298,7 @@ const ApiKeyModule: React.FC<ApiKeyProps> = ({ token }) => {
             Generate New Key
           </Button>
         </Flex>
-  <Divider mb={4}></Divider>
+        <Divider mb={4}></Divider>
 
         {hasProxyApiAccess === false && (
           <Alert status="warning" borderRadius="md"><AlertIcon />Your current plan does not include Proxy API features. Please upgrade to use this feature.</Alert>
@@ -219,39 +307,7 @@ const ApiKeyModule: React.FC<ApiKeyProps> = ({ token }) => {
           <Alert status="error" borderRadius="md"><AlertIcon />{error}</Alert>
         )}
         
-        {/* --- START: Modified Key Display Block --- */}
-        {fullKey && (
-          <Alert status="success" borderRadius="md" variant="subtle" flexDirection="column" alignItems="start">
-            <Flex align="center" mb={2}>
-              <AlertIcon />
-              <Text fontWeight="bold">New Key Generated Successfully!</Text>
-            </Flex>
-            <Text fontSize="sm" mb={3}>
-              For your security, this key will not be shown again. Copy and store it in a safe place.
-            </Text>
-            <Flex
-              align="center"
-              justify="space-between" // Positions items at opposite ends
-              p={3}
-              bg="teal.50"
-              borderRadius="md"
-              border="1px solid"
-              borderColor="teal.200"
-              width="100%"
-            >
-              <Code bg="transparent" fontWeight="bold" noOfLines={1}>
-                {truncateApiKey(fullKey)}
-              </Code>
-              <IconButton
-                aria-label="Copy full key"
-                icon={<CopyIcon />}
-                size="sm"
-                onClick={() => copyToClipboard(fullKey)}
-              />
-            </Flex>
-          </Alert>
-        )}
-        {/* --- END: Modified Key Display Block --- */}
+        {/* The old key display block has been removed from here */}
 
         <Box borderWidth="1px" borderRadius="lg" overflow="hidden">
           {loading ? (
@@ -262,11 +318,11 @@ const ApiKeyModule: React.FC<ApiKeyProps> = ({ token }) => {
               <Thead bg="gray.50">
                 <Tr>
                   <Th color="black">Key Preview</Th>
-                  <Th color="black">reated At</Th>
+                  <Th color="black">Created At</Th>
                   <Th color="black">Expires At</Th>
-                 <Th color="black">Requests</Th>
-                <Th color="black">Status</Th>
-                 <Th color="black" isNumeric>Actions</Th>
+                  <Th color="black">Requests</Th>
+                  <Th color="black">Status</Th>
+                  <Th color="black" isNumeric>Actions</Th>
                 </Tr>
               </Thead>
               <Tbody>
