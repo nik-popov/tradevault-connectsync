@@ -275,7 +275,7 @@ const HomePage = () => {
                         onClick={handleBillingClick}
                         isLoading={isPortalLoading}
                         leftIcon={<Icon as={FaCreditCard} />}
-                        colorScheme="blue"
+                        colorScheme="black"
                         fontWeight="normal"
                         justifyContent="flex-start"
                         _hover={{textDecoration: "underline"}}
