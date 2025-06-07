@@ -14,13 +14,13 @@ from datetime import datetime, timedelta
 from app.api.deps import SessionDep, CurrentUser
 from app.models import User
 from app.core.security import generate_api_key, verify_api_key
-from app.api.routes import users
+# REMOVED: No longer need to import `users` for the lookup
+# from app.api.routes import users 
 from sqlalchemy.orm import Session
 from sqlmodel import SQLModel, Field
 from uuid import UUID, uuid4
 from app.utils import generate_test_email, send_email
 
-# New imports for SERP functionality
 from bs4 import BeautifulSoup
 from urllib.parse import quote_plus, unquote, parse_qs
 
@@ -30,7 +30,7 @@ log_level = logging.INFO if os.getenv("ENV") == "production" else logging.DEBUG
 logging.basicConfig(level=log_level)
 logger = logging.getLogger(__name__)
 
-# Define regions and their corresponding endpoints
+# REGION_ENDPOINTS dictionary... (keep as is)
 REGION_ENDPOINTS = {
     "us-east": [
         "https://us-east4-proxy1-454912.cloudfunctions.net/main",
@@ -85,7 +85,8 @@ REGION_ENDPOINTS = {
     ]
 }
 
-# Endpoint Manager for abstraction
+
+# ProxyEndpointManager class... (keep as is)
 class ProxyEndpointManager:
     def __init__(self):
         self.endpoints = REGION_ENDPOINTS
@@ -105,9 +106,10 @@ class ProxyEndpointManager:
 
 endpoint_manager = ProxyEndpointManager()
 
+
 router = APIRouter(tags=["proxy"], prefix="/proxy")
 
-# APIToken Model Definition
+# Model definitions... (keep as is)
 class APIToken(SQLModel, table=True):
     __tablename__ = "apitoken"
     id: UUID = Field(default_factory=uuid4, primary_key=True)
@@ -118,51 +120,16 @@ class APIToken(SQLModel, table=True):
     is_active: bool = Field(default=True)
     request_count: int = Field(default=0)
 
-# Other Models
-class RegionsResponse(BaseModel):
-    regions: List[str]
+class RegionsResponse(BaseModel): regions: List[str]
+class APIKeyResponse(BaseModel): key_preview: str; created_at: str; expires_at: str; is_active: bool; request_count: int
+class ProxyStatus(BaseModel): region: str; is_healthy: bool; avg_response_time: float; healthy_endpoints: int; total_endpoints: int; last_checked: datetime
+class ProxyStatusResponse(BaseModel): statuses: List[ProxyStatus]
+class ProxyRequest(BaseModel): url: HttpUrl
+class ProxyResponse(BaseModel): result: str; public_ip: str; device_id: str; region_used: str
+class SerpResult(BaseModel): position: int; title: str; link: str; snippet: str
+class SerpResponse(BaseModel): search_engine: str; search_query: str; region_used: str; organic_results: List[SerpResult]
 
-class APIKeyResponse(BaseModel):
-    key_preview: str
-    created_at: str
-    expires_at: str
-    is_active: bool
-    request_count: int
-
-class ProxyStatus(BaseModel):
-    region: str
-    is_healthy: bool
-    avg_response_time: float
-    healthy_endpoints: int
-    total_endpoints: int
-    last_checked: datetime
-
-class ProxyStatusResponse(BaseModel):
-    statuses: List[ProxyStatus]
-
-class ProxyRequest(BaseModel):
-    url: HttpUrl
-
-class ProxyResponse(BaseModel):
-    result: str
-    public_ip: str
-    device_id: str
-    region_used: str
-
-# --- SERP Models ---
-class SerpResult(BaseModel):
-    position: int
-    title: str
-    link: str
-    snippet: str
-
-class SerpResponse(BaseModel):
-    search_engine: str
-    search_query: str
-    region_used: str
-    organic_results: List[SerpResult]
-
-# Health check function
+# Health check, SERP parsers, SUPPORTED_ENGINES... (keep as is)
 async def check_proxy_health(endpoint: str, region: str) -> Dict:
     start_time = time.time()
     endpoint_id = endpoint_manager.get_endpoint_id(region, endpoint) or "unknown"
@@ -172,24 +139,11 @@ async def check_proxy_health(endpoint: str, region: str) -> Dict:
             response.raise_for_status()
             response_time = time.time() - start_time
             logger.debug(f"Health check succeeded for proxy {endpoint_id} in {region}")
-            return {
-                "region": region,
-                "is_healthy": True,
-                "response_time": response_time,
-                "last_checked": datetime.utcnow(),
-                "endpoint": endpoint
-            }
+            return {"region": region, "is_healthy": True, "response_time": response_time, "last_checked": datetime.utcnow(), "endpoint": endpoint}
     except Exception as e:
         logger.error(f"Health check failed for proxy {endpoint_id} in {region}: {str(e)}")
-        return {
-            "region": region,
-            "is_healthy": False,
-            "response_time": time.time() - start_time,
-            "last_checked": datetime.utcnow(),
-            "endpoint": endpoint
-        }
+        return {"region": region, "is_healthy": False, "response_time": time.time() - start_time, "last_checked": datetime.utcnow(), "endpoint": endpoint}
 
-# --- SERP Parsing Helpers ---
 def parse_google_serp(html: str) -> List[SerpResult]:
     soup = BeautifulSoup(html, "lxml")
     results = []
@@ -198,14 +152,7 @@ def parse_google_serp(html: str) -> List[SerpResult]:
         link_tag = el.select_one("a")
         snippet_tag = el.select_one("div[data-sncf='1']") or el.select_one(".VwiC3b")
         if title_tag and link_tag and link_tag.get("href"):
-            results.append(
-                SerpResult(
-                    position=i,
-                    title=title_tag.text,
-                    link=link_tag.get("href"),
-                    snippet=snippet_tag.text if snippet_tag else "",
-                )
-            )
+            results.append(SerpResult(position=i, title=title_tag.text, link=link_tag.get("href"), snippet=snippet_tag.text if snippet_tag else ""))
     return results
 
 def parse_bing_serp(html: str) -> List[SerpResult]:
@@ -215,14 +162,7 @@ def parse_bing_serp(html: str) -> List[SerpResult]:
         title_tag = el.select_one("h2 a")
         snippet_tag = el.select_one(".b_caption p")
         if title_tag and title_tag.get("href"):
-            results.append(
-                SerpResult(
-                    position=i,
-                    title=title_tag.text,
-                    link=title_tag.get("href"),
-                    snippet=snippet_tag.text if snippet_tag else "",
-                )
-            )
+            results.append(SerpResult(position=i, title=title_tag.text, link=title_tag.get("href"), snippet=snippet_tag.text if snippet_tag else ""))
     return results
 
 def parse_duckduckgo_serp(html: str) -> List[SerpResult]:
@@ -238,36 +178,19 @@ def parse_duckduckgo_serp(html: str) -> List[SerpResult]:
                 try:
                     parsed_url = parse_qs(raw_href.split("?", 1)[1])
                     link = unquote(parsed_url.get("uddg", [""])[0])
-                except (IndexError, KeyError):
-                    link = raw_href
-            else:
-                link = raw_href
-            results.append(
-                SerpResult(
-                    position=i,
-                    title=title_tag.text,
-                    link=link,
-                    snippet=snippet_tag.text.strip() if snippet_tag else "",
-                )
-            )
+                except (IndexError, KeyError): link = raw_href
+            else: link = raw_href
+            results.append(SerpResult(position=i, title=title_tag.text, link=link, snippet=snippet_tag.text.strip() if snippet_tag else ""))
     return results
 
 SUPPORTED_ENGINES = {
-    "google": {
-        "base_url": "https://www.google.com/search?q={query}&hl=en&gl=us",
-        "parser": parse_google_serp,
-    },
-    "bing": {
-        "base_url": "https://www.bing.com/search?q={query}&cc=US",
-        "parser": parse_bing_serp,
-    },
-    "duckduckgo": {
-        "base_url": "https://html.duckduckgo.com/html/?q={query}",
-        "parser": parse_duckduckgo_serp,
-    },
+    "google": {"base_url": "https://www.google.com/search?q={query}&hl=en&gl=us", "parser": parse_google_serp},
+    "bing": {"base_url": "https://www.bing.com/search?q={query}&cc=US", "parser": parse_bing_serp},
+    "duckduckgo": {"base_url": "https://html.duckduckgo.com/html/?q={query}", "parser": parse_duckduckgo_serp},
 }
 
-# Custom dependency for API key verification
+
+# --- THIS IS THE CORRECTED FUNCTION ---
 async def verify_api_token(
     session: SessionDep,
     x_api_key: Annotated[str, Header()],
@@ -279,14 +202,13 @@ async def verify_api_token(
         logger.warning(f"Invalid API key provided: {x_api_key[:8]}...")
         raise HTTPException(status_code=401, detail="Invalid API key")
     
-    # --- THIS IS THE CRITICAL FIX ---
-    # The old code had an incorrect function signature, causing authentication to fail.
-    # OLD: user = users.read_user_by_id(session=session, user_id=token_data["user_id"], current_user=CurrentUser)
-    # NEW (Corrected):
-    user = users.read_user_by_id(session=session, user_id=token_data["user_id"])
+    user_id_from_token = token_data["user_id"]
+    
+    # Perform the database lookup directly right here.
+    user = session.get(User, user_id_from_token)
     
     if not user or not user.is_active:
-        logger.warning(f"API key valid, but user is invalid or inactive. User ID: {token_data['user_id']}")
+        logger.warning(f"API key valid, but user is invalid or inactive. User ID: {user_id_from_token}")
         raise HTTPException(status_code=401, detail="Invalid or inactive user")
     
     is_in_trial = user.is_trial and user.expiry_date and user.expiry_date > datetime.utcnow()
@@ -297,23 +219,19 @@ async def verify_api_token(
     logger.debug(f"API key verified for user: {user.email}")
     return user
 
-# --- API Endpoints ---
 
+# --- All other API endpoints can remain the same ---
 @router.post("/generate-api-key", response_model=dict)
 async def generate_user_api_key(session: SessionDep, current_user: CurrentUser):
+    # ... (no changes needed)
     logger.debug(f"Generating API key for user: {current_user.email}")
     is_in_trial = current_user.is_trial and current_user.expiry_date and current_user.expiry_date > datetime.utcnow()
     if not current_user.has_subscription and not is_in_trial:
         logger.info(f"User {current_user.email} lacks active subscription or trial")
         raise HTTPException(status_code=403, detail="Active subscription or trial required")
-    
     try:
         api_key = generate_api_key(user_id=str(current_user.id))
-        token = APIToken(
-            user_id=current_user.id,
-            token=api_key,
-            expires_at=datetime.utcnow() + timedelta(days=365),
-        )
+        token = APIToken(user_id=current_user.id, token=api_key, expires_at=datetime.utcnow() + timedelta(days=365))
         session.add(token)
         session.commit()
         session.refresh(token)
@@ -323,6 +241,7 @@ async def generate_user_api_key(session: SessionDep, current_user: CurrentUser):
         logger.error(f"Failed to generate API key for user {current_user.email}: {str(e)}")
         raise HTTPException(status_code=500, detail="Failed to generate API key")
 
+# ... (all other endpoints like /regions, /status, /fetch, /serp, /api-keys remain unchanged)
 @router.get("/regions", response_model=RegionsResponse)
 async def list_regions(user: Annotated[User, Depends(verify_api_token)]):
     logger.debug(f"Listing regions for user: {user.email}")
@@ -509,8 +428,6 @@ async def delete_api_key(
 ):
     logger.debug(f"Deleting API key with preview: {key_preview}, user: {current_user.email}")
     
-    # --- IMPROVEMENT ---
-    # This logic is more reliable than matching only the end of the key.
     if '...' not in key_preview:
         raise HTTPException(status_code=400, detail="Invalid key_preview format. Expected 'start...end'")
     key_start = key_preview.split('...')[0]
