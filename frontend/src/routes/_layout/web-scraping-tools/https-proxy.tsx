@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { Container, Flex, Text, Tabs, TabList, TabPanels, Tab, TabPanel, Box, Heading, Alert, AlertIcon, Grid, GridItem, Table, Thead, Tbody, Tr, Th, Td } from "@chakra-ui/react";
+import { Container, Flex, Text, Tabs, TabList, TabPanels, Tab, TabPanel, Box, Heading, Alert, AlertIcon, Grid, GridItem, Table, Tbody, Tr, Td } from "@chakra-ui/react";
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import ProtectedComponent from "../../../components/Common/ProtectedComponent";
 import PlaygroundGSerp from "../../../components/ScrapingTools/PlaygroundGSerp";
 import ApiKeyGSerp from "../../../components/ScrapingTools/ApiKeyGSerp";
@@ -152,6 +153,25 @@ const GoogleSerpPage = () => {
     (sub) => ["active", "trialing"].includes(sub.status)
   );
 
+  // Static data for the request usage graph
+  const chartData = [
+    { date: "Day 1", Requests: 4000 },
+    { date: "Day 2", Requests: 3000 },
+    { date: "Day 3", Requests: 2000 },
+    { date: "Day 4", Requests: 2780 },
+    { date: "Day 5", Requests: 1890 },
+    { date: "Day 6", Requests: 2390 },
+    { date: "Day 7", Requests: 3490 },
+    { date: "Day 8", Requests: 4100 },
+    { date: "Day 9", Requests: 3200 },
+    { date: "Day 10", Requests: 5000 },
+    { date: "Day 11", Requests: 4500 },
+    { date: "Day 12", Requests: 4800 },
+    { date: "Day 13", Requests: 5200 },
+    { date: "Day 14", Requests: 5800 },
+    { date: "Day 15", Requests: 6100 },
+  ];
+
   const TabsConfig = [
     {
       title: "Overview",
@@ -204,15 +224,26 @@ const GoogleSerpPage = () => {
               </Box>
             </GridItem>
             <GridItem>
-              <Box height="300px" bg="gray.100" borderRadius="md" display="flex" alignItems="center" justifyContent="center">
-                <Text fontSize="xs" color="gray.500">Graph data unavailable</Text>
+              <Heading size="md" mb={4}>Request Usage</Heading>
+              <Box shadow="md" borderWidth="1px" borderRadius="md" p={4} height="300px">
+                <ResponsiveContainer width="100%" height="100%">
+                  <LineChart
+                    data={chartData}
+                    margin={{
+                      top: 5, right: 30, left: 0, bottom: 5,
+                    }}
+                  >
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="date" fontSize="12px" />
+                    <YAxis fontSize="12px" />
+                    <Tooltip />
+                    <Legend />
+                    <Line type="monotone" dataKey="Requests" stroke="#3182CE" activeDot={{ r: 8 }} />
+                  </LineChart>
+                </ResponsiveContainer>
               </Box>
             </GridItem>
           </Grid>
-          <Heading size="md" mt={6} mb={4}>Recent Logs</Heading>
-          <Box borderWidth="1px" borderRadius="md" p={4}>
-            <Text fontSize="sm">No recent logs</Text>
-          </Box>
         </Box>
       ),
     },
