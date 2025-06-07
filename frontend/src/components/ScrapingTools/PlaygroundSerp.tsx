@@ -17,12 +17,16 @@ import {
   Heading,
   Alert,
   AlertIcon,
-  Link,
+  Tabs,
+  TabList,
+  TabPanels,
+  Tab,
+  TabPanel,
 } from "@chakra-ui/react";
-import { ExternalLinkIcon, CopyIcon, DownloadIcon } from "@chakra-ui/icons";
+import { CopyIcon, DownloadIcon } from "@chakra-ui/icons";
 import { FiSend } from "react-icons/fi";
 
-// Define regions based on backend REGION_ENDPOINTS
+// Define regions and search engines
 const REGIONS = [
   "us-east",
   "us-west",
@@ -35,7 +39,13 @@ const REGIONS = [
   "middle-east",
 ];
 
-// Define an interface for our structured result
+const SEARCH_ENGINES = [
+  { value: "google", label: "Google" },
+  { value: "bing", label: "Bing" },
+  { value: "yahoo", label: "Yahoo" },
+];
+
+// Define interface for structured result
 interface SerpResult {
   position: number;
   title: string;
@@ -43,93 +53,89 @@ interface SerpResult {
   snippet: string;
 }
 
-const API_URL = "https://api.thedataproxy.com/v2/proxy";
+const API_URL = "https://api.thedataproxy.com/v2/serp";
 
 const PlaygroundSerpApi: React.FC = () => {
   const [query, setQuery] = useState<string>("best pizza in new york");
   const [region, setRegion] = useState<string>(REGIONS[0]);
+  const [searchEngine, setSearchEngine] = useState<string>(SEARCH_ENGINES[0].value);
   const [apiKey, setApiKey] = useState<string>("");
   const [response, setResponse] = useState<string>("");
-  const [htmlPreview, setHtmlPreview] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
   const [responseTime, setResponseTime] = useState<number | null>(null);
 
-  const buildSearchEngineUrl = () => {
-    const url = new URL(`https://www.google.com/search`);
-    url.searchParams.set('q', query);
-    if (region && region !== "us-east") {
-      // Map regions to Google country codes (simplified example)
-      const regionToCountry: { [key: string]: string } = {
-        "us-east": "US",
-        "us-west": "US",
-        "us-central": "US",
-        "northamerica-northeast": "CA",
-        southamerica: "BR",
-        asia: "JP",
-        australia: "AU",
-        europe: "DE",
-        "middle-east": "AE",
-      };
-      url.searchParams.set('cr', `country${regionToCountry[region] || "US"}`);
-      url.searchParams.set('gl', (regionToCountry[region] || "us").toLowerCase());
-    }
-    return url.toString();
-  };
-
   const generateCurlCommand = () => {
-    const targetUrl = buildSearchEngineUrl();
-    const proxyRequestUrl = `${API_URL}?url=${encodeURIComponent(targetUrl)}`;
-    return `curl -X GET "${proxyRequestUrl}" \\\n  -H "x-api-key: ${apiKey}"`;
-  };
-
-  const parseHtmlResponse = (html: string): SerpResult[] => {
-    const parser = new DOMParser();
-    const doc = parser.parseFromString(html, 'text/html');
-    const results: SerpResult[] = [];
-    const resultNodes = doc.querySelectorAll('div.g');
-    resultNodes.forEach((node, index) => {
-      const titleEl = node.querySelector<HTMLHeadingElement>('h3');
-      const linkEl = node.querySelector<HTMLAnchorElement>('a');
-      const snippetEl = node.querySelector<HTMLDivElement>('div[data-sncf="1"]');
-      if (titleEl && linkEl && snippetEl) {
-        results.push({
-          position: index + 1,
-          title: titleEl.innerText,
-          link: linkEl.href,
-          snippet: snippetEl.innerText,
-        });
-      }
+    const params = new URLSearchParams({
+      q: query,
+      region,
+      engine: searchEngine,
     });
-    if (results.length === 0) {
-      setError("Could not parse a structured response from the HTML. The search engine's page layout might have changed, or the page was blocked.");
-    }
-    return results;
+    return `curl -X GET "${API_URL}?${params.toString()}" \\\n  -H "x-api-key: ${apiKey}"`;
   };
 
-  const handleCopyCurl = () => {
-    const curlCommand = generateCurlCommand();
-    navigator.clipboard.writeText(curlCommand).then(() => {
-      alert("cURL command copied to clipboard!");
+  const generatePythonCode = () => {
+    return `import requests
+
+url = "${API_URL}"
+params = {
+    "q": "${query}",
+    "region": "${region}",
+    "engine": "${searchEngine}"
+}
+headers = {
+    "x-api-key": "${apiKey}"
+}
+
+response = requests.get(url, params=params, headers=headers)
+print(response.json())
+`;
+  };
+
+  const generateJsCode = () => {
+    return `const fetch = require('node-fetch');
+
+const url = new URL("${API_URL}");
+url.searchParams.append('q', '${query}');
+url.searchParams.append('region', '${region}');
+url.searchParams.append('engine', '${searchEngine}');
+
+fetch(url, {
+    headers: {
+        'x-api-key': '${apiKey}'
+    }
+})
+.then(response => response.json())
+.then(data => console.log(data))
+.catch(error => console.error('Error:', error));
+`;
+  };
+
+  const handleCopy = (text: string) => {
+    navigator.clipboard.writeText(text).then(() => {
+      alert("Code copied to clipboard!");
     });
   };
 
   const handleTestRequest = async () => {
     setIsLoading(true);
     setResponse("");
-    setHtmlPreview("");
     setError("");
     setResponseTime(null);
 
     try {
       const startTime = performance.now();
-      const targetUrl = buildSearchEngineUrl();
-      const proxyRequestUrl = `${API_URL}?url=${encodeURIComponent(targetUrl)}`;
-      const res = await fetch(proxyRequestUrl, {
+      const params = new URLSearchParams({
+        q: query,
+        region,
+        engine: searchEngine,
+      });
+      const requestUrl = `${API_URL}?${params.toString()}`;
+      const res = await fetch(requestUrl, {
         method: "GET",
         headers: {
           "x-api-key": apiKey,
-          Accept: "text/html",
+          Accept: "application/json",
         },
       });
 
@@ -139,25 +145,15 @@ const PlaygroundSerpApi: React.FC = () => {
 
       if (!res.ok) {
         const errorData = await res.json().catch(() => ({ detail: `HTTP error! status: ${res.status}` }));
-        throw new Error(errorData.detail || `An unknown error occurred.`);
+        throw new Error(errorData.detail || "An unknown error occurred.");
       }
 
-      const htmlResponse = await res.text();
-      setHtmlPreview(htmlResponse);
-      const structuredData = parseHtmlResponse(htmlResponse);
-      setResponse(JSON.stringify(structuredData, null, 2));
+      const jsonResponse = await res.json();
+      setResponse(JSON.stringify(jsonResponse, null, 2));
     } catch (error) {
       setError(error instanceof Error ? error.message : "Unknown error");
     } finally {
       setIsLoading(false);
-    }
-  };
-
-  const handleCopyHtml = () => {
-    if (htmlPreview) {
-      navigator.clipboard.writeText(htmlPreview).then(() => {
-        alert("HTML copied to clipboard!");
-      });
     }
   };
 
@@ -176,20 +172,6 @@ const PlaygroundSerpApi: React.FC = () => {
       const a = document.createElement("a");
       a.href = url;
       a.download = "response.json";
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
-    }
-  };
-
-  const handleDownloadHtml = () => {
-    if (htmlPreview) {
-      const blob = new Blob([htmlPreview], { type: "text/html" });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = "preview.html";
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
@@ -237,6 +219,20 @@ const PlaygroundSerpApi: React.FC = () => {
                 ))}
               </Select>
             </FormControl>
+            <FormControl flex="1">
+              <FormLabel fontSize="sm">Search Engine</FormLabel>
+              <Select
+                value={searchEngine}
+                onChange={(e) => setSearchEngine(e.target.value)}
+                size="sm"
+              >
+                {SEARCH_ENGINES.map((engine) => (
+                  <option key={engine.value} value={engine.value}>
+                    {engine.label}
+                  </option>
+                ))}
+              </Select>
+            </FormControl>
           </Flex>
           <Flex direction={{ base: "column", sm: "row" }} gap={2} align="center">
             <Tooltip label="Send test request">
@@ -246,7 +242,7 @@ const PlaygroundSerpApi: React.FC = () => {
                 colorScheme="blue"
                 onClick={handleTestRequest}
                 isLoading={isLoading}
-                isDisabled={!query.trim() || !apiKey.trim() || !region}
+                isDisabled={!query.trim() || !apiKey.trim() || !region || !searchEngine}
               >
                 <FiSend />
               </Button>
@@ -256,8 +252,8 @@ const PlaygroundSerpApi: React.FC = () => {
                 aria-label="Copy cURL"
                 icon={<CopyIcon />}
                 size="sm"
-                onClick={handleCopyCurl}
-                isDisabled={!query.trim() || !apiKey.trim() || !region}
+                onClick={() => handleCopy(generateCurlCommand())}
+                isDisabled={!query.trim() || !apiKey.trim() || !region || !searchEngine}
               />
             </Tooltip>
           </Flex>
@@ -301,11 +297,6 @@ const PlaygroundSerpApi: React.FC = () => {
               )}
             </Flex>
           </Flex>
-          <Text fontSize="sm" mb={4}>
-            <Link href="/web-scraping-tools/gserp" color="orange.500">
-              RAW HTML <CopyIcon mx="2px" />
-            </Link>
-          </Text>
           {isLoading ? (
             <Flex justify="center" align="center" h="400px">
               <Spinner size="xl" color="orange.500" />
@@ -324,71 +315,79 @@ const PlaygroundSerpApi: React.FC = () => {
           )}
         </GridItem>
         <GridItem>
-          <Flex align="center" justify="space-between" mb={4}>
-            <Heading size="md">HTML Preview</Heading>
-            <Flex gap={2}>
-              {htmlPreview && (
-                <>
-                  <Tooltip label="Copy HTML">
+          <Heading size="md" mb={4}>Code Examples</Heading>
+          <Tabs variant="enclosed">
+            <TabList>
+              <Tab>cURL</Tab>
+              <Tab>Python</Tab>
+              <Tab>JavaScript</Tab>
+            </TabList>
+            <TabPanels>
+              <TabPanel>
+                <Flex justify="space-between" mb={2}>
+                  <Text fontSize="sm">cURL Command</Text>
+                  <Tooltip label="Copy cURL">
                     <IconButton
-                      aria-label="Copy HTML"
+                      aria-label="Copy cURL"
                       icon={<CopyIcon />}
                       size="sm"
-                      onClick={handleCopyHtml}
+                      onClick={() => handleCopy(generateCurlCommand())}
                     />
                   </Tooltip>
-                  <Tooltip label="Download HTML">
+                </Flex>
+                <Textarea
+                  value={generateCurlCommand()}
+                  readOnly
+                  height="350px"
+                  bg="gray.50"
+                  fontFamily="monospace"
+                  size="sm"
+                />
+              </TabPanel>
+              <TabPanel>
+                <Flex justify="space-between" mb={2}>
+                  <Text fontSize="sm">Python Code</Text>
+                  <Tooltip label="Copy Python">
                     <IconButton
-                      aria-label="Download HTML"
-                      icon={<DownloadIcon />}
+                      aria-label="Copy Python"
+                      icon={<CopyIcon />}
                       size="sm"
-                      onClick={handleDownloadHtml}
+                      onClick={() => handleCopy(generatePythonCode())}
                     />
                   </Tooltip>
-                  <Tooltip label="Open preview in new tab">
+                </Flex>
+                <Textarea
+                  value={generatePythonCode()}
+                  readOnly
+                  height="350px"
+                  bg="gray.50"
+                  fontFamily="monospace"
+                  size="sm"
+                />
+              </TabPanel>
+              <TabPanel>
+                <Flex justify="space-between" mb={2}>
+                  <Text fontSize="sm">JavaScript Code</Text>
+                  <Tooltip label="Copy JavaScript">
                     <IconButton
-                      aria-label="Open preview"
-                      icon={<ExternalLinkIcon />}
+                      aria-label="Copy JavaScript"
+                      icon={<CopyIcon />}
                       size="sm"
-                      onClick={() => {
-                        const newWindow = window.open("", "_blank");
-                        if (newWindow) {
-                          newWindow.document.write(htmlPreview);
-                          newWindow.document.close();
-                        } else {
-                          alert("Popup blocked. Please allow popups for this site.");
-                        }
-                      }}
+                      onClick={() => handleCopy(generateJsCode())}
                     />
                   </Tooltip>
-                </>
-              )}
-            </Flex>
-          </Flex>
-          <Text fontSize="sm" mb={4}>
-            <Link href="/web-scraping-tools/serp-api" isExternal color="orange.500">
-              Structured Response <ExternalLinkIcon mx="2px" /> (json)
-            </Link>
-          </Text>
-          {htmlPreview ? (
-            <iframe
-              srcDoc={htmlPreview}
-              style={{ width: "100%", height: "400px", border: "1px solid #ccc" }}
-              title="HTML Preview"
-              sandbox="allow-scripts allow-same-origin allow-popups allow-forms"
-            />
-          ) : (
-            <Box
-              height="400px"
-              bg="gray.100"
-              borderRadius="md"
-              display="flex"
-              alignItems="center"
-              justifyContent="center"
-            >
-              <Text fontSize="sm" color="gray.500">No preview available</Text>
-            </Box>
-          )}
+                </Flex>
+                <Textarea
+                  value={generateJsCode()}
+                  readOnly
+                  height="350px"
+                  bg="gray.50"
+                  fontFamily="monospace"
+                  size="sm"
+                />
+              </TabPanel>
+            </TabPanels>
+          </Tabs>
         </GridItem>
       </Grid>
     </Box>
