@@ -128,10 +128,10 @@ function UserSettings() {
         <Text fontSize="sm">Manage your settings</Text>
       </Flex>
       <Divider my={4} borderColor="gray.200" />
-      <Tabs colorScheme="blue">
+    <Tabs isLazy variant="enclosed-colored" colorScheme="orange">
         <TabList borderBottom="2px solid" borderColor="gray.200">
           {finalTabs.map((tab, index) => (
-            <Tab key={index} _selected={{ color: "orange.700", borderColor: "orange.500" }} color="gray.600" _hover={{ bg: "gray.100" }}>
+            <Tab key={index} >
               {tab.title}
             </Tab>
           ))}

@@ -342,10 +342,10 @@ const SerpApiPage = () => {
                 </Text>
               </Alert>
             )}
-            <Tabs isLazy>
+            <Tabs isLazy variant="enclosed-colored" colorScheme="orange">
               <TabList>
                 <Tab fontSize="sm">Get Started</Tab>
-                <Tab fontSize="sm">API Keys</Tab>
+                <Tab fontSize="sm">Keys</Tab>
                 <Tab fontSize="sm">Playground</Tab>
               </TabList>
               <TabPanels pt={4}>

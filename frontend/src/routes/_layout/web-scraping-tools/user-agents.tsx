@@ -6,7 +6,6 @@ import {
   Button,
   Container,
   Flex,
-  // Removed Heading, as it's replaced by Text
   Table,
   Thead,
   Tbody,
@@ -42,7 +41,15 @@ import {
   AlertDialogContent,
   AlertDialogOverlay,
   useDisclosure,
-  Divider, // Added Divider import
+  Divider,
+  // --- New Imports for Tabs & Badges ---
+  Tabs,
+  TabList,
+  TabPanels,
+  Tab,
+  TabPanel,
+  Badge,
+  VStack,
 } from "@chakra-ui/react";
 import { CopyIcon, ChevronDownIcon, EditIcon, DeleteIcon, AddIcon, RepeatIcon } from "@chakra-ui/icons";
 
@@ -79,23 +86,22 @@ interface UpdateSourceResponse {
 
 // --- Mock Auth Hook (No changes) ---
 const useAuth = () => {
-  // To test the different views, manually toggle this value:
-  // - Set to `true` to see the admin controls (as if you're a logged-in superuser).
-  // - Set to `false` to see the public, read-only view.
-  const [isSuperuser] = useState(false); 
+  const [isSuperuser] = useState(false);
   return { isSuperuser };
 };
-
 
 // --- Utility & API Functions (No changes) ---
 function convertToCSV(data: UserAgentPublic[]): string {
     if (data.length === 0) return "";
-    const headers = "id,user_agent,created_at";
+    const headers = "id,user_agent,created_at,device,browser,os";
     const rows = data.map(row => {
         const id = `"${row.id}"`;
         const userAgent = `"${row.user_agent.replace(/"/g, '""')}"`;
         const createdAt = `"${row.created_at}"`;
-        return [id, userAgent, createdAt].join(',');
+        const device = `"${row.device ?? ''}"`;
+        const browser = `"${row.browser ?? ''}"`;
+        const os = `"${row.os ?? ''}"`;
+        return [id, userAgent, createdAt, device, browser, os].join(',');
     });
     return [headers, ...rows].join('\n');
 }
@@ -113,7 +119,7 @@ function downloadFile(content: string, filename: string, mimeType: string) {
 }
 
 const getAuthToken = () => {
-    const token = localStorage.getItem("access_token"); 
+    const token = localStorage.getItem("access_token");
     if (!token) {
         console.warn("No access token found. Using a mock token for demonstration. Please log in for a real application.")
         return "mock-jwt-token-for-testing";
@@ -193,8 +199,7 @@ async function deleteUserAgent(id: string): Promise<void> {
     }
 }
 
-
-// --- Reusable Components (No changes) ---
+// --- Reusable Components (No changes to these) ---
 const CopyCell = ({ textToCopy }: { textToCopy: string }) => {
     const { onCopy } = useClipboard(textToCopy);
     const toast = useToast();
@@ -247,6 +252,70 @@ const DeleteConfirmationDialog = ({ isOpen, onClose, onConfirm, isLoading }: { i
     );
 };
 
+// --- START: Reusable Table Component ---
+// This component encapsulates the table logic to be reused in each tab.
+const UserAgentTable = ({
+  agents,
+  isSuperuser,
+  handleOpenEditModal,
+  handleOpenDeleteAlert,
+  isPlaceholderData,
+}: {
+  agents: UserAgentPublic[];
+  isSuperuser: boolean;
+  handleOpenEditModal: (agent: UserAgentPublic) => void;
+  handleOpenDeleteAlert: (id: string) => void;
+  isPlaceholderData: boolean;
+}) => {
+  if (agents.length === 0) {
+    return (
+      <Flex justify="center" align="center" p={10}>
+        <Text color="gray.500">No user agents to display in this category on this page.</Text>
+      </Flex>
+    );
+  }
+
+  return (
+    <TableContainer>
+      <Table variant="simple">
+        <Thead bg="gray.50">
+          <Tr>
+            <Th>User Agent String</Th>
+            <Th>Device Info</Th>
+            <Th isNumeric>Actions</Th>
+          </Tr>
+        </Thead>
+        <Tbody>
+          {agents.map((agent) => (
+            <Tr key={agent.id} opacity={isPlaceholderData ? 0.5 : 1}>
+              <Td maxW="600px" whiteSpace="normal" wordBreak="break-all">{agent.user_agent}</Td>
+              <Td>
+                <VStack align="start" spacing={0} fontSize="sm">
+                  {agent.device && <Text><strong>Device:</strong> {agent.device}</Text>}
+                  {agent.os && <Text><strong>OS:</strong> {agent.os}</Text>}
+                  {agent.browser && <Text><strong>Browser:</strong> {agent.browser}</Text>}
+                </VStack>
+              </Td>
+              <Td isNumeric>
+                <HStack spacing={1} justify="flex-end">
+                  <CopyCell textToCopy={agent.user_agent} />
+                  {isSuperuser && (
+                    <>
+                      <IconButton aria-label="Edit" icon={<EditIcon />} size="sm" onClick={() => handleOpenEditModal(agent)} />
+                      <IconButton aria-label="Delete" icon={<DeleteIcon />} colorScheme="red" size="sm" onClick={() => handleOpenDeleteAlert(agent.id)} />
+                    </>
+                  )}
+                </HStack>
+              </Td>
+            </Tr>
+          ))}
+        </Tbody>
+      </Table>
+    </TableContainer>
+  );
+};
+// --- END: Reusable Table Component ---
+
 
 // --- Main Page Component ---
 function UserAgentsPage() {
@@ -270,22 +339,19 @@ function UserAgentsPage() {
 
   const totalPages = data ? Math.ceil(data.count / limit) : 0;
 
-  // --- MUTATIONS (No changes) ---
+  // --- Mutations (No changes) ---
   const handleMutationError = (e: Error) => {
     toast({ title: "An error occurred", description: e.message, status: "error", duration: 5000, isClosable: true });
   };
-  
   const handleCRUDSuccess = (message: string) => {
     toast({ title: message, status: "success", duration: 3000, isClosable: true });
     queryClient.invalidateQueries({ queryKey: ["userAgents"] });
     onAddEditModalClose();
     onDeleteAlertClose();
   };
-
   const createMutation = useMutation({ mutationFn: createUserAgent, onSuccess: () => handleCRUDSuccess("User agent created."), onError: handleMutationError });
   const updateMutation = useMutation({ mutationFn: updateUserAgent, onSuccess: () => handleCRUDSuccess("User agent updated."), onError: handleMutationError });
   const deleteMutation = useMutation({ mutationFn: deleteUserAgent, onSuccess: () => handleCRUDSuccess("User agent deleted."), onError: handleMutationError });
-  
   const updateFromSourceMutation = useMutation({
     mutationFn: updateUserAgentsFromSource,
     onSuccess: (res) => {
@@ -300,7 +366,6 @@ function UserAgentsPage() {
     },
     onError: handleMutationError,
   });
-
   const exportMutation = useMutation({
     mutationFn: async (format: 'csv' | 'json') => {
         const allAgents = await fetchAllUserAgents();
@@ -316,39 +381,36 @@ function UserAgentsPage() {
     onError: (e: Error) => { toast({ title: "Export Failed", description: e.message, status: "error", duration: 5000, isClosable: true, }); }
   });
 
-  // --- EVENT HANDLERS (No changes) ---
+  // --- Event Handlers (No changes) ---
   const handleOpenAddModal = () => { setEditingAgent(null); onAddEditModalOpen(); };
   const handleOpenEditModal = (agent: UserAgentPublic) => { setEditingAgent(agent); onAddEditModalOpen(); };
   const handleOpenDeleteAlert = (id: string) => { setDeletingAgentId(id); onDeleteAlertOpen(); }
   const handleFormSubmit = (formData: UserAgentCreate | UserAgentUpdate) => {
-    if (editingAgent) { updateMutation.mutate({ id: editingAgent.id, data: formData }); } 
+    if (editingAgent) { updateMutation.mutate({ id: editingAgent.id, data: formData }); }
     else { createMutation.mutate(formData as UserAgentCreate); }
   };
   const handleDeleteConfirm = () => { if(deletingAgentId) { deleteMutation.mutate(deletingAgentId); } }
-  
-  const thirtyMinutesAgo = new Date(new Date().getTime() - 30 * 60 * 1000);
+
+  // --- START: Client-side filtering for tabs ---
+  const allAgents = data?.data ?? [];
+  const desktopAgents = allAgents.filter(agent => agent.device?.toLowerCase() === 'desktop');
+  const mobileAgents = allAgents.filter(agent => agent.device?.toLowerCase() === 'mobile');
+  const otherAgents = allAgents.filter(agent => !['desktop', 'mobile'].includes(agent.device?.toLowerCase() ?? ''));
+  // --- END: Client-side filtering for tabs ---
 
   return (
     <>
       <Container maxW="full" py={6}>
-        {/* ======================================================= */}
-        {/* START: Updated Header and Action Button Section         */}
-        {/* ======================================================= */}
         <Flex align="center" justify="space-between" mb={4}>
           <Text fontSize="xl">Active User Agents</Text>
           <Text fontSize="sm" color="gray.500">Manage and export user agents</Text>
         </Flex>
         <Divider my={4} borderColor="gray.200" />
-        <Flex justify="flex-end" align="center" mb={6}> {/* <-- FIX: justify="flex-end" */}
+        <Flex justify="flex-end" align="center" mb={6}>
           <HStack spacing={2}>
             {isSuperuser && (
               <>
-                <Button
-                    leftIcon={<RepeatIcon />}
-                    onClick={() => updateFromSourceMutation.mutate()}
-                    isLoading={updateFromSourceMutation.isPending}
-                    loadingText="Updating..."
-                >
+                <Button leftIcon={<RepeatIcon />} onClick={() => updateFromSourceMutation.mutate()} isLoading={updateFromSourceMutation.isPending} loadingText="Updating...">
                     Refresh
                 </Button>
                 <Button leftIcon={<AddIcon />} onClick={handleOpenAddModal}>
@@ -367,57 +429,61 @@ function UserAgentsPage() {
             </Menu>
           </HStack>
         </Flex>
-        {/* ======================================================= */}
-        {/* END: Updated Section                                  */}
-        {/* ======================================================= */}
 
-        {isLoading && !isPlaceholderData && (
+        {isLoading && !data && (
           <Flex justify="center" align="center" height="200px"><Spinner size="xl" /></Flex>
         )}
-
         {error && (
           <Alert status="error"><AlertIcon />{error.message}</Alert>
         )}
-
         {data && (
-          <Box borderWidth="1px" borderRadius="lg" overflowX="auto">
-            <Table variant="simple">
-              <Thead bg="gray.50">
-                <Tr>
-                  <Th>User Agent String</Th>
-                  <Th>Refresh Log</Th>
-                  <Th isNumeric>Actions</Th>
-                </Tr>
-              </Thead>
-              <Tbody>
-                {data.data.map((agent) => (
-                  <Tr key={agent.id} opacity={isPlaceholderData ? 0.5 : 1}>
-                    <Td maxW="600px" whiteSpace="normal" wordBreak="break-all">{agent.user_agent}</Td>
-                    <Td>{thirtyMinutesAgo.toLocaleString()}</Td>
-                    <Td isNumeric>
-                        <HStack spacing={1} justify="flex-end">
-                            <CopyCell textToCopy={agent.user_agent} />
-                            {isSuperuser && (
-                                <>
-                                    <IconButton aria-label="Edit" icon={<EditIcon />} size="sm" onClick={() => handleOpenEditModal(agent)} />
-                                    <IconButton aria-label="Delete" icon={<DeleteIcon />} colorScheme="red" size="sm" onClick={() => handleOpenDeleteAlert(agent.id)} />
-                                </>
-                            )}
-                        </HStack>
-                    </Td>
-                  </Tr>
-                ))}
-              </Tbody>
-            </Table>
-             <Flex justify="space-between" p={4} align="center" borderTopWidth="1px">
+          <Box borderWidth="1px" borderRadius="lg" overflow="hidden">
+            {/* ======================================================= */}
+            {/* START: Tabbed Interface for User Agents               */}
+            {/* ======================================================= */}
+            <Tabs isLazy variant="enclosed-colored">
+              <TabList>
+                <Tab>
+                  All <Badge ml='2' colorScheme='gray'>{allAgents.length}</Badge>
+                </Tab>
+                <Tab>
+                  Desktop <Badge ml='2' colorScheme='blue'>{desktopAgents.length}</Badge>
+                </Tab>
+                <Tab>
+                  Mobile <Badge ml='2' colorScheme='green'>{mobileAgents.length}</Badge>
+                </Tab>
+                <Tab>
+                  Other <Badge ml='2' colorScheme='purple'>{otherAgents.length}</Badge>
+                </Tab>
+              </TabList>
+              <TabPanels>
+                <TabPanel p={0}>
+                    <UserAgentTable agents={allAgents} {...{ isSuperuser, handleOpenEditModal, handleOpenDeleteAlert, isPlaceholderData }} />
+                </TabPanel>
+                <TabPanel p={0}>
+                    <UserAgentTable agents={desktopAgents} {...{ isSuperuser, handleOpenEditModal, handleOpenDeleteAlert, isPlaceholderData }} />
+                </TabPanel>
+                <TabPanel p={0}>
+                    <UserAgentTable agents={mobileAgents} {...{ isSuperuser, handleOpenEditModal, handleOpenDeleteAlert, isPlaceholderData }} />
+                </TabPanel>
+                 <TabPanel p={0}>
+                    <UserAgentTable agents={otherAgents} {...{ isSuperuser, handleOpenEditModal, handleOpenDeleteAlert, isPlaceholderData }} />
+                </TabPanel>
+              </TabPanels>
+            </Tabs>
+            {/* ======================================================= */}
+            {/* END: Tabbed Interface                                 */}
+            {/* ======================================================= */}
+
+            <Flex justify="space-between" p={4} align="center" borderTopWidth="1px" bg="gray.50">
                 <Text fontSize="sm" color="gray.600">
-                    Showing <strong>{data.data.length}</strong> of <strong>{data.count}</strong> results
+                    Showing <strong>{data.data.length}</strong> of <strong>{data.count}</strong> total results
                 </Text>
                 <HStack>
                     <Button onClick={() => setPage(p => Math.max(0, p - 1))} isDisabled={page === 0}>
                         Previous
                     </Button>
-                    <Text fontSize="sm" mx={4}>Page {page + 1} of {totalPages || 1}</Text>
+                    <Text fontSize="sm" mx={4} whiteSpace="nowrap">Page {page + 1} of {totalPages || 1}</Text>
                     <Button onClick={() => setPage(p => p + 1)} isDisabled={page + 1 >= totalPages || isPlaceholderData}>
                         Next
                     </Button>
@@ -426,22 +492,11 @@ function UserAgentsPage() {
           </Box>
         )}
       </Container>
-      
+
       {isSuperuser && (
         <>
-            <AddEditUserAgentModal
-                isOpen={isAddEditModalOpen}
-                onClose={onAddEditModalClose}
-                onSubmit={handleFormSubmit}
-                initialData={editingAgent}
-                isLoading={createMutation.isPending || updateMutation.isPending}
-            />
-            <DeleteConfirmationDialog 
-                isOpen={isDeleteAlertOpen}
-                onClose={onDeleteAlertClose}
-                onConfirm={handleDeleteConfirm}
-                isLoading={deleteMutation.isPending}
-            />
+            <AddEditUserAgentModal isOpen={isAddEditModalOpen} onClose={onAddEditModalClose} onSubmit={handleFormSubmit} initialData={editingAgent} isLoading={createMutation.isPending || updateMutation.isPending}/>
+            <DeleteConfirmationDialog isOpen={isDeleteAlertOpen} onClose={onDeleteAlertClose} onConfirm={handleDeleteConfirm} isLoading={deleteMutation.isPending} />
         </>
       )}
     </>
