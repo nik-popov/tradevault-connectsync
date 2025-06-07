@@ -10,6 +10,7 @@ import {
   Thead,
   Tbody,
   Tr,
+  SimpleGrid,
   TableContainer,
   Th,
   Td,
@@ -206,7 +207,7 @@ const CopyCell = ({ textToCopy }: { textToCopy: string }) => {
         onCopy();
         toast({ title: "Copied to clipboard!", status: "success", duration: 2000, isClosable: true });
     };
-    return (<IconButton aria-label="Copy user agent" icon={<CopyIcon />} size="sm" onClick={handleCopy} variant="ghost" />);
+    return (<IconButton aria-label="Copy user agent" icon={<CopyIcon />} size="sm" onClick={handleCopy} />);
 };
 
 const AddEditUserAgentModal = ({ isOpen, onClose, onSubmit, initialData, isLoading }: { isOpen: boolean; onClose: () => void; onSubmit: (data: UserAgentCreate | UserAgentUpdate) => void; initialData?: UserAgentPublic | null; isLoading: boolean; }) => {
@@ -423,34 +424,65 @@ function UserAgentsPage() {
         </Tabs>
 
 {/* --- ACTION HEADER & BUTTONS (MODIFIED) --- */}
-          <Flex direction={{ base: "column", md: "row" }} justify="space-between" align="center" p="4">
-          <Box mb={{ base: 4, md: 0 }}>
-            
-            <Text fontSize="md" mb={6}>A dynamic repository of real-world user agent strings, continuously updated to reflect the most prevalent browser, OS, and device combinations.</Text>
-            <Text fontSize="md"  mb={6}>For developers building robust web scrapers, QA engineers testing cross-browser compatibility, and administrators analyzing traffic patterns.</Text>
-          </Box>
-          <HStack spacing={2}>
-            {isSuperuser && (
-              <>
-                <Button leftIcon={<RepeatIcon />} onClick={() => updateFromSourceMutation.mutate()} isLoading={updateFromSourceMutation.isPending} loadingText="Updating...">
-                    Refresh Source
-                </Button>
-                <Button leftIcon={<AddIcon />} colorScheme="teal" onClick={handleOpenAddModal}>
-                   Add New
-                </Button>
-              </>
-            )}
-            <Menu>
-              <MenuButton as={Button} rightIcon={<ChevronDownIcon />} isLoading={exportMutation.isPending} loadingText="Exporting">
-                Export All
-              </MenuButton>
-              <MenuList>
-                <MenuItem onClick={() => exportMutation.mutate('csv')}>Export as CSV</MenuItem>
-                <MenuItem onClick={() => exportMutation.mutate('json')}>Export as JSON</MenuItem>
-              </MenuList>
-            </Menu>
-          </HStack>
-        </Flex>
+       {/* --- ACTION HEADER & BUTTONS (MODIFIED) --- */}
+<Flex 
+  direction={{ base: "column", md: "row" }} 
+  justify="space-between" 
+  align={{ base: "stretch", md: "center" }} // Align items to center on desktop
+  p="4"
+>
+  {/* --- DESCRIPTIVE TEXT --- */}
+  <Box mb={{ base: 6, md: 0 }} maxW={{ base: "full", lg: "50%" }}>
+    <Text fontSize="md" mb={2} color="gray.600">
+      A dynamic repository of real-world user agent strings, continuously updated to reflect the most prevalent browser, OS, and device combinations.
+    </Text>
+    <Text fontSize="md" color="gray.600">
+      For developers building robust web scrapers, QA engineers testing cross-browser compatibility, and administrators analyzing traffic patterns.
+    </Text>
+  </Box>
+
+  {/* --- ACTION BUTTONS IN A RESPONSIVE GRID --- */}
+ <SimpleGrid 
+    columns={{ base: 1, sm: 2 }} // 1 col on mobile, 2 cols on small screens and up
+    spacing={3} 
+    minW={{ sm: "320px" }} // Ensures the grid has enough space on smaller views
+    w={{ base: "full", sm: "auto" }} // Takes full width on mobile, auto on others
+  >
+    {isSuperuser && (
+      <>
+        <Button 
+          leftIcon={<RepeatIcon />} 
+          onClick={() => updateFromSourceMutation.mutate()} 
+          isLoading={updateFromSourceMutation.isPending} 
+          loadingText="Updating..."
+        >
+          Refresh Source
+        </Button>
+        <Button 
+          leftIcon={<AddIcon />} 
+          colorScheme="teal" 
+          onClick={handleOpenAddModal}
+        >
+          Add New
+        </Button>
+      </>
+    )}
+    <Menu>
+      <MenuButton 
+        as={Button} 
+        rightIcon={<ChevronDownIcon />} 
+        isLoading={exportMutation.isPending} 
+        loadingText="Exporting"
+      >
+        Export All
+      </MenuButton>
+      <MenuList>
+        <MenuItem onClick={() => exportMutation.mutate('csv')}>Export as CSV</MenuItem>
+        <MenuItem onClick={() => exportMutation.mutate('json')}>Export as JSON</MenuItem>
+      </MenuList>
+    </Menu>
+  </SimpleGrid>
+</Flex>
 
         {/* --- TABLE & PAGINATION --- */}
         {isLoading && !data && (
