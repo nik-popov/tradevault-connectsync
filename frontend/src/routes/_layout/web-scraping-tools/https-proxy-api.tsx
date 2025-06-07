@@ -6,6 +6,7 @@ import {
   Flex,
   Text,
   Tabs,
+  Divider,
   TabList,
   TabPanels,
   Tab,
@@ -282,10 +283,12 @@ const HttpsProxyApiPage = () => {
 
   return (
     <ProtectedComponent>
-      <Container maxW="full">
-        <Flex align="center" justify="space-between" py={6} gap={4}>
-          <Heading size="md">HTTPS Proxy API</Heading>
+       <Container maxW="full" py={6}>
+        <Flex align="center" justify="space-between" mb={4}>
+          <Text fontSize="xl">HTTPs Request Proxy API</Text>
+          <Text fontSize="sm" color="gray.500">Reroute https requests </Text>
         </Flex>
+        <Divider my={4} borderColor="gray.200" />
 
         {isLoading ? (
           <Text fontSize="sm">Loading account details...</Text>

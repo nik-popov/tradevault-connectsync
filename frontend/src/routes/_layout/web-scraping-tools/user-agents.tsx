@@ -6,7 +6,7 @@ import {
   Button,
   Container,
   Flex,
-  Heading,
+  // Removed Heading, as it's replaced by Text
   Table,
   Thead,
   Tbody,
@@ -42,10 +42,11 @@ import {
   AlertDialogContent,
   AlertDialogOverlay,
   useDisclosure,
+  Divider, // Added Divider import
 } from "@chakra-ui/react";
 import { CopyIcon, ChevronDownIcon, EditIcon, DeleteIcon, AddIcon, RepeatIcon } from "@chakra-ui/icons";
 
-// --- API Configuration & Types ---
+// --- API Configuration & Types (No changes) ---
 const API_BASE_URL = "https://api.thedataproxy.com/v2";
 
 interface UserAgentPublic {
@@ -76,20 +77,17 @@ interface UpdateSourceResponse {
     [key: string]: any;
 }
 
-// --- Mock Auth Hook (replace with your actual auth logic) ---
+// --- Mock Auth Hook (No changes) ---
 const useAuth = () => {
-  // =========================================================================
-  // THE FIX IS HERE: Manually toggle this value to test the different views.
-  // - Set to `true` to see admin controls (Refresh, Add, Edit, Delete).
+  // To test the different views, manually toggle this value:
+  // - Set to `true` to see the admin controls (as if you're a logged-in superuser).
   // - Set to `false` to see the public, read-only view.
-  // =========================================================================
-  const [isSuperuser] = useState(false); // <-- CHANGED TO `false` TO DEMONSTRATE
-
+  const [isSuperuser] = useState(false); 
   return { isSuperuser };
 };
 
 
-// --- Utility Functions ---
+// --- Utility & API Functions (No changes) ---
 function convertToCSV(data: UserAgentPublic[]): string {
     if (data.length === 0) return "";
     const headers = "id,user_agent,created_at";
@@ -114,19 +112,15 @@ function downloadFile(content: string, filename: string, mimeType: string) {
     URL.revokeObjectURL(url);
 }
 
-// --- API Helper Functions ---
 const getAuthToken = () => {
-    // In a real app, you might get this from context or a secure store
     const token = localStorage.getItem("access_token"); 
     if (!token) {
-        // Mock a token for demonstration purposes if it doesn't exist.
         console.warn("No access token found. Using a mock token for demonstration. Please log in for a real application.")
         return "mock-jwt-token-for-testing";
     }
     return token;
 };
 
-// (READ) Fetch paginated user agents for table view - Public
 async function fetchPaginatedUserAgents(skip: number, limit: number): Promise<UserAgentsPublic> {
     const response = await fetch(`${API_BASE_URL}/user-agents/?skip=${skip}&limit=${limit}`);
     if (!response.ok) {
@@ -136,7 +130,6 @@ async function fetchPaginatedUserAgents(skip: number, limit: number): Promise<Us
     return response.json();
 }
 
-// (READ ALL) Fetch ALL user agents for export - Public
 async function fetchAllUserAgents(): Promise<UserAgentPublic[]> {
     const response = await fetch(`${API_BASE_URL}/user-agents/?limit=10000`);
     if (!response.ok) {
@@ -147,7 +140,6 @@ async function fetchAllUserAgents(): Promise<UserAgentPublic[]> {
     return result.data;
 }
 
-// (UPDATE FROM SOURCE) Trigger the scraper - Superuser Only
 async function updateUserAgentsFromSource(): Promise<UpdateSourceResponse> {
     const token = getAuthToken();
     const response = await fetch(`${API_BASE_URL}/user-agents/update-from-source/`, {
@@ -161,7 +153,6 @@ async function updateUserAgentsFromSource(): Promise<UpdateSourceResponse> {
     return response.json();
 }
 
-// (CREATE) Add a new user agent - Superuser Only
 async function createUserAgent(data: UserAgentCreate): Promise<UserAgentPublic> {
     const token = getAuthToken();
     const response = await fetch(`${API_BASE_URL}/user-agents/`, {
@@ -176,7 +167,6 @@ async function createUserAgent(data: UserAgentCreate): Promise<UserAgentPublic> 
     return response.json();
 }
 
-// (UPDATE) Update an existing user agent - Superuser Only
 async function updateUserAgent({ id, data }: { id: string, data: UserAgentUpdate }): Promise<UserAgentPublic> {
     const token = getAuthToken();
     const response = await fetch(`${API_BASE_URL}/user-agents/${id}`, {
@@ -191,7 +181,6 @@ async function updateUserAgent({ id, data }: { id: string, data: UserAgentUpdate
     return response.json();
 }
 
-// (DELETE) Delete a user agent - Superuser Only
 async function deleteUserAgent(id: string): Promise<void> {
     const token = getAuthToken();
     const response = await fetch(`${API_BASE_URL}/user-agents/${id}`, {
@@ -205,7 +194,7 @@ async function deleteUserAgent(id: string): Promise<void> {
 }
 
 
-// --- Reusable Components ---
+// --- Reusable Components (No changes) ---
 const CopyCell = ({ textToCopy }: { textToCopy: string }) => {
     const { onCopy } = useClipboard(textToCopy);
     const toast = useToast();
@@ -271,7 +260,7 @@ function UserAgentsPage() {
 
   const toast = useToast();
   const queryClient = useQueryClient();
-  const { isSuperuser } = useAuth(); // This will now correctly be `true` or `false` based on the hook
+  const { isSuperuser } = useAuth();
 
   const { data, isLoading, error, isPlaceholderData } = useQuery({
     queryKey: ["userAgents", page, limit],
@@ -281,7 +270,7 @@ function UserAgentsPage() {
 
   const totalPages = data ? Math.ceil(data.count / limit) : 0;
 
-  // --- MUTATIONS ---
+  // --- MUTATIONS (No changes) ---
   const handleMutationError = (e: Error) => {
     toast({ title: "An error occurred", description: e.message, status: "error", duration: 5000, isClosable: true });
   };
@@ -299,10 +288,10 @@ function UserAgentsPage() {
   
   const updateFromSourceMutation = useMutation({
     mutationFn: updateUserAgentsFromSource,
-    onSuccess: (data) => {
+    onSuccess: (res) => {
         toast({
             title: "Update from source complete",
-            description: `${data.new_agents_added} new agents were added. The table has been refreshed.`,
+            description: `${res.new_agents_added} new agents were added. The table has been refreshed.`,
             status: "success",
             duration: 5000,
             isClosable: true,
@@ -327,7 +316,7 @@ function UserAgentsPage() {
     onError: (e: Error) => { toast({ title: "Export Failed", description: e.message, status: "error", duration: 5000, isClosable: true, }); }
   });
 
-  // --- EVENT HANDLERS ---
+  // --- EVENT HANDLERS (No changes) ---
   const handleOpenAddModal = () => { setEditingAgent(null); onAddEditModalOpen(); };
   const handleOpenEditModal = (agent: UserAgentPublic) => { setEditingAgent(agent); onAddEditModalOpen(); };
   const handleOpenDeleteAlert = (id: string) => { setDeletingAgentId(id); onDeleteAlertOpen(); }
@@ -337,16 +326,21 @@ function UserAgentsPage() {
   };
   const handleDeleteConfirm = () => { if(deletingAgentId) { deleteMutation.mutate(deletingAgentId); } }
   
-  // NOTE: This is a placeholder for demonstration.
   const thirtyMinutesAgo = new Date(new Date().getTime() - 30 * 60 * 1000);
 
   return (
     <>
       <Container maxW="full" py={6}>
-        <Flex justify="space-between" align="center" mb={6}>
-          <Heading size="lg">Active User Agents</Heading>
+        {/* ======================================================= */}
+        {/* START: Updated Header and Action Button Section         */}
+        {/* ======================================================= */}
+        <Flex align="center" justify="space-between" mb={4}>
+          <Text fontSize="xl">Active User Agents</Text>
+          <Text fontSize="sm" color="gray.500">Manage and export user agents</Text>
+        </Flex>
+        <Divider my={4} borderColor="gray.200" />
+        <Flex justify="flex-end" align="center" mb={6}> {/* <-- FIX: justify="flex-end" */}
           <HStack spacing={2}>
-            {/* This will now correctly hide if isSuperuser is false */}
             {isSuperuser && (
               <>
                 <Button
@@ -373,6 +367,9 @@ function UserAgentsPage() {
             </Menu>
           </HStack>
         </Flex>
+        {/* ======================================================= */}
+        {/* END: Updated Section                                  */}
+        {/* ======================================================= */}
 
         {isLoading && !isPlaceholderData && (
           <Flex justify="center" align="center" height="200px"><Spinner size="xl" /></Flex>
@@ -400,7 +397,6 @@ function UserAgentsPage() {
                     <Td isNumeric>
                         <HStack spacing={1} justify="flex-end">
                             <CopyCell textToCopy={agent.user_agent} />
-                            {/* This will now correctly hide if isSuperuser is false */}
                             {isSuperuser && (
                                 <>
                                     <IconButton aria-label="Edit" icon={<EditIcon />} size="sm" onClick={() => handleOpenEditModal(agent)} />
@@ -431,7 +427,6 @@ function UserAgentsPage() {
         )}
       </Container>
       
-      {/* This will now correctly prevent modals from rendering if isSuperuser is false */}
       {isSuperuser && (
         <>
             <AddEditUserAgentModal

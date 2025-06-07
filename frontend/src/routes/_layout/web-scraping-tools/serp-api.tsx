@@ -17,6 +17,7 @@ import {
   Link,
   Code,
   Textarea,
+  Divider,
   IconButton,
   Button,
   useClipboard,
@@ -308,11 +309,14 @@ const SerpApiPage = () => {
   const error = subscriptionsError || accessError || apiKeysError;
 
   return (
-    <ProtectedComponent>
-      <Container maxW="full">
-        <Flex align="center" justify="space-between" py={6} gap={4}>
-          <Heading size="md">SERP API</Heading>
-        </Flex>
+      <ProtectedComponent>
+          <Container maxW="full" py={6}>
+           <Flex align="center" justify="space-between" mb={4}>
+             <Text fontSize="xl">SERP API (Search Engine Results Page)</Text>
+             <Text fontSize="sm" color="gray.500">Structured search engine results </Text>
+           </Flex>
+           <Divider my={4} borderColor="gray.200" />
+   
 
         {isLoading ? (
           <Text fontSize="sm">Loading user details...</Text>
