@@ -28,7 +28,7 @@ const Logo: React.FC<LogoProps> = (props) => {
       // Spread any other props passed to Logo (like a custom href, onClick, etc.)
       {...props}
     >
-      <HStack spacing={3} align="center">
+      <HStack spacing={1} align="center">
         {/* 2. Replace the FontAwesomeIcon with the Layers component */}
         {/*    react-feather icons are simple components. We can pass size and strokeWidth. */}
         <Layers size={28} strokeWidth={2.5} />
