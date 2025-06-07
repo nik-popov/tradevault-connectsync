@@ -412,8 +412,7 @@ function UserAgentsPage() {
             <TabList>
                 {/* Note: The Array.map pattern is better for complex components, but this is fine for a few static tabs. */}
                 {[
-                  { label: "All", count: allAgents.length, color: "green" },
-                  { label: "Desktop", count: desktopAgents.length, color: "purple" },
+                  { label: "Desktop", count: desktopAgents.length, color: "green" },
                   { label: "Mobile", count: mobileAgents.length, color: "orange" },
                   { label: "Other", count: otherAgents.length, color: "gray" },
                 ].map((tab, idx) => (
