@@ -309,7 +309,7 @@ const SerpApiPage = () => {
   return (
       <ProtectedComponent>
           <Container maxW="full" py={6}>
-           <Flex align="center" justify="space-between" mb={4}>
+             <Flex align="center" justify="space-between" py={6}>
              <Text fontSize="xl">SERP API (Search Engine Results Page)</Text>
              <Text fontSize="sm" color="gray.500">Structured search engine results </Text>
            </Flex>

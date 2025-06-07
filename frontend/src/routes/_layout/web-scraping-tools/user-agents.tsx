@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useMemo } from "react"; // Added useMemo
 import { createFileRoute } from "@tanstack/react-router";
 import { useQuery, useMutation, useQueryClient, keepPreviousData } from "@tanstack/react-query";
 import {
@@ -43,14 +43,12 @@ import {
   AlertDialogOverlay,
   useDisclosure,
   Divider,
-  // --- New Imports for Tabs & Badges ---
   Tabs,
   TabList,
-  TabPanels,
   Tab,
-  TabPanel,
   Badge,
   VStack,
+  // TabPanels and TabPanel are no longer needed here
 } from "@chakra-ui/react";
 import { CopyIcon, ChevronDownIcon, EditIcon, DeleteIcon, AddIcon, RepeatIcon } from "@chakra-ui/icons";
 
@@ -91,7 +89,7 @@ const useAuth = () => {
   return { isSuperuser };
 };
 
-// --- Utility & API Functions (CSV function updated) ---
+// --- Utility & API Functions (No changes) ---
 function convertToCSV(data: UserAgentPublic[]): string {
     if (data.length === 0) return "";
     const headers = "id,user_agent,created_at,device,browser,os";
@@ -200,7 +198,7 @@ async function deleteUserAgent(id: string): Promise<void> {
     }
 }
 
-// --- Reusable Components (No changes to these) ---
+// --- Reusable Components (No changes) ---
 const CopyCell = ({ textToCopy }: { textToCopy: string }) => {
     const { onCopy } = useClipboard(textToCopy);
     const toast = useToast();
@@ -253,8 +251,6 @@ const DeleteConfirmationDialog = ({ isOpen, onClose, onConfirm, isLoading }: { i
     );
 };
 
-// --- START: Reusable Table Component ---
-// This component encapsulates the table logic to be reused in each tab.
 const UserAgentTable = ({
   agents,
   isSuperuser,
@@ -315,15 +311,14 @@ const UserAgentTable = ({
     </TableContainer>
   );
 };
-// --- END: Reusable Table Component ---
 
-
-// --- Main Page Component ---
+// --- Main Page Component (RESTRUCTURED) ---
 function UserAgentsPage() {
   const [page, setPage] = useState(0);
-  const [limit] = useState(50); // Increased limit for better tab experience
+  const [limit] = useState(50);
   const [editingAgent, setEditingAgent] = useState<UserAgentPublic | null>(null);
   const [deletingAgentId, setDeletingAgentId] = useState<string | null>(null);
+  const [tabIndex, setTabIndex] = useState(0); // State for active tab
 
   const { isOpen: isAddEditModalOpen, onOpen: onAddEditModalOpen, onClose: onAddEditModalClose } = useDisclosure();
   const { isOpen: isDeleteAlertOpen, onOpen: onDeleteAlertOpen, onClose: onDeleteAlertClose } = useDisclosure();
@@ -392,23 +387,48 @@ function UserAgentsPage() {
   };
   const handleDeleteConfirm = () => { if(deletingAgentId) { deleteMutation.mutate(deletingAgentId); } }
 
-  // --- START: Client-side filtering for tabs ---
+  // --- Data filtering logic ---
   const allAgents = data?.data ?? [];
-  const desktopAgents = allAgents.filter(agent => agent.device?.toLowerCase() === 'desktop');
-  const mobileAgents = allAgents.filter(agent => agent.device?.toLowerCase() === 'mobile');
-  const otherAgents = allAgents.filter(agent => !['desktop', 'mobile'].includes(agent.device?.toLowerCase() ?? ''));
-  // --- END: Client-side filtering for tabs ---
+  const desktopAgents = useMemo(() => allAgents.filter(agent => agent.device?.toLowerCase() === 'desktop'), [allAgents]);
+  const mobileAgents = useMemo(() => allAgents.filter(agent => agent.device?.toLowerCase() === 'mobile'), [allAgents]);
+  const otherAgents = useMemo(() => allAgents.filter(agent => !['desktop', 'mobile'].includes(agent.device?.toLowerCase() ?? '')), [allAgents]);
+
+  const displayedAgents = useMemo(() => {
+    switch (tabIndex) {
+      case 1: return desktopAgents;
+      case 2: return mobileAgents;
+      case 3: return otherAgents;
+      default: return allAgents;
+    }
+  }, [tabIndex, allAgents, desktopAgents, mobileAgents, otherAgents]);
+
 
   return (
     <>
       <Container maxW="full" py={6}>
-        <Flex align="center" justify="space-between" mb={4}>
-
-             <Text fontSize="xl" fontWeight="bold">Active User Agents</Text>
-              <Text fontSize="sm" color="gray.500">Manage and export user agents for web scraping.</Text>
+            <Flex align="center" justify="space-between" py={6}>
+            <Text fontSize="xl">Active User Agents</Text>
+            <Text fontSize="sm" color="gray.500">Manage and export user agents for web scraping.</Text>
         </Flex>
         <Divider my={4} />
-        <Flex justify="flex-end" align="center" mb={6}>
+
+        {/* --- TABS --- */}
+                   <Tabs isLazy variant="enclosed-colored" colorScheme="orange">
+            <TabList>
+                <Tab>All <Badge ml='2' colorScheme='green'>{allAgents.length}</Badge></Tab>
+                <Tab>Desktop <Badge ml='2' colorScheme='purple'>{desktopAgents.length}</Badge></Tab>
+                <Tab>Mobile <Badge ml='2' colorScheme='orange'>{mobileAgents.length}</Badge></Tab>
+                <Tab>Other <Badge ml='2' colorScheme='gray'>{otherAgents.length}</Badge></Tab>
+            </TabList>
+        </Tabs>
+
+{/* --- ACTION HEADER & BUTTONS (MODIFIED) --- */}
+          <Flex direction={{ base: "column", md: "row" }} justify="space-between" align="center" p="4">
+          <Box mb={{ base: 4, md: 0 }}>
+            
+            <Text fontSize="md" mb={6}>A dynamic repository of real-world user agent strings, continuously updated to reflect the most prevalent browser, OS, and device combinations.</Text>
+            <Text fontSize="md"  mb={6}>This user agent list is perfect for web scrapers looking to blend in, developers, website administrators, and researchers.</Text>
+          </Box>
           <HStack spacing={2}>
             {isSuperuser && (
               <>
@@ -432,6 +452,7 @@ function UserAgentsPage() {
           </HStack>
         </Flex>
 
+        {/* --- TABLE & PAGINATION --- */}
         {isLoading && !data && (
           <Flex justify="center" align="center" height="300px"><Spinner size="xl" /></Flex>
         )}
@@ -440,32 +461,16 @@ function UserAgentsPage() {
         )}
         {data && (
           <Box borderWidth="1px" borderRadius="lg" overflow="hidden">
-            <Tabs isLazy variant="enclosed-colored" colorScheme="teal">
-              <TabList>
-                <Tab>All <Badge ml='2' colorScheme='green'>{allAgents.length}</Badge></Tab>
-                <Tab>Desktop <Badge ml='2' colorScheme='purple'>{desktopAgents.length}</Badge></Tab>
-                <Tab>Mobile <Badge ml='2' colorScheme='orange'>{mobileAgents.length}</Badge></Tab>
-                <Tab>Other <Badge ml='2' colorScheme='gray'>{otherAgents.length}</Badge></Tab>
-              </TabList>
-              <TabPanels>
-                <TabPanel p={0}>
-                    <UserAgentTable agents={allAgents} {...{ isSuperuser, handleOpenEditModal, handleOpenDeleteAlert, isPlaceholderData }} />
-                </TabPanel>
-                <TabPanel p={0}>
-                    <UserAgentTable agents={desktopAgents} {...{ isSuperuser, handleOpenEditModal, handleOpenDeleteAlert, isPlaceholderData }} />
-                </TabPanel>
-                <TabPanel p={0}>
-                    <UserAgentTable agents={mobileAgents} {...{ isSuperuser, handleOpenEditModal, handleOpenDeleteAlert, isPlaceholderData }} />
-                </TabPanel>
-                 <TabPanel p={0}>
-                    <UserAgentTable agents={otherAgents} {...{ isSuperuser, handleOpenEditModal, handleOpenDeleteAlert, isPlaceholderData }} />
-                </TabPanel>
-              </TabPanels>
-            </Tabs>
-            
+            <UserAgentTable
+                agents={displayedAgents}
+                isSuperuser={isSuperuser}
+                handleOpenEditModal={handleOpenEditModal}
+                handleOpenDeleteAlert={handleOpenDeleteAlert}
+                isPlaceholderData={isPlaceholderData}
+            />
             <Flex justify="space-between" p={4} align="center" borderTopWidth="1px" bg="gray.50">
                 <Text fontSize="sm" color="gray.600">
-                    Showing <strong>{data.data.length}</strong> of <strong>{data.count}</strong> total results
+                    Showing <strong>{data.data.length}</strong> of <strong>{data.count}</strong> total results on this page
                 </Text>
                 <HStack>
                     <Button onClick={() => setPage(p => Math.max(0, p - 1))} isDisabled={page === 0}>
@@ -481,6 +486,7 @@ function UserAgentsPage() {
         )}
       </Container>
 
+      {/* --- MODALS (Unchanged) --- */}
       {isSuperuser && (
         <>
             <AddEditUserAgentModal isOpen={isAddEditModalOpen} onClose={onAddEditModalClose} onSubmit={handleFormSubmit} initialData={editingAgent} isLoading={createMutation.isPending || updateMutation.isPending}/>
