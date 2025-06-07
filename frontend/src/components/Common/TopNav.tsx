@@ -44,6 +44,11 @@ interface NavItemsProps {
 }
 
 const navStructure: NavItem[] = [
+    {
+    title: "User Agents",
+    path: "/web-scraping-tools/user-agents",
+    icon: FiUserCheck,
+  },
   {
     title: "Web Scraping APIs",
     icon: FaSitemap,
@@ -62,11 +67,7 @@ const navStructure: NavItem[] = [
       },
     ],
   },
-  {
-    title: "User Agents",
-    path: "/web-scraping-tools/user-agents",
-    icon: FiUserCheck,
-  },
+
 ];
 
 
