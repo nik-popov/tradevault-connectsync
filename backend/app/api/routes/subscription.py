@@ -296,67 +296,75 @@ async def check_proxy_api_access(current_user: Annotated[User, Depends(get_curre
         raise HTTPException(status_code=500, detail=f"Internal server error: {str(e)}")
 
 # Add this new endpoint to your subscription.py file
+# ... (keep all the existing code above this function) ...
 
+# Replace the existing check_serp_api_access function with this corrected version
 @router.get("/serp-api/access", response_model=ProxyApiAccessResponse)
 async def check_serp_api_access(current_user: Annotated[User, Depends(get_current_user)]):
     """
     Check if the user has access to SERP API features based on a 'serp-api'
-    tag in their active or trialing subscription's product metadata.
+    tag in their active, trialing, or past_due subscription's product metadata.
     """
     logger.info(f"Checking SERP API access for user: {current_user.email}")
-    
+
     # 1. Boilerplate: Check for server and user configuration
     if not stripe.api_key:
         logger.error("Stripe API key is not configured")
         raise HTTPException(status_code=500, detail="Server configuration error: Missing Stripe API key")
+    
     if not current_user.stripe_customer_id:
         logger.warning(f"No Stripe customer ID for user: {current_user.email}")
         return ProxyApiAccessResponse(
             has_access=False,
-            message="No active subscription found for your account."
+            message="No subscription found. Please subscribe to a plan with SERP API features."
         )
 
     try:
-        # 2. Fetch all potentially relevant subscriptions (active and trialing)
-        active_subscriptions = stripe.Subscription.list(
+        # 2. Fetch all subscriptions for the customer to check all relevant statuses.
+        # This is more robust than fetching only 'active' and 'trialing' separately.
+        subscriptions = stripe.Subscription.list(
             customer=current_user.stripe_customer_id,
-            status="active",
+            status="all",  # Fetch all statuses and filter locally
             expand=["data.plan.product"],
         )
-        trial_subscriptions = stripe.Subscription.list(
-            customer=current_user.stripe_customer_id,
-            status="trialing",
-            expand=["data.plan.product"],
-        )
-        
-        all_relevant_subscriptions = active_subscriptions.data + trial_subscriptions.data
-        logger.info(f"Found {len(all_relevant_subscriptions)} active/trialing subscriptions for {current_user.email}")
+        logger.info(f"Found {len(subscriptions.data)} total subscriptions for {current_user.email}. Checking for SERP access.")
 
-        # 3. The Core Logic: Iterate and check metadata
-        for sub in all_relevant_subscriptions:
+        # Define which statuses grant API access. 'past_due' is often included
+        # to allow a grace period during dunning.
+        access_granting_statuses = {"active", "trialing", "past_due"}
+
+        # 3. The Core Logic: Iterate and check status and metadata
+        for sub in subscriptions.data:
+            # First, check if the subscription has a status that grants access.
+            if sub.status not in access_granting_statuses:
+                continue  # Skip canceled, unpaid, etc.
+
+            # Safely access product and its metadata
             product = sub.plan.product if sub.plan and hasattr(sub.plan, 'product') else None
-            metadata = product.metadata if product else {}
+            metadata = product.metadata if product and product.metadata is not None else {}
             
-            logger.info(f"Checking subscription {sub.id} for SERP API access. Metadata: {metadata}")
+            logger.info(f"Checking subscription {sub.id} (status: {sub.status}) for SERP API access. Metadata: {metadata}")
             
-            # The key change is here: check for 'serp-api' instead of 'proxy-api'
+            # The key check: does the metadata contain the 'serp-api: true' tag?
+            # Stripe metadata values are always stored as strings.
             if metadata.get("serp-api") == "true":
                 logger.info(f"SERP API access GRANTED for user {current_user.email} via subscription {sub.id}")
                 return ProxyApiAccessResponse(
                     has_access=True,
-                    message="Your plan includes SERP API access."
+                    message="Access granted to SERP API features."
                 )
 
         # 4. If the loop completes, no access was found
-        logger.warning(f"SERP API access DENIED for user {current_user.email}. No plan with 'serp-api: true' metadata found.")
+        logger.warning(f"SERP API access DENIED for user {current_user.email}. No plan with 'serp-api: true' metadata found in an active, trialing, or past_due subscription.")
         return ProxyApiAccessResponse(
             has_access=False,
             message="Your current plan does not include SERP API access. Please upgrade your plan."
         )
 
     except StripeError as e:
-        logger.error(f"Stripe error checking SERP API access for {current_user.email}: {e.user_message}")
-        raise HTTPException(status_code=e.http_status or 400, detail=e.user_message)
+        # Use more specific Stripe error details if available
+        logger.error(f"Stripe error checking SERP API access for {current_user.email}: {e.user_message or str(e)}")
+        raise HTTPException(status_code=e.http_status or 400, detail=e.user_message or "A Stripe error occurred.")
     except Exception as e:
         logger.error(f"Internal server error checking SERP API access for {current_user.email}: {str(e)}", exc_info=True)
         raise HTTPException(status_code=500, detail="An internal server error occurred.")
