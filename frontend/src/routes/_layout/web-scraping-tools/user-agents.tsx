@@ -44,7 +44,7 @@ import {
   useDisclosure,
 } from "@chakra-ui/react";
 import { CopyIcon, ChevronDownIcon, EditIcon, DeleteIcon, AddIcon } from "@chakra-ui/icons";
-import ProtectedComponent from "../../../components/Common/ProtectedComponent";
+
 
 // --- API Configuration & Types ---
 const API_BASE_URL = "https://api.thedataproxy.com/v2";
@@ -416,7 +416,6 @@ function UserAgentsPage() {
 
 
   return (
-    <ProtectedComponent>
       <Container maxW="full" py={6}>
         <Flex justify="space-between" align="center" mb={6}>
           <Heading size="lg">User Agents</Heading>
@@ -511,7 +510,6 @@ function UserAgentsPage() {
         </>
       )}
 
-    </ProtectedComponent>
   );
 }
 
