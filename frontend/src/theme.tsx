@@ -20,7 +20,7 @@ const theme = extendTheme({
   },
   colors: {
     ui: {
-      main: "#F28C28", // Cobalt blue as the primary accent color
+      main: "#F28C28", // orange as the primary accent color
       secondary: "#FFA500", // Orange for secondary elements (or "#FFFF00" for yellow if preferred)
       success: "#38A169", // Green for success states
       danger: "#E53E3E", // Red for errors (unchanged)
