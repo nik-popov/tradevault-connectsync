@@ -78,10 +78,13 @@ interface UpdateSourceResponse {
 
 // --- Mock Auth Hook (replace with your actual auth logic) ---
 const useAuth = () => {
-  // To test the different views, manually toggle this value:
-  // - Set to `true` to see the admin controls (as if you're a logged-in superuser).
+  // =========================================================================
+  // THE FIX IS HERE: Manually toggle this value to test the different views.
+  // - Set to `true` to see admin controls (Refresh, Add, Edit, Delete).
   // - Set to `false` to see the public, read-only view.
-  const [isSuperuser] = useState(true); 
+  // =========================================================================
+  const [isSuperuser] = useState(false); // <-- CHANGED TO `false` TO DEMONSTRATE
+
   return { isSuperuser };
 };
 
@@ -117,7 +120,6 @@ const getAuthToken = () => {
     const token = localStorage.getItem("access_token"); 
     if (!token) {
         // Mock a token for demonstration purposes if it doesn't exist.
-        // In a real app, you would handle this more gracefully (e.g., redirect to login).
         console.warn("No access token found. Using a mock token for demonstration. Please log in for a real application.")
         return "mock-jwt-token-for-testing";
     }
@@ -269,7 +271,7 @@ function UserAgentsPage() {
 
   const toast = useToast();
   const queryClient = useQueryClient();
-  const { isSuperuser } = useAuth();
+  const { isSuperuser } = useAuth(); // This will now correctly be `true` or `false` based on the hook
 
   const { data, isLoading, error, isPlaceholderData } = useQuery({
     queryKey: ["userAgents", page, limit],
@@ -335,8 +337,7 @@ function UserAgentsPage() {
   };
   const handleDeleteConfirm = () => { if(deletingAgentId) { deleteMutation.mutate(deletingAgentId); } }
   
-  // NOTE: This is a placeholder for demonstration purposes.
-  // In a real application, you'd use the `agent.created_at` or a last-updated field.
+  // NOTE: This is a placeholder for demonstration.
   const thirtyMinutesAgo = new Date(new Date().getTime() - 30 * 60 * 1000);
 
   return (
@@ -345,6 +346,7 @@ function UserAgentsPage() {
         <Flex justify="space-between" align="center" mb={6}>
           <Heading size="lg">Active User Agents</Heading>
           <HStack spacing={2}>
+            {/* This will now correctly hide if isSuperuser is false */}
             {isSuperuser && (
               <>
                 <Button
@@ -398,6 +400,7 @@ function UserAgentsPage() {
                     <Td isNumeric>
                         <HStack spacing={1} justify="flex-end">
                             <CopyCell textToCopy={agent.user_agent} />
+                            {/* This will now correctly hide if isSuperuser is false */}
                             {isSuperuser && (
                                 <>
                                     <IconButton aria-label="Edit" icon={<EditIcon />} size="sm" onClick={() => handleOpenEditModal(agent)} />
@@ -428,6 +431,7 @@ function UserAgentsPage() {
         )}
       </Container>
       
+      {/* This will now correctly prevent modals from rendering if isSuperuser is false */}
       {isSuperuser && (
         <>
             <AddEditUserAgentModal
