@@ -50,26 +50,6 @@ const featureDetails = {
     icon: FaSearch, // Using the original FaSearch icon
     path: '/web-scraping-tools/serp-api'
   },
-  'sitemap-parser': {
-    name: 'Sitemap Parser',
-    description: "Effortlessly parse and extract all URLs from any website's sitemap.xml file.",
-    icon: FaSitemap,
-    path: '/services/sitemap'
-  },
-  
-  // --- New/Corrected Features ---
-  'https-proxy-api': {
-    name: "HTTPS Proxy API",
-    path: "/services/https-proxy", // Standardized path for consistency
-    icon: FiShield,
-    description: "Access web pages with our rotating proxy network.",
-  },
-  'user-agents-api': {
-    name: "User Agents API",
-    path: "/services/user-agents", // Standardized path
-    icon: FiUserCheck,
-    description: "Get lists of the most common user agents for your scrapers.",
-  }
 };
 // --- Fetch Functions (No changes needed here) ---
 async function fetchSubscriptions(): Promise<Subscription[]> {
