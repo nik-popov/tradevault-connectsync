@@ -6,8 +6,8 @@ import {
   Button,
   Input,
   Select,
-  Textarea,
-  Spinner,
+  Textarea, // Not used in the final code but kept from original
+  Spinner,  // Not used in the final code but kept from original
   Tooltip,
   FormControl,
   FormLabel,
@@ -25,7 +25,7 @@ import {
   Tab,
   TabPanel,
   Code,
-  useTheme,
+  useTheme, // Not used in the final code but kept from original
   useDisclosure,
   Modal,
   ModalOverlay,
@@ -33,10 +33,10 @@ import {
   ModalHeader,
   ModalCloseButton,
   ModalBody,
-  ModalFooter,
+  ModalFooter, // Not used in the final code but kept from original
   SimpleGrid,
-  VStack, // <-- Used for vertical stacking in modal
-  useToast, // <-- For better feedback on copy
+  VStack,
+  useToast,
 } from "@chakra-ui/react";
 import { ExternalLinkIcon, CopyIcon, DownloadIcon, ViewIcon } from "@chakra-ui/icons";
 import { FiSend } from "react-icons/fi";
@@ -73,7 +73,7 @@ const handleDownload = (content, filename, type) => {
   URL.revokeObjectURL(url);
 };
 
-// --- NEW: Restyled Results Modal Component ---
+// --- Restyled Results Modal Component ---
 const ResultsModal = ({ isOpen, onClose, data }) => {
   if (!data) return null;
   const toast = useToast();
@@ -101,8 +101,11 @@ const ResultsModal = ({ isOpen, onClose, data }) => {
   return (
     <Modal isOpen={isOpen} onClose={onClose} size="6xl" isCentered motionPreset="slideInBottom">
       <ModalOverlay bg="blackAlpha.600" />
-      <ModalContent mx={4} maxH="90vh">
-        <ModalHeader borderBottomWidth="1px">API Call Results</ModalHeader>
+      <ModalContent mx={4} maxH="90vh" borderRadius="lg"> {/* Added borderRadius */}
+        {/* MODAL HEADER: Added bg */}
+        <ModalHeader bg="gray.50" borderBottomWidth="1px" fontWeight="semibold" borderTopRadius="lg"> 
+          API Call Results
+        </ModalHeader>
         <ModalCloseButton />
         <ModalBody py={6} overflowY="auto">
           <Tabs variant="line" colorScheme="blue">
@@ -118,7 +121,8 @@ const ResultsModal = ({ isOpen, onClose, data }) => {
                     <Flex justify="space-between" align="center" mb={2}>
                       <Heading size="sm">JSON Response</Heading>
                       <Flex gap={2}>
-                        <Tooltip label="Copy JSON"><IconButton aria-label="Copy JSON" icon={<CopyIcon />} size="sm" onClick={() => handleCopy(jsonResponse, 'JSON Response')} /></Tooltip>
+                        {/* COPY BUTTON: Changed colorScheme */}
+                        <Tooltip label="Copy JSON"><IconButton aria-label="Copy JSON" icon={<CopyIcon />} size="sm" colorScheme="orange" onClick={() => handleCopy(jsonResponse, 'JSON Response')} /></Tooltip>
                         <Tooltip label="Download JSON"><IconButton aria-label="Download JSON" icon={<DownloadIcon />} size="sm" onClick={() => handleDownload(jsonResponse, "response.json", "application/json")} /></Tooltip>
                       </Flex>
                     </Flex>
@@ -129,7 +133,8 @@ const ResultsModal = ({ isOpen, onClose, data }) => {
                     <Flex justify="space-between" align="center" mb={2}>
                       <Heading size="sm">HTML Preview</Heading>
                       <Flex gap={2}>
-                        <Tooltip label="Copy HTML"><IconButton aria-label="Copy HTML" icon={<CopyIcon />} size="sm" onClick={() => handleCopy(htmlPreview, 'HTML')} /></Tooltip>
+                         {/* COPY BUTTON: Changed colorScheme */}
+                        <Tooltip label="Copy HTML"><IconButton aria-label="Copy HTML" icon={<CopyIcon />} size="sm" colorScheme="orange" onClick={() => handleCopy(htmlPreview, 'HTML')} /></Tooltip>
                         <Tooltip label="Download HTML"><IconButton aria-label="Download HTML" icon={<DownloadIcon />} size="sm" onClick={() => handleDownload(htmlPreview, "preview.html", "text/html")} /></Tooltip>
                       </Flex>
                     </Flex>
@@ -156,7 +161,8 @@ const ResultsModal = ({ isOpen, onClose, data }) => {
                     <Box>
                       <Flex justify="space-between" align="center" mb={2}>
                         <Heading size="sm">Response Headers</Heading>
-                        <Tooltip label="Copy Headers"><IconButton aria-label="Copy Headers" icon={<CopyIcon />} size="sm" onClick={() => handleCopy(headers, 'Headers')} /></Tooltip>
+                         {/* COPY BUTTON: Changed colorScheme */}
+                        <Tooltip label="Copy Headers"><IconButton aria-label="Copy Headers" icon={<CopyIcon />} size="sm" colorScheme="orange" onClick={() => handleCopy(headers, 'Headers')} /></Tooltip>
                       </Flex>
                       <CodeBlock code={headers} language="json" />
                     </Box>
@@ -185,7 +191,7 @@ const PlaygroundGSerp: React.FC = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
   const [responseTime, setResponseTime] = useState<number | null>(null);
-  const [activeTabIndex, setActiveTabIndex] = useState(0); // <-- NEW: State for active code tab
+  const [activeTabIndex, setActiveTabIndex] = useState(0);
   const toast = useToast();
 
   const { isOpen: isModalOpen, onOpen: onModalOpen, onClose: onModalClose } = useDisclosure();
@@ -226,7 +232,8 @@ const PlaygroundGSerp: React.FC = () => {
     setIsLoading(true);
     setError("");
     setResponseTime(null);
-    setResultsData(null); 
+    // Do not clear resultsData here if we want "View Last Result" to show previous data
+    // setResultsData(null); 
 
     try {
       const startTime = performance.now();
@@ -256,6 +263,7 @@ const PlaygroundGSerp: React.FC = () => {
 
     } catch (err) {
       setError(err instanceof Error ? err.message : "An unknown error occurred");
+      setResultsData(null); // Clear results data on error
     } finally {
       setIsLoading(false);
     }
@@ -271,7 +279,45 @@ const PlaygroundGSerp: React.FC = () => {
       </Box>
 
       {/* --- Live Test (Request Builder) --- */}
-      <Box mb={8}>
+      {/* --- Live Test (Request Builder) --- */}
+   {error && (<Alert status="error" mt={4} variant="subtle" borderRadius="md"><AlertIcon /><Text fontSize="sm">{error}</Text></Alert>)} {/* Added variant and borderRadius to error alert for consistency */}
+          
+          {/* REQUEST SUCCESSFUL ALERT: Added a Dismiss button next to the View button */}
+          {resultsData && !isModalOpen && !isLoading && !error && (
+              <Alert status="success" variant="subtle" m={0} borderRadius="md" p={3}>
+                  <AlertIcon />
+                  <Flex justify="space-between" align="center" w="100%">
+                    <Box>
+                      <Text fontWeight="bold">Request Success</Text>
+                      <Text fontSize="sm">Response Time: {responseTime} ms</Text>
+                    </Box>
+                    
+                    {/* --- BUTTONS --- */}
+                    <HStack spacing={2}>
+                      <Button
+                        size="sm"
+                        variant="solid"
+                        colorScheme="orange"
+                        color="white"
+                        leftIcon={<ViewIcon />}
+                        onClick={onModalOpen}
+                      >
+                        View Result
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        colorScheme="gray"
+                        onClick={() => setResultsData(null)} // This will hide the alert
+                      >
+                        Dismiss
+                      </Button>
+                    </HStack>
+
+                  </Flex>
+              </Alert>
+          )}
+ <Box mb={8}>
         <Heading as="h2" size="md" fontWeight="semibold" mb={6} color="gray.700">Live Test</Heading>
         <Flex direction="column" gap={4}>
           <FormControl>
@@ -283,54 +329,33 @@ const PlaygroundGSerp: React.FC = () => {
             <GridItem><FormControl><FormLabel fontSize="sm">Region</FormLabel><Select value={region} onChange={(e) => setRegion(e.target.value)} size="sm">{REGIONS.map((reg) => (<option key={reg} value={reg}>{reg}</option>))}</Select></FormControl></GridItem>
             <GridItem><Button size="sm" colorScheme="blue" onClick={handleTestRequest} isLoading={isLoading} isDisabled={!url.trim() || !apiKey.trim() || !region} leftIcon={<FiSend />}>Test Request</Button></GridItem>
           </Grid>
-          {error && (<Alert status="error" mt={4}><AlertIcon /><Text fontSize="sm">{error}</Text></Alert>)}
-          {resultsData && !isModalOpen && (
-              <Alert status="success" mt={4}>
-                  <AlertIcon />
-                  <Flex justify="space-between" align="center" w="100%">
-                    <Box>
-                      <Text fontWeight="bold">Request Successful!</Text>
-                      <Text fontSize="sm">Response Time: {responseTime} ms</Text>
-                    </Box>
-                    <Button
-                      size="sm"
-                      variant="solid"
-                      colorScheme="blue"
-                      leftIcon={<ViewIcon />}
-                      onClick={onModalOpen}
-                    >
-                      View Last Result
-                    </Button>
-                  </Flex>
-              </Alert>
-          )}
+          
         </Flex>
       </Box>
-
       {/* --- Dynamic Code Snippets --- */}
       <Box mb={8}>
         <Heading as="h2" size="md" fontWeight="semibold" mb={4} color="gray.700">Your Request Code</Heading>
         <Text fontSize="md" color="gray.600" mb={6}>The code below updates automatically as you change parameters in the Live Test section.</Text>
         <Box position="relative">
-          {/* --- NEW: COPY BUTTON --- */}
+          {/* COPY BUTTON: Changed color and _hover */}
           <Tooltip label="Copy Code" placement="left">
             <IconButton
               aria-label="Copy code"
               icon={<CopyIcon />}
               size="sm"
               variant="ghost"
-              color="gray.400"
+              color="orange.400" // Changed
               position="absolute"
               top="0.6rem"
               right="0.5rem"
               zIndex={1}
-              _hover={{ bg: "gray.700", color: "white" }}
+              _hover={{ bg: "whiteAlpha.200", color: "orange.300" }} // Changed
               onClick={() => handleCopy(codeTabs[activeTabIndex].code, `${codeTabs[activeTabIndex].label} Code`)}
             />
           </Tooltip>
           <Tabs variant="enclosed" colorScheme="orange" onChange={(index) => setActiveTabIndex(index)}>
             <TabList>
-              {codeTabs.map((tab) => (<Tab key={tab.id} fontWeight="semibold" fontSize="lg" color="gray.400" _selected={{ bg: "gray.800", color: "orange.400" }}>{tab.label}</Tab>))}
+              {codeTabs.map((tab) => (<Tab key={tab.id} fontWeight="semibold" fontSize="sm" color="gray.400" _selected={{ bg: "gray.800", color: "orange.400" }}>{tab.label}</Tab>))}
             </TabList>
             <TabPanels bg="gray.800" borderRadius="0 0 md md">
               {codeTabs.map((tab) => (<TabPanel key={tab.id} p={0}><CodeBlock code={tab.code} language={tab.language} maxHeight="none" /></TabPanel>))}
@@ -338,7 +363,7 @@ const PlaygroundGSerp: React.FC = () => {
           </Tabs>
         </Box>
       </Box>
-      
+        
       {/* --- Need Help Section --- */}
       <Box pt={8} mt={8} borderTopWidth="1px" borderColor="gray.200">
         <Box p={4} borderWidth="1px" borderRadius="md" bg="orange.50" borderColor="orange.200">
