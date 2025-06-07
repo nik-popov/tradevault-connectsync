@@ -263,7 +263,7 @@ const HomePage = () => {
                 <Box shadow="md" borderWidth="1px" borderRadius="md" p={4} height="100%">
                   <VStack align="start" spacing={3}>
                     <Heading size="sm">Quick Start</Heading>
-                    <Link as={RouterLink} to="/settings" display="flex" alignItems="center">
+                    <Link as={RouterLink} to="/settings" display="flex" alignItems="center" color="orange.400">
                       <Icon as={FaKey} mr={2} /> Manage API Keys
                     </Link>
                     <Link href="https://docs.thedataproxy.com" isExternal display="flex" alignItems="center">
