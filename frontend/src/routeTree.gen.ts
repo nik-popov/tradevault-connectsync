@@ -23,7 +23,7 @@ import { Route as LayoutItemsImport } from './routes/_layout/items'
 import { Route as LayoutAdminImport } from './routes/_layout/admin'
 import { Route as LayoutWebScrapingToolsUserAgentsImport } from './routes/_layout/web-scraping-tools/user-agents'
 import { Route as LayoutWebScrapingToolsSerpApiImport } from './routes/_layout/web-scraping-tools/serp-api'
-import { Route as LayoutWebScrapingToolsHttpsProxyApiImport } from './routes/_layout/web-scraping-tools/https-proxy-api'
+import { Route as LayoutWebScrapingToolsHttpsApiImport } from './routes/_layout/web-scraping-tools/https-api'
 
 // Create/Update Routes
 
@@ -100,10 +100,10 @@ const LayoutWebScrapingToolsSerpApiRoute =
     getParentRoute: () => LayoutRoute,
   } as any)
 
-const LayoutWebScrapingToolsHttpsProxyApiRoute =
-  LayoutWebScrapingToolsHttpsProxyApiImport.update({
-    id: '/web-scraping-tools/https-proxy-api',
-    path: '/web-scraping-tools/https-proxy-api',
+const LayoutWebScrapingToolsHttpsApiRoute =
+  LayoutWebScrapingToolsHttpsApiImport.update({
+    id: '/web-scraping-tools/https-api',
+    path: '/web-scraping-tools/https-api',
     getParentRoute: () => LayoutRoute,
   } as any)
 
@@ -181,11 +181,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LayoutIndexImport
       parentRoute: typeof LayoutImport
     }
-    '/_layout/web-scraping-tools/https-proxy-api': {
-      id: '/_layout/web-scraping-tools/https-proxy-api'
-      path: '/web-scraping-tools/https-proxy-api'
-      fullPath: '/web-scraping-tools/https-proxy-api'
-      preLoaderRoute: typeof LayoutWebScrapingToolsHttpsProxyApiImport
+    '/_layout/web-scraping-tools/https-api': {
+      id: '/_layout/web-scraping-tools/https-api'
+      path: '/web-scraping-tools/https-api'
+      fullPath: '/web-scraping-tools/https-api'
+      preLoaderRoute: typeof LayoutWebScrapingToolsHttpsApiImport
       parentRoute: typeof LayoutImport
     }
     '/_layout/web-scraping-tools/serp-api': {
@@ -212,7 +212,7 @@ interface LayoutRouteChildren {
   LayoutItemsRoute: typeof LayoutItemsRoute
   LayoutSettingsRoute: typeof LayoutSettingsRoute
   LayoutIndexRoute: typeof LayoutIndexRoute
-  LayoutWebScrapingToolsHttpsProxyApiRoute: typeof LayoutWebScrapingToolsHttpsProxyApiRoute
+  LayoutWebScrapingToolsHttpsApiRoute: typeof LayoutWebScrapingToolsHttpsApiRoute
   LayoutWebScrapingToolsSerpApiRoute: typeof LayoutWebScrapingToolsSerpApiRoute
   LayoutWebScrapingToolsUserAgentsRoute: typeof LayoutWebScrapingToolsUserAgentsRoute
 }
@@ -222,8 +222,7 @@ const LayoutRouteChildren: LayoutRouteChildren = {
   LayoutItemsRoute: LayoutItemsRoute,
   LayoutSettingsRoute: LayoutSettingsRoute,
   LayoutIndexRoute: LayoutIndexRoute,
-  LayoutWebScrapingToolsHttpsProxyApiRoute:
-    LayoutWebScrapingToolsHttpsProxyApiRoute,
+  LayoutWebScrapingToolsHttpsApiRoute: LayoutWebScrapingToolsHttpsApiRoute,
   LayoutWebScrapingToolsSerpApiRoute: LayoutWebScrapingToolsSerpApiRoute,
   LayoutWebScrapingToolsUserAgentsRoute: LayoutWebScrapingToolsUserAgentsRoute,
 }
@@ -242,7 +241,7 @@ export interface FileRoutesByFullPath {
   '/items': typeof LayoutItemsRoute
   '/settings': typeof LayoutSettingsRoute
   '/': typeof LayoutIndexRoute
-  '/web-scraping-tools/https-proxy-api': typeof LayoutWebScrapingToolsHttpsProxyApiRoute
+  '/web-scraping-tools/https-api': typeof LayoutWebScrapingToolsHttpsApiRoute
   '/web-scraping-tools/serp-api': typeof LayoutWebScrapingToolsSerpApiRoute
   '/web-scraping-tools/user-agents': typeof LayoutWebScrapingToolsUserAgentsRoute
 }
@@ -257,7 +256,7 @@ export interface FileRoutesByTo {
   '/items': typeof LayoutItemsRoute
   '/settings': typeof LayoutSettingsRoute
   '/': typeof LayoutIndexRoute
-  '/web-scraping-tools/https-proxy-api': typeof LayoutWebScrapingToolsHttpsProxyApiRoute
+  '/web-scraping-tools/https-api': typeof LayoutWebScrapingToolsHttpsApiRoute
   '/web-scraping-tools/serp-api': typeof LayoutWebScrapingToolsSerpApiRoute
   '/web-scraping-tools/user-agents': typeof LayoutWebScrapingToolsUserAgentsRoute
 }
@@ -274,7 +273,7 @@ export interface FileRoutesById {
   '/_layout/items': typeof LayoutItemsRoute
   '/_layout/settings': typeof LayoutSettingsRoute
   '/_layout/': typeof LayoutIndexRoute
-  '/_layout/web-scraping-tools/https-proxy-api': typeof LayoutWebScrapingToolsHttpsProxyApiRoute
+  '/_layout/web-scraping-tools/https-api': typeof LayoutWebScrapingToolsHttpsApiRoute
   '/_layout/web-scraping-tools/serp-api': typeof LayoutWebScrapingToolsSerpApiRoute
   '/_layout/web-scraping-tools/user-agents': typeof LayoutWebScrapingToolsUserAgentsRoute
 }
@@ -292,7 +291,7 @@ export interface FileRouteTypes {
     | '/items'
     | '/settings'
     | '/'
-    | '/web-scraping-tools/https-proxy-api'
+    | '/web-scraping-tools/https-api'
     | '/web-scraping-tools/serp-api'
     | '/web-scraping-tools/user-agents'
   fileRoutesByTo: FileRoutesByTo
@@ -306,7 +305,7 @@ export interface FileRouteTypes {
     | '/items'
     | '/settings'
     | '/'
-    | '/web-scraping-tools/https-proxy-api'
+    | '/web-scraping-tools/https-api'
     | '/web-scraping-tools/serp-api'
     | '/web-scraping-tools/user-agents'
   id:
@@ -321,7 +320,7 @@ export interface FileRouteTypes {
     | '/_layout/items'
     | '/_layout/settings'
     | '/_layout/'
-    | '/_layout/web-scraping-tools/https-proxy-api'
+    | '/_layout/web-scraping-tools/https-api'
     | '/_layout/web-scraping-tools/serp-api'
     | '/_layout/web-scraping-tools/user-agents'
   fileRoutesById: FileRoutesById
@@ -370,7 +369,7 @@ export const routeTree = rootRoute
         "/_layout/items",
         "/_layout/settings",
         "/_layout/",
-        "/_layout/web-scraping-tools/https-proxy-api",
+        "/_layout/web-scraping-tools/https-api",
         "/_layout/web-scraping-tools/serp-api",
         "/_layout/web-scraping-tools/user-agents"
       ]
@@ -406,8 +405,8 @@ export const routeTree = rootRoute
       "filePath": "_layout/index.tsx",
       "parent": "/_layout"
     },
-    "/_layout/web-scraping-tools/https-proxy-api": {
-      "filePath": "_layout/web-scraping-tools/https-proxy-api.tsx",
+    "/_layout/web-scraping-tools/https-api": {
+      "filePath": "_layout/web-scraping-tools/https-api.tsx",
       "parent": "/_layout"
     },
     "/_layout/web-scraping-tools/serp-api": {

@@ -337,7 +337,7 @@ const HttpsProxyApiPage = () => {
   );
 };
 
-export const Route = createFileRoute("/_layout/web-scraping-tools/https-proxy-api")({
+export const Route = createFileRoute("/_layout/web-scraping-tools/https-api")({
   component: HttpsProxyApiPage,
 });
 
