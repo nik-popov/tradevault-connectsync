@@ -23,7 +23,7 @@ import {
   Tab,
   TabPanel,
 } from "@chakra-ui/react";
-import { CopyIcon, DownloadIcon } from "@chakra-ui/icons";
+import { CopyIcon, DownloadIcon, ViewIcon } from "@chakra-ui/icons";
 import { FiSend } from "react-icons/fi";
 
 // Define regions and search engines
@@ -179,6 +179,28 @@ fetch(url, {
     }
   };
 
+  const handleViewFormatted = () => {
+    if (response) {
+      const newWindow = window.open("", "_blank");
+      if (newWindow) {
+        newWindow.document.write(`
+          <html>
+            <head>
+              <title>Formatted Response</title>
+              <style>body { font-family: monospace; padding: 20px; } pre { background: #f4f4f4; padding: 20px; border-radius: 8px; }</style>
+            </head>
+            <body>
+              <pre>${JSON.stringify(JSON.parse(response), null, 2)}</pre>
+            </body>
+          </html>
+        `);
+        newWindow.document.close();
+      } else {
+        alert("Popup blocked. Please allow popups for this site.");
+      }
+    }
+  };
+
   return (
     <Box width="100%">
       <Box mb={6}>
@@ -193,7 +215,7 @@ fetch(url, {
               isRequired
             />
           </FormControl>
-          <Flex direction="row" gap={4}>
+          <Flex direction="row" gap={4} alignItems="flex-end">
             <FormControl flex="1">
               <FormLabel fontSize="sm">API Key</FormLabel>
               <Input
@@ -221,41 +243,32 @@ fetch(url, {
             </FormControl>
             <FormControl flex="1">
               <FormLabel fontSize="sm">Search Engine</FormLabel>
-              <Select
-                value={searchEngine}
-                onChange={(e) => setSearchEngine(e.target.value)}
-                size="sm"
-              >
-                {SEARCH_ENGINES.map((engine) => (
-                  <option key={engine.value} value={engine.value}>
-                    {engine.label}
-                  </option>
-                ))}
-              </Select>
+              <Flex gap={2}>
+                <Select
+                  value={searchEngine}
+                  onChange={(e) => setSearchEngine(e.target.value)}
+                  size="sm"
+                  flex="1"
+                >
+                  {SEARCH_ENGINES.map((engine) => (
+                    <option key={engine.value} value={engine.value}>
+                      {engine.label}
+                    </option>
+                  ))}
+                </Select>
+                <Tooltip label="Send test request">
+                  <Button
+                    size="sm"
+                    colorScheme="blue"
+                    onClick={handleTestRequest}
+                    isLoading={isLoading}
+                    isDisabled={!query.trim() || !apiKey.trim() || !region || !searchEngine}
+                  >
+                    <FiSend />
+                  </Button>
+                </Tooltip>
+              </Flex>
             </FormControl>
-          </Flex>
-          <Flex direction={{ base: "column", sm: "row" }} gap={2} align="center">
-            <Tooltip label="Send test request">
-              <Button
-                width="full"
-                size="sm"
-                colorScheme="blue"
-                onClick={handleTestRequest}
-                isLoading={isLoading}
-                isDisabled={!query.trim() || !apiKey.trim() || !region || !searchEngine}
-              >
-                <FiSend />
-              </Button>
-            </Tooltip>
-            <Tooltip label="Copy cURL command">
-              <IconButton
-                aria-label="Copy cURL"
-                icon={<CopyIcon />}
-                size="sm"
-                onClick={() => handleCopy(generateCurlCommand())}
-                isDisabled={!query.trim() || !apiKey.trim() || !region || !searchEngine}
-              />
-            </Tooltip>
           </Flex>
           {error && (
             <Alert status="error">
@@ -293,6 +306,14 @@ fetch(url, {
                       onClick={handleDownloadResponse}
                     />
                   </Tooltip>
+                  <Tooltip label="View Formatted">
+                    <IconButton
+                      aria-label="View Formatted"
+                      icon={<ViewIcon />}
+                      size="sm"
+                      onClick={handleViewFormatted}
+                    />
+                  </Tooltip>
                 </>
               )}
             </Flex>
@@ -315,7 +336,22 @@ fetch(url, {
           )}
         </GridItem>
         <GridItem>
-          <Heading size="md" mb={4}>Code Examples</Heading>
+          <Flex align="center" justify="space-between" mb={4}>
+            <Heading size="md">Code Examples</Heading>
+            <Flex gap={2}>
+              <Tooltip label="Copy All Examples">
+                <IconButton
+                  aria-label="Copy All Examples"
+                  icon={<CopyIcon />}
+                  size="sm"
+                  onClick={() => handleCopy(
+                    `${generateCurlCommand()}\n\n${generatePythonCode()}\n\n${generateJsCode()}`
+                  )}
+                  isDisabled={!query.trim() || !apiKey.trim() || !region || !searchEngine}
+                />
+              </Tooltip>
+            </Flex>
+          </Flex>
           <Tabs variant="enclosed">
             <TabList>
               <Tab>cURL</Tab>
