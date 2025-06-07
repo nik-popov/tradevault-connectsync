@@ -18,7 +18,7 @@ import {
   redirect,
 } from "@tanstack/react-router"
 import { type SubmitHandler, useForm } from "react-hook-form"
-import Logo from "/assets/images/the-data-proxy-logo-dark.png"
+import Logo from "../components/Common/Logo"
 import type { UserRegister } from "../client"
 import useAuth, { isLoggedIn } from "../hooks/useAuth"
 import { confirmPasswordRules, emailPattern, passwordRules } from "../utils"
@@ -123,15 +123,9 @@ function SignUp() {
           gap={{ base: 4, md: 6 }}
           width={{ base: "100%", md: "auto" }}
         >
-          <Link href="https://thedataproxy.com" target="_blank" rel="noopener noreferrer">
-            <Image 
-              src={Logo} 
-              alt="logo" 
-              height="auto" 
-              maxW={{ base: "150px", md: "2xs" }} 
-              mb={{ base: 3, md: 4 }} 
-            />
-          </Link>
+           <Logo href="/" />
+
+
 
           <FormControl id="full_name" isInvalid={!!errors.full_name} width="100%">
             <FormLabel htmlFor="full_name" srOnly>

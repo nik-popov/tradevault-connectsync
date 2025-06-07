@@ -15,7 +15,7 @@ import {
 import { useMutation } from "@tanstack/react-query"
 import { createFileRoute, redirect } from "@tanstack/react-router"
 import { type SubmitHandler, useForm } from "react-hook-form"
-import Logo from "/assets/images/the-data-proxy-logo-dark.png"
+import Logo from "../components/Common/Logo"
 import { type ApiError, LoginService } from "../client"
 import { isLoggedIn } from "../hooks/useAuth"
 import useCustomToast from "../hooks/useCustomToast"
@@ -140,15 +140,9 @@ function RecoverPassword() {
           gap={{ base: 4, md: 6 }}
           width={{ base: "100%", md: "auto" }}
         >
-          <Link href="https://thedataproxy.com" target="_blank" rel="noopener noreferrer">
-            <Image 
-              src={Logo} 
-              alt="logo" 
-              height="auto" 
-              maxW={{ base: "150px", md: "2xs" }} 
-              mb={{ base: 3, md: 4 }} 
-            />
-          </Link>
+        <Logo href="/" />
+
+
 
           <FormControl id="email" isInvalid={!!errors.email} width="100%">
             <FormLabel htmlFor="email" fontSize={{ base: "sm", md: "md" }}>
