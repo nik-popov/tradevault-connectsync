@@ -6,12 +6,7 @@ import {
   IconButton,
   Tooltip,
   useDisclosure,
-  Menu,
-  MenuButton,
-  MenuList,
-  MenuItem,
 } from "@chakra-ui/react";
-import { ChevronDownIcon } from "@chakra-ui/icons";
 import { useQueryClient } from "@tanstack/react-query";
 import { Link as RouterLink } from "@tanstack/react-router";
 import {
@@ -21,21 +16,20 @@ import {
   FiSearch,
   FiShield,
   FiUserCheck,
+  FiSettings, // Added gear icon
 } from "react-icons/fi";
-import { MdPerson } from "react-icons/md";
-import { useRef } from "react"; // Added import
+// MdPerson is no longer used, so the import is removed.
 
 import Logo from "../Common/Logo";
 import type { UserPublic } from "../../client";
 import useAuth from "../../hooks/useAuth";
 
-// Updated NavItem to include an optional description
+// NavItem interface
 interface NavItem {
   title: string;
   icon?: any;
   path?: string;
   subItems?: NavItem[];
-  description?: string;
 }
 
 interface NavItemsProps {
@@ -43,146 +37,24 @@ interface NavItemsProps {
   isMobile?: boolean;
 }
 
-// Data structure for navigation, now with icons and descriptions
+// Data structure for navigation
 const navStructure: NavItem[] = [
   {
-    title: "Web Scraping Tools",
-    subItems: [
-      {
-        title: "HTTPS Proxy API",
-        path: "/web-scraping-tools/https-proxy-api",
-        icon: FiShield,
-        description: "Access web pages with our rotating proxy network.",
-      },
-             {
-        title: "SERP API", 
-        path: "/web-scraping-tools/serp-api",
-        icon: FiSearch, 
-        description: "Get structured JSON data from major search engines.", },
-      {
-        title: "User Agents Today",
-        path: "/web-scraping-tools/user-agents",
-        icon: FiUserCheck,
-        description: "Get lists of the most common user agents for your scrapers.",
-      },
-    ],
+    title: "HTTPS Proxy API",
+    path: "/web-scraping-tools/https-proxy-api",
+    icon: FiShield,
+  },
+  {
+    title: "SERP API",
+    path: "/web-scraping-tools/serp-api",
+    icon: FiSearch,
+  },
+  {
+    title: "User Agents Today",
+    path: "/web-scraping-tools/user-agents",
+    icon: FiUserCheck,
   },
 ];
-
-// New component to render the menu item as a "card" with a description
-const MenuItemCard = ({
-  item,
-  onClose,
-}: {
-  item: NavItem;
-  onClose?: () => void;
-}) => {
-  const bgActive = "orange.100";
-  const hoverBg = "gray.50";
-
-  return (
-    <MenuItem
-      as={RouterLink}
-      to={item.path}
-      onClick={onClose}
-      _hover={{ bg: hoverBg, textDecoration: "none" }}
-      activeProps={{
-        style: { background: bgActive },
-      }}
-      borderRadius="lg"
-      p={3}
-      m={1}
-      transition="background-color 0.2s"
-    >
-      <Flex alignItems="center">
-        {item.icon && (
-          <Icon as={item.icon} mr={4} boxSize={6} color="orange.500" />
-        )}
-        <Box>
-          <Text fontWeight="600" color="gray.800">
-            {item.title}
-          </Text>
-          {item.description && (
-            <Text fontSize="sm" color="gray.500" whiteSpace="normal" mt={1}>
-              {item.description}
-            </Text>
-          )}
-        </Box>
-      </Flex>
-    </MenuItem>
-  );
-};
-
-// MODIFIED COMPONENT: Handles the hover-to-open dropdown with a delay
-const HoverableDropdown = ({
-  item,
-  onClose,
-}: {
-  item: NavItem;
-  onClose?: () => void;
-}) => {
-  const { isOpen, onOpen, onClose: closeMenu } = useDisclosure();
-  const textColor = "gray.800";
-  const hoverColor = "orange.600";
-  const timeoutRef = useRef<NodeJS.Timeout | null>(null); // To store timer
-
-  // Clear any pending close timer and open the menu
-  const handleMouseEnter = () => {
-    if (timeoutRef.current) {
-      clearTimeout(timeoutRef.current);
-      timeoutRef.current = null;
-    }
-    onOpen();
-  };
-
-  // Set a timer to close the menu after a short delay
-  const handleMouseLeave = () => {
-    timeoutRef.current = setTimeout(() => {
-      closeMenu();
-    }, 150); // 150ms delay
-  };
-
-  return (
-    // The hover area now uses the new handlers
-    <Box onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
-      <Menu isOpen={isOpen} placement="bottom" gutter={16}>
-        <MenuButton
-          as={Flex}
-          px={4}
-          py={2}
-          color={textColor}
-          _hover={{ color: hoverColor }}
-          align="center"
-          cursor="pointer"
-          sx={isOpen ? { color: hoverColor } : {}}
-        >
-          {item.icon && <Icon as={item.icon} mr={2} />}
-          <Text>{item.title}</Text>
-        </MenuButton>
-        <MenuList
-          zIndex="popover"
-          p={2}
-          borderRadius="xl"
-          boxShadow="lg"
-          border="1px solid"
-          borderColor="gray.100"
-        >
-          {item.subItems!.map((subItem) => (
-            <MenuItemCard
-              key={subItem.title}
-              item={subItem}
-              onClose={() => {
-                if (onClose) onClose();
-                closeMenu();
-              }}
-            />
-          ))}
-        </MenuList>
-      </Menu>
-    </Box>
-  );
-};
-
 
 const NavItems = ({ onClose, isMobile = false }: NavItemsProps) => {
   const queryClient = useQueryClient();
@@ -204,61 +76,40 @@ const NavItems = ({ onClose, isMobile = false }: NavItemsProps) => {
   const isEnabled = (title: string) => {
     return [
       "Admin",
-      "Web Scraping Tools",
       "HTTPS Proxy API",
+      "SERP API",
       "User Agents Today",
     ].includes(title);
   };
 
-  const renderNavItems = (items: NavItem[], isSubItem = false) =>
+  const renderNavItems = (items: NavItem[]) =>
     items.map((item) => {
-      const { icon, title, path, subItems } = item;
+      const { icon, title, path } = item;
       const enabled = isEnabled(title);
 
       if (!enabled) {
         return (
           <Tooltip
             key={title}
-            label="Restricted"
+            label="Coming Soon"
             placement={isMobile ? "right" : "bottom"}
           >
             <Flex
               px={4}
               py={2}
-              pl={isMobile && isSubItem ? 8 : 4}
               color={disabledColor}
               cursor="not-allowed"
               align="center"
               flexDir="row"
             >
-              {icon && <Icon as={icon} mr={2} color={disabledColor} />}
-              <Text>{title}</Text>
+              {icon && <Icon as={icon} mr={2} boxSize={5} color={disabledColor} />}
+              <Text fontWeight="500">{title}</Text>
             </Flex>
           </Tooltip>
         );
       }
 
-      if (subItems) {
-        // Use the new HoverableDropdown for desktop
-        if (!isMobile) {
-          return <HoverableDropdown key={title} item={item} onClose={onClose} />;
-        }
-        // Keep the original collapsible section for mobile
-        return (
-          <Box key={title} w="100%">
-            <Flex px={4} py={2} color={textColor} align="center" w="100%">
-              {icon && <Icon as={icon} mr={2} />}
-              <Text fontWeight="bold">{title}</Text>
-              <Icon as={ChevronDownIcon} ml="auto" w={5} h={5} />
-            </Flex>
-            <Flex direction="column" w="100%">
-              {renderNavItems(subItems, true)}
-            </Flex>
-          </Box>
-        );
-      }
-
-      // Render a standard link for items without sub-items
+      // Render a standard link for each item
       return (
         <Flex
           key={title}
@@ -266,18 +117,20 @@ const NavItems = ({ onClose, isMobile = false }: NavItemsProps) => {
           to={path}
           px={4}
           py={2}
-          pl={isMobile && isSubItem ? 8 : 4}
           color={textColor}
-          _hover={{ color: hoverColor }}
+          _hover={{ color: hoverColor, textDecoration: "none" }}
           activeProps={{
             style: { background: bgActive, color: activeTextColor },
           }}
           align="center"
           onClick={onClose}
           w={isMobile ? "100%" : "auto"}
+          borderRadius="md"
         >
-          {icon && <Icon as={icon} mr={2} />}
-          <Text>{title}</Text>
+          {/* MODIFIED: Added boxSize for uniform icon size */}
+          {icon && <Icon as={icon} mr={2} boxSize={5} />}
+          {/* MODIFIED: Ensured fontWeight is consistent */}
+          <Text fontWeight="500">{title}</Text>
         </Flex>
       );
     });
@@ -285,7 +138,7 @@ const NavItems = ({ onClose, isMobile = false }: NavItemsProps) => {
   return (
     <Flex
       align="center"
-      gap={isMobile ? 2 : 0}
+      gap={isMobile ? 2 : 1}
       flexDir={isMobile ? "column" : "row"}
       w={isMobile ? "100%" : "auto"}
     >
@@ -340,20 +193,22 @@ const TopNav = () => {
           <NavItems />
           {currentUser && (
             <>
+              {/* MODIFIED: "Profile" changed to "Settings" with a gear icon */}
               <Flex
                 as={RouterLink}
                 to="/settings"
                 px={4}
                 py={2}
                 color={textColor}
-                _hover={{ color: hoverColor }}
+                _hover={{ color: hoverColor, textDecoration: "none" }}
                 activeProps={{
                   style: { background: bgActive, color: activeTextColor },
                 }}
                 align="center"
+                borderRadius="md"
               >
-                <Icon as={MdPerson} mr={2} />
-                <Text>Profile</Text>
+                <Icon as={FiSettings} mr={2} boxSize={5} />
+                <Text fontWeight="500">Settings</Text>
               </Flex>
               <Flex
                 as="button"
@@ -363,9 +218,11 @@ const TopNav = () => {
                 color={textColor}
                 _hover={{ color: hoverColor }}
                 align="center"
+                borderRadius="md"
               >
-                <Icon as={FiLogOut} mr={2} />
-                <Text>Log out</Text>
+                {/* MODIFIED: Added boxSize for uniform icon size */}
+                <Icon as={FiLogOut} mr={2} boxSize={5} />
+                <Text fontWeight="500">Log out</Text>
               </Flex>
             </>
           )}
@@ -397,6 +254,7 @@ const TopNav = () => {
                 Logged in as: {currentUser.email}
               </Text>
               <Flex flexDir="column" gap={2}>
+                {/* MODIFIED: "Profile" changed to "Settings" with a gear icon */}
                 <Flex
                   as={RouterLink}
                   to="/settings"
@@ -407,8 +265,8 @@ const TopNav = () => {
                   onClick={onClose}
                   align="center"
                 >
-                  <Icon as={MdPerson} mr={2} />
-                  <Text>Profile</Text>
+                  <Icon as={FiSettings} mr={2} boxSize={5} />
+                  <Text fontWeight="500">Settings</Text>
                 </Flex>
                 <Flex
                   as="button"
@@ -419,8 +277,8 @@ const TopNav = () => {
                   _hover={{ color: hoverColor }}
                   align="center"
                 >
-                  <Icon as={FiLogOut} mr={2} />
-                  <Text>Log out</Text>
+                  <Icon as={FiLogOut} mr={2} boxSize={5} />
+                  <Text fontWeight="500">Log out</Text>
                 </Flex>
               </Flex>
             </>

@@ -307,8 +307,23 @@ const HomePage = () => {
 
             {/* === Plan Details & Usage Chart === */}
 
-            <Grid templateColumns={{ base: "1fr", lg: "1fr 1.5fr" }} gap={6}>
+            <Grid templateColumns={{ base: "1fr", lg: "2.1fr 1fr" }} gap={6}>
               <GridItem>
+                <Heading size="md" mb={4}>Request Usage</Heading>
+                <Box shadow="md" borderWidth="1px" borderRadius="md" p={4} height="350px">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <LineChart data={chartData} margin={{ top: 5, right: 20, left: 10, bottom: 5 }}>
+                      <CartesianGrid strokeDasharray="3 3" />
+                      <XAxis dataKey="date" fontSize="12px" angle={-20} textAnchor="end" height={40}/>
+                      <YAxis fontSize="12px" tickFormatter={(value) => typeof value === 'number' ? new Intl.NumberFormat('en-US', { notation: 'compact', compactDisplay: 'short' }).format(value) : value} />
+                      <Tooltip />
+                      <Legend />
+                      <Line type="monotone" dataKey="Requests" stroke="#3182CE" activeDot={{ r: 8 }} dot={false} />
+                    </LineChart>
+                  </ResponsiveContainer>
+                </Box>
+              </GridItem>
+                     <GridItem>
                 <Heading size="md" mb={4}>Plan Details</Heading>
                 <Box shadow="md" borderWidth="1px" borderRadius="md" overflow="auto" height="350px">
                   <Table variant="simple" size="sm">
@@ -345,21 +360,6 @@ const HomePage = () => {
                   )}
                     </Tbody>
                   </Table>
-                </Box>
-              </GridItem>
-              <GridItem>
-                <Heading size="md" mb={4}>Request Usage</Heading>
-                <Box shadow="md" borderWidth="1px" borderRadius="md" p={4} height="350px">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <LineChart data={chartData} margin={{ top: 5, right: 20, left: 10, bottom: 5 }}>
-                      <CartesianGrid strokeDasharray="3 3" />
-                      <XAxis dataKey="date" fontSize="12px" angle={-20} textAnchor="end" height={40}/>
-                      <YAxis fontSize="12px" tickFormatter={(value) => typeof value === 'number' ? new Intl.NumberFormat('en-US', { notation: 'compact', compactDisplay: 'short' }).format(value) : value} />
-                      <Tooltip />
-                      <Legend />
-                      <Line type="monotone" dataKey="Requests" stroke="#3182CE" activeDot={{ r: 8 }} dot={false} />
-                    </LineChart>
-                  </ResponsiveContainer>
                 </Box>
               </GridItem>
             </Grid>
