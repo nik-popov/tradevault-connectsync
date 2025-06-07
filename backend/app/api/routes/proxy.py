@@ -492,3 +492,73 @@ async def delete_api_key(
     background_tasks.add_task(send_deletion_notification)
     logger.info(f"API key deleted for user: {current_user.email}")
     return None
+# --- CORRECTED serp_fetch ENDPOINT ---
+@router.get("/serp", response_model=SerpResponse)
+async def serp_fetch(
+    request: Request,
+    session: SessionDep,
+    q: str,
+    region: str,
+    # CHANGED: Simplified the dependency. We declare that a valid user MUST be authenticated.
+    user: Annotated[User, Depends(verify_api_token)],
+    # CHANGED: Kept this to pass the raw key to the logic function, but the user validation is now handled above.
+    x_api_key: Annotated[str, Header()],
+    engine: str = "google",
+):
+    """
+    Fetches a search engine results page (SERP), parses it, and returns structured data.
+    """
+    logger.debug(f"SERP request for query '{q}' via {engine} in {region} for user {user.email}")
+
+    # 1. Validate engine
+    if engine not in SUPPORTED_ENGINES:
+        raise HTTPException(
+            status_code=400,
+            detail=f"Unsupported engine '{engine}'. Supported engines are: {list(SUPPORTED_ENGINES.keys())}",
+        )
+    
+    engine_config = SUPPORTED_ENGINES[engine]
+    
+    # 2. Construct search URL
+    search_url = engine_config["base_url"].format(query=quote_plus(q))
+    proxy_request = ProxyRequest(url=search_url)
+
+    # 3. Call the proxy fetch logic to get the raw HTML
+    try:
+        # NOTE: The arguments passed here are now correct and non-ambiguous.
+        proxy_response = await proxy_fetch_logic(
+            request=request,
+            session=session,
+            region=region,
+            proxy_request=proxy_request,
+            user=user,
+            x_api_key=x_api_key,
+        )
+    except HTTPException as e:
+        # Re-raise exceptions from the fetch logic (e.g., 503 No healthy proxies)
+        logger.error(f"Proxy fetch logic failed during SERP request: {e.detail}")
+        raise e
+
+    # 4. Parse the HTML to extract structured data
+    html_content = proxy_response.result
+    parser_func = engine_config["parser"]
+    try:
+        organic_results = parser_func(html_content)
+        if not organic_results:
+             logger.warning(f"Parser for '{engine}' found 0 results for query '{q}'. The site's HTML may have changed.")
+        else:
+             logger.info(f"Successfully parsed {len(organic_results)} results for query '{q}'")
+
+    except Exception as e:
+        logger.error(f"Failed to parse SERP HTML for query '{q}': {e}")
+        # Consider logging the HTML that failed to parse for debugging
+        # logger.debug(f"Failing HTML content: {html_content[:500]}")
+        raise HTTPException(status_code=500, detail="Failed to parse search engine response.")
+    
+    # 5. Return the final structured response
+    return SerpResponse(
+        search_engine=engine,
+        search_query=q,
+        region_used=proxy_response.region_used,
+        organic_results=organic_results,
+    )
