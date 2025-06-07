@@ -101,7 +101,7 @@ function convertToCSV(data: UserAgentPublic[]): string {
         const device = `"${row.device ?? ''}"`;
         const browser = `"${row.browser ?? ''}"`;
         const os = `"${row.os ?? ''}"`;
-        return [id, userAgent, createdAt, device, browser, os].join(',');
+        return [id, userAgent, device, browser, os].join(',');
     });
     return [headers, ...rows].join('\n');
 }
