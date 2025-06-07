@@ -7,41 +7,39 @@ import {
   VStack,
   Divider,
   useToast,
+  Alert,
+  AlertIcon,
 } from "@chakra-ui/react";
 
-// The fetchBillingPortal helper function remains the same
+// --- Helper function for Billing ---
 const fetchBillingPortal = async (token: string) => {
   const response = await fetch("https://api.thedataproxy.com/v2/customer-portal", {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
       "Accept": "application/json",
-      "Authorization": `Bearer ${token}`,
+      Authorization: `Bearer ${token}`,
     },
   });
-  if (!response.ok) throw new Error(`Failed to fetch portal: ${response.status}`);
+  if (!response.ok) {
+    throw new Error(`Failed to fetch portal: ${response.status}`);
+  }
   const data = await response.json();
-  if (!data.portal_url) throw new Error("No portal URL received");
+  if (!data.portal_url) {
+    throw new Error("No portal URL received");
+  }
   return data.portal_url;
 };
 
-
+// --- Tab Content: BillingTab ---
 const BillingTab = () => {
   const [token] = useState<string | null>(localStorage.getItem("access_token"));
   const [isLoading, setIsLoading] = useState(false);
   const toast = useToast();
 
   const handleBillingClick = async () => {
-    if (!token) {
-      toast({
-        title: "Authentication Required",
-        description: "Please log in to manage billing.",
-        status: "warning",
-        duration: 5000,
-        isClosable: true,
-      });
-      return;
-    }
+    if (!token) return;
+
     setIsLoading(true);
     try {
       const portalUrl = await fetchBillingPortal(token);
@@ -60,31 +58,48 @@ const BillingTab = () => {
     }
   };
 
-  return (
-    <VStack spacing={4} align="stretch">
-      <Flex justify="space-between" align="center">
-        {/* Left Side: Text Content */}
-        <Box>
-          <Text fontSize="lg" color="gray.700">
-            Manage your subscriptions, view invoices, and update your payment method.
-          </Text>
-        </Box>
+  // Guard clause to match the provided template's pattern
+  if (!token) {
+    return (
+      <Box p={6} width="100%">
+        <Alert status="warning">
+          <AlertIcon />
+          Please log in to manage your billing information.
+        </Alert>
+      </Box>
+    );
+  }
 
-        {/* Right Side: Button */}
-        <Box>
+  return (
+    <Box>
+      <VStack spacing={2} align="stretch">
+        <Flex
+          direction={{ base: "column", md: "row" }}
+          justify="space-between"
+          align="center"
+        >
+          <Box>
+            <Text fontSize="lg" mb={2} color="gray.700">
+              Manage your subscriptions, view invoices, and update payment methods.
+            </Text>
+            <Text fontSize="lg" mb={4} color="gray.700">
+              You will be securely redirected to our customer portal.
+            </Text>
+          </Box>
           <Button
             colorScheme="blue"
             onClick={handleBillingClick}
             isLoading={isLoading}
-            isDisabled={!token}
+            loadingText="Redirecting..."
+            isDisabled={isLoading}
           >
             Manage Billing
           </Button>
-        </Box>
-      </Flex>
-
-      {/* Divider below the content */}
-      <Divider />
-    </VStack>
+        </Flex>
+        <Divider mb={4} />
+      </VStack>
+    </Box>
   );
 };
+
+export default BillingTab;
