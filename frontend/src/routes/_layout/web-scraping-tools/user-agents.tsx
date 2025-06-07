@@ -52,7 +52,7 @@ import {
   // TabPanels and TabPanel are no longer needed here
 } from "@chakra-ui/react";
 import { CopyIcon, ChevronDownIcon, EditIcon, DeleteIcon, AddIcon, RepeatIcon } from "@chakra-ui/icons";
-import useAuth, { isLoggedIn } from "../../../hooks/useAuth"
+import type { ItemPublic, UserPublic } from "../../../client";
 // --- API Configuration & Types (No changes) ---
 const API_BASE_URL = "https://api.thedataproxy.com/v2";
 
@@ -442,7 +442,7 @@ function UserAgentsPage() {
                           This is clean, easy to read, and avoids creating another file.
                           The SimpleGrid ensures the buttons are responsive.
                         */}
-                        {isSuperuser && (
+                       {currentUser?.is_superuser && (
                             <SimpleGrid
                                 columns={{ base: 1, sm: 2 }} // Stack on mobile, side-by-side on small+
                                 spacing={3}
@@ -497,7 +497,7 @@ function UserAgentsPage() {
           <Box borderWidth="1px" borderRadius="lg" overflow="hidden">
             <UserAgentTable
                 agents={displayedAgents}
-                isSuperuser={isSuperuser}
+                isSuperuser={currentUser?.is_superuser || false}
                 handleOpenEditModal={handleOpenEditModal}
                 handleOpenDeleteAlert={handleOpenDeleteAlert}
                 isPlaceholderData={isPlaceholderData}
@@ -522,7 +522,7 @@ function UserAgentsPage() {
       </Container>
 
       {/* --- MODALS (Unchanged) --- */}
-      {isSuperuser && (
+      {currentUser?.is_superuser && (
         <>
             <AddEditUserAgentModal isOpen={isAddEditModalOpen} onClose={onAddEditModalClose} onSubmit={handleFormSubmit} initialData={editingAgent} isLoading={createMutation.isPending || updateMutation.isPending}/>
             <DeleteConfirmationDialog isOpen={isDeleteAlertOpen} onClose={onDeleteAlertClose} onConfirm={handleDeleteConfirm} isLoading={deleteMutation.isPending} />
