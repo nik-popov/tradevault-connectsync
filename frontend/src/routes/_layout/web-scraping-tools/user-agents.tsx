@@ -1,4 +1,4 @@
-import { useState, useRef, useMemo } from "react"; // Added useMemo
+import { useState, useRef, useMemo } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { useQuery, useMutation, useQueryClient, keepPreviousData } from "@tanstack/react-query";
 import {
@@ -280,7 +280,7 @@ const UserAgentTable = ({
           <Tr>
             <Th color="black">User Agent String</Th>
             <Th color="black">Device Info</Th>
-         <Th color="black" isNumeric>Actions</Th>
+            <Th color="black" isNumeric>Actions</Th>
           </Tr>
         </Thead>
         <Tbody>
@@ -313,13 +313,13 @@ const UserAgentTable = ({
   );
 };
 
-// --- Main Page Component (RESTRUCTURED) ---
+// --- Main Page Component (RESTRUCTURED AND FIXED) ---
 function UserAgentsPage() {
   const [page, setPage] = useState(0);
   const [limit] = useState(50);
   const [editingAgent, setEditingAgent] = useState<UserAgentPublic | null>(null);
   const [deletingAgentId, setDeletingAgentId] = useState<string | null>(null);
-  const [tabIndex, setTabIndex] = useState(0); // State for active tab
+  const [tabIndex, setTabIndex] = useState(0);
 
   const { isOpen: isAddEditModalOpen, onOpen: onAddEditModalOpen, onClose: onAddEditModalClose } = useDisclosure();
   const { isOpen: isDeleteAlertOpen, onOpen: onDeleteAlertOpen, onClose: onDeleteAlertClose } = useDisclosure();
@@ -407,14 +407,14 @@ function UserAgentsPage() {
   return (
     <>
       <Container maxW="full" py={6}>
-            <Flex align="center" justify="space-between" py={6}>
+        <Flex align="center" justify="space-between" py={6}>
             <Text fontSize="xl" color="black">Active User Agents</Text>
             <Text fontSize="md" color="gray.600">Manage and export user agents for web scraping.</Text>
         </Flex>
         <Divider my={4} />
 
-        {/* --- TABS --- */}
-                   <Tabs isLazy variant="enclosed-colored" colorScheme="orange">
+        {/* --- TABS (FIXED) --- */}
+        <Tabs isLazy variant="enclosed-colored" colorScheme="orange" onChange={(index) => setTabIndex(index)}>
             <TabList>
                 <Tab>All <Badge ml='2' colorScheme='green'>{allAgents.length}</Badge></Tab>
                 <Tab>Desktop <Badge ml='2' colorScheme='purple'>{desktopAgents.length}</Badge></Tab>
@@ -423,66 +423,69 @@ function UserAgentsPage() {
             </TabList>
         </Tabs>
 
-{/* --- ACTION HEADER & BUTTONS (MODIFIED) --- */}
-       {/* --- ACTION HEADER & BUTTONS (MODIFIED) --- */}
-<Flex 
-  direction={{ base: "column", md: "row" }} 
-  justify="space-between" 
-  align={{ base: "stretch", md: "center" }} // Align items to center on desktop
-  p="4"
->
-  {/* --- DESCRIPTIVE TEXT --- */}
-  <Box mb={{ base: 6, md: 0 }} maxW={{ base: "full", lg: "50%" }}>
-    <Text fontSize="md" mb={2} color="gray.600">
-      A dynamic repository of real-world user agent strings, continuously updated to reflect the most prevalent browser, OS, and device combinations.
-    </Text>
-    <Text fontSize="md" color="gray.600">
-      For developers building robust web scrapers, QA engineers testing cross-browser compatibility, and administrators analyzing traffic patterns.
-    </Text>
-  </Box>
+        {/* --- ACTION HEADER & BUTTONS --- */}
+        <Flex 
+          direction={{ base: "column", md: "row" }} 
+          justify="space-between" 
+          align={{ base: "stretch", md: "center" }}
+          p="4"
+        >
+          <Box mb={{ base: 6, md: 0 }} maxW={{ base: "full", lg: "50%" }}>
+            <Text fontSize="md" mb={2} color="gray.600">
+              A dynamic repository of real-world user agent strings, continuously updated to reflect the most prevalent browser, OS, and device combinations.
+            </Text>
+            <Text fontSize="md" color="gray.600">
+              For developers building robust web scrapers, QA engineers testing cross-browser compatibility, and administrators analyzing traffic patterns.
+            </Text>
+          </Box>
 
-  {/* --- ACTION BUTTONS IN A RESPONSIVE GRID --- */}
- <SimpleGrid 
-    columns={{ base: 1, sm: 2 }} // 1 col on mobile, 2 cols on small screens and up
-    spacing={3} 
-    minW={{ sm: "320px" }} // Ensures the grid has enough space on smaller views
-    w={{ base: "full", sm: "auto" }} // Takes full width on mobile, auto on others
-  >
-    {isSuperuser && (
-      <>
-        <Button 
-          leftIcon={<RepeatIcon />} 
-          onClick={() => updateFromSourceMutation.mutate()} 
-          isLoading={updateFromSourceMutation.isPending} 
-          loadingText="Updating..."
-        >
-          Refresh Source
-        </Button>
-        <Button 
-          leftIcon={<AddIcon />} 
-          colorScheme="teal" 
-          onClick={handleOpenAddModal}
-        >
-          Add New
-        </Button>
-      </>
-    )}
-    <Menu>
-      <MenuButton 
-        as={Button} 
-        rightIcon={<ChevronDownIcon />} 
-        isLoading={exportMutation.isPending} 
-        loadingText="Exporting"
-      >
-        Export All
-      </MenuButton>
-      <MenuList>
-        <MenuItem onClick={() => exportMutation.mutate('csv')}>Export as CSV</MenuItem>
-        <MenuItem onClick={() => exportMutation.mutate('json')}>Export as JSON</MenuItem>
-      </MenuList>
-    </Menu>
-  </SimpleGrid>
-</Flex>
+          {/* --- ACTION BUTTONS CONTAINER --- */}
+          <VStack 
+            spacing={3} 
+            align={{ base: "stretch", md: "flex-end" }} // Stretch on mobile, align right on desktop
+            w={{ base: "full", md: "auto" }} // Full-width on mobile, auto on desktop
+          >
+            {isSuperuser && (
+              <SimpleGrid 
+                columns={{ base: 1, sm: 2 }} // Stack on mobile, side-by-side on small+
+                spacing={3} 
+                w="full" // Grid takes full width to allow columns to form
+              >
+                <Button 
+                  leftIcon={<RepeatIcon />} 
+                  onClick={() => updateFromSourceMutation.mutate()} 
+                  isLoading={updateFromSourceMutation.isPending} 
+                  loadingText="Updating..."
+                >
+                  Refresh Source
+                </Button>
+                <Button 
+                  leftIcon={<AddIcon />} 
+                  colorScheme="teal" 
+                  onClick={handleOpenAddModal}
+                >
+                  Add New
+                </Button>
+              </SimpleGrid>
+            )}
+
+                        <Menu>
+              <MenuButton 
+                as={Button} 
+                rightIcon={<ChevronDownIcon />} 
+                isLoading={exportMutation.isPending} 
+                loadingText="Exporting"
+                w="full" // Make button take full width of its container
+              >
+                Export All
+              </MenuButton>
+              <MenuList>
+                <MenuItem onClick={() => exportMutation.mutate('csv')}>Export as CSV</MenuItem>
+                <MenuItem onClick={() => exportMutation.mutate('json')}>Export as JSON</MenuItem>
+              </MenuList>
+            </Menu>
+          </VStack>
+        </Flex>
 
         {/* --- TABLE & PAGINATION --- */}
         {isLoading && !data && (
@@ -492,7 +495,6 @@ function UserAgentsPage() {
           <Alert status="error" borderRadius="md"><AlertIcon />{error.message}</Alert>
         )}
         {data && (
-          
           <Box borderWidth="1px" borderRadius="lg" overflow="hidden">
             <UserAgentTable
                 agents={displayedAgents}
@@ -503,7 +505,8 @@ function UserAgentsPage() {
             />
             <Flex justify="space-between" p={4} align="center" borderTopWidth="1px" bg="gray.50">
                 <Text fontSize="sm" color="gray.600">
-                    Showing <strong>{data.data.length}</strong> of <strong>{data.count}</strong> total results on this page
+                    {/* FIXED: Display count of visible agents */}
+                    Showing <strong>{displayedAgents.length}</strong> results on this page
                 </Text>
                 <HStack>
                     <Button onClick={() => setPage(p => Math.max(0, p - 1))} isDisabled={page === 0}>

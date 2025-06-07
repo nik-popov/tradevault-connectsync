@@ -212,13 +212,13 @@ fetch(proxyEndpoint, options)
 
   return (
     <Box>
-      <Text fontSize="md" mb={6}>
-        The HTTPS Proxy API allows you to route your HTTP/S requests through our network of premium proxies.
+        <Text fontSize="md" mb={2} color="gray.600">
+        The HTTPS API allows you to route your HTTP/S requests through our network of premium proxies.
         This is ideal for web scraping, data gathering, or accessing geo-restricted content.
       </Text>
 
-      <Text mb={4}>
-        To make a request, provide the target URL as a query parameter. Remember to replace <Code>YOUR_API_KEY</Code> with a key from the "API Keys" tab.
+      <Text mb={2} color="gray.600">
+        To make a request, provide the target URL as a query parameter. Remember to replace <Code>YOUR_API_KEY</Code> with a key from the "Keys" tab.
       </Text>
 
       <Tabs variant="enclosed">
