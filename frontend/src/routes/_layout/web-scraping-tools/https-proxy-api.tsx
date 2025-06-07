@@ -3,8 +3,8 @@ import { Container, Flex, Text, Tabs, TabList, TabPanels, Tab, TabPanel, Box, He
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { useMemo } from "react";
 import ProtectedComponent from "../../../components/Common/ProtectedComponent";
-import PlaygroundGSerp from "../../../components/ScrapingTools/PlaygroundGSerp";
-import ApiKeyGSerp from "../../../components/ScrapingTools/ApiKeyGSerp";
+import PlaygroundGSerp from "../../../components/ScrapingTools/PlaygroundHttps";
+import ApiKeyGSerp from "../../../components/ScrapingTools/ApiKey";
 import { useQuery } from "@tanstack/react-query";
 
 interface Subscription {

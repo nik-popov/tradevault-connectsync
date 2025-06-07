@@ -3,9 +3,18 @@ import { Container, Flex, Text, Tabs, TabList, TabPanels, Tab, TabPanel, Box, He
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { useMemo, useState } from "react";
 import ProtectedComponent from "../../../components/Common/ProtectedComponent";
-import ApiKeyGSerp from "../../../components/ScrapingTools/ApiKeyGSerp";
-import { useQuery } from "@tanstack/react-query";
+import PlaygroundSerpApi from "../../../components/ScrapingTools/PlaygroundSerp";
+import ApiKeyHttps from "../../../components/ScrapingTools/ApiKey";
 
+import { useQuery } from "@tanstack/react-query";
+import {
+  Textarea,
+  Spinner,
+  IconButton,
+  Link,
+} from "@chakra-ui/react";
+import { ExternalLinkIcon, CopyIcon, DownloadIcon } from "@chakra-ui/icons";
+import { FiSend } from "react-icons/fi";
 // --- Data Fetching ---
 interface Subscription {
   id: string;
@@ -121,170 +130,7 @@ interface SerpResult {
 }
 
 // --- SERP API Playground Component ---
-const PlaygroundSerpApi = () => {
-    const [apiKey, setApiKey] = useState('');
-    const [query, setQuery] = useState('best pizza in new york');
-    const [engine, setEngine] = useState('google');
-    const [location, setLocation] = useState('US');
-    const [includeImages, setIncludeImages] = useState(false);
-    
-    const [isLoading, setIsLoading] = useState(false);
-    const [response, setResponse] = useState<SerpResult[] | null>(null);
-    const [error, setError] = useState<string | null>(null);
-    const toast = useToast();
 
-    const PROXY_API_ENDPOINT = "https://api.thedataproxy.com/v2/proxy";
-
-    const buildSearchEngineUrl = () => {
-        const url = new URL(`https://www.${engine}.com/search`);
-        url.searchParams.set('q', query);
-        if (includeImages && engine === 'google') {
-            url.searchParams.set('tbm', 'isch');
-        }
-        if (location && engine === 'google') {
-            url.searchParams.set('cr', `country${location}`);
-            url.searchParams.set('gl', location.toLowerCase());
-        }
-        return url.toString();
-    };
-    
-    const parseHtmlResponse = (html: string): SerpResult[] => {
-        const parser = new DOMParser();
-        const doc = parser.parseFromString(html, 'text/html');
-        const results: SerpResult[] = [];
-        const resultNodes = doc.querySelectorAll('div.g');
-        resultNodes.forEach((node, index) => {
-            // FIX: Specify the expected HTML Element types for type safety
-            const titleEl = node.querySelector<HTMLHeadingElement>('h3');
-            const linkEl = node.querySelector<HTMLAnchorElement>('a');
-            const snippetEl = node.querySelector<HTMLDivElement>('div[data-sncf="1"]');
-            
-            if (titleEl && linkEl && snippetEl) {
-                results.push({
-                    position: index + 1,
-                    // Now TypeScript knows .innerText and .href exist
-                    title: titleEl.innerText,
-                    link: linkEl.href,
-                    snippet: snippetEl.innerText,
-                });
-            }
-        });
-        if (results.length === 0) {
-            setError("Could not parse a structured response from the HTML. The search engine's page layout might have changed, or the page was blocked.");
-        }
-        return results;
-    };
-
-    const handleSubmit = async () => {
-        if (!apiKey) {
-            toast({ title: "API Key Required", description: "Please enter your API key to test the proxy.", status: "warning", duration: 5000, isClosable: true });
-            return;
-        }
-        setIsLoading(true);
-        setResponse(null);
-        setError(null);
-        const targetUrl = buildSearchEngineUrl();
-        const proxyRequestUrl = `${PROXY_API_ENDPOINT}?url=${encodeURIComponent(targetUrl)}`;
-        try {
-            const res = await fetch(proxyRequestUrl, {
-                method: 'GET',
-                headers: { 'x-api-key': apiKey, 'Accept': 'text/html' },
-            });
-            if (!res.ok) {
-                const errorData = await res.json().catch(() => ({ detail: `HTTP error! Status: ${res.status}` }));
-                throw new Error(errorData.detail || `An unknown error occurred.`);
-            }
-            const htmlResponse = await res.text();
-            const structuredData = parseHtmlResponse(htmlResponse);
-            setResponse(structuredData);
-        } catch (e: any) {
-            setError(e.message);
-        } finally {
-            setIsLoading(false);
-        }
-    };
-
-    const codeSnippets = useMemo(() => {
-        const targetUrl = buildSearchEngineUrl();
-        const proxyRequestUrl = `${PROXY_API_ENDPOINT}?url=${encodeURIComponent(targetUrl)}`;
-        const safeApiKey = 'YOUR_API_KEY';
-        const curl = `curl -X GET "${proxyRequestUrl}" \\\n  -H "x-api-key: ${safeApiKey}"`;
-        const python = `import requests\n\nproxy_request_url = "${proxyRequestUrl}"\napi_key = "${safeApiKey}"\n\nheaders = {\n    "x-api-key": api_key\n}\n\n# This will return the raw HTML from the search engine\nresponse = requests.get(proxy_request_url, headers=headers)\n\nprint(response.text)`;
-        const javascript = `const proxyRequestUrl = '${proxyRequestUrl}';\nconst apiKey = '${safeApiKey}';\n\nconst headers = {\n    'x-api-key': apiKey\n};\n\nfetch(proxyRequestUrl, { method: 'GET', headers: headers })\n    .then(response => response.text()) // Gets raw HTML\n    .then(html => console.log(html))\n    .catch(error => console.error('Error:', error));`;
-        return { curl, python, javascript };
-    }, [query, engine, location, includeImages]);
-
-
-    return (
-        <Grid templateColumns={{ base: "1fr", lg: "3fr 2fr" }} gap={10}>
-            <GridItem>
-                <VStack spacing={5} align="stretch">
-                    <Heading size="md" mb={2}>Parameters</Heading>
-                    <FormControl isRequired>
-                        <FormLabel fontSize="sm">API Key</FormLabel>
-                        <Input type="password" placeholder="Enter your proxy API key" value={apiKey} onChange={(e) => setApiKey(e.target.value)} fontSize="sm" />
-                    </FormControl>
-                    <FormControl isRequired>
-                        <FormLabel fontSize="sm">Query</FormLabel>
-                        <Input placeholder="e.g., best restaurants near me" value={query} onChange={(e) => setQuery(e.target.value)} fontSize="sm" />
-                    </FormControl>
-                    <FormControl isRequired>
-                        <FormLabel fontSize="sm">Search Engine</FormLabel>
-                        <Select value={engine} onChange={(e) => setEngine(e.target.value)} fontSize="sm">
-                            <option value="google">Google</option>
-                            <option value="bing" disabled>Bing (soon)</option>
-                            <option value="duckduckgo" disabled>DuckDuckGo (soon)</option>
-                        </Select>
-                    </FormControl>
-                    <FormControl>
-                        <FormLabel fontSize="sm">Location</FormLabel>
-                        <Select placeholder="Global" value={location} onChange={(e) => setLocation(e.target.value)} fontSize="sm">
-                            <option value="US">United States</option>
-                            <option value="DE">Germany</option>
-                            <option value="GB">United Kingdom</option>
-                            <option value="FR">France</option>
-                            <option value="CA">Canada</option>
-                        </Select>
-                    </FormControl>
-                    <FormControl display="flex" alignItems="center">
-                        <FormLabel htmlFor="include-images" mb="0" fontSize="sm">
-                            Image Search?
-                        </FormLabel>
-                        <Switch id="include-images" isChecked={includeImages} onChange={(e) => setIncludeImages(e.target.checked)} />
-                    </FormControl>
-                    <Button colorScheme="blue" onClick={handleSubmit} isLoading={isLoading}>
-                        Run Proxy Test
-                    </Button>
-                </VStack>
-            </GridItem>
-            <GridItem>
-                <VStack spacing={4} align="stretch">
-                    <Heading size="md" mb={2}>Code Snippet & Response</Heading>
-                    <Box h="250px" borderWidth="1px" borderRadius="md" overflow="hidden">
-                        <Tabs variant="enclosed" size="sm" h="100%" display="flex" flexDirection="column">
-                            <TabList bg="gray.100">
-                                <Tab>cURL</Tab>
-                                <Tab>Python</Tab>
-                                <Tab>JavaScript</Tab>
-                            </TabList>
-                            <TabPanels bg="gray.50" overflowY="auto" flex="1">
-                                <TabPanel p={0}><Code w="100%" h="100%" p={4} bg="transparent" display="block" whiteSpace="pre-wrap" children={codeSnippets.curl} /></TabPanel>
-                                <TabPanel p={0}><Code w="100%" h="100%" p={4} bg="transparent" display="block" whiteSpace="pre-wrap" children={codeSnippets.python} /></TabPanel>
-                                <TabPanel p={0}><Code w="100%" h="100%" p={4} bg="transparent" display="block" whiteSpace="pre-wrap" children={codeSnippets.javascript} /></TabPanel>
-                            </TabPanels>
-                        </Tabs>
-                    </Box>
-                    <Box>
-                        <Heading size="sm" mb={2}>Structured JSON Response</Heading>
-                        <Box as="pre" p={4} bg="gray.50" borderRadius="md" h="300px" overflowY="auto" fontSize="xs" whiteSpace="pre-wrap">
-                            {isLoading ? "Loading and parsing response..." : error ? `Error: ${error}` : response ? JSON.stringify(response, null, 2) : "Run a test to see the structured JSON response here."}
-                        </Box>
-                    </Box>
-                </VStack>
-            </GridItem>
-        </Grid>
-    );
-};
 
 // --- Main SERP API Page Component ---
 const SerpApiPage = () => {
@@ -349,7 +195,7 @@ const SerpApiPage = () => {
         },
         {
             title: "API Keys",
-            component: () => <ApiKeyGSerp token={token} />,
+            component: () => <ApiKeyHttps token={token} />,
         },
         {
             title: "Playground",

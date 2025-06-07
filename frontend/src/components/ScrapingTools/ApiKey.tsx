@@ -15,6 +15,7 @@ import {
   Alert,
   AlertIcon,
   Heading,
+  useToast, // Import useToast
 } from "@chakra-ui/react";
 import { CopyIcon, DeleteIcon } from "@chakra-ui/icons";
 
@@ -26,18 +27,19 @@ interface ApiKey {
   request_count?: number;
 }
 
-interface ApiKeyGSerpProps {
+interface ApiKeyHttpsProps {
   token: string | null;
 }
 
 const API_URL = "https://api.thedataproxy.com/v2/proxy";
 
-const ApiKeyGSerp: React.FC<ApiKeyGSerpProps> = ({ token }) => {
+const ApiKeyHttps: React.FC<ApiKeyHttpsProps> = ({ token }) => {
   const [apiKeys, setApiKeys] = useState<ApiKey[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [fullKey, setFullKey] = useState<string | null>(null);
   const [hasProxyApiAccess, setHasProxyApiAccess] = useState<boolean | null>(null);
+  const toast = useToast(); // Initialize useToast
 
   useEffect(() => {
     if (token) {
@@ -184,6 +186,13 @@ const ApiKeyGSerp: React.FC<ApiKeyGSerpProps> = ({ token }) => {
 
   const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text);
+    toast({
+      title: "Copied!",
+      description: "API key copied to clipboard.",
+      status: "success",
+      duration: 3000,
+      isClosable: true,
+    });
   };
 
   if (!token) {
@@ -323,4 +332,4 @@ const ApiKeyGSerp: React.FC<ApiKeyGSerpProps> = ({ token }) => {
   );
 };
 
-export default ApiKeyGSerp;
+export default ApiKeyHttps;
