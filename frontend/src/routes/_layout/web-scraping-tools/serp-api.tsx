@@ -154,12 +154,15 @@ const PlaygroundSerpApi = () => {
         const results: SerpResult[] = [];
         const resultNodes = doc.querySelectorAll('div.g');
         resultNodes.forEach((node, index) => {
-            const titleEl = node.querySelector('h3');
-            const linkEl = node.querySelector('a');
-            const snippetEl = node.querySelector('div[data-sncf="1"]');
+            // FIX: Specify the expected HTML Element types for type safety
+            const titleEl = node.querySelector<HTMLHeadingElement>('h3');
+            const linkEl = node.querySelector<HTMLAnchorElement>('a');
+            const snippetEl = node.querySelector<HTMLDivElement>('div[data-sncf="1"]');
+            
             if (titleEl && linkEl && snippetEl) {
                 results.push({
                     position: index + 1,
+                    // Now TypeScript knows .innerText and .href exist
                     title: titleEl.innerText,
                     link: linkEl.href,
                     snippet: snippetEl.innerText,
@@ -213,7 +216,7 @@ const PlaygroundSerpApi = () => {
 
 
     return (
-        <Grid templateColumns={{ base: "1fr", lg: "1fr 1fr" }} gap={10}>
+        <Grid templateColumns={{ base: "1fr", lg: "3fr 2fr" }} gap={10}>
             <GridItem>
                 <VStack spacing={5} align="stretch">
                     <Heading size="md" mb={2}>Parameters</Heading>

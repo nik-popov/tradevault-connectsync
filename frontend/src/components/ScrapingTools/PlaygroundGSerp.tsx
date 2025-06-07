@@ -247,15 +247,15 @@ const PlaygroundGSerp: React.FC = () => {
               )}
             </Flex>
           </Flex>
+
           <Text fontSize="sm" mb={4}>
             <Link
-              href="/web-scraping-tools/serp-api"
-              isExternal
               color="orange.500"
             >
-              Structured Response (json results) <ExternalLinkIcon mx="2px" />
+              RAW HTML <CopyIcon mx="2px" />
             </Link>
           </Text>
+
           {isLoading ? (
             <Flex justify="center" align="center" h="400px">
               <Spinner size="xl" color="orange.500" />
@@ -317,9 +317,11 @@ const PlaygroundGSerp: React.FC = () => {
           </Flex>
           <Text fontSize="sm" mb={4}>
             <Link
+              href="/web-scraping-tools/serp-api"
+              isExternal
               color="orange.500"
             >
-              Rendered HTML<CopyIcon mx="2px" />
+              Structured Response  <ExternalLinkIcon mx="2px" /> (json)
             </Link>
           </Text>
           {htmlPreview ? (
