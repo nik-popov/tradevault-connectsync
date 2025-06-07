@@ -171,7 +171,7 @@ const GoogleSerpPage = () => {
                   <Tbody>
                     <Tr>
                       <Td><Text fontSize="sm">Plan Name</Text></Td>
-                      <Td><Heading size="xs">{activeSubscription?.product_name || activeSubscription?.plan_name || "N/A"}</Heading></Td>
+                      <Td><Text fontSize="sm">{activeSubscription?.product_name || activeSubscription?.plan_name || "N/A"}</Text></Td>
                     </Tr>
                     <Tr>
                       <Td><Text fontSize="sm">Status</Text></Td>
@@ -234,9 +234,6 @@ const GoogleSerpPage = () => {
     <Container maxW="full">
       <Flex align="center" justify="space-between" py={6} gap={4}>
         <Heading size="md">HTTPS Request API</Heading>
-        <Text fontSize="sm" color="gray.500">
-          Active subscription: {activeSubscription?.product_name || activeSubscription?.plan_name || "None"}
-        </Text>
       </Flex>
       {isSubscriptionsLoading || isAccessLoading || isApiKeysLoading ? (
         <Text fontSize="sm">Loading user details...</Text>
