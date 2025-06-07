@@ -447,7 +447,7 @@ function UserAgentsPage() {
             align="center"
             py={6}
         >
-            <Box mb={{ base: 4, md: 0 }}>
+            <Box p={4} mb={{ base: 4, md: 0 }}>
                 <Text fontSize="lg" mb={2} color="gray.700">
                   Reflect the most prevalent browsers and devices.
                 </Text>
