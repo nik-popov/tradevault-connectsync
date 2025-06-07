@@ -193,7 +193,7 @@ async function deleteUserAgent(id: string): Promise<void> {
     }
 }
 
-// --- Reusable Components (No changes) ---
+// --- Reusable Components ---
 const CopyCell = ({ textToCopy }: { textToCopy: string }) => {
     const { onCopy } = useClipboard(textToCopy);
     const toast = useToast();
@@ -269,25 +269,38 @@ const UserAgentTable = ({
 
   return (
     <TableContainer>
-      <Table variant="simple">
+      <Table variant="simple" size="sm">
         <Thead>
           <Tr>
             <Th color="black">User Agent String</Th>
-            <Th color="black">Device Info</Th>
+            {/* START: UPDATED HEADERS */}
+            <Th color="black">Device</Th>
+            <Th color="black">OS</Th>
+            <Th color="black">Browser</Th>
+            {/* END: UPDATED HEADERS */}
             <Th color="black" isNumeric>Actions</Th>
           </Tr>
         </Thead>
         <Tbody>
           {agents.map((agent) => (
             <Tr key={agent.id} opacity={isPlaceholderData ? 0.5 : 1}>
-              <Td maxW="600px" whiteSpace="normal" wordBreak="break-all">{agent.user_agent}</Td>
+              <Td maxW="500px" whiteSpace="normal" wordBreak="break-all">{agent.user_agent}</Td>
+              {/* START: UPDATED CELLS */}
               <Td>
-                <VStack align="start" spacing={1} fontSize="sm">
-                  {agent.device && <HStack><Text fontWeight="bold">Device:</Text><Badge colorScheme="blue">{agent.device}</Badge></HStack>}
-                  {agent.os && <HStack><Text fontWeight="bold">OS:</Text><Text>{agent.os}</Text></HStack>}
-                  {agent.browser && <HStack><Text fontWeight="bold">Browser:</Text><Text>{agent.browser}</Text></HStack>}
-                </VStack>
+                {agent.device ? (
+                  <Badge colorScheme={
+                    agent.device.toLowerCase() === 'desktop' ? 'green' : 
+                    agent.device.toLowerCase() === 'mobile' ? 'orange' : 'gray'
+                  }>
+                    {agent.device}
+                  </Badge>
+                ) : (
+                  '-'
+                )}
               </Td>
+              <Td>{agent.os || '-'}</Td>
+              <Td>{agent.browser || '-'}</Td>
+              {/* END: UPDATED CELLS */}
               <Td isNumeric>
                 <HStack spacing={1} justify="flex-end">
                   <CopyCell textToCopy={agent.user_agent} />
@@ -407,11 +420,10 @@ function UserAgentsPage() {
             <Text fontSize="lg" color="gray.600">A dynamic list of user agents for web scraping</Text>
         </Flex>
 
-        {/* --- START: UPDATED TABS --- */}
         <Tabs isLazy variant="enclosed-colored" colorScheme="orange" onChange={(index) => setTabIndex(index)}>
             <TabList>
-                {/* Note: The Array.map pattern is better for complex components, but this is fine for a few static tabs. */}
                 {[
+                  { label: "All", count: allAgents.length, color: "blue" },
                   { label: "Desktop", count: desktopAgents.length, color: "green" },
                   { label: "Mobile", count: mobileAgents.length, color: "orange" },
                   { label: "Other", count: otherAgents.length, color: "gray" },
@@ -437,9 +449,7 @@ function UserAgentsPage() {
                 ))}
             </TabList>
         </Tabs>
-        {/* --- END: UPDATED TABS --- */}
 
-        {/* --- START: UPDATED ACTION HEADER --- */}
         <Flex
             direction={{ base: "column", md: "row" }}
             justify="space-between"
@@ -502,7 +512,6 @@ function UserAgentsPage() {
         </Flex>
 
         <Divider mb={4} />
-        {/* --- END: UPDATED ACTION HEADER --- */}
 
 
         {isLoading && !data && (
