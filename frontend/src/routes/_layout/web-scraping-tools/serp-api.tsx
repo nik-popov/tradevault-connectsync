@@ -148,7 +148,6 @@ const CodeBlock = ({ code, language, bg = "gray.800", ...rest }: { code: string;
         customStyle={{
           margin: 0,
           padding: '2rem 1rem 1rem 1rem',
-          height: '100%',
           fontSize: '0.9rem', 
           backgroundColor: 'transparent',
         }}
@@ -246,40 +245,38 @@ const codeTabs = [
 // --- Get Started Tab Component ---
 const GetStartedTab = () => {
   return (
-    <Flex direction="column" minH={{ base: "auto", md: "80vh" }}>
-      <Box flex="1" display="flex" flexDirection="column">
-        <Text fontSize="lg" mb={2} color="gray.700">
-          This tool allows you to programmatically fetch search engine results pages.
-        </Text>
-        <Text fontSize="lg" mb={4} color="gray.700">
-          To get started, create an API key in the API Keys tab and use it in your requests. Remember to replace <Code fontSize="sm">YOUR_API_KEY</Code> with your actual key.
-        </Text>
-        
-        <Tabs variant="enclosed" colorScheme="orange" flex="1" display="flex" flexDirection="column">
-          <TabList>
-            {codeTabs.map((tab) => (
-              <Tab 
-                key={tab.id}
-                fontWeight="semibold"
-                fontSize="lg"
-                _selected={{ bg: "gray.800", color: "orange.400", borderColor: "inherit", borderBottomColor: "gray.800" }}
-              >
-                {tab.label}
-              </Tab>
-            ))}
-          </TabList>
-          <TabPanels flex="1">
-            {codeTabs.map((tab) => (
-              <TabPanel key={tab.id} p={0} h="100%">
-                <CodeBlock code={tab.code} language={tab.language} bg="gray.800" h="100%" />
-              </TabPanel>
-            ))}
-          </TabPanels>
-        </Tabs>
-      </Box>
+    <Box>
+      <Text fontSize="lg" mb={2} color="gray.700">
+        This tool allows you to programmatically fetch search engine results pages.
+      </Text>
+      <Text fontSize="lg" mb={4} color="gray.700">
+        To get started, create an API key in the API Keys tab and use it in your requests. Remember to replace <Code fontSize="sm">YOUR_API_KEY</Code> with your actual key.
+      </Text>
+      
+      <Tabs variant="enclosed" colorScheme="orange">
+        <TabList>
+          {codeTabs.map((tab) => (
+            <Tab 
+              key={tab.id}
+              fontWeight="semibold"
+              fontSize="lg"
+              _selected={{ bg: "gray.800", color: "orange.400", borderColor: "inherit", borderBottomColor: "gray.800" }}
+            >
+              {tab.label}
+            </Tab>
+          ))}
+        </TabList>
+        <TabPanels>
+          {codeTabs.map((tab) => (
+            <TabPanel key={tab.id} p={0}>
+              <CodeBlock code={tab.code} language={tab.language} bg="gray.800" />
+            </TabPanel>
+          ))}
+        </TabPanels>
+      </Tabs>
 
-      <Box pt={8} mt="auto">
-        <Box p={8} borderWidth="1px" borderRadius="md" bg="orange.50" borderColor="orange.200">
+      <Box pt={8}>
+        <Box p={4} borderWidth="1px" borderRadius="md" bg="orange.50" borderColor="orange.200">
             <Heading size="md" mb={2} color="gray.800">Need Help?</Heading>
             <Text fontSize="md" color="gray.700">
               Check our detailed{" "}
@@ -293,7 +290,7 @@ const GetStartedTab = () => {
             </Text>
         </Box>
       </Box>
-    </Flex>
+    </Box>
   );
 };
 
