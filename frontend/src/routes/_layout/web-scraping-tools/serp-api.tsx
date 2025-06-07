@@ -51,7 +51,8 @@ import {
 import { CopyIcon, AddIcon, DeleteIcon } from "@chakra-ui/icons";
 import ProtectedComponent from "../../../components/Common/ProtectedComponent";
 import PlaygroundSerpApi from "../../../components/ScrapingTools/PlaygroundSerp";
-// The ApiKeyModule is no longer needed as we've created a custom one.
+import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
+import { vscDarkPlus } from "react-syntax-highlighter/dist/esm/styles/prism";
 import ApiKeyModule from "../../../components/ScrapingTools/ApiKey";
 
 // --- Interfaces and Helper Functions ---
@@ -123,16 +124,9 @@ const fetchApiKeys = (token: string): Promise<ApiKey[]> =>
     }))
   );
 
-const createNewApiKey = (token: string): Promise<{ full_key: string }> =>
-  fetchFromApi("/proxy/api-keys", token, { method: "POST" });
-
-const revokeExistingApiKey = (token: string, keyPreview: string): Promise<void> =>
-  fetchFromApi(`/proxy/api-keys/${keyPreview}`, token, { method: "DELETE" });
-
-
-// --- Code Block Component ---
-const CodeBlock = ({ code }: { code: string }) => {
-  const { onCopy } = useClipboard(code);
+// --- CodeBlock Component ---
+const CodeBlock = ({ code, language, bg = "gray.800", ...rest }: { code: string; language: string; bg?: string; [key: string]: any }) => {
+  const { onCopy } = useClipboard(code.trim());
   const toast = useToast();
 
   const handleCopy = () => {
@@ -142,24 +136,31 @@ const CodeBlock = ({ code }: { code: string }) => {
       status: "success",
       duration: 2000,
       isClosable: true,
-      position: "top-right",
+      position: "top",
     });
   };
 
   return (
-    <Box position="relative">
-      <Textarea
-        value={code}
-        readOnly
-        height="320px"
-        bg="gray.50"
-        fontFamily="monospace"
-        fontSize="sm"
-        p={4}
-        pt={12}
-        resize="none"
-        _dark={{ bg: "gray.700" }}
-      />
+    <Box position="relative" bg={bg} borderRadius="md" overflow="hidden" {...rest}>
+      <SyntaxHighlighter
+        language={language}
+        style={vscDarkPlus}
+        customStyle={{
+          margin: 0,
+          padding: '2rem 1rem 1rem 1rem',
+          height: '100%',
+          fontSize: '0.9rem', 
+          backgroundColor: 'transparent',
+        }}
+        codeTagProps={{
+          style: {
+            fontFamily: "var(--chakra-fonts-mono)",
+          }
+        }}
+        showLineNumbers
+      >
+        {code.trim()}
+      </SyntaxHighlighter>
       <IconButton
         aria-label="Copy Code"
         icon={<CopyIcon />}
@@ -168,18 +169,21 @@ const CodeBlock = ({ code }: { code: string }) => {
         top="0.5rem"
         right="0.5rem"
         onClick={handleCopy}
+        variant="ghost"
+        color="gray.400"
+        _hover={{ bg: "whiteAlpha.200", color: "white" }}
       />
     </Box>
   );
 };
 
-// --- Get Started Tab Component ---
-const GetStartedTab = () => {
-  const API_ENDPOINT = "https://api.thedataproxy.com/v2/serp?q=best%20pizza%20in%20new%20york&engine=google®ion=us-east";
-  const CODE_EXAMPLES = {
-    curl: `curl -X GET "${API_ENDPOINT}" \\
+// --- Constants ---
+const API_ENDPOINT = "https://api.thedataproxy.com/v2/serp?q=best%20pizza%20in%20new%20york&engine=google®ion=us-east";
+
+const CODE_EXAMPLES = {
+  curl: `curl -X GET "${API_ENDPOINT}" \\
   -H "x-api-key: YOUR_API_KEY"`,
-    python: `import requests
+  python: `import requests
 
 api_key = "YOUR_API_KEY"
 url = "https://api.thedataproxy.com/v2/serp"
@@ -200,7 +204,7 @@ if response.status_code == 200:
 else:
     print(f"Error: {response.status_code}")
     print(response.text)`,
-    javascript: `// Using node-fetch, or native fetch in browser/deno/node 18+
+  javascript: `// Using node-fetch, or native fetch in browser/deno/node 18+
 import fetch from 'node-fetch';
 
 const apiKey = 'YOUR_API_KEY';
@@ -230,49 +234,74 @@ fetch(url, options)
     })
     .then(json => console.log(json))
     .catch(err => console.error('error:' + err));`
-  };
+};
 
+const codeTabs = [
+ 
+  { id: 'javascript', label: 'JavaScript', code: CODE_EXAMPLES.javascript, language: 'javascript' },
+ { id: 'python', label: 'Python', code: CODE_EXAMPLES.python, language: 'python' },
+    { id: 'curl', label: 'cURL', code: CODE_EXAMPLES.curl, language: 'bash' },
+];
+
+// --- Get Started Tab Component ---
+const GetStartedTab = () => {
   return (
-  <Box>
-    <Text fontSize="md" mb={2} color="gray.600">
-      This tool allows you to programmatically fetch search engine results pages.
-      To get started, create an API key in the API Keys tab and use it in your requests.
-    </Text>
-    <Text mb={4} color="gray.600">
-      Here are some basic examples to help you make your first request. Remember to replace <Code>YOUR_API_KEY</Code> with your actual key.
-    </Text>
-    
-    <Tabs variant="enclosed">
-      <TabList>
-        <Tab>cURL</Tab>
-        <Tab>Python</Tab>
-        <Tab>JavaScript (Node.js)</Tab>
-      </TabList>
-      <TabPanels>
-        <TabPanel p={0} pt={4}><CodeBlock code={CODE_EXAMPLES.curl} /></TabPanel>
-        <TabPanel p={0} pt={4}><CodeBlock code={CODE_EXAMPLES.python} /></TabPanel>
-        <TabPanel p={0} pt={4}><CodeBlock code={CODE_EXAMPLES.javascript} /></TabPanel>
-      </TabPanels>
-    </Tabs>
+    <Flex direction="column" minH={{ base: "auto", md: "80vh" }}>
+      <Box flex="1" display="flex" flexDirection="column">
+        <Text fontSize="lg" mb={2} color="gray.700">
+          This tool allows you to programmatically fetch search engine results pages.
+        </Text>
+        <Text fontSize="lg" mb={4} color="gray.700">
+          To get started, create an API key in the API Keys tab and use it in your requests. Remember to replace <Code fontSize="sm">YOUR_API_KEY</Code> with your actual key.
+        </Text>
+        
+        <Tabs variant="enclosed" colorScheme="orange" flex="1" display="flex" flexDirection="column">
+          <TabList>
+            {codeTabs.map((tab) => (
+              <Tab 
+                key={tab.id}
+                fontWeight="semibold"
+                fontSize="lg"
+                _selected={{ bg: "gray.800", color: "orange.400", borderColor: "inherit", borderBottomColor: "gray.800" }}
+              >
+                {tab.label}
+              </Tab>
+            ))}
+          </TabList>
+          <TabPanels flex="1">
+            {codeTabs.map((tab) => (
+              <TabPanel key={tab.id} p={0} h="100%">
+                <CodeBlock code={tab.code} language={tab.language} bg="gray.800" h="100%" />
+              </TabPanel>
+            ))}
+          </TabPanels>
+        </Tabs>
+      </Box>
 
-    <Box mt={8} p={4} borderWidth="1px" borderRadius="md">
-      <Heading size="md" mb={4}>Need Help?</Heading>
-      <Text fontSize="md">
-        If you have questions or run into issues, we're here to help.
-        Check out our detailed{" "}
-        <Link color="blue.500" href="/documentation/serp-api" isExternal>
-          API Documentation
-        </Link>{" "}
-        for more examples and advanced usage. For further assistance, please contact our{" "}
-        <Link color="blue.500" href="/support" isExternal>
-          Support Center
-        </Link>.
-      </Text>
-    </Box>
-  </Box>
+      <Box pt={8} mt="auto">
+        <Box p={8} borderWidth="1px" borderRadius="md" bg="orange.50" borderColor="orange.200">
+            <Heading size="md" mb={2} color="gray.800">Need Help?</Heading>
+            <Text fontSize="md" color="gray.700">
+              Check our detailed{" "}
+              <Link color="orange.600" fontWeight="bold" href="/documentation/serp-api" isExternal>
+                API Documentation
+              </Link>{" "}
+              for more examples. For further assistance, contact our{" "}
+              <Link color="orange.600" fontWeight="bold" href="/support" isExternal>
+                Support Center
+              </Link>.
+            </Text>
+        </Box>
+      </Box>
+    </Flex>
   );
 };
 
+const pageTabsData = [
+  { id: "get-started", label: "Get Started", component: <GetStartedTab /> },
+  { id: "keys", label: "API Keys" },
+  { id: "playground", label: "Playground", component: <PlaygroundSerpApi /> },
+];
 
 // --- Main SERP API Page Component ---
 const SerpApiPage = () => {
@@ -292,32 +321,23 @@ const SerpApiPage = () => {
     staleTime: 5 * 60 * 1000,
   });
 
-  const { data: apiKeys, isLoading: isApiKeysLoading, error: apiKeysError, refetch: refetchApiKeys } = useQuery({
-    queryKey: ["apiKeys"],
-    queryFn: () => fetchApiKeys(token),
-    enabled: !!token,
-    staleTime: 5 * 60 * 1000,
-  });
-
   const hasActiveSubscription = subscriptions?.some(
     (sub) => ["active", "trialing"].includes(sub.status)
   ) || false;
 
-  const isLoading = isSubscriptionsLoading || isAccessLoading || isApiKeysLoading;
-  const error = subscriptionsError || accessError || apiKeysError;
+  const isLoading = isSubscriptionsLoading || isAccessLoading;
+  const error = subscriptionsError || accessError;
 
   return (
       <ProtectedComponent>
-          <Container maxW="full" py={6}>
+          <Container maxW="full" py={9}>
              <Flex align="center" justify="space-between" py={6}>
-             <Text fontSize="xl" color="black" >SERP API (Search Engine Results Page)</Text>
-                 <Text fontSize="md" color="gray.600">Structured search engine results </Text>
+                 <Text fontSize="3xl" color="black" >SERP API</Text>
+                 <Text fontSize="lg" color="gray.600">Search Engine Results Page</Text>
            </Flex>
-           <Divider my={4} borderColor="gray.200" />
-   
 
         {isLoading ? (
-          <Text fontSize="sm">Loading user details...</Text>
+          <Flex justify="center" align="center" h="50vh"><Spinner /></Flex>
         ) : error ? (
           <Alert status="error">
             <AlertIcon />
@@ -340,18 +360,32 @@ const SerpApiPage = () => {
                 </Text>
               </Alert>
             )}
-            <Tabs isLazy variant="enclosed-colored" colorScheme="orange">
+           <Tabs isLazy variant="enclosed-colored" colorScheme="orange">
               <TabList>
-                <Tab fontSize="sm">Get Started</Tab>
-                <Tab fontSize="sm">Keys</Tab>
-                <Tab fontSize="sm">Playground</Tab>
+                {pageTabsData.map((tab) => (
+                  <Tab
+                    key={tab.id}
+                    fontSize="lg"
+                    bg="white"
+                    _selected={{
+                      bg: "gray.50",
+                      color: "orange.600",
+                      borderColor: "inherit",
+                      borderBottomColor: "gray.50", 
+                      borderTopWidth: "2px", 
+                      borderTopColor: "orange.400", 
+                      marginTop: "-1px", 
+                    }}
+                  >
+                    {tab.label}
+                  </Tab>
+                ))}
               </TabList>
-              <TabPanels pt={4}>
+              
+              <TabPanels bg="gray.50" pt={4} borderRadius="0 0 md md">
                 <TabPanel><GetStartedTab /></TabPanel>
                 <TabPanel>
-                    <ApiKeyModule
-                                    token={token}
-                                  />
+                  <ApiKeyModule token={token} />
                 </TabPanel>
                 <TabPanel><PlaygroundSerpApi /></TabPanel>
               </TabPanels>
