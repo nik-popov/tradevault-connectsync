@@ -1,10 +1,12 @@
 import { createFileRoute, Link as RouterLink } from "@tanstack/react-router";
-import { Container, Flex, Text, Box, Heading, Alert, AlertIcon, Grid, GridItem, Table, Tbody, Tr, Td, Badge, VStack, Link, Icon } from "@chakra-ui/react";
+// --- UPDATED IMPORTS ---
+import { Container, Flex, Text, Box, Heading, Alert, AlertIcon, Grid, GridItem, Table, Tbody, Tr, Td, Badge, VStack, Link, Icon, useToast, Button } from "@chakra-ui/react";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
-import { useMemo } from "react";
+import { useMemo, useState } from "react"; // <-- Import useState
 import ProtectedComponent from "../../components/Common/ProtectedComponent";
 import { useQuery } from "@tanstack/react-query";
 import { FaBook, FaKey, FaCreditCard } from 'react-icons/fa';
+
 
 
 // --- Interfaces (UPDATED) ---
@@ -61,7 +63,28 @@ async function fetchSubscriptions(): Promise<Subscription[]> {
     throw error;
   }
 }
+// --- NEW HELPER FUNCTION TO FETCH PORTAL URL ---
+async function fetchBillingPortal(token: string): Promise<string> {
+  const response = await fetch("https://api.thedataproxy.com/v2/customer-portal", {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      "Accept": "application/json",
+      "Authorization": `Bearer ${token}`,
+    },
+  });
 
+  if (!response.ok) {
+    throw new Error(`Failed to fetch portal: ${response.status}`);
+  }
+
+  const data = await response.json();
+  if (!data.portal_url) {
+    throw new Error("No portal URL received from server.");
+  }
+
+  return data.portal_url;
+};
 async function fetchApiKeys(token: string): Promise<ApiKey[]> {
   try {
     const response = await fetch("https://api.thedataproxy.com/v2/proxy/api-keys", {
@@ -147,9 +170,7 @@ const HomePage = () => {
 
   const totalRequests = apiKeys?.reduce((sum, key) => sum + (key.request_count || 0), 0) || 0;
   
-  // MOCKED DATA: This value is a placeholder until a real API endpoint is available.
   const dataTransferredGB = useMemo(() => {
-    // Simple mock: 0.5 MB per request
     return (totalRequests * 0.0005).toFixed(2);
   }, [totalRequests]);
 
@@ -159,6 +180,41 @@ const HomePage = () => {
 
   const isLoading = isSubscriptionsLoading || isApiKeysLoading;
   const error = subscriptionsError || apiKeysError;
+  
+  // --- NEW STATE AND HANDLER FOR BILLING PORTAL ---
+  const [isPortalLoading, setIsPortalLoading] = useState(false);
+  const toast = useToast();
+  
+  const handleBillingClick = async () => {
+    if (!token) {
+        toast({
+            title: "Authentication Required",
+            description: "Please log in to manage billing.",
+            status: "warning",
+            duration: 5000,
+            isClosable: true,
+        });
+        return;
+    }
+
+    setIsPortalLoading(true);
+    try {
+        const portalUrl = await fetchBillingPortal(token);
+        window.location.href = portalUrl;
+    } catch (error) {
+        console.error("Error accessing customer portal:", error);
+        toast({
+            title: "Error",
+            description: "Could not open the billing portal. Please try again.",
+            status: "error",
+            duration: 5000,
+            isClosable: true,
+        });
+    } finally {
+        setIsPortalLoading(false);
+    }
+  };
+
 
   return (
     <ProtectedComponent>
@@ -182,42 +238,50 @@ const HomePage = () => {
           </Alert>
         ) : (
           <VStack spacing={6} align="stretch">
-            {/* === Bottom Row: Summary Cards === */}
+            {/* === Bottom Row: Summary Cards (UPDATED) === */}
             <Grid templateColumns={{ base: "1fr", md: "1fr 1fr 1fr" }} gap={6}>
               {/* Total Requests Card */}
               <GridItem>
                 <Box shadow="md" borderWidth="1px" borderRadius="md" p={4} height="100%">
-                  <VStack align="start">
-                    <Text fontSize="sm" color="gray.500">Total Requests (This Period)</Text>
-                    <Heading size="lg">{totalRequests.toLocaleString()}</Heading>
-                  </VStack>
+                    <VStack align="start">
+                        <Text fontSize="sm" color="gray.500">Total Requests (This Period)</Text>
+                        <Heading size="lg">{totalRequests.toLocaleString()}</Heading>
+                    </VStack>
                 </Box>
               </GridItem>
-
               {/* Data Transferred Card */}
               <GridItem>
                 <Box shadow="md" borderWidth="1px" borderRadius="md" p={4} height="100%">
-                  <VStack align="start">
-                    <Text fontSize="sm" color="gray.500">Data Transferred (Est.)</Text>
-                    <Heading size="lg">{dataTransferredGB} GB</Heading>
-                  </VStack>
+                    <VStack align="start">
+                        <Text fontSize="sm" color="gray.500">Data Transferred (Est.)</Text>
+                        <Heading size="lg">{dataTransferredGB} GB</Heading>
+                    </VStack>
                 </Box>
               </GridItem>
-
               {/* Quick Start Card */}
               <GridItem>
                 <Box shadow="md" borderWidth="1px" borderRadius="md" p={4} height="100%">
                   <VStack align="start" spacing={3}>
                     <Heading size="sm">Quick Start</Heading>
-                    <Link as={RouterLink} to="/proxy" display="flex" alignItems="center">
+                    <Link as={RouterLink} to="/settings" display="flex" alignItems="center">
                       <Icon as={FaKey} mr={2} /> Manage API Keys
                     </Link>
                     <Link href="https://docs.thedataproxy.com" isExternal display="flex" alignItems="center">
                       <Icon as={FaBook} mr={2} /> API Documentation
                     </Link>
-                    <Link as={RouterLink} to="/settings" display="flex" alignItems="center">
-                      <Icon as={FaCreditCard} mr={2} /> Billing Portal
-                    </Link>
+                    {/* --- UPDATED BILLING PORTAL LINK --- */}
+                    <Button 
+                        variant="link" 
+                        onClick={handleBillingClick}
+                        isLoading={isPortalLoading}
+                        leftIcon={<Icon as={FaCreditCard} />}
+                        colorScheme="blue"
+                        fontWeight="normal"
+                        justifyContent="flex-start"
+                        _hover={{textDecoration: "underline"}}
+                    >
+                      Billing Portal
+                    </Button>
                   </VStack>
                 </Box>
               </GridItem>
