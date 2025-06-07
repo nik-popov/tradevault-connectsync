@@ -4,7 +4,7 @@ import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, Responsi
 import { useMemo, useState } from "react";
 import ProtectedComponent from "../../../components/Common/ProtectedComponent";
 import PlaygroundSerpApi from "../../../components/ScrapingTools/PlaygroundSerp";
-import ApiKeyHttps from "../../../components/ScrapingTools/ApiKey";
+import ApiKeyHttps from "../../../components/ScrapingTools/ApiKeyHttps";
 
 import { useQuery } from "@tanstack/react-query";
 import {
