@@ -35,7 +35,7 @@ interface ApiKey {
   request_count?: number;
 }
 
-const API_URL = "https://api.thedataproxy.com/v2/proxy";
+const API_URL = "https://api.thedataproxy.com/v2/serp";
 
 async function fetchSubscriptions(): Promise<Subscription[]> {
   const token = localStorage.getItem("access_token");
@@ -53,7 +53,7 @@ async function fetchSubscriptions(): Promise<Subscription[]> {
 async function fetchProxyApiAccess(): Promise<ProxyApiAccess> {
   const token = localStorage.getItem("access_token");
   if (!token) throw new Error("No access token found. Please log in again.");
-  const response = await fetch("https://api.thedataproxy.com/v2/proxy-api/access", {
+  const response = await fetch("https://api.thedataproxy.com/v2/serp-api/access", {
     headers: { Authorization: `Bearer ${token}` },
   });
   if (!response.ok) {
@@ -113,7 +113,7 @@ const generateChartDataForPeriod = (startTimestamp: number | null, totalValue: n
   return data;
 };
 
-// --- Main SERP API Page Component ---
+// --- Main SERP API Page Component (Refactored) ---
 const SerpApiPage = () => {
   const { data: subscriptions, isLoading: isSubscriptionsLoading, error: subscriptionsError } = useQuery({
     queryKey: ["subscriptions"],
@@ -136,8 +136,7 @@ const SerpApiPage = () => {
     enabled: !!token,
   });
 
-  const hasSubscriptions = subscriptions && subscriptions.length > 0;
-  const hasActiveSubscription = hasSubscriptions && subscriptions.some((sub) => ["active", "trialing"].includes(sub.status));
+  const hasActiveSubscription = subscriptions?.some((sub) => ["active", "trialing"].includes(sub.status));
   const activeSubscription = subscriptions?.find((sub) => ["active", "trialing"].includes(sub.status));
   const totalRequests = apiKeys?.reduce((sum, key) => sum + (key.request_count || 0), 0) || 0;
 
@@ -238,69 +237,118 @@ const SerpApiPage = () => {
     },
   ];
 
+  // Component for displaying the protected view with pricing
+  const ProtectedViewWithPricing = ({ title, message }: { title: string; message: string }) => (
+    <Box py={8}>
+      <Alert
+        status="warning"
+        variant="subtle"
+        flexDirection="column"
+        alignItems="center"
+        justifyContent="center"
+        textAlign="center"
+        borderRadius="lg"
+        p={6}
+        mb={8}
+      >
+        <AlertIcon boxSize="32px" mr={0} />
+        <Heading size="md" mt={3} mb={2}>{title}</Heading>
+        <Text>{message}</Text>
+      </Alert>
+
+      <Box borderWidth="1px" borderRadius="lg" p={8} bg="white" shadow="sm">
+        <Heading size="lg" mb={4} textAlign="center">
+          Unlock Full SERP API Power
+        </Heading>
+        <Text textAlign="center" mb={8} color="gray.600">
+          Choose a plan to get started with our high-performance SERP API and access real-time search data.
+        </Text>
+        <Grid templateColumns={{ base: "1fr", md: "1fr 1fr 1fr" }} gap={6}>
+          <GridItem borderWidth="1px" borderRadius="md" p={6} textAlign="center" _hover={{ shadow: 'md', transform: 'translateY(-2px)' }} transition="all 0.2s ease-in-out">
+            <Heading size="md">Starter</Heading>
+            <Text mt={2} color="gray.500">For small projects</Text>
+            <Text fontWeight="bold" fontSize="2xl" my={3}>$49/mo</Text>
+          </GridItem>
+          <GridItem borderWidth="2px" borderRadius="md" p={6} textAlign="center" borderColor="blue.500" shadow="lg" transform={{ base: "none", md: "translateY(-4px)" }}>
+            <Heading size="md">Pro</Heading>
+            <Text mt={2} color="gray.500">For growing businesses</Text>
+            <Text fontWeight="bold" fontSize="2xl" my={3}>$99/mo</Text>
+          </GridItem>
+          <GridItem borderWidth="1px" borderRadius="md" p={6} textAlign="center" _hover={{ shadow: 'md', transform: 'translateY(-2px)' }} transition="all 0.2s ease-in-out">
+            <Heading size="md">Enterprise</Heading>
+            <Text mt={2} color="gray.500">For large-scale needs</Text>
+            <Text fontWeight="bold" fontSize="2xl" my={3}>Contact Us</Text>
+          </GridItem>
+        </Grid>
+      </Box>
+    </Box>
+  );
+
+  // Renders content based on loading, error, and access status
+  const renderContent = () => {
+    if (isSubscriptionsLoading || isAccessLoading || isApiKeysLoading) {
+      return <Text fontSize="sm" p={6}>Loading user details...</Text>;
+    }
+
+    const anyError = subscriptionsError || accessError || apiKeysError;
+    if (anyError) {
+      return (
+        <ProtectedViewWithPricing
+          title="Error Loading Data"
+          message={anyError.message || "An error occurred while loading your account details. Please contact support."}
+        />
+      );
+    }
+    
+    if (!hasActiveSubscription) {
+      return (
+        <ProtectedViewWithPricing
+          title="No Active Subscription"
+          message="You don't have an active subscription. Please choose a plan to access the SERP API."
+        />
+      );
+    }
+
+    if (!proxyApiAccess?.has_access) {
+      return (
+        <ProtectedViewWithPricing
+          title="Upgrade Required"
+          message={proxyApiAccess?.message || "Your current plan does not include SERP API access. Please upgrade your plan."}
+        />
+      );
+    }
+
+    // Success case: user has access and all data is loaded
+    return (
+      <Tabs isLazy variant="soft-rounded" colorScheme="blue">
+        <TabList>
+          {TabsConfig.map((tab, index) => (
+            <Tab key={index} fontSize="sm">{tab.title}</Tab>
+          ))}
+        </TabList>
+        <TabPanels>
+          {TabsConfig.map((tab, index) => (
+            <TabPanel key={index} p={{ base: 2, md: 6 }}>{tab.component()}</TabPanel>
+          ))}
+        </TabPanels>
+      </Tabs>
+    );
+  };
+
   return (
     <ProtectedComponent>
-      <Container maxW="full">
-        <Flex align="center" justify="space-between" py={6} gap={4}>
-          <Heading size="md">SERP API</Heading>
-        </Flex>
-        {isSubscriptionsLoading || isAccessLoading || isApiKeysLoading ? (
-          <Text fontSize="sm">Loading user details...</Text>
-        ) : subscriptionsError || accessError || apiKeysError ? (
-          <Alert status="error">
-            <AlertIcon />
-            <Text fontSize="sm">
-              {subscriptionsError?.message
-                ? `Failed to load subscriptions: ${subscriptionsError.message}`
-                : accessError?.message
-                ? `Failed to check API access: ${accessError.message}`
-                : apiKeysError?.message
-                ? `Failed to load API keys: ${apiKeysError.message}`
-                : "An error occurred while loading your account details. Please try again later."}
-            </Text>
-          </Alert>
-        ) : !hasSubscriptions ? (
-          <Alert status="error">
-            <AlertIcon />
-            <Text fontSize="sm">
-              No subscriptions found for your account. Please subscribe to a SERP API plan to access this feature.
-            </Text>
-          </Alert>
-        ) : !hasActiveSubscription ? (
-          <Alert status="error">
-            <AlertIcon />
-            <Text fontSize="sm">
-              No active SERP API subscriptions found. Please activate a plan to use the SERP API.
-            </Text>
-          </Alert>
-        ) : (
-          <>
-            {!proxyApiAccess?.has_access && (
-              <Alert status="warning" mb={4}>
-                <AlertIcon />
-                <Text fontSize="sm">
-                  {proxyApiAccess?.message || "Your current plan does not include SERP API access. Please upgrade your plan."}
-                </Text>
-              </Alert>
-            )}
-            <Tabs>
-              <TabList>
-                {TabsConfig.map((tab, index) => (
-                  <Tab key={index} fontSize="sm">{tab.title}</Tab>
-                ))}
-              </TabList>
-              <TabPanels>
-                {TabsConfig.map((tab, index) => (
-                  <TabPanel key={index} p={6}>{tab.component()}</TabPanel>
-                ))}
-              </TabPanels>
-            </Tabs>
-          </>
-        )}
-      </Container>
+      <Box bg="gray.50" minH="100vh">
+        <Container maxW="container.xl" py={6}>
+          <Flex align="center" justify="space-between" mb={4} gap={4}>
+            <Heading size="lg">SERP API</Heading>
+          </Flex>
+          {renderContent()}
+        </Container>
+      </Box>
     </ProtectedComponent>
   );
 };
+
 
 // --- Route Definition ---
 export const Route = createFileRoute("/_layout/web-scraping-tools/serp-api")({
