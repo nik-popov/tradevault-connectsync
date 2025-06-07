@@ -1,12 +1,10 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { useState, useRef } from "react";
+import { useQuery } from "@tanstack/react-query";
 import {
   Container,
   Flex,
   Text,
   Tabs,
-  Divider,
   TabList,
   TabPanels,
   Tab,
@@ -17,45 +15,25 @@ import {
   AlertIcon,
   Link,
   Code,
-  Textarea,
   IconButton,
   Button,
   useClipboard,
   useToast,
-  Table,
-  Thead,
-  Tbody,
-  Tr,
-  Th,
-  Td,
-  TableContainer,
   Spinner,
-  Badge,
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalFooter,
-  ModalBody,
-  ModalCloseButton,
   useDisclosure,
-  AlertDialog,
-  AlertDialogBody,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogContent,
-  AlertDialogOverlay,
+  HStack,
 } from "@chakra-ui/react";
-import { CopyIcon, AddIcon, DeleteIcon } from "@chakra-ui/icons";
+import { CopyIcon } from "@chakra-ui/icons";
 import ProtectedComponent from "../../../components/Common/ProtectedComponent";
 import PlaygroundHttpsProxy from "../../../components/ScrapingTools/PlaygroundHttps";
 import ApiKeyModule from "../../../components/ScrapingTools/ApiKey";
-// --- Interfaces ---
+import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
+import { vscDarkPlus } from "react-syntax-highlighter/dist/esm/styles/prism";
+
+// --- Interfaces and Helper Functions ---
 interface Subscription {
   id: string;
   status: string;
-  plan_name: string | null;
-  product_name: string | null;
 }
 
 interface ProxyApiAccess {
@@ -63,22 +41,16 @@ interface ProxyApiAccess {
   message: string | null;
 }
 
-interface ApiKey {
-  key_preview: string;
-  created_at: string;
-  is_active: boolean;
-  request_count: number;
-}
+const API_URL = "https://api.thedataproxy.com/v2";
 
-// --- API Fetching Logic ---
-const API_BASE_URL = "https://api.thedataproxy.com/v2";
+// --- API Fetching Functions ---
 
 async function fetchFromApi(endpoint: string, token: string, options: RequestInit = {}) {
   if (!token) {
     throw new Error("No access token found. Please log in again.");
   }
 
-  const response = await fetch(`${API_BASE_URL}${endpoint}`, {
+  const response = await fetch(`${API_URL}${endpoint}`, {
     ...options,
     headers: {
       "Content-Type": "application/json",
@@ -102,24 +74,10 @@ const fetchSubscriptions = (token: string): Promise<Subscription[]> =>
 const fetchProxyApiAccess = (token: string): Promise<ProxyApiAccess> =>
   fetchFromApi("/proxy-api/access", token);
 
-const fetchApiKeys = (token: string): Promise<ApiKey[]> =>
-  fetchFromApi("/proxy/api-keys", token).then((data: any[]) =>
-    data.map((key) => ({
-      ...key,
-      request_count: key.request_count ?? 0,
-    }))
-  );
 
-const createNewApiKey = (token: string): Promise<{ full_key: string }> =>
-  fetchFromApi("/proxy/api-keys", token, { method: "POST" });
-
-const revokeExistingApiKey = (token: string, keyPreview: string): Promise<void> =>
-  fetchFromApi(`/proxy/api-keys/${keyPreview}`, token, { method: "DELETE" });
-
-
-// --- Reusable Code Block Component ---
-const CodeBlock = ({ code }: { code: string }) => {
-  const { onCopy } = useClipboard(code);
+// --- CodeBlock Component (from serp-api) ---
+const CodeBlock = ({ code, language, bg = "gray.800", ...rest }: { code: string; language: string; bg?: string; [key: string]: any }) => {
+  const { onCopy } = useClipboard(code.trim());
   const toast = useToast();
 
   const handleCopy = () => {
@@ -129,24 +87,30 @@ const CodeBlock = ({ code }: { code: string }) => {
       status: "success",
       duration: 2000,
       isClosable: true,
-      position: "top-right",
+      position: "top",
     });
   };
 
   return (
-    <Box position="relative">
-      <Textarea
-        value={code}
-        readOnly
-        height="280px"
-        bg="gray.50"
-        fontFamily="monospace"
-        fontSize="sm"
-        p={4}
-        pt={12}
-        resize="none"
-        _dark={{ bg: "gray.700" }}
-      />
+    <Box position="relative" bg={bg} borderRadius="md" overflow="hidden" {...rest}>
+      <SyntaxHighlighter
+        language={language}
+        style={vscDarkPlus}
+        customStyle={{
+          margin: 0,
+          padding: '2rem 1rem 1rem 1rem',
+          fontSize: '0.9rem',
+          backgroundColor: 'transparent',
+        }}
+        codeTagProps={{
+          style: {
+            fontFamily: "var(--chakra-fonts-mono)",
+          }
+        }}
+        showLineNumbers
+      >
+        {code.trim()}
+      </SyntaxHighlighter>
       <IconButton
         aria-label="Copy Code"
         icon={<CopyIcon />}
@@ -155,48 +119,57 @@ const CodeBlock = ({ code }: { code: string }) => {
         top="0.5rem"
         right="0.5rem"
         onClick={handleCopy}
+        variant="ghost"
+        color="gray.400"
+        _hover={{ bg: "whiteAlpha.200", color: "white" }}
       />
     </Box>
   );
 };
 
 
-// --- Get Started Tab Component ---
-const GetStartedTab = () => {
-  const TARGET_URL_EXAMPLE = "https://api.ipify.org?format=json";
-  const PROXY_ENDPOINT = "https://api.thedataproxy.com/v2/proxy";
+// --- Constants for GetStartedTab ---
+const TARGET_URL_EXAMPLE = "https://api.ipify.org?format=json";
+const PROXY_ENDPOINT = "https://api.thedataproxy.com/v2/proxy";
 
-  const CODE_EXAMPLES = {
-    curl: `curl -X GET "${PROXY_ENDPOINT}?url=${encodeURIComponent(TARGET_URL_EXAMPLE)}" \\
+const CODE_EXAMPLES = {
+  curl: `curl -X GET "${PROXY_ENDPOINT}?url=${encodeURIComponent(TARGET_URL_EXAMPLE)}" \\
   -H "x-api-key: YOUR_API_KEY"`,
-    python: `import requests
+  python: `import requests
 import urllib.parse
 
 api_key = "YOUR_API_KEY"
 target_url = "${TARGET_URL_EXAMPLE}"
 proxy_endpoint = "${PROXY_ENDPOINT}"
 
-params = { "url": target_url }
-headers = { "x-api-key": api_key }
+params = {"url": target_url}
+headers = {"x-api-key": api_key}
 
+# The target URL is automatically encoded by the requests library
 response = requests.get(proxy_endpoint, params=params, headers=headers)
 
 if response.status_code == 200:
-    print(response.json())
+    print("Successfully fetched URL through proxy.")
+    print("Response Body:", response.json())
 else:
     print(f"Error: {response.status_code}")
     print(response.text)`,
-    javascript: `// Using node-fetch, or native fetch in browser/deno/node 18+
+  javascript: `// Using node-fetch, or native fetch in browser/deno/node 18+
 import fetch from 'node-fetch';
 
 const apiKey = 'YOUR_API_KEY';
 const targetUrl = '${TARGET_URL_EXAMPLE}';
 const proxyEndpoint = new URL('${PROXY_ENDPOINT}');
+
+// Append the target URL as a search parameter
 proxyEndpoint.searchParams.append('url', targetUrl);
 
 const options = {
     method: 'GET',
-    headers: { 'x-api-key': apiKey }
+    headers: {
+        'x-api-key': apiKey,
+        'Accept': 'application/json'
+    }
 };
 
 fetch(proxyEndpoint, options)
@@ -208,48 +181,72 @@ fetch(proxyEndpoint, options)
     })
     .then(json => console.log(json))
     .catch(err => console.error('error:' + err));`
-  };
+};
 
+const codeTabs = [
+  { id: 'javascript', label: 'JavaScript', code: CODE_EXAMPLES.javascript, language: 'javascript' },
+  { id: 'python', label: 'Python', code: CODE_EXAMPLES.python, language: 'python' },
+  { id: 'curl', label: 'cURL', code: CODE_EXAMPLES.curl, language: 'bash' },
+];
+
+// --- Get Started Tab Component ---
+const GetStartedTab = () => {
   return (
     <Box>
-        <Text fontSize="md" mb={2} color="gray.600">
-        The HTTPS API allows you to route your HTTP/S requests through our network of premium proxies.
-        This is ideal for web scraping, data gathering, or accessing geo-restricted content.
+      <Text fontSize="lg" mb={2} color="gray.700">
+        This tool allows you to programmatically route any HTTP/S request through our premium proxy network.
+      </Text>
+      <Text fontSize="lg" mb={4} color="gray.700">
+        To get started, create an API key in the API Keys tab and use it in your requests. Remember to replace <Code fontSize="sm">YOUR_API_KEY</Code> with your actual key.
       </Text>
 
-      <Text mb={2} color="gray.600">
-        To make a request, provide the target URL as a query parameter. Remember to replace <Code>YOUR_API_KEY</Code> with a key from the "Keys" tab.
-      </Text>
-
-      <Tabs variant="enclosed">
+      <Tabs variant="enclosed" colorScheme="orange">
         <TabList>
-          <Tab>cURL</Tab>
-          <Tab>Python</Tab>
-          <Tab>JavaScript (Node.js)</Tab>
+          {codeTabs.map((tab) => (
+            <Tab
+              key={tab.id}
+              fontWeight="semibold"
+              fontSize="lg"
+              _selected={{ bg: "gray.800", color: "orange.400", borderColor: "inherit", borderBottomColor: "gray.800" }}
+            >
+              {tab.label}
+            </Tab>
+          ))}
         </TabList>
         <TabPanels>
-          <TabPanel p={0} pt={4}><CodeBlock code={CODE_EXAMPLES.curl} /></TabPanel>
-          <TabPanel p={0} pt={4}><CodeBlock code={CODE_EXAMPLES.python} /></TabPanel>
-          <TabPanel p={0} pt={4}><CodeBlock code={CODE_EXAMPLES.javascript} /></TabPanel>
+          {codeTabs.map((tab) => (
+            <TabPanel key={tab.id} p={0}>
+              <CodeBlock code={tab.code} language={tab.language} bg="gray.800" />
+            </TabPanel>
+          ))}
         </TabPanels>
       </Tabs>
 
-      <Box mt={8} p={4} borderWidth="1px" borderRadius="md" bg="gray.50" _dark={{ bg: "gray.700" }}>
-        <Heading size="md" mb={2}>Need Help?</Heading>
-        <Text fontSize="md">
-          For detailed information, visit our{" "}
-          <Link color="blue.500" href="/documentation/https-api" isExternal>
-            API Documentation
-          </Link>.
-          If you have further questions, please contact our{" "}
-          <Link color="blue.500" href="/support" isExternal>
-            Support Center
-          </Link>.
-        </Text>
+      <Box mt={8}>
+        <Box p={4} borderWidth="1px" borderRadius="md" bg="orange.50" borderColor="orange.200">
+            <Heading size="md" mb={2} color="gray.800">Need Help?</Heading>
+            <Text fontSize="md" color="gray.700">
+              Check our detailed{" "}
+              <Link color="orange.600" fontWeight="bold" href="/documentation/https-api" isExternal>
+                API Documentation
+              </Link>{" "}
+              for more examples. For further assistance, contact our{" "}
+              <Link color="orange.600" fontWeight="bold" href="/support" isExternal>
+                Support Center
+              </Link>.
+            </Text>
+        </Box>
       </Box>
     </Box>
   );
 };
+
+
+const pageTabsData = [
+  { id: "get-started", label: "Get Started" },
+  { id: "keys", label: "API Keys" },
+  { id: "playground", label: "Playground" },
+];
 
 // --- Main Page Component ---
 const HttpsProxyApiPage = () => {
@@ -259,43 +256,38 @@ const HttpsProxyApiPage = () => {
     queryKey: ["subscriptions"],
     queryFn: () => fetchSubscriptions(token),
     enabled: !!token,
+    staleTime: 5 * 60 * 1000,
   });
 
   const { data: proxyApiAccess, isLoading: isAccessLoading, error: accessError } = useQuery({
     queryKey: ["proxyApiAccess"],
     queryFn: () => fetchProxyApiAccess(token),
     enabled: !!token,
-  });
-
-  const { data: apiKeys, isLoading: isApiKeysLoading, error: apiKeysError, refetch: refetchApiKeys } = useQuery({
-    queryKey: ["apiKeys"],
-    queryFn: () => fetchApiKeys(token),
-    enabled: !!token,
+    staleTime: 5 * 60 * 1000,
   });
 
   const hasActiveSubscription = subscriptions?.some(
     (sub) => sub.status === "active" || sub.status === "trialing"
   ) || false;
 
-  const isLoading = isSubscriptionsLoading || isAccessLoading || isApiKeysLoading;
-  const error = subscriptionsError || accessError || apiKeysError;
+  const isLoading = isSubscriptionsLoading || isAccessLoading;
+  const error = subscriptionsError || accessError;
 
   return (
     <ProtectedComponent>
-       <Container maxW="full" py={6}>
-            <Flex align="center" justify="space-between" py={6}>
-          <Text fontSize="xl" color="black">HTTPs Request API</Text>
-             <Text fontSize="md" color="gray.600">HTTPS request proxy reroutes secure web traffic. </Text>
+      <Container maxW="full" py={9}>
+        <Flex align="center" justify="space-between" py={6}>
+            <Text fontSize="3xl" color="black" >HTTPS Proxy API</Text>
+            <Text fontSize="lg" color="gray.600">Route HTTP/S requests through our proxy network</Text>
         </Flex>
-        <Divider my={4} borderColor="gray.200" />
 
         {isLoading ? (
-          <Text fontSize="sm">Loading account details...</Text>
+          <Flex justify="center" align="center" h="50vh"><Spinner /></Flex>
         ) : error ? (
           <Alert status="error">
             <AlertIcon />
             <Text fontSize="sm">
-              Error: {error.message || "Failed to load details. Please try again."}
+              Error: {error.message || "Failed to load user details. Please try again later."}
             </Text>
           </Alert>
         ) : !hasActiveSubscription ? (
@@ -309,22 +301,36 @@ const HttpsProxyApiPage = () => {
               <Alert status="warning" mb={4}>
                 <AlertIcon />
                 <Text fontSize="sm">
-                  {proxyApiAccess?.message || "Your current plan does not include HTTPS Proxy API features. Please upgrade to an eligible plan."}
+                  {proxyApiAccess?.message || "Your current plan does not include HTTPS Proxy API access. Please upgrade to an eligible plan."}
                 </Text>
               </Alert>
             )}
             <Tabs isLazy variant="enclosed-colored" colorScheme="orange">
               <TabList>
-                <Tab fontSize="sm">Get Started</Tab>
-                <Tab fontSize="sm">Keys</Tab>
-                <Tab fontSize="sm">Playground</Tab>
+                {pageTabsData.map((tab) => (
+                  <Tab
+                    key={tab.id}
+                    fontSize="lg"
+                    bg="white"
+                    _selected={{
+                      bg: "gray.50",
+                      color: "orange.600",
+                      borderColor: "inherit",
+                      borderBottomColor: "gray.50",
+                      borderTopWidth: "2px",
+                      borderTopColor: "orange.400",
+                      marginTop: "-1px",
+                    }}
+                  >
+                    {tab.label}
+                  </Tab>
+                ))}
               </TabList>
-              <TabPanels pt={4}>
+
+              <TabPanels bg="gray.50" pt={4} borderRadius="0 0 md md">
                 <TabPanel><GetStartedTab /></TabPanel>
                 <TabPanel>
-                  <ApiKeyModule
-                    token={token}
-                  />
+                  <ApiKeyModule token={token} />
                 </TabPanel>
                 <TabPanel><PlaygroundHttpsProxy /></TabPanel>
               </TabPanels>
