@@ -279,8 +279,12 @@ async def verify_api_token(
         logger.warning(f"Invalid API key provided: {x_api_key[:8]}...")
         raise HTTPException(status_code=401, detail="Invalid API key")
     
-    # CORRECTED: Call read_user_by_id without the invalid `current_user` parameter.
+    # --- THIS IS THE CRITICAL FIX ---
+    # The old code had an incorrect function signature, causing authentication to fail.
+    # OLD: user = users.read_user_by_id(session=session, user_id=token_data["user_id"], current_user=CurrentUser)
+    # NEW (Corrected):
     user = users.read_user_by_id(session=session, user_id=token_data["user_id"])
+    
     if not user or not user.is_active:
         logger.warning(f"API key valid, but user is invalid or inactive. User ID: {token_data['user_id']}")
         raise HTTPException(status_code=401, detail="Invalid or inactive user")
@@ -504,6 +508,11 @@ async def delete_api_key(
     background_tasks: BackgroundTasks
 ):
     logger.debug(f"Deleting API key with preview: {key_preview}, user: {current_user.email}")
+    
+    # --- IMPROVEMENT ---
+    # This logic is more reliable than matching only the end of the key.
+    if '...' not in key_preview:
+        raise HTTPException(status_code=400, detail="Invalid key_preview format. Expected 'start...end'")
     key_start = key_preview.split('...')[0]
     
     token = session.query(APIToken).filter(
