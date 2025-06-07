@@ -18,7 +18,7 @@ import {
   FiLogOut,
   FiMenu,
   FiUsers,
-  FiTool,
+  FiSearch,
   FiShield,
   FiUserCheck,
 } from "react-icons/fi";
@@ -48,9 +48,14 @@ const navStructure: NavItem[] = [
   {
     title: "Web Scraping Tools",
     subItems: [
+       {
+        title: "SERP API", 
+        path: "/web-scraping-tools/serp-api",
+        icon: FiSearch, 
+        description: "Get structured JSON data from major search engines.", },
       {
         title: "HTTPS Proxy API",
-        path: "/web-scraping-tools/https-proxy",
+        path: "/web-scraping-tools/https-proxy-api",
         icon: FiShield,
         description: "Access web pages with our rotating proxy network.",
       },
