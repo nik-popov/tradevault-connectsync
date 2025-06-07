@@ -249,11 +249,11 @@ const PlaygroundGSerp: React.FC = () => {
           </Flex>
           <Text fontSize="sm" mb={4}>
             <Link
-              href="https://api.thedataproxy.com/redoc"
+              href="/web-scraping-tools/serp-api"
               isExternal
               color="orange.500"
             >
-              Structured Data <ExternalLinkIcon mx="2px" />
+              Structured Response (json results) <ExternalLinkIcon mx="2px" />
             </Link>
           </Text>
           {isLoading ? (
@@ -317,11 +317,9 @@ const PlaygroundGSerp: React.FC = () => {
           </Flex>
           <Text fontSize="sm" mb={4}>
             <Link
-              href="https://thedataproxy.com/browser"
-              isExternal
               color="orange.500"
             >
-              Browser Session <ExternalLinkIcon mx="2px" />
+              Rendered HTML<CopyIcon mx="2px" />
             </Link>
           </Text>
           {htmlPreview ? (
