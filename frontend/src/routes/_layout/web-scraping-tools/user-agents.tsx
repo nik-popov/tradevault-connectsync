@@ -52,6 +52,7 @@ import {
 } from "@chakra-ui/react";
 import { CopyIcon, ChevronDownIcon, EditIcon, DeleteIcon, AddIcon, RepeatIcon } from "@chakra-ui/icons";
 import type { UserPublic } from "../../../client";
+
 // --- API Configuration & Types (No changes) ---
 const API_BASE_URL = "https://api.thedataproxy.com/v2";
 
@@ -401,31 +402,57 @@ function UserAgentsPage() {
   return (
     <>
       <Container maxW="full" py={9}>
-        {/* --- START: UPDATED HEADER --- */}
         <Flex align="center" justify="space-between" py={6}>
             <Text fontSize="3xl" color="black">User Agents</Text>
             <Text fontSize="lg" color="gray.600">A dynamic list of user agents for web scraping</Text>
         </Flex>
-        {/* --- END: UPDATED HEADER (Divider removed) --- */}
 
+        {/* --- START: UPDATED TABS --- */}
         <Tabs isLazy variant="enclosed-colored" colorScheme="orange" onChange={(index) => setTabIndex(index)}>
             <TabList>
-                <Tab>All <Badge ml='2' colorScheme='green'>{allAgents.length}</Badge></Tab>
-                <Tab>Desktop <Badge ml='2' colorScheme='purple'>{desktopAgents.length}</Badge></Tab>
-                <Tab>Mobile <Badge ml='2' colorScheme='orange'>{mobileAgents.length}</Badge></Tab>
-                <Tab>Other <Badge ml='2' colorScheme='gray'>{otherAgents.length}</Badge></Tab>
+                {/* Note: The Array.map pattern is better for complex components, but this is fine for a few static tabs. */}
+                {[
+                  { label: "All", count: allAgents.length, color: "green" },
+                  { label: "Desktop", count: desktopAgents.length, color: "purple" },
+                  { label: "Mobile", count: mobileAgents.length, color: "orange" },
+                  { label: "Other", count: otherAgents.length, color: "gray" },
+                ].map((tab, idx) => (
+                    <Tab
+                      key={idx}
+                      bg="white"
+                      fontWeight="semibold"
+                      fontSize="lg"
+                      color="gray.400"
+                      _selected={{
+                        bg: "gray.50",
+                        color: "orange.600",
+                        borderColor: "inherit",
+                        borderBottomColor: "gray.50",
+                        borderTopWidth: "2px",
+                        borderTopColor: "orange.400",
+                        marginTop: "-1px",
+                      }}
+                    >
+                      {tab.label} <Badge ml='2' colorScheme={tab.color}>{tab.count}</Badge>
+                    </Tab>
+                ))}
             </TabList>
         </Tabs>
+        {/* --- END: UPDATED TABS --- */}
 
+        {/* --- START: UPDATED ACTION HEADER --- */}
         <Flex
             direction={{ base: "column", md: "row" }}
             justify="space-between"
-            align={{ base: "stretch", md: "center" }}
-            p="4"
+            align="center"
+            py={6}
         >
-            <Box mb={{ base: 6, md: 0 }} maxW={{ base: "full", lg: "50%" }}>
-                <Text fontSize="md" mb={2} color="gray.600">
-                    A dynamic repository of real-world user agent strings, continuously updated to reflect the most prevalent browser, OS, and device combinations.
+            <Box mb={{ base: 4, md: 0 }}>
+                <Text fontSize="lg" mb={2} color="gray.700">
+                  Updated Daily
+                </Text>
+                <Text fontSize="lg" mb={4} color="gray.700">
+                   Reflect the most prevalent browsers and devices.
                 </Text>
             </Box>
 
@@ -474,6 +501,10 @@ function UserAgentsPage() {
                 </Menu>
             </VStack>
         </Flex>
+
+        <Divider mb={4} />
+        {/* --- END: UPDATED ACTION HEADER --- */}
+
 
         {isLoading && !data && (
           <Flex justify="center" align="center" height="300px"><Spinner size="xl" /></Flex>
