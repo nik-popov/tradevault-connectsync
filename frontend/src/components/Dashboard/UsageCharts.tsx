@@ -64,16 +64,38 @@ const UsageCharts: React.FC<UsageChartsProps> = ({ periodStart, totalRequests, t
   useEffect(() => { if (chartInstances.current.length === 2 && chartInstances.current.every(c => c)) { syncCharts(chartInstances.current, true, true, false); } }, [requestsDps]);
 
   const requestsChartOptions = {
-    animationEnabled: true, theme: "light2", title: { text: "Requests", fontSize: 16, margin: 20 },
-    axisX: { valueFormatString: "DD MMM", crosshair: { enabled: true, snapToDataPoint: true, thickness: 1 } },
-    axisY: { title: "Daily Requests", gridThickness: 0.5, crosshair: { enabled: true, snapToDataPoint: true, labelFormatter: (e: any) => e.value.toLocaleString() } },
+    animationEnabled: true,
+    theme: "light2",
+    title: { text: "Requests", fontSize: 16, margin: 20 },
+    axisX: {
+      valueFormatString: "DD MMM",
+      crosshair: { enabled: true, snapToDataPoint: true, thickness: 1 },
+    },
+    axisY: {
+      title: "Daily Requests",
+      gridThickness: 0.5,
+      crosshair: { enabled: true, snapToDataPoint: true, labelFormatter: (e: any) => e.value.toLocaleString() },
+      margin: 50, // FIX: Set a fixed margin to align the plot areas of both charts
+    },
     toolTip: { shared: true },
     data: [{ type: "area", name: "Requests", xValueFormatString: "DD MMMM YYYY", yValueFormatString: "#,##0", color: "rgba(49, 130, 206, 0.7)", dataPoints: requestsDps }],
   };
+
   const dataTransferChartOptions = {
-    animationEnabled: true, theme: "light2", title: { text: "Data Transfer", fontSize: 16, margin: 20 },
-    axisX: { valueFormatString: "DD MMM", crosshair: { enabled: true, snapToDataPoint: true, thickness: 1 } },
-    axisY: { title: "Daily Transfer (GB)", gridThickness: 0.5, suffix: " GB", crosshair: { enabled: true, snapToDataPoint: true, labelFormatter: (e: any) => `${e.value.toFixed(2)} GB` } },
+    animationEnabled: true,
+    theme: "light2",
+    title: { text: "Data Transfer", fontSize: 16, margin: 20 },
+    axisX: {
+      valueFormatString: "DD MMM",
+      crosshair: { enabled: true, snapToDataPoint: true, thickness: 1 },
+    },
+    axisY: {
+      title: "Daily Transfer (GB)",
+      gridThickness: 0.5,
+      suffix: " GB",
+      crosshair: { enabled: true, snapToDataPoint: true, labelFormatter: (e: any) => `${e.value.toFixed(2)} GB` },
+      margin: 50, // FIX: Set a fixed margin to align the plot areas of both charts
+    },
     toolTip: { shared: true },
     legend: { cursor: "pointer", itemclick: (e: any) => { e.dataSeries.visible = typeof e.dataSeries.visible === "undefined" || e.dataSeries.visible ? false : true; e.chart.render(); } },
     data: [
@@ -84,7 +106,6 @@ const UsageCharts: React.FC<UsageChartsProps> = ({ periodStart, totalRequests, t
 
   return (
     <Grid templateColumns={{ base: "1fr", lg: "1fr 1fr" }} gap={6}>
-      {/* FIX: Removed fixed height. The GridItem is now a flexible container for the chart card. */}
       <GridItem shadow="md" borderWidth="1px" borderRadius="md" p={3}>
         <CanvasJSChart
           options={requestsChartOptions}
