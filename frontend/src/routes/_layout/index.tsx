@@ -256,7 +256,7 @@ const HomePage = () => {
           </Alert>
         ) : (
           <VStack spacing={6} align="stretch">
-            {/* === Bottom Row: Summary Cards (UPDATED) === */}
+            {/* === Bottom Row: Summary Cards === */}
             <Grid templateColumns={{ base: "1fr", md: "1fr 1fr 1fr" }} gap={6}> 
               {/* Total Requests Card */}
               <GridItem>
@@ -305,61 +305,66 @@ const HomePage = () => {
               </GridItem>
             </Grid>
 
-            {/* === Plan Details & Usage Chart === */}
-
+            {/* === Plan Details & Usage Chart (UPDATED) === */}
             <Grid templateColumns={{ base: "1fr", lg: "2.1fr 1fr" }} gap={6}>
               <GridItem>
-                <Heading size="md" mb={4}>Request Usage</Heading>
-                <Box shadow="md" borderWidth="1px" borderRadius="md" p={4} height="350px">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <LineChart data={chartData} margin={{ top: 5, right: 20, left: 10, bottom: 5 }}>
-                      <CartesianGrid strokeDasharray="3 3" />
-                      <XAxis dataKey="date" fontSize="12px" angle={-20} textAnchor="end" height={40}/>
-                      <YAxis fontSize="12px" tickFormatter={(value) => typeof value === 'number' ? new Intl.NumberFormat('en-US', { notation: 'compact', compactDisplay: 'short' }).format(value) : value} />
-                      <Tooltip />
-                      <Legend />
-                      <Line type="monotone" dataKey="Requests" stroke="#3182CE" activeDot={{ r: 8 }} dot={false} />
-                    </LineChart>
-                  </ResponsiveContainer>
+                {/* Request Usage Card */}
+                <Box shadow="md" borderWidth="1px" borderRadius="md" p={4} height="350px" display="flex" flexDirection="column">
+                  <Heading size="md" mb={4}>Request Usage</Heading>
+                  <Box flex="1" minHeight="0"> {/* Wrapper for ResponsiveContainer */}
+                    <ResponsiveContainer width="100%" height="100%">
+                      <LineChart data={chartData} margin={{ top: 5, right: 20, left: 10, bottom: 5 }}>
+                        <CartesianGrid strokeDasharray="3 3" />
+                        <XAxis dataKey="date" fontSize="12px" angle={-20} textAnchor="end" height={40}/>
+                        <YAxis fontSize="12px" tickFormatter={(value) => typeof value === 'number' ? new Intl.NumberFormat('en-US', { notation: 'compact', compactDisplay: 'short' }).format(value) : value} />
+                        <Tooltip />
+                        <Legend />
+                        <Line type="monotone" dataKey="Requests" stroke="#3182CE" activeDot={{ r: 8 }} dot={false} />
+                      </LineChart>
+                    </ResponsiveContainer>
+                  </Box>
                 </Box>
               </GridItem>
-                     <GridItem>
-                <Heading size="md" mb={4}>Plan Details</Heading>
-                <Box shadow="md" borderWidth="1px" borderRadius="md" overflow="auto" height="350px">
-                  <Table variant="simple" size="sm">
-                    <Tbody>
-                      <Tr>
-                        <Td fontWeight="bold">Plan Name</Td>
-                        <Td>{activeSubscription?.product_name || activeSubscription?.plan_name || "N/A"}</Td>
-                      </Tr>
-                      <Tr>
-                        <Td fontWeight="bold">Status</Td>
-                        <Td textTransform="capitalize">{activeSubscription?.status || "N/A"}</Td>
-                      </Tr>
-                      <Tr>
-                        <Td fontWeight="bold">Current Period</Td>
-                        <Td>
-                          {activeSubscription?.current_period_start && activeSubscription?.current_period_end
-                            ? `${new Date(activeSubscription.current_period_start * 1000).toLocaleDateString()} - ${new Date(activeSubscription.current_period_end * 1000).toLocaleDateString()}`
-                            : "N/A"}
-                        </Td>
-                      </Tr>
-                    {/* --- Dynamically list enabled features --- */}
-                  {activeSubscription.enabled_features && activeSubscription.enabled_features.length > 0 && (
-                    <>
-                      <Tr>
-                        <Td colSpan={2} fontWeight="bold" pt={4}>Enabled Features</Td>
-                      </Tr>
-                      {activeSubscription.enabled_features.map(feature => (
-                        <Tr key={feature}>
-                          <Td pl={8} textTransform="capitalize">{feature.replace(/-/g, ' ')}</Td>
-                          <Td><Badge colorScheme="green">Active</Badge></Td>
+              <GridItem>
+                {/* Plan Details Card */}
+                <Box shadow="md" borderWidth="1px" borderRadius="md" p={4} height="350px" display="flex" flexDirection="column">
+                  <Heading size="md" mb={4}>Plan Details</Heading>
+                  <Box flex="1" overflow="auto"> {/* Wrapper to make only the table scrollable */}
+                    <Table variant="simple" size="sm">
+                      <Tbody>
+                        <Tr>
+                          <Td fontWeight="bold">Tier Name</Td>
+                          <Td>{activeSubscription?.product_name || activeSubscription?.plan_name || "N/A"}</Td>
                         </Tr>
-                      ))}
-                    </>
-                  )}
-                    </Tbody>
-                  </Table>
+                        <Tr>
+                          <Td fontWeight="bold">Status</Td>
+                          <Td textTransform="capitalize">{activeSubscription?.status || "N/A"}</Td>
+                        </Tr>
+                        <Tr>
+                          <Td fontWeight="bold">Current Period</Td>
+                          <Td>
+                            {activeSubscription?.current_period_start && activeSubscription?.current_period_end
+                              ? `${new Date(activeSubscription.current_period_start * 1000).toLocaleDateString()} - ${new Date(activeSubscription.current_period_end * 1000).toLocaleDateString()}`
+                              : "N/A"}
+                          </Td>
+                        </Tr>
+                      {/* --- Dynamically list enabled features --- */}
+                    {activeSubscription.enabled_features && activeSubscription.enabled_features.length > 0 && (
+                      <>
+                        <Tr>
+                          <Td colSpan={2} fontWeight="bold" pt={4}>Enabled Features</Td>
+                        </Tr>
+                        {activeSubscription.enabled_features.map(feature => (
+                          <Tr key={feature}>
+                            <Td pl={8} textTransform="capitalize">{feature.replace(/-/g, ' ')}</Td>
+                            <Td><Badge colorScheme="green">Active</Badge></Td>
+                          </Tr>
+                        ))}
+                      </>
+                    )}
+                      </Tbody>
+                    </Table>
+                  </Box>
                 </Box>
               </GridItem>
             </Grid>

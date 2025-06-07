@@ -18,6 +18,8 @@ import {
   FiUserCheck,
   FiSettings, // Added gear icon
 } from "react-icons/fi";
+import { FaBook, FaKey, FaCreditCard, FaGlobe, FaSearch, FaSitemap } from 'react-icons/fa';
+
 // MdPerson is no longer used, so the import is removed.
 
 import Logo from "../Common/Logo";
@@ -42,7 +44,7 @@ const navStructure: NavItem[] = [
   {
     title: "HTTPS Proxy API",
     path: "/web-scraping-tools/https-proxy-api",
-    icon: FiShield,
+    icon: FaGlobe,
   },
   {
     title: "SERP API",
