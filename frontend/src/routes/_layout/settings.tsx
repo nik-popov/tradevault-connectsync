@@ -122,12 +122,14 @@ function UserSettings() {
   const finalTabs = currentUser?.is_superuser ? tabsConfig : tabsConfig;
 
   return (
-    <Container maxW="full">
+    <Container maxW="full"  py={6}>
       <Flex align="center" justify="space-between" py={6}>
         <Text fontSize="xl" color="black">Settings</Text>
         <Text fontSize="md" color="gray.600">Manage your settings</Text>
       </Flex>
       <Divider my={4} borderColor="gray.200" />
+
+
     <Tabs isLazy variant="enclosed-colored" colorScheme="orange">
         <TabList borderBottom="2px solid" borderColor="gray.200">
           {finalTabs.map((tab, index) => (

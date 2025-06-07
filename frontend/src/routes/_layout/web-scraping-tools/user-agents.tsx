@@ -434,9 +434,6 @@ function UserAgentsPage() {
             <Text fontSize="md" mb={2} color="gray.600">
               A dynamic repository of real-world user agent strings, continuously updated to reflect the most prevalent browser, OS, and device combinations.
             </Text>
-            <Text fontSize="md" color="gray.600">
-              For developers building robust web scrapers, QA engineers testing cross-browser compatibility, and administrators analyzing traffic patterns.
-            </Text>
           </Box>
 
           {/* --- ACTION BUTTONS CONTAINER --- */}
