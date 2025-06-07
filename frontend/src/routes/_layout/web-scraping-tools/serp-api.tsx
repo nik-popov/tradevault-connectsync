@@ -51,7 +51,7 @@ import { CopyIcon, AddIcon, DeleteIcon } from "@chakra-ui/icons";
 import ProtectedComponent from "../../../components/Common/ProtectedComponent";
 import PlaygroundSerpApi from "../../../components/ScrapingTools/PlaygroundSerp";
 // The ApiKeyModule is no longer needed as we've created a custom one.
-// import ApiKeyModule from "../../../components/ScrapingTools/ApiKey";
+import ApiKeyModule from "../../../components/ScrapingTools/ApiKey";
 
 // --- Interfaces and Helper Functions ---
 interface Subscription {
@@ -275,168 +275,6 @@ fetch(url, options)
 };
 
 
-// --- API Keys Manager Tab Component ---
-const SerpApiKeyManager = ({ token, keys, isLoading, error, onKeysUpdate }: {
-  token: string;
-  keys: ApiKey[];
-  isLoading: boolean;
-  error: Error | null;
-  onKeysUpdate: () => void;
-}) => {
-  const toast = useToast();
-  const queryClient = useQueryClient();
-  const [newApiKey, setNewApiKey] = useState<string | null>(null);
-  const [keyToRevoke, setKeyToRevoke] = useState<string | null>(null);
-  const { isOpen: isModalOpen, onOpen: onModalOpen, onClose: onModalClose } = useDisclosure();
-  const { isOpen: isAlertOpen, onOpen: onAlertOpen, onClose: onAlertClose } = useDisclosure();
-  const cancelRef = useRef<HTMLButtonElement>(null);
-
-  const { onCopy, setValue: setClipboardValue } = useClipboard("");
-
-  const createMutation = useMutation({
-    mutationFn: () => createNewApiKey(token),
-    onSuccess: (data) => {
-      setNewApiKey(data.full_key);
-      setClipboardValue(data.full_key);
-      onModalOpen();
-      onKeysUpdate(); // Refetch the list of keys
-      toast({ title: "API Key created successfully!", status: "success", duration: 3000, isClosable: true });
-    },
-    onError: (error: Error) => {
-      toast({ title: "Error creating key", description: error.message, status: "error", duration: 5000, isClosable: true });
-    }
-  });
-
-  const revokeMutation = useMutation({
-    mutationFn: (keyPreview: string) => revokeExistingApiKey(token, keyPreview),
-    onSuccess: () => {
-      onKeysUpdate(); // Refetch the list of keys
-      toast({ title: "API Key revoked.", status: "info", duration: 3000, isClosable: true });
-    },
-    onError: (error: Error) => {
-      toast({ title: "Error revoking key", description: error.message, status: "error", duration: 5000, isClosable: true });
-    },
-    onSettled: () => {
-      setKeyToRevoke(null);
-      onAlertClose();
-    }
-  });
-
-  const handleCopyNewKey = () => {
-    onCopy();
-    toast({ title: "New API key copied to clipboard!", status: "success", duration: 2000, isClosable: true });
-  }
-
-  const handleRevokeClick = (keyPreview: string) => {
-    setKeyToRevoke(keyPreview);
-    onAlertOpen();
-  }
-
-  if (isLoading) return <Spinner />;
-  if (error) return <Alert status="error"><AlertIcon />{error.message}</Alert>;
-
-  return (
-    <Box>
-       <Flex justify="space-between" align="center" mb={4}>
-        <Box>
-            <Heading size="sm">Manage Your API Keys</Heading>
-            <Text fontSize="sm" color="gray.500">These keys are used to authenticate your requests to the SERP API.</Text>
-        </Box>
-        <Button 
-          leftIcon={<AddIcon />} 
-          colorScheme="blue" 
-          onClick={() => createMutation.mutate()}
-          isLoading={createMutation.isPending}
-        >
-          Create New Key
-        </Button>
-      </Flex>
-      <TableContainer borderWidth="1px" borderRadius="md">
-        <Table variant="simple">
-          {!keys.length && <TableCaption>You haven't created any API keys yet.</TableCaption>}
-          <Thead>
-            <Tr>
-              <Th>Key Preview</Th>
-              <Th>Status</Th>
-              <Th>Created At</Th>
-              <Th isNumeric>Requests</Th>
-              <Th>Actions</Th>
-            </Tr>
-          </Thead>
-          <Tbody>
-            {keys.map((key) => (
-              <Tr key={key.key_preview}>
-                <Td><Code>{key.key_preview}...</Code></Td>
-                <Td><Badge colorScheme={key.is_active ? "green" : "red"}>{key.is_active ? "Active" : "Inactive"}</Badge></Td>
-                <Td>{new Date(key.created_at).toLocaleDateString()}</Td>
-                <Td isNumeric>{key.request_count.toLocaleString()}</Td>
-                <Td>
-                  <IconButton
-                    aria-label="Revoke Key"
-                    icon={<DeleteIcon />}
-                    colorScheme="red"
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => handleRevokeClick(key.key_preview)}
-                    isLoading={revokeMutation.isPending && keyToRevoke === key.key_preview}
-                  />
-                </Td>
-              </Tr>
-            ))}
-          </Tbody>
-        </Table>
-      </TableContainer>
-
-      {/* Modal for displaying the new API key */}
-      <Modal isOpen={isModalOpen} onClose={onModalClose} isCentered>
-        <ModalOverlay />
-        <ModalContent>
-          <ModalHeader>Your New API Key</ModalHeader>
-          <ModalCloseButton />
-          <ModalBody>
-            <Text mb={2}>Please copy your new API key. For security reasons, <b>you will not be able to see it again.</b></Text>
-            <Flex align="center" bg="gray.100" _dark={{bg: "gray.700"}} p={3} borderRadius="md">
-              <Code flex="1" mr={4}>{newApiKey}</Code>
-              <IconButton aria-label="Copy new key" icon={<CopyIcon />} onClick={handleCopyNewKey} />
-            </Flex>
-          </ModalBody>
-          <ModalFooter>
-            <Button colorScheme="blue" onClick={onModalClose}>I have copied my key</Button>
-          </ModalFooter>
-        </ModalContent>
-      </Modal>
-
-      {/* Alert Dialog for confirming key revocation */}
-      <AlertDialog
-        isOpen={isAlertOpen}
-        leastDestructiveRef={cancelRef}
-        onClose={onAlertClose}
-        isCentered
-      >
-        <AlertDialogOverlay>
-          <AlertDialogContent>
-            <AlertDialogHeader fontSize="lg" fontWeight="bold">
-              Revoke API Key
-            </AlertDialogHeader>
-            <AlertDialogBody>
-              Are you sure? You can't undo this action afterwards. This will immediately disable the key <Code>{keyToRevoke}...</Code>.
-            </AlertDialogBody>
-            <AlertDialogFooter>
-              <Button ref={cancelRef} onClick={onAlertClose}>
-                Cancel
-              </Button>
-              <Button colorScheme="red" onClick={() => revokeMutation.mutate(keyToRevoke!)} ml={3}>
-                Revoke Key
-              </Button>
-            </AlertDialogFooter>
-          </AlertDialogContent>
-        </AlertDialogOverlay>
-      </AlertDialog>
-    </Box>
-  );
-};
-
-
 // --- Main SERP API Page Component ---
 const SerpApiPage = () => {
   const token = localStorage.getItem("access_token") || "";
@@ -509,13 +347,9 @@ const SerpApiPage = () => {
               <TabPanels pt={4}>
                 <TabPanel><GetStartedTab /></TabPanel>
                 <TabPanel>
-                  <SerpApiKeyManager 
-                    token={token}
-                    keys={apiKeys || []} 
-                    isLoading={isApiKeysLoading}
-                    error={apiKeysError}
-                    onKeysUpdate={refetchApiKeys}
-                  />
+                    <ApiKeyModule
+                                    token={token}
+                                  />
                 </TabPanel>
                 <TabPanel><PlaygroundSerpApi /></TabPanel>
               </TabPanels>
