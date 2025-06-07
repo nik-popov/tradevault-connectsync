@@ -350,7 +350,7 @@ function UserAgentsPage() {
                     Refresh
                 </Button>
                 <Button leftIcon={<AddIcon />} colorScheme="teal" onClick={handleOpenAddModal}>
-                   sAdd
+                   Add
                 </Button>
               </>
             )}
