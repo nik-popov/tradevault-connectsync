@@ -115,7 +115,7 @@ const generateChartDataForPeriod = (startTimestamp: number | null, totalValue: n
     return data;
 };
 
-// --- NEW: SERP API Playground Component ---
+/// --- NEW: SERP API Playground Component (Updated for Proxy Demo) ---
 const PlaygroundSerpApi = () => {
     const [apiKey, setApiKey] = useState('');
     const [query, setQuery] = useState('best pizza in new york');
@@ -124,28 +124,32 @@ const PlaygroundSerpApi = () => {
     const [includeImages, setIncludeImages] = useState(false);
     
     const [isLoading, setIsLoading] = useState(false);
-    const [response, setResponse] = useState<any>(null);
+    const [response, setResponse] = useState<string | null>(null); // Response will now be raw HTML string
     const [error, setError] = useState<string | null>(null);
     const toast = useToast();
 
-    // The base URL for the actual SERP API endpoint.
-    const SERP_API_ENDPOINT = "https://api.thedataproxy.com/v2/serp";
+    // This is your EXISTING proxy endpoint. We will use it to simulate the SERP call.
+    const PROXY_API_ENDPOINT = "https://api.thedataproxy.com/v2/proxy";
 
-    const buildApiUrl = () => {
-        const params = new URLSearchParams({
-            query,
-            engine,
-            ...(location && { location }),
-            ...(includeImages && { include_images: 'true' })
-        });
-        return `${SERP_API_ENDPOINT}?${params.toString()}`;
+    // Helper to build the real search engine URL that the proxy will visit
+    const buildSearchEngineUrl = () => {
+        const encodedQuery = encodeURIComponent(query);
+        switch (engine) {
+            case 'bing':
+                return `https://www.bing.com/search?q=${encodedQuery}`;
+            case 'duckduckgo':
+                return `https://duckduckgo.com/?q=${encodedQuery}`;
+            case 'google':
+            default:
+                return `https://www.google.com/search?q=${encodedQuery}`;
+        }
     };
 
     const handleSubmit = async () => {
         if (!apiKey) {
             toast({
                 title: "API Key Required",
-                description: "Please enter your API key. You can create one in the 'API Keys' tab.",
+                description: "Please enter your API key to test the proxy. You can create one in the 'API Keys' tab.",
                 status: "warning",
                 duration: 5000,
                 isClosable: true,
@@ -157,16 +161,33 @@ const PlaygroundSerpApi = () => {
         setResponse(null);
         setError(null);
         
+        const targetUrl = buildSearchEngineUrl();
+        const requestBody = {
+            url: targetUrl,
+            method: 'GET',
+        };
+
         try {
-            const res = await fetch(buildApiUrl(), {
-                method: 'GET',
-                headers: { 'x-api-key': apiKey, 'Accept': 'application/json' },
+            // We call the PROXY endpoint, not a SERP endpoint
+            const res = await fetch(PROXY_API_ENDPOINT, {
+                method: 'POST',
+                headers: { 
+                    'x-api-key': apiKey,
+                    'Content-Type': 'application/json',
+                    'Accept': 'text/html', // We expect HTML back from the proxy
+                },
+                body: JSON.stringify(requestBody),
             });
-            const data = await res.json();
+
+            // For a proxy, the response might be JSON (if an error) or raw text/html
             if (!res.ok) {
-                throw new Error(data.detail || `HTTP error! Status: ${res.status}`);
+                const errorData = await res.json().catch(() => ({ detail: `HTTP error! Status: ${res.status}` }));
+                throw new Error(errorData.detail || `An unknown error occurred.`);
             }
-            setResponse(data);
+
+            const htmlResponse = await res.text(); // Get the raw HTML from the response
+            setResponse(htmlResponse);
+
         } catch (e: any) {
             setError(e.message);
         } finally {
@@ -174,47 +195,56 @@ const PlaygroundSerpApi = () => {
         }
     };
 
+    // Code snippets are updated to reflect the POST call to the proxy endpoint
     const codeSnippets = useMemo(() => {
-        const url = buildApiUrl();
+        const targetUrl = buildSearchEngineUrl();
         const safeApiKey = 'YOUR_API_KEY';
         
-        const curl = `curl -X GET "${url}" \\\n  -H "x-api-key: ${safeApiKey}"`;
+        const curl = `curl -X POST "${PROXY_API_ENDPOINT}" \\\n` +
+            `  -H "Content-Type: application/json" \\\n` +
+            `  -H "x-api-key: ${safeApiKey}" \\\n` +
+            `  -d '{\n` +
+            `    "url": "${targetUrl}",\n` +
+            `    "method": "GET"\n` +
+            `  }'`;
 
         const python = `import requests\n\n` +
-            `url = "${SERP_API_ENDPOINT}"\n` +
+            `proxy_url = "${PROXY_API_ENDPOINT}"\n` +
             `api_key = "${safeApiKey}"\n\n` +
-            `params = {\n` +
-            `    "query": "${query}",\n` +
-            `    "engine": "${engine}",\n` +
-            (location ? `    "location": "${location}",\n` : '') +
-            `    "include_images": ${includeImages}\n` +
+            `payload = {\n` +
+            `    "url": "${targetUrl}",\n` +
+            `    "method": "GET"\n` +
+            `    # For your future SERP API, you'll use params like:\n` +
+            `    # "query": "${query}", "engine": "${engine}"\n` +
             `}\n\n` +
             `headers = {\n` +
+            `    "Content-Type": "application/json",\n` +
             `    "x-api-key": api_key\n` +
             `}\n\n` +
-            `response = requests.get(url, headers=headers, params=params)\n\n` +
-            `print(response.json())`;
+            `response = requests.post(proxy_url, headers=headers, json=payload)\n\n` +
+            `print(response.text) # Prints the raw HTML`;
         
-        const javascript = `const url = new URL('${SERP_API_ENDPOINT}');\n` +
+        const javascript = `const proxyUrl = '${PROXY_API_ENDPOINT}';\n` +
             `const apiKey = '${safeApiKey}';\n\n` +
-            `const params = {\n` +
-            `    "query": "${query}",\n` +
-            `    "engine": "${engine}",\n` +
-            (location ? `    "location": "${location}",\n` : '') +
-            `    "include_images": ${includeImages}\n` +
-            `};\n` +
-            `Object.keys(params).forEach(key => url.searchParams.append(key, String(params[key])));\n\n` +
-            `const headers = {\n` +
-            `    "x-api-key": apiKey,\n` +
-            `    "Accept": "application/json",\n` +
+            `const payload = {\n` +
+            `    url: '${targetUrl}',\n` +
+            `    method: 'GET'\n` +
             `};\n\n` +
-            `fetch(url, { method: 'GET', headers: headers })\n` +
-            `    .then(response => response.json())\n` +
-            `    .then(data => console.log(data))\n` +
+            `const headers = {\n` +
+            `    'Content-Type': 'application/json',\n` +
+            `    'x-api-key': apiKey\n` +
+            `};\n\n` +
+            `fetch(proxyUrl, { \n` +
+            `    method: 'POST',\n` +
+            `    headers: headers,\n` +
+            `    body: JSON.stringify(payload)\n` +
+            ` })\n` +
+            `    .then(response => response.text()) // Get raw HTML text\n` +
+            `    .then(html => console.log(html))\n` +
             `    .catch(error => console.error('Error:', error));`;
 
         return { curl, python, javascript };
-    }, [query, engine, location, includeImages]);
+    }, [query, engine]);
 
     return (
         <Grid templateColumns={{ base: "1fr", lg: "1fr 1fr" }} gap={8}>
@@ -223,7 +253,7 @@ const PlaygroundSerpApi = () => {
                     <Heading size="md" mb={2}>Parameters</Heading>
                     <FormControl isRequired>
                         <FormLabel fontSize="sm">API Key</FormLabel>
-                        <Input type="password" placeholder="dp_xxxxxx" value={apiKey} onChange={(e) => setApiKey(e.target.value)} fontSize="sm" />
+                        <Input type="password" placeholder="Enter your proxy API key" value={apiKey} onChange={(e) => setApiKey(e.target.value)} fontSize="sm" />
                     </FormControl>
                     <FormControl isRequired>
                         <FormLabel fontSize="sm">Query</FormLabel>
@@ -238,39 +268,42 @@ const PlaygroundSerpApi = () => {
                         </Select>
                     </FormControl>
                     <FormControl>
-                        <FormLabel fontSize="sm">Location</FormLabel>
-                        <Input placeholder="e.g., Austin,Texas,United States" value={location} onChange={(e) => setLocation(e.target.value)} fontSize="sm"/>
+                        <FormLabel fontSize="sm" color="gray.400">Location (for future SERP API)</FormLabel>
+                        <Input isDisabled placeholder="e.g., Austin,Texas,United States" value={location} onChange={(e) => setLocation(e.target.value)} fontSize="sm"/>
                     </FormControl>
                     <FormControl display="flex" alignItems="center">
-                        <FormLabel htmlFor="include-images" mb="0" fontSize="sm">
-                            Include Image Results?
+                        <FormLabel htmlFor="include-images" mb="0" fontSize="sm" color="gray.400">
+                            Include Image Results? (for future SERP API)
                         </FormLabel>
-                        <Switch id="include-images" isChecked={includeImages} onChange={(e) => setIncludeImages(e.target.checked)} />
+                        <Switch id="include-images" isChecked={includeImages} onChange={(e) => setIncludeImages(e.target.checked)} isDisabled />
                     </FormControl>
                     <Button colorScheme="blue" onClick={handleSubmit} isLoading={isLoading}>
-                        Run Test
+                        Run Proxy Test
                     </Button>
                 </VStack>
             </GridItem>
             <GridItem>
                 <VStack spacing={4} align="stretch">
                     <Heading size="md" mb={2}>Code Snippet & Response</Heading>
-                    <Tabs variant="enclosed" size="sm">
-                        <TabList>
-                            <Tab>cURL</Tab>
-                            <Tab>Python</Tab>
-                            <Tab>JavaScript</Tab>
-                        </TabList>
-                        <TabPanels>
-                            <TabPanel><Code p={4} display="block" whiteSpace="pre-wrap" children={codeSnippets.curl} /></TabPanel>
-                            <TabPanel><Code p={4} display="block" whiteSpace="pre-wrap" children={codeSnippets.python} /></TabPanel>
-                            <TabPanel><Code p={4} display="block" whiteSpace="pre-wrap" children={codeSnippets.javascript} /></TabPanel>
-                        </TabPanels>
-                    </Tabs>
+                    {/* **FIX for JUMPING**: Box with fixed height and overflow */}
+                    <Box h="250px" borderWidth="1px" borderRadius="md" bg="gray.800" overflow="hidden">
+                        <Tabs variant="enclosed-colored" size="sm" h="100%" display="flex" flexDirection="column">
+                            <TabList>
+                                <Tab>cURL</Tab>
+                                <Tab>Python</Tab>
+                                <Tab>JavaScript</Tab>
+                            </TabList>
+                            <TabPanels overflowY="auto" flex="1">
+                                <TabPanel p={0}><Code w="100%" h="100%" p={4} display="block" whiteSpace="pre-wrap" children={codeSnippets.curl} /></TabPanel>
+                                <TabPanel p={0}><Code w="100%" h="100%" p={4} display="block" whiteSpace="pre-wrap" children={codeSnippets.python} /></TabPanel>
+                                <TabPanel p={0}><Code w="100%" h="100%" p={4} display="block" whiteSpace="pre-wrap" children={codeSnippets.javascript} /></TabPanel>
+                            </TabPanels>
+                        </Tabs>
+                    </Box>
                     <Box>
-                        <Heading size="sm" mb={2}>Response</Heading>
+                        <Heading size="sm" mb={2}>Raw HTML Response</Heading>
                         <Box as="pre" p={4} bg="gray.50" borderRadius="md" h="300px" overflowY="auto" fontSize="xs" whiteSpace="pre-wrap">
-                            {isLoading ? "Loading..." : error ? `Error: ${error}` : response ? JSON.stringify(response, null, 2) : "Run a test to see the response here."}
+                            {isLoading ? "Loading..." : error ? `Error: ${error}` : response ? response : "Run a test to see the raw HTML response from the search engine here."}
                         </Box>
                     </Box>
                 </VStack>
