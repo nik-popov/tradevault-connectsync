@@ -18,103 +18,208 @@ import {
   Alert,
   AlertIcon,
   Link,
-  // NEW: Import Tab components for the new UI
+  Divider,
   Tabs,
   TabList,
-  Tab,
   TabPanels,
+  Tab,
   TabPanel,
+  Code,
+  useTheme,
+  useDisclosure, // <-- For managing modal state
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalCloseButton,
+  ModalBody,
+  ModalFooter,
+  SimpleGrid,
 } from "@chakra-ui/react";
-import { ExternalLinkIcon, CopyIcon, DownloadIcon } from "@chakra-ui/icons";
+import { ExternalLinkIcon, CopyIcon, DownloadIcon, ViewIcon } from "@chakra-ui/icons";
 import { FiSend } from "react-icons/fi";
+import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
+import { vscDarkPlus } from "react-syntax-highlighter/dist/esm/styles/prism";
 
-// Define regions based on backend REGION_ENDPOINTS
+// --- Custom CodeBlock with Syntax Highlighting ---
+const CodeBlock = ({ code, language }) => {
+  const customStyle = {
+    margin: 0,
+    borderRadius: "0.375rem",
+    padding: "1rem",
+    maxHeight: '60vh', // Make code blocks scrollable within the modal
+    overflow: 'auto'
+  };
+  
+  return (
+    <SyntaxHighlighter language={language} style={vscDarkPlus} customStyle={customStyle} wrapLongLines={true}>
+      {code}
+    </SyntaxHighlighter>
+  );
+};
+
+// --- Helper Functions ---
+const handleCopy = (text, type) => {
+  navigator.clipboard.writeText(text).then(() => alert(`${type} copied to clipboard!`));
+};
+
+const handleDownload = (content, filename, type) => {
+  const blob = new Blob([content], { type });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+};
+
+
+// --- NEW: Results Modal Component ---
+const ResultsModal = ({ isOpen, onClose, data }) => {
+  if (!data) return null;
+  const theme = useTheme();
+
+  const { requestInfo, jsonResponse, htmlPreview, headers } = data;
+  
+  const resultCardStyle = {
+    height: "65vh",
+    width: "100%",
+    border: "1px solid",
+    borderColor: "gray.200",
+    borderRadius: "md",
+  };
+
+  return (
+    <Modal isOpen={isOpen} onClose={onClose} size="6xl" isCentered motionPreset="slideInBottom">
+      <ModalOverlay bg="blackAlpha.600" />
+      <ModalContent mx={4}>
+        <ModalHeader>API Call Results</ModalHeader>
+        <ModalCloseButton />
+        <ModalBody pb={6}>
+          <Tabs variant="soft-rounded" colorScheme="blue">
+            <TabList>
+              <Tab>Request Info</Tab>
+              <Tab>JSON Response</Tab>
+              <Tab>HTML Preview</Tab>
+              <Tab>Response Headers</Tab>
+            </TabList>
+            <TabPanels mt={4}>
+              <TabPanel>
+                <Heading size="sm" mb={4}>Request Sent to API</Heading>
+                <SimpleGrid columns={2} spacing={2} maxW="lg">
+                  <Text fontWeight="bold">URL:</Text>
+                  <Code>{requestInfo.url}</Code>
+                  <Text fontWeight="bold">Region:</Text>
+                  <Code>{requestInfo.region}</Code>
+                  <Text fontWeight="bold">Method:</Text>
+                  <Code>POST</Code>
+                </SimpleGrid>
+              </TabPanel>
+              <TabPanel p={0}>
+                 <Flex justify="flex-end" mb={2} gap={2}>
+                    <Tooltip label="Copy JSON"><IconButton aria-label="Copy JSON" icon={<CopyIcon />} size="sm" onClick={() => handleCopy(jsonResponse, 'JSON Response')} /></Tooltip>
+                    <Tooltip label="Download JSON"><IconButton aria-label="Download JSON" icon={<DownloadIcon />} size="sm" onClick={() => handleDownload(jsonResponse, "response.json", "application/json")} /></Tooltip>
+                 </Flex>
+                 <CodeBlock code={jsonResponse} language="json" />
+              </TabPanel>
+              <TabPanel p={0}>
+                <Flex justify="flex-end" mb={2} gap={2}>
+                    <Tooltip label="Copy HTML"><IconButton aria-label="Copy HTML" icon={<CopyIcon />} size="sm" onClick={() => handleCopy(htmlPreview, 'HTML')} /></Tooltip>
+                    <Tooltip label="Download HTML"><IconButton aria-label="Download HTML" icon={<DownloadIcon />} size="sm" onClick={() => handleDownload(htmlPreview, "preview.html", "text/html")} /></Tooltip>
+                </Flex>
+                <iframe srcDoc={htmlPreview} style={resultCardStyle} title="HTML Preview" sandbox="allow-scripts allow-same-origin" />
+              </TabPanel>
+              <TabPanel p={0}>
+                 <Flex justify="flex-end" mb={2} gap={2}>
+                    <Tooltip label="Copy Headers"><IconButton aria-label="Copy Headers" icon={<CopyIcon />} size="sm" onClick={() => handleCopy(headers, 'Headers')} /></Tooltip>
+                 </Flex>
+                <CodeBlock code={headers} language="json" />
+              </TabPanel>
+            </TabPanels>
+          </Tabs>
+        </ModalBody>
+        <ModalFooter>
+          <Button colorScheme="blue" onClick={onClose}>Close</Button>
+        </ModalFooter>
+      </ModalContent>
+    </Modal>
+  );
+};
+
+
+// --- Constants ---
 const REGIONS = [
   "us-east", "us-west", "us-central", "northamerica-northeast",
   "southamerica", "asia", "australia", "europe", "middle-east",
 ];
-
 const API_URL = "https://api.thedataproxy.com/v2/proxy";
 
 const PlaygroundGSerp: React.FC = () => {
-  // NEW: State for switching between 'serp' and 'fetch' modes
-  const [apiMode, setApiMode] = useState<'serp' | 'fetch'>('serp');
-
-  // UPDATED: State for inputs, now more generic
-  const [query, setQuery] = useState<string>("flowers"); // For SERP query or Fetch URL
-  const [engine, setEngine] = useState<string>("google"); // For SERP only
-
+  // --- State ---
+  const [url, setUrl] = useState<string>("https://www.google.com/search?q=flowers&udm=2");
   const [region, setRegion] = useState<string>(REGIONS[0]);
   const [apiKey, setApiKey] = useState<string>("");
-  const [response, setResponse] = useState<string>("");
-  const [htmlPreview, setHtmlPreview] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
   const [responseTime, setResponseTime] = useState<number | null>(null);
 
-  // UPDATED: Dynamically generate cURL command based on the selected API mode
-  const generateCurlCommand = () => {
-    if (apiMode === 'serp') {
-      const requestUrl = `${API_URL}/serp?q=${encodeURIComponent(query)}&engine=${engine}®ion=${region}`;
-      return `curl -X GET "${requestUrl}" \\
-  -H "x-api-key: ${apiKey}"`;
-    } else { // 'fetch' mode
-      const requestUrl = `${API_URL}/fetch?region=${region}`;
-      return `curl -X POST "${requestUrl}" \\
-  -H "Content-Type: application/json" \\
-  -H "x-api-key: ${apiKey}" \\
-  -d '{"url": "${query}"}'`;
-    }
-  };
+  // --- NEW: State for modal and its data ---
+  const { isOpen: isModalOpen, onOpen: onModalOpen, onClose: onModalClose } = useDisclosure();
+  const [resultsData, setResultsData] = useState<any | null>(null);
 
-  const handleCopyCurl = () => {
-    navigator.clipboard.writeText(generateCurlCommand());
-    alert("cURL command copied to clipboard!");
-  };
+  const displayApiKey = apiKey.trim() || "YOUR_API_KEY";
+  
+  const codeTabs = [
+    {
+      id: "curl", label: "cURL", language: "bash",
+      code: `curl -X POST "${API_URL}/fetch?region=${region}" \\\n  -H "Content-Type: application/json" \\\n  -H "x-api-key: ${displayApiKey}" \\\n  -d '{"url": "${url}"}'`,
+    },
+    {
+      id: "python", label: "Python", language: "python",
+      code: `import requests\nimport json\n\napi_key = '${displayApiKey}'\nregion = '${region}'\nurl_to_fetch = '${url}'\n\napi_url = f'${API_URL}/fetch?region={region}'\n\nheaders = {\n    'Content-Type': 'application/json',\n    'x-api-key': api_key\n}\npayload = {'url': url_to_fetch}\n\nresponse = requests.post(api_url, headers=headers, data=json.dumps(payload))\n\nif response.status_code == 200:\n    print(json.dumps(response.json(), indent=2))\nelse:\n    print(f"Error: {response.status_code}")\n    print(response.text)`,
+    },
+    {
+      id: "nodejs", label: "Node.js", language: "javascript",
+      code: `const axios = require('axios');\n\nconst apiKey = '${displayApiKey}';\nconst region = '${region}';\nconst searchUrl = '${url}';\n\nconst apiUrl = \`${API_URL}/fetch?region=\${region}\`;\n\nconst headers = {\n    'Content-Type': 'application/json',\n    'x-api-key': apiKey\n};\nconst payload = { url: searchUrl };\n\naxios.post(apiUrl, payload, { headers })\n    .then(response => {\n        console.log(JSON.stringify(response.data, null, 2));\n    })\n    .catch(error => {\n        console.error('Error:', error.response ? error.response.data : error.message);\n    });`,
+    },
+  ];
 
-  // UPDATED: Main request logic now handles both API modes
+  // --- Handlers ---
   const handleTestRequest = async () => {
     setIsLoading(true);
-    setResponse("");
-    setHtmlPreview("");
     setError("");
     setResponseTime(null);
+    setResultsData(null); // Clear previous results
 
     try {
       const startTime = performance.now();
-      let res: Response;
-
-      if (apiMode === 'serp') {
-        const requestUrl = `${API_URL}/serp?q=${encodeURIComponent(query)}&engine=${engine}®ion=${region}`;
-        res = await fetch(requestUrl, {
-          method: "GET",
-          headers: { "x-api-key": apiKey },
-        });
-      } else { // 'fetch' mode
-        const requestUrl = `${API_URL}/fetch?region=${region}`;
-        res = await fetch(requestUrl, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "x-api-key": apiKey,
-          },
-          body: JSON.stringify({ url: query }),
-        });
-      }
-
+      const res = await fetch(`${API_URL}/fetch?region=${region}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "x-api-key": apiKey },
+        body: JSON.stringify({ url }),
+      });
       const endTime = performance.now();
       setResponseTime(Math.round(endTime - startTime));
 
-      const data = await res.json();
+      // Capture headers
+      const responseHeaders = {};
+      res.headers.forEach((value, key) => { responseHeaders[key] = value; });
+
+      const responseBody = await res.json();
       if (!res.ok) {
-        throw new Error(data.detail || `HTTP error! status: ${res.status}`);
+        throw new Error(responseBody.detail || `HTTP error! status: ${res.status}`);
       }
 
-      setResponse(JSON.stringify(data, null, 2));
-      // Only set HTML preview if we are in fetch mode and the result exists
-      if (apiMode === 'fetch' && data.result) {
-        setHtmlPreview(data.result);
-      }
+      // Set all data for the modal and open it
+      setResultsData({
+        requestInfo: { url, region },
+        jsonResponse: JSON.stringify(responseBody, null, 2),
+        htmlPreview: responseBody.result || "",
+        headers: JSON.stringify(responseHeaders, null, 2),
+      });
+      onModalOpen();
 
     } catch (err) {
       setError(err instanceof Error ? err.message : "An unknown error occurred");
@@ -123,214 +228,77 @@ const PlaygroundGSerp: React.FC = () => {
     }
   };
 
-  const handleCopyResponse = () => {
-    navigator.clipboard.writeText(response);
-    alert("Response copied to clipboard!");
-  };
-
-  const handleDownloadResponse = () => {
-    const blob = new Blob([response], { type: "application/json" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = "response.json";
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-  };
-
-  const handleCopyHtml = () => {
-    if (htmlPreview) {
-      navigator.clipboard.writeText(htmlPreview);
-      alert("HTML copied to clipboard!");
-    }
-  };
-  
-  const handleDownloadHtml = () => {
-    if (htmlPreview) {
-      const blob = new Blob([htmlPreview], { type: "text/html" });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = "preview.html";
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
-    }
-  };
-
-  const isButtonDisabled = !query.trim() || !apiKey.trim() || !region;
-
   return (
     <Box width="100%">
-      <Grid templateColumns={{ base: '1fr', lg: '350px 1fr' }} gap={6}>
-        {/* --- LEFT COLUMN: CONTROLS --- */}
-        <GridItem>
-          <Flex direction="column" gap={4} p={4} bg="gray.50" borderRadius="md">
-            <Heading size="sm">API Playground</Heading>
-            
-            {/* NEW: Tabbed interface for switching modes */}
-            <Tabs variant='soft-rounded' colorScheme='blue' onChange={(index) => setApiMode(index === 0 ? 'serp' : 'fetch')}>
-              <TabList>
-                <Tab>SERP API</Tab>
-                <Tab>Proxy API</Tab>
-              </TabList>
-              <TabPanels>
-                {/* SERP API Panel */}
-                <TabPanel p={0} pt={4}>
-                  <FormControl>
-                    <FormLabel fontSize="sm">Search Query</FormLabel>
-                    <Input
-                      value={query}
-                      onChange={(e) => setQuery(e.target.value)}
-                      placeholder="e.g., flowers"
-                      size="sm"
-                    />
-                  </FormControl>
-                  <FormControl mt={4}>
-                    <FormLabel fontSize="sm">Engine</FormLabel>
-                    <Select value={engine} onChange={(e) => setEngine(e.target.value)} size="sm">
-                      <option value="google">Google</option>
-                      <option value="bing">Bing</option>
-                      <option value="duckduckgo">DuckDuckGo</option>
-                    </Select>
-                  </FormControl>
-                </TabPanel>
-                {/* Proxy API (Fetch) Panel */}
-                <TabPanel p={0} pt={4}>
-                   <FormControl>
-                    <FormLabel fontSize="sm">Target URL</FormLabel>
-                    <Input
-                      value={query}
-                      onChange={(e) => setQuery(e.target.value)}
-                      placeholder="e.g., https://www.google.com/search?q=..."
-                      size="sm"
-                    />
-                  </FormControl>
-                </TabPanel>
-              </TabPanels>
-            </Tabs>
+      {/* --- Intro --- */}
+      <Box mb={6}>
+        <Text fontSize="lg" mb={2} color="gray.700">This tool allows you to programmatically fetch search engine results pages.</Text>
+        <Text fontSize="lg" mb={4} color="gray.700">Build your request below. Results will open in a new window for review.</Text>
+        <Divider mb={4} />
+      </Box>
 
-            <FormControl>
-              <FormLabel fontSize="sm">API Key</FormLabel>
-              <Input
-                value={apiKey}
-                onChange={(e) => setApiKey(e.target.value)}
-                placeholder="Enter your API key"
-                size="sm"
-                type="password"
-              />
-            </FormControl>
-            <FormControl>
-              <FormLabel fontSize="sm">Region</FormLabel>
-              <Select value={region} onChange={(e) => setRegion(e.target.value)} size="sm">
-                {REGIONS.map((reg) => (
-                  <option key={reg} value={reg}>{reg}</option>
-                ))}
-              </Select>
-            </FormControl>
-            <Flex gap={2}>
-              <Button
-                flex="1"
-                size="sm"
-                colorScheme="blue"
-                onClick={handleTestRequest}
-                isLoading={isLoading}
-                isDisabled={isButtonDisabled}
-                leftIcon={<FiSend />}
-              >
-                Send Request
-              </Button>
-              <Tooltip label="Copy cURL command">
-                <IconButton
-                  aria-label="Copy cURL"
-                  icon={<CopyIcon />}
-                  size="sm"
-                  onClick={handleCopyCurl}
-                  isDisabled={isButtonDisabled}
-                />
-              </Tooltip>
-            </Flex>
-            {error && (
-              <Alert status="error" fontSize="sm">
-                <AlertIcon /> {error}
-              </Alert>
-            )}
-            {responseTime !== null && (
-              <Text fontSize="sm" color="gray.600">
-                Response Time: {responseTime} ms
-              </Text>
-            )}
-          </Flex>
-        </GridItem>
-
-        {/* --- RIGHT COLUMN: RESULTS --- */}
-        <GridItem>
-          <Grid templateColumns={{ base: "1fr", md: "1fr 1fr" }} gap={6}>
-            {/* JSON Response Panel */}
-            <GridItem>
-              <Flex align="center" justify="space-between" mb={2}>
-                <Heading size="md">API Response</Heading>
-                {response && (
-                  <Flex gap={2}>
-                    <Tooltip label="Copy Response"><IconButton aria-label="Copy Response" icon={<CopyIcon />} size="sm" onClick={handleCopyResponse} /></Tooltip>
-                    <Tooltip label="Download Response"><IconButton aria-label="Download Response" icon={<DownloadIcon />} size="sm" onClick={handleDownloadResponse} /></Tooltip>
-                  </Flex>
-                )}
-              </Flex>
-              {isLoading ? (
-                <Flex justify="center" align="center" h="400px"><Spinner size="xl" color="blue.500" /></Flex>
-              ) : (
-                <Textarea
-                  value={response}
-                  readOnly
-                  height="400px"
-                  bg="gray.50"
-                  color="black"
-                  placeholder="API response will appear here..."
-                  size="sm"
-                  resize="vertical"
-                />
-              )}
-            </GridItem>
-            {/* HTML Preview Panel */}
-            <GridItem>
-              <Flex align="center" justify="space-between" mb={2}>
-                <Heading size="md">HTML Preview</Heading>
-                {htmlPreview && (
-                  <Flex gap={2}>
-                    <Tooltip label="Copy HTML"><IconButton aria-label="Copy HTML" icon={<CopyIcon />} size="sm" onClick={handleCopyHtml} /></Tooltip>
-                    <Tooltip label="Download HTML"><IconButton aria-label="Download HTML" icon={<DownloadIcon />} size="sm" onClick={handleDownloadHtml} /></Tooltip>
-                    <Tooltip label="Open in new tab"><IconButton aria-label="Open preview" icon={<ExternalLinkIcon />} size="sm" onClick={() => {
-                        const newWindow = window.open();
-                        if (newWindow) {
-                            newWindow.document.write(htmlPreview);
-                            newWindow.document.close();
-                        }
-                    }} /></Tooltip>
-                  </Flex>
-                )}
-              </Flex>
-              {htmlPreview ? (
-                <iframe
-                  srcDoc={htmlPreview}
-                  style={{ width: "100%", height: "400px", border: "1px solid #E2E8F0", borderRadius: "0.375rem" }}
-                  title="HTML Preview"
-                  sandbox="allow-scripts allow-same-origin"
-                />
-              ) : (
-                <Box height="400px" bg="gray.100" borderRadius="md" display="flex" alignItems="center" justifyContent="center">
-                  <Text fontSize="sm" color="gray.500">
-                    {apiMode === 'fetch' ? "No HTML preview available" : "HTML preview only available in Proxy API mode"}
-                  </Text>
-                </Box>
-              )}
-            </GridItem>
+      {/* --- Live Test (Request Builder) --- */}
+      <Box mb={8}>
+        <Heading as="h2" size="md" fontWeight="semibold" mb={6} color="gray.700">Live Test</Heading>
+        <Flex direction="column" gap={4}>
+          <FormControl>
+            <FormLabel fontSize="sm">Search URL</FormLabel>
+            <Input value={url} onChange={(e) => setUrl(e.target.value)} placeholder="e.g., https://www.google.com/search?q=flowers&udm=2" size="sm" />
+          </FormControl>
+          <Grid templateColumns={{ base: "1fr", md: "2fr 1fr auto" }} gap={4} alignItems="flex-end">
+            <GridItem><FormControl><FormLabel fontSize="sm">API Key</FormLabel><Input value={apiKey} onChange={(e) => setApiKey(e.target.value)} placeholder="Enter your API key" size="sm" type="password" /></FormControl></GridItem>
+            <GridItem><FormControl><FormLabel fontSize="sm">Region</FormLabel><Select value={region} onChange={(e) => setRegion(e.target.value)} size="sm">{REGIONS.map((reg) => (<option key={reg} value={reg}>{reg}</option>))}</Select></FormControl></GridItem>
+            <GridItem><Button size="sm" colorScheme="blue" onClick={handleTestRequest} isLoading={isLoading} isDisabled={!url.trim() || !apiKey.trim() || !region} leftIcon={<FiSend />}>Test Request</Button></GridItem>
           </Grid>
-        </GridItem>
-      </Grid>
+          {error && (<Alert status="error" mt={4}><AlertIcon /><Text fontSize="sm">{error}</Text></Alert>)}
+          {/* --- Success Message & Re-open Button --- */}
+          {resultsData && !isModalOpen && (
+              <Alert status="success" mt={4}>
+                  <AlertIcon />
+                  <Flex justify="space-between" align="center" w="100%">
+                    <Box>
+                      <Text fontWeight="bold">Request Successful!</Text>
+                      <Text fontSize="sm">Response Time: {responseTime} ms</Text>
+                    </Box>
+                    <Button
+                      size="sm"
+                      variant="solid"
+                      colorScheme="blue"
+                      leftIcon={<ViewIcon />}
+                      onClick={onModalOpen}
+                    >
+                      View Last Result
+                    </Button>
+                  </Flex>
+              </Alert>
+          )}
+        </Flex>
+      </Box>
+
+      {/* --- Dynamic Code Snippets --- */}
+      <Box mb={8}>
+        <Heading as="h2" size="md" fontWeight="semibold" mb={4} color="gray.700">Your Request Code</Heading>
+        <Text fontSize="md" color="gray.600" mb={6}>The code below updates automatically as you change parameters in the Live Test section.</Text>
+        <Tabs variant="enclosed" colorScheme="orange">
+          <TabList>
+            {codeTabs.map((tab) => (<Tab key={tab.id} fontWeight="semibold" fontSize="lg" color="gray.400" _selected={{ bg: "gray.800", color: "orange.400" }}>{tab.label}</Tab>))}
+          </TabList>
+          <TabPanels bg="gray.800" borderRadius="0 0 md md">
+            {codeTabs.map((tab) => (<TabPanel key={tab.id} p={0}><CodeBlock code={tab.code} language={tab.language} /></TabPanel>))}
+          </TabPanels>
+        </Tabs>
+      </Box>
+      
+      {/* --- Need Help Section --- */}
+      <Box pt={8} mt={8} borderTopWidth="1px" borderColor="gray.200">
+        <Box p={4} borderWidth="1px" borderRadius="md" bg="orange.50" borderColor="orange.200">
+          <Heading size="md" mb={2} color="gray.800">Need Help?</Heading>
+          <Text fontSize="md" color="gray.700">Check our detailed{" "}<Link color="orange.600" fontWeight="bold" href="/documentation/serp-api" isExternal>API Documentation</Link>{" "}for more examples. For further assistance, contact our{" "}<Link color="orange.600" fontWeight="bold" href="/support" isExternal>Support Center</Link>.</Text>
+        </Box>
+      </Box>
+      
+      {/* --- Render the Modal --- */}
+      <ResultsModal isOpen={isModalOpen} onClose={onModalClose} data={resultsData} />
     </Box>
   );
 };
