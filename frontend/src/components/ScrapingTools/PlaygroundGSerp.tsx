@@ -251,21 +251,21 @@ const PlaygroundGSerp: React.FC = () => {
             <Link
               href="https://api.thedataproxy.com/redoc"
               isExternal
-              color="blue.500"
+              color="orange.500"
             >
               Structured Data <ExternalLinkIcon mx="2px" />
             </Link>
           </Text>
           {isLoading ? (
             <Flex justify="center" align="center" h="400px">
-              <Spinner size="xl" color="blue.500" />
+              <Spinner size="xl" color="orange.500" />
             </Flex>
           ) : (
             <Textarea
               value={response}
               readOnly
               height="400px"
-              bg="blue.50"
+              bg="orange.50"
               color="black"
               placeholder="Response will appear here after testing"
               size="sm"
@@ -319,7 +319,7 @@ const PlaygroundGSerp: React.FC = () => {
             <Link
               href="https://thedataproxy.com/browser"
               isExternal
-              color="blue.500"
+              color="orange.500"
             >
               Browser Session <ExternalLinkIcon mx="2px" />
             </Link>

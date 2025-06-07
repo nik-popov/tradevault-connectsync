@@ -12,7 +12,7 @@ const Logo: React.FC<LogoProps> = (props) => {
     <Link
       href="/" // Default link destination
       // --- Style Props ---
-      color="blue.800"         // Deep blue from Chakra's theme (or "blue.900")
+      color="orange.400"         // Deep blue from Chakra's theme (or "orange.900")
       fontWeight="bold"        // font-bold
       fontSize="2xl"           // text-2xl
       transition="color 0.2s ease-in-out" // Smooth transition
@@ -20,7 +20,7 @@ const Logo: React.FC<LogoProps> = (props) => {
       // Chakra's syntax for hover, focus, and other pseudo-states
       _hover={{
         textDecoration: 'none',  // no-underline on hover
-        color: 'black',          // hover:text-black
+        color: 'orange.200',          // hover:text-black
       }}
       
       // Spread any other props passed to Logo (like a custom href, onClick, etc.)

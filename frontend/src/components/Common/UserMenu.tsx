@@ -113,9 +113,9 @@ const UserMenu = () => {
           icon={<FaUserSecret color="gray.800" fontSize="18px" />}
           bg="gray.50"
           border="1px solid"
-          borderColor="blue.300"
-          _hover={{ bg: "blue.100", borderColor: "blue.400" }}
-          _active={{ bg: "blue.200", borderColor: "blue.500" }}
+          borderColor="orange.300"
+          _hover={{ bg: "orange.100", borderColor: "orange.400" }}
+          _active={{ bg: "orange.200", borderColor: "orange.500" }}
           isRound
           onClick={() => navigate({ to: "/login" })}
           data-testid="login-button"
@@ -140,9 +140,9 @@ const UserMenu = () => {
             icon={<FaUserSecret color="gray.800" fontSize="18px" />}
             bg="gray.50"
             border="1px solid"
-            borderColor="blue.300"
-            _hover={{ bg: "blue.100", borderColor: "blue.400" }}
-            _active={{ bg: "blue.200", borderColor: "blue.500" }}
+            borderColor="orange.300"
+            _hover={{ bg: "orange.100", borderColor: "orange.400" }}
+            _active={{ bg: "orange.200", borderColor: "orange.500" }}
             isRound
             data-testid="user-menu-button"
           />
@@ -156,7 +156,7 @@ const UserMenu = () => {
               as={Link}
               to="/settings"
               icon={<FiUser fontSize="18px" color="gray.600" />}
-              _hover={{ bg: "blue.100", color: "blue.500" }}
+              _hover={{ bg: "orange.100", color: "orange.500" }}
               data-testid="settings-menu-item"
             >
               Settings
@@ -167,7 +167,7 @@ const UserMenu = () => {
                 as={Link}
                 to="/proxies/pricing"
                 icon={<FiCreditCard fontSize="18px" color="gray.600" />}
-                _hover={{ bg: "blue.100", color: "blue.500" }}
+                _hover={{ bg: "orange.100", color: "orange.500" }}
                 data-testid="subscription-menu-item"
               >
                 Manage Subscription
@@ -201,9 +201,9 @@ const UserMenu = () => {
             icon={<FaUserSecret color="gray.800" fontSize="16px" />}
             bg="gray.50"
             border="1px solid"
-            borderColor="blue.300"
-            _hover={{ bg: "blue.100", borderColor: "blue.400" }}
-            _active={{ bg: "blue.200", borderColor: "blue.500" }}
+            borderColor="orange.300"
+            _hover={{ bg: "orange.100", borderColor: "orange.400" }}
+            _active={{ bg: "orange.200", borderColor: "orange.500" }}
             isRound
             size="sm"
             data-testid="user-menu-button-mobile"
@@ -218,7 +218,7 @@ const UserMenu = () => {
               as={Link}
               to="/settings"
               icon={<FiUser fontSize="16px" color="gray.600" />}
-              _hover={{ bg: "blue.100", color: "blue.500" }}
+              _hover={{ bg: "orange.100", color: "orange.500" }}
               data-testid="settings-menu-item-mobile"
             >
               Settings
@@ -228,7 +228,7 @@ const UserMenu = () => {
                 as={Link}
                 to="/proxies/pricing"
                 icon={<FiCreditCard fontSize="16px" color="gray.600" />}
-                _hover={{ bg: "blue.100", color: "blue.500" }}
+                _hover={{ bg: "orange.100", color: "orange.500" }}
                 data-testid="subscription-menu-item-mobile"
               >
                 Manage Subscription

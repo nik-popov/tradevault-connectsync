@@ -210,7 +210,7 @@ function SignUp() {
             <Link 
               as={RouterLink} 
               to="/login" 
-              color="blue.500"
+              color="orange.500"
             >
               Log In
             </Link>

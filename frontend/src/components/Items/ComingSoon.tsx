@@ -17,7 +17,7 @@ const ComingSoon: React.FC = () => {
           bg="gray.50"
           color="gray.800"
         >
-          <AlertIcon color="blue.500" /> 
+          <AlertIcon color="orange.500" /> 
           <Text fontSize="sm">
            Features are in development. 
           </Text>

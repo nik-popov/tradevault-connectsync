@@ -43,9 +43,9 @@ const ComingSoon: React.FC = () => {
           If you have purchased a subscription, please{' '}
           <Link 
             href="mailto:support@thedataproxy.com" 
-            color="blue.500" 
+            color="orange.500" 
             textDecoration="underline"
-            _hover={{ color: "blue.700" }}
+            _hover={{ color: "orange.700" }}
           >
             contact support
           </Link>{' '}

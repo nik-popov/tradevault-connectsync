@@ -342,14 +342,13 @@ function UserAgentsPage() {
               <>
                 <Button
                     leftIcon={<RepeatIcon />}
-                    colorScheme="blue"
                     onClick={() => updateFromSourceMutation.mutate()}
                     isLoading={updateFromSourceMutation.isPending}
                     loadingText="Updating..."
                 >
                     Refresh
                 </Button>
-                <Button leftIcon={<AddIcon />} colorScheme="teal" onClick={handleOpenAddModal}>
+                <Button leftIcon={<AddIcon />} onClick={handleOpenAddModal}>
                    Add
                 </Button>
               </>

@@ -73,7 +73,7 @@ const MenuItemCard = ({
   item: NavItem;
   onClose?: () => void;
 }) => {
-  const bgActive = "blue.100";
+  const bgActive = "orange.100";
   const hoverBg = "gray.50";
 
   return (
@@ -92,7 +92,7 @@ const MenuItemCard = ({
     >
       <Flex alignItems="center">
         {item.icon && (
-          <Icon as={item.icon} mr={4} boxSize={6} color="blue.500" />
+          <Icon as={item.icon} mr={4} boxSize={6} color="orange.500" />
         )}
         <Box>
           <Text fontWeight="600" color="gray.800">
@@ -119,7 +119,7 @@ const HoverableDropdown = ({
 }) => {
   const { isOpen, onOpen, onClose: closeMenu } = useDisclosure();
   const textColor = "gray.800";
-  const hoverColor = "blue.600";
+  const hoverColor = "orange.600";
 
   return (
     <Box onMouseEnter={onOpen} onMouseLeave={closeMenu}>
@@ -165,9 +165,9 @@ const NavItems = ({ onClose, isMobile = false }: NavItemsProps) => {
   const queryClient = useQueryClient();
   const textColor = "gray.800";
   const disabledColor = "gray.300";
-  const hoverColor = "blue.600";
-  const bgActive = "blue.100";
-  const activeTextColor = "blue.800";
+  const hoverColor = "orange.600";
+  const bgActive = "orange.100";
+  const activeTextColor = "orange.800";
   const currentUser = queryClient.getQueryData<UserPublic>(["currentUser"]);
 
   const finalNavStructure = [...navStructure];
@@ -277,9 +277,9 @@ const TopNav = () => {
   const { logout } = useAuth();
   const currentUser = queryClient.getQueryData<UserPublic>(["currentUser"]);
   const textColor = "gray.800";
-  const hoverColor = "blue.600";
-  const bgActive = "blue.100";
-  const activeTextColor = "blue.800";
+  const hoverColor = "orange.600";
+  const bgActive = "orange.100";
+  const activeTextColor = "orange.800";
 
   const handleLogout = async () => {
     logout();
@@ -307,7 +307,7 @@ const TopNav = () => {
           display={{ base: "flex", md: "none" }}
           aria-label="Open Menu"
           fontSize="20px"
-          color="blue.600"
+          color="orange.600"
           icon={<FiMenu />}
           variant="ghost"
         />

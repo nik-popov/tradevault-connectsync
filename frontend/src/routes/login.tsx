@@ -184,7 +184,7 @@ function Login() {
           <Link 
             as={RouterLink} 
             to="/recover-password" 
-            color="blue.500"
+            color="orange.500"
             fontSize={{ base: "sm", md: "md" }}
           >
             Forgot password?
@@ -205,7 +205,7 @@ function Login() {
             <Link 
               as={RouterLink} 
               to="/signup" 
-              color="blue.500"
+              color="orange.500"
             >
               Sign up
             </Link>
