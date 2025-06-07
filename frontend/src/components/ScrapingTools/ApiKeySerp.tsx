@@ -229,7 +229,7 @@ const ApiKeySerp: React.FC<ApiKeySerpProps> = ({ token }) => {
                 colorScheme="blue"
                 onClick={generateKey}
                 isLoading={loading}
-                isDisabled={loading || hasSerpApiAccess === false}
+                isDisabled={loading}
               >
                 Generate
               </Button>
