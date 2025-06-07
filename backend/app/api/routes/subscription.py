@@ -304,21 +304,21 @@ async def check_serp_api_access(current_user: Annotated[User, Depends(get_curren
         subscriptions = stripe.Subscription.list(
             customer=current_user.stripe_customer_id,
             status="all",  # Fetch all statuses and filter locally
-            expand=["data.plan.product"],
+            expand=["data.plan.product"], # Crucial for getting product metadata efficiently
         )
         logger.info(f"Found {len(subscriptions.data)} total subscriptions for {current_user.email}. Checking for SERP access.")
 
         # Define which statuses grant API access. 'past_due' is often included
-        # to allow a grace period during dunning.
+        # to allow a grace period for payment issues (dunning).
         access_granting_statuses = {"active", "trialing", "past_due"}
 
-        # 3. The Core Logic: Iterate and check status and metadata
+        # 3. The Core Logic: Iterate and check subscription status and metadata
         for sub in subscriptions.data:
-            # First, check if the subscription has a status that grants access.
+            # First, efficiently check if the subscription has a status that grants access.
             if sub.status not in access_granting_statuses:
-                continue  # Skip canceled, unpaid, etc.
+                continue  # Skip canceled, unpaid, incomplete, etc.
 
-            # Safely access product and its metadata
+            # Safely access the nested product and its metadata
             product = sub.plan.product if sub.plan and hasattr(sub.plan, 'product') else None
             metadata = product.metadata if product and product.metadata is not None else {}
             
@@ -333,18 +333,19 @@ async def check_serp_api_access(current_user: Annotated[User, Depends(get_curren
                     message="Access granted to SERP API features."
                 )
 
-        # 4. If the loop completes, no access was found
+        # 4. If the loop completes without returning, no access was found
         logger.warning(f"SERP API access DENIED for user {current_user.email}. No plan with 'serp-api: true' metadata found in an active, trialing, or past_due subscription.")
         return ProxyApiAccessResponse(
             has_access=False,
-            message="Your current plan does not include SERP API access. Please upgrade your plan."
+            message="Your current subscription plan does not include SERP API access. Please upgrade your plan."
         )
 
     except StripeError as e:
-        # Use more specific Stripe error details if available
+        # Use more specific Stripe error details for better client-side handling and logging
         logger.error(f"Stripe error checking SERP API access for {current_user.email}: {e.user_message or str(e)}")
-        raise HTTPException(status_code=e.http_status or 400, detail=e.user_message or "A Stripe error occurred.")
+        raise HTTPException(status_code=e.http_status or 400, detail=e.user_message or "A Stripe error occurred while checking your subscription.")
     except Exception as e:
+        # Log the full traceback for internal server errors for easier debugging
         logger.error(f"Internal server error checking SERP API access for {current_user.email}: {str(e)}", exc_info=True)
         raise HTTPException(status_code=500, detail="An internal server error occurred.")
 
