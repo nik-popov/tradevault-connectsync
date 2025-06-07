@@ -210,7 +210,7 @@ const ApiKeyModule: React.FC<ApiKeyProps> = ({ token }) => {
             Generate New Key
           </Button>
         </Flex>
-        <Divider />
+  <Divider mb={4}></Divider>
 
         {hasProxyApiAccess === false && (
           <Alert status="warning" borderRadius="md"><AlertIcon />Your current plan does not include Proxy API features. Please upgrade to use this feature.</Alert>

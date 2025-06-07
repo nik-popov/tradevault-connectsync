@@ -11,6 +11,7 @@ import {
   TabPanel,
   Box,
   Heading,
+  Divider,
   Alert,
   AlertIcon,
   Link,
@@ -199,7 +200,7 @@ const GetStartedTab = () => {
       <Text fontSize="lg" mb={4} color="gray.700">
         To get started, create an API key in the API Keys tab and use it in your requests. Remember to replace <Code fontSize="sm">YOUR_API_KEY</Code> with your actual key.
       </Text>
-
+    <Divider mb={4}></Divider>
       <Tabs variant="enclosed" colorScheme="orange">
         <TabList>
           {codeTabs.map((tab) => (
@@ -207,6 +208,7 @@ const GetStartedTab = () => {
               key={tab.id}
               fontWeight="semibold"
               fontSize="lg"
+              color="gray.400"
               _selected={{ bg: "gray.800", color: "orange.400", borderColor: "inherit", borderBottomColor: "gray.800" }}
             >
               {tab.label}
@@ -310,8 +312,10 @@ const HttpsProxyApiPage = () => {
                 {pageTabsData.map((tab) => (
                   <Tab
                     key={tab.id}
-                    fontSize="lg"
                     bg="white"
+                    fontWeight="semibold"
+                    fontSize="lg"
+                    color="gray.400"
                     _selected={{
                       bg: "gray.50",
                       color: "orange.600",
