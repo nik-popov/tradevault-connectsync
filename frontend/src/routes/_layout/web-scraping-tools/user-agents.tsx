@@ -45,11 +45,9 @@ import {
 } from "@chakra-ui/react";
 import { CopyIcon, ChevronDownIcon, EditIcon, DeleteIcon, AddIcon } from "@chakra-ui/icons";
 
-
 // --- API Configuration & Types ---
 const API_BASE_URL = "https://api.thedataproxy.com/v2";
 
-// Frontend Interfaces
 interface UserAgentPublic {
   id: string;
   user_agent: string;
@@ -64,7 +62,6 @@ interface UserAgentsPublic {
   count: number;
 }
 
-// Interfaces for creating/updating data
 interface UserAgentCreate {
     user_agent: string;
 }
@@ -75,7 +72,10 @@ interface UserAgentUpdate {
 
 // --- Mock Auth Hook (replace with your actual auth logic) ---
 const useAuth = () => {
-  const [isSuperuser] = useState(true); // <-- CHANGE TO `false` to see the read-only view
+  // To test the different views, manually toggle this value:
+  // - Set to `true` to see the admin controls (as if you're a logged-in superuser).
+  // - Set to `false` to see the public, read-only view.
+  const [isSuperuser] = useState(true); 
   return { isSuperuser };
 };
 
@@ -108,16 +108,16 @@ function downloadFile(content: string, filename: string, mimeType: string) {
 // --- API Helper Functions ---
 const getAuthToken = () => {
     const token = localStorage.getItem("access_token");
-    if (!token) throw new Error("No access token found. Please log in.");
+    if (!token) throw new Error("No access token found. Please log in to perform this action.");
     return token;
 };
 
 // (READ) Fetch paginated user agents for table view
 async function fetchPaginatedUserAgents(skip: number, limit: number): Promise<UserAgentsPublic> {
-    const token = getAuthToken();
-    const response = await fetch(`${API_BASE_URL}/user-agents/?skip=${skip}&limit=${limit}`, {
-        headers: { Authorization: `Bearer ${token}` },
-    });
+    // Note: This fetch doesn't require a token for public viewing.
+    // However, if the API was protected, we would add it conditionally.
+    // For this implementation, we assume GET is public.
+    const response = await fetch(`${API_BASE_URL}/user-agents/?skip=${skip}&limit=${limit}`);
     if (!response.ok) {
         const errorData = await response.json().catch(() => ({ detail: "Failed to fetch user agents" }));
         throw new Error(errorData.detail);
@@ -127,10 +127,7 @@ async function fetchPaginatedUserAgents(skip: number, limit: number): Promise<Us
 
 // (READ ALL) Fetch ALL user agents for export
 async function fetchAllUserAgents(): Promise<UserAgentPublic[]> {
-    const token = getAuthToken();
-    const response = await fetch(`${API_BASE_URL}/user-agents/?limit=10000`, {
-        headers: { Authorization: `Bearer ${token}` },
-    });
+    const response = await fetch(`${API_BASE_URL}/user-agents/?limit=10000`);
     if (!response.ok) {
         const errorData = await response.json().catch(() => ({ detail: "Failed to fetch all user agents" }));
         throw new Error(errorData.detail);
@@ -141,7 +138,7 @@ async function fetchAllUserAgents(): Promise<UserAgentPublic[]> {
 
 // (CREATE) Add a new user agent
 async function createUserAgent(data: UserAgentCreate): Promise<UserAgentPublic> {
-    const token = getAuthToken();
+    const token = getAuthToken(); // Required for protected action
     const response = await fetch(`${API_BASE_URL}/user-agents/`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
@@ -156,7 +153,7 @@ async function createUserAgent(data: UserAgentCreate): Promise<UserAgentPublic> 
 
 // (UPDATE) Update an existing user agent
 async function updateUserAgent({ id, data }: { id: string, data: UserAgentUpdate }): Promise<UserAgentPublic> {
-    const token = getAuthToken();
+    const token = getAuthToken(); // Required for protected action
     const response = await fetch(`${API_BASE_URL}/user-agents/${id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
@@ -171,7 +168,7 @@ async function updateUserAgent({ id, data }: { id: string, data: UserAgentUpdate
 
 // (DELETE) Delete a user agent
 async function deleteUserAgent(id: string): Promise<void> {
-    const token = getAuthToken();
+    const token = getAuthToken(); // Required for protected action
     const response = await fetch(`${API_BASE_URL}/user-agents/${id}`, {
         method: 'DELETE',
         headers: { Authorization: `Bearer ${token}` },
@@ -187,48 +184,16 @@ async function deleteUserAgent(id: string): Promise<void> {
 const CopyCell = ({ textToCopy }: { textToCopy: string }) => {
     const { onCopy } = useClipboard(textToCopy);
     const toast = useToast();
-
     const handleCopy = () => {
         onCopy();
-        toast({
-            title: "Copied to clipboard!",
-            status: "success",
-            duration: 2000,
-            isClosable: true,
-        });
+        toast({ title: "Copied to clipboard!", status: "success", duration: 2000, isClosable: true });
     };
-
-    return (
-        <IconButton
-            aria-label="Copy user agent"
-            icon={<CopyIcon />}
-            size="sm"
-            onClick={handleCopy}
-            variant="ghost"
-        />
-    );
+    return (<IconButton aria-label="Copy user agent" icon={<CopyIcon />} size="sm" onClick={handleCopy} variant="ghost" />);
 };
 
-const AddEditUserAgentModal = ({
-  isOpen,
-  onClose,
-  onSubmit,
-  initialData,
-  isLoading,
-}: {
-  isOpen: boolean;
-  onClose: () => void;
-  onSubmit: (data: UserAgentCreate | UserAgentUpdate) => void;
-  initialData?: UserAgentPublic | null;
-  isLoading: boolean;
-}) => {
+const AddEditUserAgentModal = ({ isOpen, onClose, onSubmit, initialData, isLoading }: { isOpen: boolean; onClose: () => void; onSubmit: (data: UserAgentCreate | UserAgentUpdate) => void; initialData?: UserAgentPublic | null; isLoading: boolean; }) => {
   const [userAgent, setUserAgent] = useState(initialData?.user_agent || "");
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    onSubmit({ user_agent: userAgent });
-  };
-
+  const handleSubmit = (e: React.FormEvent) => { e.preventDefault(); onSubmit({ user_agent: userAgent }); };
   return (
     <Modal isOpen={isOpen} onClose={onClose} size="xl">
       <ModalOverlay />
@@ -238,58 +203,29 @@ const AddEditUserAgentModal = ({
         <ModalBody>
           <FormControl isRequired>
             <FormLabel>User Agent String</FormLabel>
-            <Textarea
-              value={userAgent}
-              onChange={(e) => setUserAgent(e.target.value)}
-              placeholder="e.g. Mozilla/5.0 (Windows NT 10.0; Win64; x64)..."
-              rows={5}
-            />
+            <Textarea value={userAgent} onChange={(e) => setUserAgent(e.target.value)} placeholder="e.g. Mozilla/5.0 (Windows NT 10.0; Win64; x64)..." rows={5} />
           </FormControl>
         </ModalBody>
         <ModalFooter>
           <Button variant="ghost" mr={3} onClick={onClose}>Cancel</Button>
-          <Button colorScheme="teal" type="submit" isLoading={isLoading}>
-            {initialData ? 'Save Changes' : 'Create'}
-          </Button>
+          <Button colorScheme="teal" type="submit" isLoading={isLoading}>{initialData ? 'Save Changes' : 'Create'}</Button>
         </ModalFooter>
       </ModalContent>
     </Modal>
   );
 };
 
-const DeleteConfirmationDialog = ({
-    isOpen,
-    onClose,
-    onConfirm,
-    isLoading,
-}: {
-    isOpen: boolean,
-    onClose: () => void,
-    onConfirm: () => void,
-    isLoading: boolean,
-}) => {
+const DeleteConfirmationDialog = ({ isOpen, onClose, onConfirm, isLoading }: { isOpen: boolean, onClose: () => void, onConfirm: () => void, isLoading: boolean, }) => {
     const cancelRef = useRef<HTMLButtonElement>(null);
     return (
-        <AlertDialog
-            isOpen={isOpen}
-            leastDestructiveRef={cancelRef}
-            onClose={onClose}
-        >
+        <AlertDialog isOpen={isOpen} leastDestructiveRef={cancelRef} onClose={onClose}>
             <AlertDialogOverlay>
                 <AlertDialogContent>
-                    <AlertDialogHeader fontSize="lg" fontWeight="bold">
-                        Delete User Agent
-                    </AlertDialogHeader>
-                    <AlertDialogBody>
-                        Are you sure you want to delete this user agent? This action cannot be undone.
-                    </AlertDialogBody>
+                    <AlertDialogHeader fontSize="lg" fontWeight="bold">Delete User Agent</AlertDialogHeader>
+                    <AlertDialogBody>Are you sure you want to delete this user agent? This action cannot be undone.</AlertDialogBody>
                     <AlertDialogFooter>
-                        <Button ref={cancelRef} onClick={onClose}>
-                            Cancel
-                        </Button>
-                        <Button colorScheme="red" onClick={onConfirm} ml={3} isLoading={isLoading}>
-                            Delete
-                        </Button>
+                        <Button ref={cancelRef} onClick={onClose}>Cancel</Button>
+                        <Button colorScheme="red" onClick={onConfirm} ml={3} isLoading={isLoading}>Delete</Button>
                     </AlertDialogFooter>
                 </AlertDialogContent>
             </AlertDialogOverlay>
@@ -312,7 +248,6 @@ function UserAgentsPage() {
   const queryClient = useQueryClient();
   const { isSuperuser } = useAuth();
 
-  // Query for the paginated table view
   const { data, isLoading, error, isPlaceholderData } = useQuery({
     queryKey: ["userAgents", page, limit],
     queryFn: () => fetchPaginatedUserAgents(page * limit, limit),
@@ -321,7 +256,6 @@ function UserAgentsPage() {
 
   const totalPages = data ? Math.ceil(data.count / limit) : 0;
 
-  // --- MUTATIONS ---
   const handleMutationSuccess = (message: string) => {
     toast({ title: message, status: "success", duration: 3000, isClosable: true });
     queryClient.invalidateQueries({ queryKey: ["userAgents"] });
@@ -333,25 +267,9 @@ function UserAgentsPage() {
     toast({ title: "An error occurred", description: e.message, status: "error", duration: 5000, isClosable: true });
   };
 
-  const createMutation = useMutation({
-    mutationFn: createUserAgent,
-    onSuccess: () => handleMutationSuccess("User agent created successfully."),
-    onError: handleMutationError,
-  });
-
-  const updateMutation = useMutation({
-    mutationFn: updateUserAgent,
-    onSuccess: () => handleMutationSuccess("User agent updated successfully."),
-    onError: handleMutationError,
-  });
-
-  const deleteMutation = useMutation({
-    mutationFn: deleteUserAgent,
-    onSuccess: () => handleMutationSuccess("User agent deleted successfully."),
-    onError: handleMutationError,
-  });
-
-  // ✅ FIXED: Restored full implementation of exportMutation
+  const createMutation = useMutation({ mutationFn: createUserAgent, onSuccess: () => handleMutationSuccess("User agent created successfully."), onError: handleMutationError });
+  const updateMutation = useMutation({ mutationFn: updateUserAgent, onSuccess: () => handleMutationSuccess("User agent updated successfully."), onError: handleMutationError });
+  const deleteMutation = useMutation({ mutationFn: deleteUserAgent, onSuccess: () => handleMutationSuccess("User agent deleted successfully."), onError: handleMutationError });
   const exportMutation = useMutation({
     mutationFn: async (format: 'csv' | 'json') => {
         const allAgents = await fetchAllUserAgents();
@@ -363,59 +281,22 @@ function UserAgentsPage() {
             downloadFile(jsonContent, 'user-agents.json', 'application/json');
         }
     },
-    onSuccess: () => {
-        toast({
-            title: "Export started.",
-            description: "Your file is downloading.",
-            status: "success",
-            duration: 3000,
-            isClosable: true,
-        });
-    },
-    onError: (e: Error) => {
-        toast({
-            title: "Export Failed",
-            description: e.message,
-            status: "error",
-            duration: 5000,
-            isClosable: true,
-        });
-    }
+    onSuccess: () => { toast({ title: "Export started.", description: "Your file is downloading.", status: "success", duration: 3000, isClosable: true, }); },
+    onError: (e: Error) => { toast({ title: "Export Failed", description: e.message, status: "error", duration: 5000, isClosable: true, }); }
   });
 
-
-  // --- EVENT HANDLERS ---
-  const handleOpenAddModal = () => {
-    setEditingAgent(null);
-    onAddEditModalOpen();
-  };
-
-  const handleOpenEditModal = (agent: UserAgentPublic) => {
-    setEditingAgent(agent);
-    onAddEditModalOpen();
-  };
-  
-  const handleOpenDeleteAlert = (id: string) => {
-    setDeletingAgentId(id);
-    onDeleteAlertOpen();
-  }
-
+  const handleOpenAddModal = () => { setEditingAgent(null); onAddEditModalOpen(); };
+  const handleOpenEditModal = (agent: UserAgentPublic) => { setEditingAgent(agent); onAddEditModalOpen(); };
+  const handleOpenDeleteAlert = (id: string) => { setDeletingAgentId(id); onDeleteAlertOpen(); }
   const handleFormSubmit = (formData: UserAgentCreate | UserAgentUpdate) => {
-    if (editingAgent) {
-        updateMutation.mutate({ id: editingAgent.id, data: formData });
-    } else {
-        createMutation.mutate(formData as UserAgentCreate);
-    }
+    if (editingAgent) { updateMutation.mutate({ id: editingAgent.id, data: formData }); } 
+    else { createMutation.mutate(formData as UserAgentCreate); }
   };
-  
-  const handleDeleteConfirm = () => {
-    if(deletingAgentId) {
-        deleteMutation.mutate(deletingAgentId);
-    }
-  }
+  const handleDeleteConfirm = () => { if(deletingAgentId) { deleteMutation.mutate(deletingAgentId); } }
 
-
+  // ✅ FIXED: Return statement now wraps everything in a React Fragment (<> ... </>)
   return (
+    <>
       <Container maxW="full" py={6}>
         <Flex justify="space-between" align="center" mb={6}>
           <Heading size="lg">User Agents</Heading>
@@ -492,6 +373,7 @@ function UserAgentsPage() {
         )}
       </Container>
       
+      {/* ✅ FIXED: Modal rendering logic is now inside the main return fragment */}
       {isSuperuser && (
         <>
             <AddEditUserAgentModal
@@ -509,7 +391,7 @@ function UserAgentsPage() {
             />
         </>
       )}
-
+    </>
   );
 }
 
