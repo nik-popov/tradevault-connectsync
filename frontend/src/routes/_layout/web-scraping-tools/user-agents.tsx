@@ -497,7 +497,7 @@ function UserAgentsPage() {
           <Box borderWidth="1px" borderRadius="lg" overflow="hidden">
             <UserAgentTable
                 agents={displayedAgents}
-                isSuperuser={currentUser?.is_superuser || False}
+                isSuperuser={currentUser?.is_superuser || false}
                 handleOpenEditModal={handleOpenEditModal}
                 handleOpenDeleteAlert={handleOpenDeleteAlert}
                 isPlaceholderData={isPlaceholderData}
