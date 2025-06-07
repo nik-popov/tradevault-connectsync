@@ -283,9 +283,6 @@ const HomePage = () => {
                     <Link as={RouterLink} to="/settings" display="flex" alignItems="center" color="orange.400">
                       <Icon as={FaKey} mr={2} /> Manage API Keys
                     </Link>
-                    <Link href="https://docs.thedataproxy.com" isExternal display="flex" alignItems="center">
-                      <Icon as={FaBook} mr={2} /> API Documentation
-                    </Link>
                     {/* --- UPDATED BILLING PORTAL LINK --- */}
                     <Button 
                         variant="link" 
@@ -299,6 +296,9 @@ const HomePage = () => {
                     >
                       Billing Portal
                     </Button>
+                                        <Link href="https://docs.thedataproxy.com" isExternal display="flex" alignItems="center">
+                      <Icon as={FaBook} mr={2} /> Documentation
+                    </Link>
                   </VStack>
                 </Box>
               </GridItem>
