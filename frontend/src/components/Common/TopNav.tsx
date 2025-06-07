@@ -14,7 +14,7 @@ import { Link as RouterLink } from "@tanstack/react-router";
 import { FiLogOut, FiMenu, FiUsers } from "react-icons/fi";
 import { MdPerson } from "react-icons/md";
 
-import Logo from "/assets/images/the-data-proxy-logo-dark.png";
+import Logo from "../Common/Logo"
 import type { UserPublic } from "../../client";
 import useAuth from "../../hooks/useAuth";
 
@@ -160,9 +160,8 @@ const TopNav = () => {
     >
       <Flex align="center" justify="space-between" maxW="1200px" mx="auto">
         {/* Logo */}
-        <Link href="https://cloud.thedataproxy.com">
-          <Image src={Logo} alt="Logo" h="40px" />
-        </Link>
+        <Logo href="/" />
+
 
         {/* Mobile Menu Button */}
         <IconButton
