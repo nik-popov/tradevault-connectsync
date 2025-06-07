@@ -43,15 +43,14 @@ interface NavItemsProps {
 const navStructure: NavItem[] = [
   {
     title: "Web Scraping Tools",
-    icon: FiTool,
     subItems: [
       {
-        title: "HTTPS Proxy",
+        title: "HTTPS Proxy API",
         path: "/web-scraping-tools/https-proxy",
         icon: FiShield,
       },
       {
-        title: "User Agents",
+        title: "User Agents Today",
         path: "/web-scraping-tools/user-agents",
         icon: FiUserCheck,
       },
@@ -74,7 +73,7 @@ const NavItems = ({ onClose, isMobile = false }: NavItemsProps) => {
   }
 
   const isEnabled = (title: string) => {
-    return ["Admin", "Web Scraping Tools", "HTTPS Proxy", "User Agents"].includes(title);
+    return ["Admin", "Web Scraping Tools", "HTTPS Proxy API", "User Agents Today"].includes(title);
   }
 
   const renderNavItems = (items: NavItem[], isSubItem = false) =>
@@ -115,7 +114,6 @@ const NavItems = ({ onClose, isMobile = false }: NavItemsProps) => {
               >
                 {icon && <Icon as={icon} mr={2} />}
                 <Text>{title}</Text>
-                <Icon as={ChevronDownIcon} ml={2} w={4} h={4} />
               </MenuButton>
               <MenuList zIndex="popover">
                 {subItems.map(subItem => (
