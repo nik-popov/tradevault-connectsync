@@ -160,7 +160,7 @@ const GoogleSerpPage = () => {
           <Box borderWidth="1px" borderRadius="md" p={4} mb={4}>
             <Flex align="baseline" gap={2}>
               <Text fontSize="sm">Total Requests This Month:</Text>
-              <Heading size="sm">{totalRequests}</Heading>
+              <Heading size="sm">{totalRequests.toLocaleString()}</Heading>
             </Flex>
           </Box>
           <Grid templateColumns={{ base: "1fr", md: "1fr 1fr" }} gap={6}>
@@ -171,7 +171,7 @@ const GoogleSerpPage = () => {
                   <Tbody>
                     <Tr>
                       <Td><Text fontSize="sm">Plan Name</Text></Td>
-                      <Td><Text fontSize="sm">{activeSubscription?.product_name || activeSubscription?.plan_name || "N/A"}</Text></Td>
+                      <Td><Heading size="xs">{activeSubscription?.product_name || activeSubscription?.plan_name || "N/A"}</Heading></Td>
                     </Tr>
                     <Tr>
                       <Td><Text fontSize="sm">Status</Text></Td>
@@ -193,7 +193,7 @@ const GoogleSerpPage = () => {
                     </Tr>
                     <Tr>
                       <Td><Text fontSize="sm">Total Requests</Text></Td>
-                      <Td><Text fontSize="sm">{totalRequests}</Text></Td>
+                      <Td><Text fontSize="sm">{totalRequests.toLocaleString()}</Text></Td>
                     </Tr>
                     <Tr>
                       <Td><Text fontSize="sm">Active API Keys</Text></Td>
