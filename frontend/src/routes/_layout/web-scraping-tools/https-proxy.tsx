@@ -233,7 +233,7 @@ const GoogleSerpPage = () => {
   <ProtectedComponent>
     <Container maxW="full">
       <Flex align="center" justify="space-between" py={6} gap={4}>
-        <Heading size="md">HTTPS Request Proxy API</Heading>
+        <Heading size="md">HTTPS Request API</Heading>
         <Text fontSize="sm" color="gray.500">
           Active subscription: {activeSubscription?.product_name || activeSubscription?.plan_name || "None"}
         </Text>
@@ -258,7 +258,7 @@ const GoogleSerpPage = () => {
             <Alert status="warning" mb={4}>
               <AlertIcon />
               <Text fontSize="sm">
-                {proxyApiAccess?.message || "Your account does not include https request proxy features. Please upgrade to a proxy api enabled plan."}
+                {proxyApiAccess?.message || "Your account does not include https request features. Please upgrade to a proxy api enabled plan."}
               </Text>
             </Alert>
           )}
