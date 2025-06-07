@@ -18,7 +18,7 @@ import {
 } from "@chakra-ui/react"
 import { Link as RouterLink, createFileRoute, redirect } from "@tanstack/react-router"
 import { type SubmitHandler, useForm } from "react-hook-form"
-import Logo from "/assets/images/the-data-proxy-logo-dark.png"
+import Logo from "../components/Common/Logo"
 import type { Body_login_login_access_token as AccessToken } from "../client"
 import useAuth, { isLoggedIn } from "../hooks/useAuth"
 import { emailPattern } from "../utils"
@@ -108,7 +108,7 @@ function Login() {
             mb={{ base: 4, md: 6 }} 
             color="gray.800"
           >
-            Unlock Your Data’s Potential
+          Web Data, Effortlessly
           </Heading>
           <Text 
             fontSize={{ base: "md", md: "lg" }} 
@@ -137,15 +137,7 @@ function Login() {
           gap={{ base: 4, md: 6 }}
           width={{ base: "100%", md: "auto" }}
         >
-          <Link href="https://thedataproxy.com" target="_blank" rel="noopener noreferrer">
-            <Image 
-              src={Logo} 
-              alt="logo" 
-              height="auto" 
-              maxW={{ base: "150px", md: "2xs" }} 
-              mb={{ base: 3, md: 4 }} 
-            />
-          </Link>
+          <Logo href="/" />
 
           <FormControl id="username" isInvalid={!!errors.username || !!error} width="100%">
             <Input

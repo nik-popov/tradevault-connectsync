@@ -26,7 +26,7 @@ const Logo: React.FC<LogoProps> = (props) => {
       // Spread any other props passed to Logo (like a custom href, onClick, etc.)
       {...props}
     >
-      DataProxy
+      DATAPROXY
     </Link>
   );
 };
