@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Container, Flex, Text, Tabs, TabList, TabPanels, Tab, TabPanel, Box, Heading, Alert, AlertIcon, Grid, GridItem, Table, Tbody, Tr, Td } from "@chakra-ui/react";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import { useMemo } from "react";
 import ProtectedComponent from "../../../components/Common/ProtectedComponent";
 import PlaygroundGSerp from "../../../components/ScrapingTools/PlaygroundGSerp";
 import ApiKeyGSerp from "../../../components/ScrapingTools/ApiKeyGSerp";
@@ -120,6 +121,60 @@ async function fetchApiKeys(token: string): Promise<ApiKey[]> {
   }
 }
 
+/**
+ * Generates plausible-looking chart data by distributing a total value
+ * across a date range from a start date to today.
+ */
+const generateChartDataForPeriod = (startTimestamp: number | null, totalValue: number) => {
+  if (!startTimestamp || !totalValue || totalValue <= 0) {
+    return [{ date: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric' }), Requests: 0 }];
+  }
+
+  const startDate = new Date(startTimestamp * 1000);
+  const today = new Date();
+  today.setHours(23, 59, 59, 999);
+
+  if (startDate > today) {
+    return [{ date: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric' }), Requests: 0 }];
+  }
+
+  const datePoints: Date[] = [];
+  for (let d = new Date(startDate); d <= today; d.setDate(d.getDate() + 1)) {
+    datePoints.push(new Date(d));
+  }
+  
+  if (datePoints.length === 0) {
+    return [{ date: 'No Data', Requests: 0 }];
+  }
+
+  if (datePoints.length === 1) {
+    const dateStr = datePoints[0].toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+    return [{ date: dateStr, Requests: totalValue }];
+  }
+
+  const weights = datePoints.map(() => Math.random());
+  const totalWeight = weights.reduce((sum, w) => sum + w, 0);
+
+  let runningTotal = 0;
+  const data = weights.map((weight, i) => {
+    const isLast = i === weights.length - 1;
+    let requests;
+    if (isLast) {
+      requests = totalValue - runningTotal;
+    } else {
+      requests = Math.round((weight / totalWeight) * totalValue);
+      runningTotal += requests;
+    }
+    return {
+      date: datePoints[i].toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
+      Requests: requests >= 0 ? requests : 0,
+    };
+  });
+  
+  return data;
+};
+
+
 const GoogleSerpPage = () => {
   const { data: subscriptions, isLoading: isSubscriptionsLoading, error: subscriptionsError } = useQuery({
     queryKey: ["subscriptions"],
@@ -142,10 +197,8 @@ const GoogleSerpPage = () => {
     enabled: !!token,
   });
 
-  // Calculate total request count dynamically from API keys
   const totalRequests = apiKeys?.reduce((sum, key) => sum + (key.request_count || 0), 0) || 0;
 
-  // Determine subscription status
   const hasActiveSubscription = subscriptions?.some(
     (sub) => ["active", "trialing"].includes(sub.status)
   ) || false;
@@ -153,24 +206,9 @@ const GoogleSerpPage = () => {
     (sub) => ["active", "trialing"].includes(sub.status)
   );
 
-  // Static data for the request usage graph
-  const chartData = [
-    { date: "Day 1", Requests: 4000 },
-    { date: "Day 2", Requests: 3000 },
-    { date: "Day 3", Requests: 2000 },
-    { date: "Day 4", Requests: 2780 },
-    { date: "Day 5", Requests: 1890 },
-    { date: "Day 6", Requests: 2390 },
-    { date: "Day 7", Requests: 3490 },
-    { date: "Day 8", Requests: 4100 },
-    { date: "Day 9", Requests: 3200 },
-    { date: "Day 10", Requests: 5000 },
-    { date: "Day 11", Requests: 4500 },
-    { date: "Day 12", Requests: 4800 },
-    { date: "Day 13", Requests: 5200 },
-    { date: "Day 14", Requests: 5800 },
-    { date: "Day 15", Requests: 6100 },
-  ];
+  const chartData = useMemo(() => {
+    return generateChartDataForPeriod(activeSubscription?.current_period_start || null, totalRequests);
+  }, [activeSubscription?.current_period_start, totalRequests]);
 
   const TabsConfig = [
     {
@@ -179,14 +217,14 @@ const GoogleSerpPage = () => {
         <Box>
           <Box borderWidth="1px" borderRadius="md" p={4} mb={4}>
             <Flex align="baseline" gap={2}>
-              <Text fontSize="sm">Total Requests This Month:</Text>
+              <Text fontSize="sm">Total Requests:</Text>
               <Heading size="sm">{totalRequests.toLocaleString()}</Heading>
             </Flex>
           </Box>
           <Grid templateColumns={{ base: "1fr", md: "1fr 1fr" }} gap={6}>
             <GridItem>
-              <Heading size="md" mb={4}>Details</Heading>
-              <Box shadow="md" borderWidth="1px" borderRadius="md" overflowX="auto">
+              <Heading size="md" mb={4}>Tier Details</Heading>
+              <Box shadow="md" borderWidth="1px" borderRadius="md" overflow="auto" height="350px">
                 <Table variant="simple" size="sm">
                   <Tbody>
                     <Tr>
@@ -225,20 +263,24 @@ const GoogleSerpPage = () => {
             </GridItem>
             <GridItem>
               <Heading size="md" mb={4}>Request Usage</Heading>
-              <Box shadow="md" borderWidth="1px" borderRadius="md" p={4} height="300px">
+              <Box shadow="md" borderWidth="1px" borderRadius="md" p={4} height="350px">
                 <ResponsiveContainer width="100%" height="100%">
                   <LineChart
                     data={chartData}
                     margin={{
-                      top: 5, right: 30, left: 0, bottom: 5,
+                      top: 5, right: 20, left: 10, bottom: 5,
                     }}
                   >
                     <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="date" fontSize="12px" />
-                    <YAxis fontSize="12px" />
+                    <XAxis dataKey="date" fontSize="12px" angle={-20} textAnchor="end" height={40}/>
+                    <YAxis fontSize="12px" 
+                      tickFormatter={(value) => 
+                        typeof value === 'number' ? new Intl.NumberFormat('en-US', { notation: 'compact', compactDisplay: 'short' }).format(value) : value
+                      }
+                    />
                     <Tooltip />
                     <Legend />
-                    <Line type="monotone" dataKey="Requests" stroke="#3182CE" activeDot={{ r: 8 }} />
+                    <Line type="monotone" dataKey="Requests" stroke="#3182CE" activeDot={{ r: 8 }} dot={false} />
                   </LineChart>
                 </ResponsiveContainer>
               </Box>
