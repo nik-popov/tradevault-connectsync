@@ -6,7 +6,7 @@ import CanvasJSReact from '@canvasjs/react-charts';
 
 const { CanvasJSChart } = CanvasJSReact;
 
-// --- Data Generation and Simulation (No changes) ---
+// --- Data Generation and Simulation (Reverted to the original, working version) ---
 const generateCanvasJSData = (periodStart: number | null, totalRequests: number, totalDataGB: number) => {
   const requestsDps: { x: Date; y: number }[] = [];
   const inboundDps: { x: Date; y: number }[] = [];
@@ -75,10 +75,17 @@ const UsageCharts: React.FC<UsageChartsProps> = ({ periodStart, totalRequests, t
       title: "Daily Requests",
       gridThickness: 0.5,
       crosshair: { enabled: true, snapToDataPoint: true, labelFormatter: (e: any) => e.value.toLocaleString() },
-      margin: 50, // FIX: Set a fixed margin to align the plot areas of both charts
+      margin: 50,
     },
     toolTip: { shared: true },
-    data: [{ type: "area", name: "Requests", xValueFormatString: "DD MMMM YYYY", yValueFormatString: "#,##0", color: "rgba(49, 130, 206, 0.7)", dataPoints: requestsDps }],
+    data: [{
+        type: "area",
+        name: "Requests",
+        xValueFormatString: "DD MMMM YYYY",
+        yValueFormatString: "#,##0",
+        color: "rgba(237, 137, 54, 0.7)", // FIX: Changed to Orange
+        dataPoints: requestsDps
+    }],
   };
 
   const dataTransferChartOptions = {
@@ -94,13 +101,27 @@ const UsageCharts: React.FC<UsageChartsProps> = ({ periodStart, totalRequests, t
       gridThickness: 0.5,
       suffix: " GB",
       crosshair: { enabled: true, snapToDataPoint: true, labelFormatter: (e: any) => `${e.value.toFixed(2)} GB` },
-      margin: 50, // FIX: Set a fixed margin to align the plot areas of both charts
+      margin: 50,
     },
     toolTip: { shared: true },
     legend: { cursor: "pointer", itemclick: (e: any) => { e.dataSeries.visible = typeof e.dataSeries.visible === "undefined" || e.dataSeries.visible ? false : true; e.chart.render(); } },
     data: [
-      { type: "splineArea", name: "Inbound", showInLegend: true, yValueFormatString: "#,##0.## GB", color: "#38A169", dataPoints: inboundDps },
-      { type: "splineArea", name: "Outbound", showInLegend: true, yValueFormatString: "#,##0.## GB", color: "#ED8936", dataPoints: outboundDps },
+      {
+        type: "splineArea",
+        name: "Inbound",
+        showInLegend: true,
+        yValueFormatString: "#,##0.## GB",
+        color: "#68D391", // FIX: Light Green
+        dataPoints: inboundDps
+      },
+      {
+        type: "splineArea",
+        name: "Outbound",
+        showInLegend: true,
+        yValueFormatString: "#,##0.## GB",
+        color: "#2F855A", // FIX: Dark Green
+        dataPoints: outboundDps
+      },
     ],
   };
 
