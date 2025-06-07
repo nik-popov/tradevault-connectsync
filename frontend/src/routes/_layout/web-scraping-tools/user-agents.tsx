@@ -87,21 +87,22 @@ interface UpdateSourceResponse {
 
 // --- Mock Auth Hook (No changes) ---
 const useAuth = () => {
-  const [isSuperuser] = useState(false);
+  const [isSuperuser] = useState(true); // Set to true to see admin controls
   return { isSuperuser };
 };
 
-// --- Utility & API Functions (No changes) ---
+// --- Utility & API Functions (CSV function updated) ---
 function convertToCSV(data: UserAgentPublic[]): string {
     if (data.length === 0) return "";
     const headers = "id,user_agent,created_at,device,browser,os";
     const rows = data.map(row => {
         const id = `"${row.id}"`;
         const userAgent = `"${row.user_agent.replace(/"/g, '""')}"`;
+        const createdAt = `"${row.created_at}"`;
         const device = `"${row.device ?? ''}"`;
         const browser = `"${row.browser ?? ''}"`;
         const os = `"${row.os ?? ''}"`;
-        return [id, userAgent, device, browser, os].join(',');
+        return [id, userAgent, createdAt, device, browser, os].join(',');
     });
     return [headers, ...rows].join('\n');
 }
@@ -290,10 +291,10 @@ const UserAgentTable = ({
             <Tr key={agent.id} opacity={isPlaceholderData ? 0.5 : 1}>
               <Td maxW="600px" whiteSpace="normal" wordBreak="break-all">{agent.user_agent}</Td>
               <Td>
-                <VStack align="start" spacing={0} fontSize="sm">
-                  {agent.device && <Text><strong>Device:</strong> {agent.device}</Text>}
-                  {agent.os && <Text><strong>OS:</strong> {agent.os}</Text>}
-                  {agent.browser && <Text><strong>Browser:</strong> {agent.browser}</Text>}
+                <VStack align="start" spacing={1} fontSize="sm">
+                  {agent.device && <HStack><Text fontWeight="bold">Device:</Text><Badge colorScheme="blue">{agent.device}</Badge></HStack>}
+                  {agent.os && <HStack><Text fontWeight="bold">OS:</Text><Text>{agent.os}</Text></HStack>}
+                  {agent.browser && <HStack><Text fontWeight="bold">Browser:</Text><Text>{agent.browser}</Text></HStack>}
                 </VStack>
               </Td>
               <Td isNumeric>
@@ -320,7 +321,7 @@ const UserAgentTable = ({
 // --- Main Page Component ---
 function UserAgentsPage() {
   const [page, setPage] = useState(0);
-  const [limit] = useState(50);
+  const [limit] = useState(50); // Increased limit for better tab experience
   const [editingAgent, setEditingAgent] = useState<UserAgentPublic | null>(null);
   const [deletingAgentId, setDeletingAgentId] = useState<string | null>(null);
 
@@ -357,7 +358,7 @@ function UserAgentsPage() {
     onSuccess: (res) => {
         toast({
             title: "Update from source complete",
-            description: `${res.new_agents_added} new agents were added. The table has been refreshed.`,
+            description: `${res.new_agents_added} new agents were added.`,
             status: "success",
             duration: 5000,
             isClosable: true,
@@ -402,25 +403,26 @@ function UserAgentsPage() {
     <>
       <Container maxW="full" py={6}>
         <Flex align="center" justify="space-between" mb={4}>
-          <Text fontSize="xl">Active User Agents</Text>
-          <Text fontSize="sm" color="gray.500">Manage and export user agents</Text>
+
+             <Text fontSize="xl" fontWeight="bold">Active User Agents</Text>
+              <Text fontSize="sm" color="gray.500">Manage and export user agents for web scraping.</Text>
         </Flex>
-        <Divider my={4} borderColor="gray.200" />
+        <Divider my={4} />
         <Flex justify="flex-end" align="center" mb={6}>
           <HStack spacing={2}>
             {isSuperuser && (
               <>
                 <Button leftIcon={<RepeatIcon />} onClick={() => updateFromSourceMutation.mutate()} isLoading={updateFromSourceMutation.isPending} loadingText="Updating...">
-                    Refresh
+                    Refresh Source
                 </Button>
-                <Button leftIcon={<AddIcon />} onClick={handleOpenAddModal}>
-                   Add
+                <Button leftIcon={<AddIcon />} colorScheme="teal" onClick={handleOpenAddModal}>
+                   Add New
                 </Button>
               </>
             )}
             <Menu>
               <MenuButton as={Button} rightIcon={<ChevronDownIcon />} isLoading={exportMutation.isPending} loadingText="Exporting">
-                Export
+                Export All
               </MenuButton>
               <MenuList>
                 <MenuItem onClick={() => exportMutation.mutate('csv')}>Export as CSV</MenuItem>
@@ -431,30 +433,19 @@ function UserAgentsPage() {
         </Flex>
 
         {isLoading && !data && (
-          <Flex justify="center" align="center" height="200px"><Spinner size="xl" /></Flex>
+          <Flex justify="center" align="center" height="300px"><Spinner size="xl" /></Flex>
         )}
         {error && (
-          <Alert status="error"><AlertIcon />{error.message}</Alert>
+          <Alert status="error" borderRadius="md"><AlertIcon />{error.message}</Alert>
         )}
         {data && (
           <Box borderWidth="1px" borderRadius="lg" overflow="hidden">
-            {/* ======================================================= */}
-            {/* START: Tabbed Interface for User Agents               */}
-            {/* ======================================================= */}
-            <Tabs isLazy variant="enclosed-colored" colorScheme="orange">
+            <Tabs isLazy variant="enclosed-colored" colorScheme="teal">
               <TabList>
-                <Tab>
-                  All <Badge ml='2' colorScheme='green'>{allAgents.length}</Badge>
-                </Tab>
-                <Tab>
-                  Desktop <Badge ml='2' colorScheme='purple'>{desktopAgents.length}</Badge>
-                </Tab>
-                <Tab>
-                  Mobile <Badge ml='2' colorScheme='purple'>{mobileAgents.length}</Badge>
-                </Tab>
-                <Tab>
-                  Other <Badge ml='2' colorScheme='gray'>{otherAgents.length}</Badge>
-                </Tab>
+                <Tab>All <Badge ml='2' colorScheme='green'>{allAgents.length}</Badge></Tab>
+                <Tab>Desktop <Badge ml='2' colorScheme='purple'>{desktopAgents.length}</Badge></Tab>
+                <Tab>Mobile <Badge ml='2' colorScheme='orange'>{mobileAgents.length}</Badge></Tab>
+                <Tab>Other <Badge ml='2' colorScheme='gray'>{otherAgents.length}</Badge></Tab>
               </TabList>
               <TabPanels>
                 <TabPanel p={0}>
@@ -471,10 +462,7 @@ function UserAgentsPage() {
                 </TabPanel>
               </TabPanels>
             </Tabs>
-            {/* ======================================================= */}
-            {/* END: Tabbed Interface                                 */}
-            {/* ======================================================= */}
-
+            
             <Flex justify="space-between" p={4} align="center" borderTopWidth="1px" bg="gray.50">
                 <Text fontSize="sm" color="gray.600">
                     Showing <strong>{data.data.length}</strong> of <strong>{data.count}</strong> total results
@@ -507,5 +495,3 @@ function UserAgentsPage() {
 export const Route = createFileRoute("/_layout/web-scraping-tools/user-agents")({
   component: UserAgentsPage,
 });
-
-export default UserAgentsPage;

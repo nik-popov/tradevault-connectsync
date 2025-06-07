@@ -6,14 +6,12 @@ import {
   IconButton,
   Tooltip,
   useDisclosure,
-  // MODIFIED: Menu components are used for the new hover dropdown
   Menu,
   MenuButton,
   MenuList,
   MenuItem,
-  VStack, // Added for vertical stacking of title/description
+  VStack,
 } from "@chakra-ui/react";
-// MODIFIED: Added icon for dropdown
 import { ChevronDownIcon } from "@chakra-ui/icons";
 import { useQueryClient } from "@tanstack/react-query";
 import { Link as RouterLink, useRouterState } from "@tanstack/react-router";
@@ -26,19 +24,17 @@ import {
   FiUserCheck,
   FiSettings,
 } from "react-icons/fi";
-// MODIFIED: Added FaSitemap for the group icon and consolidated FaSearch
 import { FaBook, FaKey, FaCreditCard, FaGlobe, FaSitemap } from 'react-icons/fa';
 
 import Logo from "../Common/Logo";
 import type { UserPublic } from "../../client";
 import useAuth from "../../hooks/useAuth";
 
-// MODIFIED: NavItem interface now includes an optional description
 interface NavItem {
   title: string;
   icon?: any;
   path?: string;
-  description?: string; // Added for richer menu items
+  description?: string;
   subItems?: NavItem[];
 }
 
@@ -47,11 +43,10 @@ interface NavItemsProps {
   isMobile?: boolean;
 }
 
-// MODIFIED: Data structure for navigation is now nested with descriptions
 const navStructure: NavItem[] = [
   {
     title: "Web Scraping APIs",
-    icon: FaSitemap, // Group icon for mobile view
+    icon: FaSitemap,
     subItems: [
       {
         title: "HTTPS API",
@@ -75,9 +70,8 @@ const navStructure: NavItem[] = [
 ];
 
 
-// --- NEW COMPONENT: NavGroupDropdown ---
-// This component encapsulates the logic for a hover-activated dropdown menu on desktop.
-const NavGroupDropdown = ({ item, activeTextColor, bgActive, hoverColor, textColor }) => {
+// MODIFIED: NavGroupDropdown no longer needs bgActive prop
+const NavGroupDropdown = ({ item, activeTextColor, hoverColor, textColor }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { location } = useRouterState();
   const { pathname } = location;
@@ -94,13 +88,14 @@ const NavGroupDropdown = ({ item, activeTextColor, bgActive, hoverColor, textCol
           py={2}
           align="center"
           cursor="pointer"
+          // MODIFIED: No background color change, only text color for active group
           color={isGroupActive ? activeTextColor : textColor}
-          bg={isGroupActive ? bgActive : "transparent"}
           _hover={{ color: hoverColor, textDecoration: "none" }}
           borderRadius="md"
         >
           <Text fontWeight="500">{title}</Text>
-
+          {/* Chevron icon can be added for better UX if desired */}
+          {/* <Icon as={ChevronDownIcon} ml={1} /> */}
         </MenuButton>
         <MenuList boxShadow="lg" p={2} borderRadius="md" borderWidth={1} minW="320px">
           {subItems.map((subItem) => (
@@ -108,12 +103,13 @@ const NavGroupDropdown = ({ item, activeTextColor, bgActive, hoverColor, textCol
               key={subItem.title}
               as={RouterLink}
               to={subItem.path}
-              onClick={onClose} // Close the dropdown on item click
+              onClick={onClose}
               borderRadius="md"
               p={3}
               _hover={{ bg: "orange.50" }}
+               // MODIFIED: Removed background from activeProps style
                activeProps={{
-                 style: { background: bgActive, color: activeTextColor },
+                 style: { color: activeTextColor },
                }}
             >
               <Flex align="flex-start" w="100%">
@@ -137,7 +133,8 @@ const NavItems = ({ onClose, isMobile = false }: NavItemsProps) => {
   const textColor = "gray.800";
   const disabledColor = "gray.300";
   const hoverColor = "orange.600";
-  const bgActive = "orange.100";
+  // MODIFIED: bgActive is no longer needed as we only change text color
+  // const bgActive = "orange.100";
   const activeTextColor = "orange.800";
   const currentUser = queryClient.getQueryData<UserPublic>(["currentUser"]);
 
@@ -158,15 +155,12 @@ const NavItems = ({ onClose, isMobile = false }: NavItemsProps) => {
     ].includes(title);
   };
 
-  // MODIFIED: The rendering logic is updated to handle nested items
   const renderNavItems = (items: NavItem[]) =>
     items.map((item) => {
       const { icon, title, path, subItems } = item;
       const hasSubItems = subItems && subItems.length > 0;
 
-      // --- RENDER DROPDOWN/GROUP FOR ITEMS WITH SUB-ITEMS ---
       if (hasSubItems) {
-        // MODIFIED: Desktop uses the new hover-activated dropdown component
         if (!isMobile) {
           return (
             <NavGroupDropdown
@@ -175,12 +169,12 @@ const NavItems = ({ onClose, isMobile = false }: NavItemsProps) => {
               textColor={textColor}
               hoverColor={hoverColor}
               activeTextColor={activeTextColor}
-              bgActive={bgActive}
+              // MODIFIED: bgActive prop removed
             />
           );
         }
 
-        // Mobile Grouped List (remains the same for better mobile UX)
+        // Mobile Grouped List
         return (
           <Box key={title} w="100%">
             <Flex px={4} py={2} color={textColor} align="center">
@@ -197,8 +191,9 @@ const NavItems = ({ onClose, isMobile = false }: NavItemsProps) => {
                   py={2}
                   color={textColor}
                   _hover={{ color: hoverColor, textDecoration: "none" }}
+                  // MODIFIED: Removed background from activeProps style
                   activeProps={{
-                    style: { background: bgActive, color: activeTextColor },
+                    style: { color: activeTextColor },
                   }}
                   align="center"
                   onClick={onClose}
@@ -214,7 +209,6 @@ const NavItems = ({ onClose, isMobile = false }: NavItemsProps) => {
         );
       }
       
-      // --- RENDER A SINGLE NAV ITEM (NO SUB-ITEMS) ---
       const enabled = isEnabled(title);
       if (!enabled) {
         return (
@@ -247,8 +241,9 @@ const NavItems = ({ onClose, isMobile = false }: NavItemsProps) => {
           py={2}
           color={textColor}
           _hover={{ color: hoverColor, textDecoration: "none" }}
+          // MODIFIED: Removed background from activeProps style
           activeProps={{
-            style: { background: bgActive, color: activeTextColor },
+            style: { color: activeTextColor },
           }}
           align="center"
           onClick={onClose}
@@ -281,7 +276,8 @@ const TopNav = () => {
   const currentUser = queryClient.getQueryData<UserPublic>(["currentUser"]);
   const textColor = "gray.800";
   const hoverColor = "orange.600";
-  const bgActive = "orange.100";
+  // MODIFIED: bgActive is no longer needed
+  // const bgActive = "orange.100";
   const activeTextColor = "orange.800";
 
   const handleLogout = async () => {
@@ -301,10 +297,8 @@ const TopNav = () => {
       w="100%"
     >
       <Flex align="center" justify="space-between" maxW="1200px" mx="auto">
-        {/* Logo */}
         <Logo href="/" />
 
-        {/* Mobile Menu Button */}
         <IconButton
           onClick={isOpen ? onClose : onOpen}
           display={{ base: "flex", md: "none" }}
@@ -327,8 +321,9 @@ const TopNav = () => {
                 py={2}
                 color={textColor}
                 _hover={{ color: hoverColor, textDecoration: "none" }}
+                // MODIFIED: Removed background from activeProps style
                 activeProps={{
-                  style: { background: bgActive, color: activeTextColor },
+                  style: { color: activeTextColor },
                 }}
                 align="center"
                 borderRadius="md"
