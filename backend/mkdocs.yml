@@ -1,0 +1,4 @@
+site_name: thedataproxy
+site_url: https://thedataproxy.com
+theme:
+  name: material
