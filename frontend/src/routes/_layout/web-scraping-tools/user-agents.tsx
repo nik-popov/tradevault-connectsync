@@ -319,8 +319,9 @@ function UserAgentsPage() {
   const { isOpen: isDeleteAlertOpen, onOpen: onDeleteAlertOpen, onClose: onDeleteAlertClose } = useDisclosure();
 
   const toast = useToast();
-  const queryClient = useQueryClient();
-  const { isSuperuser } = useAuth();
+  const queryClient = useQueryClient()
+  const currentUser = queryClient.getQueryData<UserPublic>(["currentUser"])
+
 
   const { data, isLoading, error, isPlaceholderData } = useQuery({
     queryKey: ["userAgents", page, limit],
