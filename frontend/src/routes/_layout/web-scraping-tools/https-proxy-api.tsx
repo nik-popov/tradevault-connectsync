@@ -239,7 +239,7 @@ fetch(proxyEndpoint, options)
         <Heading size="md" mb={2}>Need Help?</Heading>
         <Text fontSize="md">
           For detailed information, visit our{" "}
-          <Link color="blue.500" href="/documentation/https-proxy-api" isExternal>
+          <Link color="blue.500" href="/documentation/https-api" isExternal>
             API Documentation
           </Link>.
           If you have further questions, please contact our{" "}

@@ -6,9 +6,17 @@ import {
   IconButton,
   Tooltip,
   useDisclosure,
+  // MODIFIED: Added Menu components for dropdown
+  Menu,
+  MenuButton,
+  MenuList,
+  MenuItem,
 } from "@chakra-ui/react";
+// MODIFIED: Added icon for dropdown
+import { ChevronDownIcon } from "@chakra-ui/icons";
 import { useQueryClient } from "@tanstack/react-query";
-import { Link as RouterLink } from "@tanstack/react-router";
+// MODIFIED: useMatch is no longer needed, using useRouterState instead
+import { Link as RouterLink, useRouterState } from "@tanstack/react-router";
 import {
   FiLogOut,
   FiMenu,
@@ -16,17 +24,16 @@ import {
   FiSearch,
   FiShield,
   FiUserCheck,
-  FiSettings, // Added gear icon
+  FiSettings,
 } from "react-icons/fi";
+// MODIFIED: Added FaSitemap for the group icon
 import { FaBook, FaKey, FaCreditCard, FaGlobe, FaSearch, FaSitemap } from 'react-icons/fa';
-
-// MdPerson is no longer used, so the import is removed.
 
 import Logo from "../Common/Logo";
 import type { UserPublic } from "../../client";
 import useAuth from "../../hooks/useAuth";
 
-// NavItem interface
+// NavItem interface remains the same, supporting subItems
 interface NavItem {
   title: string;
   icon?: any;
@@ -39,24 +46,30 @@ interface NavItemsProps {
   isMobile?: boolean;
 }
 
-// Data structure for navigation
+// MODIFIED: Data structure for navigation is now nested
 const navStructure: NavItem[] = [
   {
-    title: "HTTPS Proxy API",
-    path: "/web-scraping-tools/https-proxy-api",
-    icon: FaGlobe,
+    title: "Web Scraping APIs",
+    subItems: [
+      {
+        title: "HTTPS API",
+        path: "/web-scraping-tools/https-api",
+        icon: FaGlobe,
+      },
+      {
+        title: "SERP API",
+        path: "/web-scraping-tools/serp-api",
+        icon: FiSearch,
+      },
+    ],
   },
   {
-    title: "SERP API",
-    path: "/web-scraping-tools/serp-api",
-    icon: FiSearch,
-  },
-  {
-    title: "User Agents Today",
+    title: "User Agents",
     path: "/web-scraping-tools/user-agents",
     icon: FiUserCheck,
   },
 ];
+
 
 const NavItems = ({ onClose, isMobile = false }: NavItemsProps) => {
   const queryClient = useQueryClient();
@@ -66,6 +79,9 @@ const NavItems = ({ onClose, isMobile = false }: NavItemsProps) => {
   const bgActive = "orange.100";
   const activeTextColor = "orange.800";
   const currentUser = queryClient.getQueryData<UserPublic>(["currentUser"]);
+  // MODIFIED: Get current location to determine active state for dropdowns
+  const { location } = useRouterState();
+  const { pathname } = location;
 
   const finalNavStructure = [...navStructure];
   if (
@@ -78,17 +94,97 @@ const NavItems = ({ onClose, isMobile = false }: NavItemsProps) => {
   const isEnabled = (title: string) => {
     return [
       "Admin",
-      "HTTPS Proxy API",
+      "HTTPS API",
       "SERP API",
-      "User Agents Today",
+      "User Agents",
     ].includes(title);
   };
 
+  // MODIFIED: The rendering logic is updated to handle nested items
   const renderNavItems = (items: NavItem[]) =>
     items.map((item) => {
-      const { icon, title, path } = item;
-      const enabled = isEnabled(title);
+      const { icon, title, path, subItems } = item;
+      const hasSubItems = subItems && subItems.length > 0;
 
+      // --- RENDER DROPDOWN/GROUP FOR ITEMS WITH SUB-ITEMS ---
+      if (hasSubItems) {
+        const isGroupActive = subItems.some(sub => pathname.startsWith(sub.path!));
+
+        // Desktop Dropdown Menu
+        if (!isMobile) {
+          return (
+            <Menu key={title} placement="bottom">
+              <MenuButton
+                as={Flex}
+                px={4}
+                py={2}
+                align="center"
+                cursor="pointer"
+                color={isGroupActive ? activeTextColor : textColor}
+                bg={isGroupActive ? bgActive : "transparent"}
+                _hover={{ color: hoverColor, textDecoration: "none" }}
+                borderRadius="md"
+              >
+             
+                <Text fontWeight="500">{title}</Text>
+              
+              </MenuButton>
+              <MenuList>
+                {subItems.map((subItem) => (
+                  <MenuItem
+                    key={subItem.title}
+                    as={RouterLink}
+                    to={subItem.path}
+                    onClick={onClose}
+                    icon={<Icon as={subItem.icon} boxSize={4} />}
+                     activeProps={{
+                       style: { background: bgActive, color: activeTextColor },
+                     }}
+                  >
+                    {subItem.title}
+                  </MenuItem>
+                ))}
+              </MenuList>
+            </Menu>
+          );
+        }
+
+        // Mobile Grouped List
+        return (
+          <Box key={title} w="100%">
+            <Flex px={4} py={2} color={textColor} align="center">
+              <Icon as={icon} mr={2} boxSize={5} />
+              <Text fontWeight="600">{title}</Text>
+            </Flex>
+            <Flex direction="column" pl={6}>
+              {subItems.map((subItem) => (
+                <Flex
+                  key={subItem.title}
+                  as={RouterLink}
+                  to={subItem.path}
+                  px={4}
+                  py={2}
+                  color={textColor}
+                  _hover={{ color: hoverColor, textDecoration: "none" }}
+                  activeProps={{
+                    style: { background: bgActive, color: activeTextColor },
+                  }}
+                  align="center"
+                  onClick={onClose}
+                  w="100%"
+                  borderRadius="md"
+                >
+                  <Icon as={subItem.icon} mr={2} boxSize={5} />
+                  <Text fontWeight="500">{subItem.title}</Text>
+                </Flex>
+              ))}
+            </Flex>
+          </Box>
+        );
+      }
+      
+      // --- RENDER A SINGLE NAV ITEM (NO SUB-ITEMS) ---
+      const enabled = isEnabled(title);
       if (!enabled) {
         return (
           <Tooltip
@@ -111,7 +207,6 @@ const NavItems = ({ onClose, isMobile = false }: NavItemsProps) => {
         );
       }
 
-      // Render a standard link for each item
       return (
         <Flex
           key={title}
@@ -129,9 +224,7 @@ const NavItems = ({ onClose, isMobile = false }: NavItemsProps) => {
           w={isMobile ? "100%" : "auto"}
           borderRadius="md"
         >
-          {/* MODIFIED: Added boxSize for uniform icon size */}
           {icon && <Icon as={icon} mr={2} boxSize={5} />}
-          {/* MODIFIED: Ensured fontWeight is consistent */}
           <Text fontWeight="500">{title}</Text>
         </Flex>
       );
@@ -148,6 +241,7 @@ const NavItems = ({ onClose, isMobile = false }: NavItemsProps) => {
     </Flex>
   );
 };
+
 
 const TopNav = () => {
   const queryClient = useQueryClient();
@@ -195,7 +289,6 @@ const TopNav = () => {
           <NavItems />
           {currentUser && (
             <>
-              {/* MODIFIED: "Profile" changed to "Settings" with a gear icon */}
               <Flex
                 as={RouterLink}
                 to="/settings"
@@ -222,7 +315,6 @@ const TopNav = () => {
                 align="center"
                 borderRadius="md"
               >
-                {/* MODIFIED: Added boxSize for uniform icon size */}
                 <Icon as={FiLogOut} mr={2} boxSize={5} />
                 <Text fontWeight="500">Log out</Text>
               </Flex>
@@ -256,7 +348,6 @@ const TopNav = () => {
                 Logged in as: {currentUser.email}
               </Text>
               <Flex flexDir="column" gap={2}>
-                {/* MODIFIED: "Profile" changed to "Settings" with a gear icon */}
                 <Flex
                   as={RouterLink}
                   to="/settings"

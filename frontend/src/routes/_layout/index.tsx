@@ -42,7 +42,7 @@ const featureDetails = {
     name: 'Web Scraping API',
     description: 'Extract structured data from any website with our powerful and scalable scraping infrastructure.',
     icon: FaGlobe,
-    path: '/web-scraping-tools/https-proxy-api'
+    path: '/web-scraping-tools/https-api'
   },
   'serp-api': {
     name: 'SERP API',
