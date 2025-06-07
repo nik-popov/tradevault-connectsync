@@ -18,6 +18,7 @@ import {
   Alert,
   AlertIcon,
   Link,
+  HStack,
   Divider,
   Tabs,
   TabList,
@@ -355,7 +356,7 @@ const PlaygroundGSerp: React.FC = () => {
           </Tooltip>
           <Tabs variant="enclosed" colorScheme="orange" onChange={(index) => setActiveTabIndex(index)}>
             <TabList>
-              {codeTabs.map((tab) => (<Tab key={tab.id} fontWeight="semibold" fontSize="sm" color="gray.400" _selected={{ bg: "gray.800", color: "orange.400" }}>{tab.label}</Tab>))}
+              {codeTabs.map((tab) => (<Tab key={tab.id} fontWeight="semibold" fontSize="md" color="gray.400" _selected={{ bg: "gray.800", color: "orange.400" }}>{tab.label}</Tab>))}
             </TabList>
             <TabPanels bg="gray.800" borderRadius="0 0 md md">
               {codeTabs.map((tab) => (<TabPanel key={tab.id} p={0}><CodeBlock code={tab.code} language={tab.language} maxHeight="none" /></TabPanel>))}
