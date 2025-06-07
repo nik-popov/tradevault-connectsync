@@ -389,13 +389,18 @@ const HomePage = () => {
                             transition="all 0.2s ease-in-out"
                             _hover={{ shadow: 'xl', transform: 'translateY(-4px)' }}
                           >
-                            <VStack align="start" spacing={3}>
+                            {/* Content area that grows to push link to the bottom */}
+                            <Box flex="1">
+                              {/* Top row with heading on left, icon on right */}
+                              <Flex justifyContent="space-between" alignItems="flex-start" mb={3}>
+                                <Heading size="sm" pr={4}>{details.name}</Heading>
                                 <Icon as={details.icon} boxSize={8} color="orange.400" />
-                                <Heading size="sm">{details.name}</Heading>
-                                <Text fontSize="sm" color="gray.600" minHeight={{ base: "auto", md: "60px" }}>
+                              </Flex>
+                              <Text fontSize="sm" color="gray.600" minHeight={{ base: "auto", md: "60px" }}>
                                 {details.description}
-                                </Text>
-                            </VStack>
+                              </Text>
+                            </Box>
+                            {/* Bottom link */}
                             <Text mt={4} color="orange.500" fontWeight="bold" fontSize="sm" alignSelf="flex-start">
                               Go to Service →
                             </Text>
