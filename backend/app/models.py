@@ -49,13 +49,6 @@ class User(UserBase, table=True):
     expiry_date: Optional[datetime] = Field(default=None)
     items: List["Item"] = Relationship(back_populates="owner", sa_relationship_kwargs={"cascade": "all, delete-orphan"})
     
-    # ✅ Best Practice: Add created_at and updated_at timestamps
-    created_at: datetime = Field(
-        sa_column=Column(DateTime(timezone=True), nullable=False, server_default=func.now())
-    )
-    updated_at: datetime = Field(
-        sa_column=Column(DateTime(timezone=True), nullable=True, server_default=func.now(), onupdate=func.now())
-    )
 
 # Properties to return via API
 class UserPublic(UserBase):
