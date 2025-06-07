@@ -13,7 +13,7 @@ const theme = extendTheme({
         fontFamily: '"Figtree", sans-serif',
         lineHeight: "1.7",
         bg: "gray.50", // Hardcoded light gray background for light mode
-        color: "gray.800", // Hardcoded dark text for readability in light mode
+        color: "gray.900", // Hardcoded dark text for readability in light mode
 
       },
     }),

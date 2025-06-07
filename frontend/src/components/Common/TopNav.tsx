@@ -287,7 +287,7 @@ const TopNav = () => {
 
   return (
     <Box
-      bg="white"
+      bg="gray.50"
       px={4}
       py={2}
       position="sticky"
@@ -295,6 +295,8 @@ const TopNav = () => {
       zIndex="sticky"
       boxShadow="sm"
       w="100%"
+      borderBottomWidth="1px"
+      borderBottomColor="gray.300"
     >
       <Flex align="center" justify="space-between" maxW="1200px" mx="auto">
         <Logo href="/" />

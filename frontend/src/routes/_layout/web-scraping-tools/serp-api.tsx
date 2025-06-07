@@ -234,11 +234,11 @@ fetch(url, options)
 
   return (
   <Box>
-    <Text fontSize="md" mb={6}>
+    <Text fontSize="md" mb={2} color="gray.600">
       This tool allows you to programmatically fetch search engine results pages.
       To get started, create an API key in the API Keys tab and use it in your requests.
     </Text>
-    <Text mb={4}>
+    <Text mb={4} color="gray.600">
       Here are some basic examples to help you make your first request. Remember to replace <Code>YOUR_API_KEY</Code> with your actual key.
     </Text>
     
@@ -310,8 +310,8 @@ const SerpApiPage = () => {
       <ProtectedComponent>
           <Container maxW="full" py={6}>
              <Flex align="center" justify="space-between" py={6}>
-             <Text fontSize="xl">SERP API (Search Engine Results Page)</Text>
-                 <Text fontSize="sm" color="gray.600">Structured search engine results </Text>
+             <Text fontSize="xl" color="black" >SERP API (Search Engine Results Page)</Text>
+                 <Text fontSize="md" color="gray.600">Structured search engine results </Text>
            </Flex>
            <Divider my={4} borderColor="gray.200" />
    
