@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Path
 from app.models import SubscriptionStatus, User
 from typing import Annotated, List
 from pydantic import BaseModel
@@ -346,4 +346,79 @@ async def check_serp_api_access(current_user: Annotated[User, Depends(get_curren
         raise HTTPException(status_code=e.http_status or 400, detail=e.user_message or "A Stripe error occurred.")
     except Exception as e:
         logger.error(f"Internal server error checking SERP API access for {current_user.email}: {str(e)}", exc_info=True)
+        raise HTTPException(status_code=500, detail="An internal server error occurred.")
+
+#
+# NEW DYNAMIC FUNCTION
+#
+@router.get("/api/access/{feature_name}", response_model=ProxyApiAccessResponse)
+async def check_multi_feature_access(
+    feature_name: Annotated[str, Path(..., description="The metadata tag to check for access, e.g., 'serp-api' or 'advanced-analytics'.")],
+    current_user: Annotated[User, Depends(get_current_user)]
+):
+    """
+    Check if the user has access to a specific feature based on a corresponding
+    tag in their active, trialing, or past_due subscription's product metadata.
+    The feature name is provided as a URL path parameter.
+
+    For example, to check for a feature tagged as 'advanced-analytics', the
+    endpoint would be `/api/access/advanced-analytics`. Access is granted if the
+    product metadata contains `"advanced-analytics": "true"`.
+    """
+    logger.info(f"Checking access for feature '{feature_name}' for user: {current_user.email}")
+
+    # 1. Boilerplate checks
+    if not stripe.api_key:
+        logger.error("Stripe API key is not configured")
+        raise HTTPException(status_code=500, detail="Server configuration error: Missing Stripe API key")
+    
+    if not current_user.stripe_customer_id:
+        logger.warning(f"No Stripe customer ID for user: {current_user.email}")
+        return ProxyApiAccessResponse(
+            has_access=False,
+            message=f"No subscription found. Please subscribe to a plan with the '{feature_name}' feature."
+        )
+
+    try:
+        # 2. Fetch subscriptions with expanded product data
+        subscriptions = stripe.Subscription.list(
+            customer=current_user.stripe_customer_id,
+            status="all",
+            expand=["data.plan.product"],
+        )
+        logger.info(f"Found {len(subscriptions.data)} total subscriptions for {current_user.email}. Checking for '{feature_name}' access.")
+
+        access_granting_statuses = {"active", "trialing", "past_due"}
+
+        # 3. Core Logic: Iterate and check for the dynamic feature tag
+        for sub in subscriptions.data:
+            if sub.status not in access_granting_statuses:
+                continue
+
+            # Safely access the product and its metadata
+            product = sub.plan.product if sub.plan and hasattr(sub.plan, 'product') else None
+            metadata = product.metadata if product and product.metadata is not None else {}
+            
+            logger.debug(f"Checking subscription {sub.id} (status: {sub.status}) for '{feature_name}' access. Metadata: {metadata}")
+            
+            # The key dynamic check: Does the metadata contain the feature tag set to "true"?
+            if metadata.get(feature_name) == "true":
+                logger.info(f"Access to '{feature_name}' GRANTED for user {current_user.email} via subscription {sub.id}")
+                return ProxyApiAccessResponse(
+                    has_access=True,
+                    message=f"Access granted to '{feature_name}' feature."
+                )
+
+        # 4. If the loop completes, no access was found
+        logger.warning(f"Access to '{feature_name}' DENIED for user {current_user.email}. No valid plan with '{feature_name}: true' metadata found.")
+        return ProxyApiAccessResponse(
+            has_access=False,
+            message=f"Your current subscription plan does not include access to the '{feature_name}' feature. Please upgrade your plan."
+        )
+
+    except StripeError as e:
+        logger.error(f"Stripe error checking access for '{feature_name}' for {current_user.email}: {e.user_message or str(e)}")
+        raise HTTPException(status_code=e.http_status or 400, detail=e.user_message or "A Stripe error occurred.")
+    except Exception as e:
+        logger.error(f"Internal server error checking access for '{feature_name}' for {current_user.email}: {str(e)}", exc_info=True)
         raise HTTPException(status_code=500, detail="An internal server error occurred.")
