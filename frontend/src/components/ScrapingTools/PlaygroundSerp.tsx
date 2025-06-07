@@ -64,6 +64,7 @@ const PlaygroundSerpApi: React.FC = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
   const [responseTime, setResponseTime] = useState<number | null>(null);
+  const [activeTab, setActiveTab] = useState<number>(0);
 
   const generateCurlCommand = () => {
     const params = new URLSearchParams({
@@ -111,10 +112,19 @@ fetch(url, {
 `;
   };
 
-  const handleCopy = (text: string) => {
-    navigator.clipboard.writeText(text).then(() => {
+  const handleCopyCode = () => {
+    const code = activeTab === 0 ? generateCurlCommand() : activeTab === 1 ? generatePythonCode() : generateJsCode();
+    navigator.clipboard.writeText(code).then(() => {
       alert("Code copied to clipboard!");
     });
+  };
+
+  const handleCopyResponse = () => {
+    if (response) {
+      navigator.clipboard.writeText(response).then(() => {
+        alert("Response copied to clipboard!");
+      });
+    }
   };
 
   const handleTestRequest = async () => {
@@ -154,14 +164,6 @@ fetch(url, {
       setError(error instanceof Error ? error.message : "Unknown error");
     } finally {
       setIsLoading(false);
-    }
-  };
-
-  const handleCopyResponse = () => {
-    if (response) {
-      navigator.clipboard.writeText(response).then(() => {
-        alert("Response copied to clipboard!");
-      });
     }
   };
 
@@ -288,16 +290,17 @@ fetch(url, {
           <Flex align="center" justify="space-between" mb={4}>
             <Heading size="md">Response</Heading>
             <Flex gap={2}>
+              <Tooltip label="Copy Response">
+                <IconButton
+                  aria-label="Copy Response"
+                  icon={<CopyIcon />}
+                  size="sm"
+                  onClick={handleCopyResponse}
+                  isDisabled={!response}
+                />
+              </Tooltip>
               {response && (
                 <>
-                  <Tooltip label="Copy Response">
-                    <IconButton
-                      aria-label="Copy Response"
-                      icon={<CopyIcon />}
-                      size="sm"
-                      onClick={handleCopyResponse}
-                    />
-                  </Tooltip>
                   <Tooltip label="Download Response">
                     <IconButton
                       aria-label="Download Response"
@@ -338,8 +341,17 @@ fetch(url, {
         <GridItem>
           <Flex align="center" justify="space-between" mb={4}>
             <Heading size="md">Code Examples</Heading>
+            <Tooltip label="Copy Code">
+              <IconButton
+                aria-label="Copy Code"
+                icon={<CopyIcon />}
+                size="sm"
+                onClick={handleCopyCode}
+                isDisabled={!query.trim() || !apiKey.trim() || !region || !searchEngine}
+              />
+            </Tooltip>
           </Flex>
-          <Tabs variant="enclosed">
+          <Tabs variant="enclosed" onChange={(index) => setActiveTab(index)}>
             <TabList>
               <Tab>cURL</Tab>
               <Tab>Python</Tab>
@@ -347,63 +359,30 @@ fetch(url, {
             </TabList>
             <TabPanels>
               <TabPanel>
-                <Flex justify="space-between" mb={2}>
-                  <Text fontSize="sm">cURL Command</Text>
-                  <Tooltip label="Copy cURL">
-                    <IconButton
-                      aria-label="Copy cURL"
-                      icon={<CopyIcon />}
-                      size="sm"
-                      onClick={() => handleCopy(generateCurlCommand())}
-                    />
-                  </Tooltip>
-                </Flex>
                 <Textarea
                   value={generateCurlCommand()}
                   readOnly
-                  height="310px"
+                  height="300px"
                   bg="gray.50"
                   fontFamily="monospace"
                   size="sm"
                 />
               </TabPanel>
               <TabPanel>
-                <Flex justify="space-between" mb={2}>
-                  <Text fontSize="sm">Python Code</Text>
-                  <Tooltip label="Copy Python">
-                    <IconButton
-                      aria-label="Copy Python"
-                      icon={<CopyIcon />}
-                      size="sm"
-                      onClick={() => handleCopy(generatePythonCode())}
-                    />
-                  </Tooltip>
-                </Flex>
                 <Textarea
                   value={generatePythonCode()}
                   readOnly
-                  height="310px"
+                  height="300px"
                   bg="gray.50"
                   fontFamily="monospace"
                   size="sm"
                 />
               </TabPanel>
               <TabPanel>
-                <Flex justify="space-between" mb={2}>
-                  <Text fontSize="sm">JavaScript Code</Text>
-                  <Tooltip label="Copy JavaScript">
-                    <IconButton
-                      aria-label="Copy JavaScript"
-                      icon={<CopyIcon />}
-                      size="sm"
-                      onClick={() => handleCopy(generateJsCode())}
-                    />
-                  </Tooltip>
-                </Flex>
                 <Textarea
                   value={generateJsCode()}
                   readOnly
-                  height="310px"
+                  height="300px"
                   bg="gray.50"
                   fontFamily="monospace"
                   size="sm"
