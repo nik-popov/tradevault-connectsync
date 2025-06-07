@@ -285,7 +285,7 @@ const HttpsProxyApiPage = () => {
     <ProtectedComponent>
        <Container maxW="full" py={6}>
         <Flex align="center" justify="space-between" mb={4}>
-          <Text fontSize="xl">HTTPs Request Proxy API</Text>
+          <Text fontSize="xl">HTTPs Request API</Text>
           <Text fontSize="sm" color="gray.500">Reroute https requests </Text>
         </Flex>
         <Divider my={4} borderColor="gray.200" />
