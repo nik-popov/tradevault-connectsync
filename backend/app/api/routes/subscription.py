@@ -27,7 +27,7 @@ class CustomerResponse(BaseModel):
     created: int
     description: str | None
 
-# Pydantic model for subscription response
+# Pydantic model for subscription response - UPDATED
 class SubscriptionResponse(BaseModel):
     id: str
     status: str
@@ -40,7 +40,8 @@ class SubscriptionResponse(BaseModel):
     trial_start: int | None
     trial_end: int | None
     cancel_at_period_end: bool
-    metadata: dict | None
+    metadata: dict | None  # The original, full metadata dictionary from the Stripe Product
+    enabled_features: List[str]  # A list of features/tags marked as "true" in metadata
 
 # Pydantic model for proxy API access response
 class ProxyApiAccessResponse(BaseModel):
@@ -81,10 +82,12 @@ async def get_customer(current_user: Annotated[User, Depends(get_current_user)])
         logger.error(f"Internal server error for user {current_user.email}: {str(e)}")
         raise HTTPException(status_code=500, detail=f"Internal server error: {str(e)}")
 
+# MODIFIED FUNCTION
 @router.get("/customer/subscriptions", response_model=List[SubscriptionResponse])
 async def get_customer_subscriptions(current_user: Annotated[User, Depends(get_current_user)]):
     """
-    Fetch all subscriptions for the authenticated user's Stripe customer, including tier details.
+    Fetch all subscriptions for the authenticated user's Stripe customer.
+    This includes tier details and a list of enabled features based on product metadata tags set to "true".
     """
     logger.info(f"Fetching subscriptions for user: {current_user.email}")
 
@@ -100,55 +103,34 @@ async def get_customer_subscriptions(current_user: Annotated[User, Depends(get_c
         subscriptions = stripe.Subscription.list(
             customer=current_user.stripe_customer_id,
             status="all",
-            expand=["data.plan.product"]
+            expand=["data.plan.product"] # Crucial for accessing product metadata
         )
         logger.info(f"Retrieved {len(subscriptions.data)} subscriptions for customer: {current_user.stripe_customer_id}")
 
         subscription_list = []
         for sub in subscriptions.data:
-            # Log all subscriptions with detailed information
-            log_details = {
-                "subscription_id": sub.id,
-                "status": sub.status,
-                "current_period_start": getattr(sub, "current_period_start", None),
-                "current_period_end": getattr(sub, "current_period_end", None),
-                "plan_id": sub.plan.id if sub.plan else None,
-                "plan_name": sub.plan.nickname if sub.plan and sub.plan.nickname else None,
-                "product_id": sub.plan.product.id if sub.plan and sub.plan.product else None,
-                "product_name": (
-                    sub.plan.product.name
-                    if sub.plan and sub.plan.product and hasattr(sub.plan.product, "name")
-                    else None
-                ),
-                "metadata": (
-                    sub.plan.product.metadata
-                    if sub.plan and sub.plan.product and hasattr(sub.plan.product, "metadata")
-                    else None
-                ),
-                "trial_start": sub.trial_start,
-                "trial_end": sub.trial_end,
-                "cancel_at_period_end": sub.cancel_at_period_end
-            }
-            logger.info(f"Subscription details: {log_details}")
-
-            # Include active, trialing, or past_due subscriptions
-            if sub.status not in ["active", "trialing", "past_due"]:
-                logger.warning(f"Skipping subscription {sub.id} with status {sub.status}")
+            # We only care about subscriptions that are, or were, providing a service
+            if sub.status not in ["active", "trialing", "past_due", "canceled"]:
+                logger.info(f"Skipping subscription {sub.id} with irrelevant status {sub.status}")
                 continue
 
-            plan_id = sub.plan.id if sub.plan else None
-            plan_name = sub.plan.nickname if sub.plan and sub.plan.nickname else None
-            product_id = sub.plan.product.id if sub.plan and sub.plan.product else None
-            product_name = (
-                sub.plan.product.name
-                if sub.plan and sub.plan.product and hasattr(sub.plan.product, "name")
-                else None
-            )
-            metadata = (
-                sub.plan.product.metadata
-                if sub.plan and sub.plan.product and hasattr(sub.plan.product, "metadata")
-                else None
-            )
+            # Safely access nested plan and product details
+            plan = sub.plan
+            product = plan.product if plan and hasattr(plan, 'product') else None
+
+            plan_id = plan.id if plan else None
+            plan_name = plan.nickname if plan and plan.nickname else None
+            product_id = product.id if product else None
+            product_name = product.name if product else None
+            metadata = product.metadata if product and product.metadata else None
+
+            # --- New Logic: Extract enabled features from metadata ---
+            enabled_features = []
+            if isinstance(metadata, dict):
+                # A feature is considered "enabled" if its metadata key has a value of "true"
+                enabled_features = [key for key, value in metadata.items() if value == "true"]
+
+            logger.info(f"Subscription {sub.id} (Status: {sub.status}) has enabled features: {enabled_features}")
 
             subscription_list.append(
                 SubscriptionResponse(
@@ -158,12 +140,13 @@ async def get_customer_subscriptions(current_user: Annotated[User, Depends(get_c
                     plan_name=plan_name,
                     product_id=product_id,
                     product_name=product_name,
-                    current_period_start=sub.current_period_start if hasattr(sub, "current_period_start") else None,
-                    current_period_end=sub.current_period_end if hasattr(sub, "current_period_end") else None,
+                    current_period_start=sub.current_period_start,
+                    current_period_end=sub.current_period_end,
                     trial_start=sub.trial_start,
                     trial_end=sub.trial_end,
                     cancel_at_period_end=sub.cancel_at_period_end,
-                    metadata=metadata
+                    metadata=metadata,
+                    enabled_features=enabled_features, # Add the new list to the response
                 )
             )
 
@@ -295,10 +278,6 @@ async def check_proxy_api_access(current_user: Annotated[User, Depends(get_curre
         logger.error(f"Internal server error for user {current_user.email}: {str(e)}")
         raise HTTPException(status_code=500, detail=f"Internal server error: {str(e)}")
 
-# Add this new endpoint to your subscription.py file
-# ... (keep all the existing code above this function) ...
-
-# Replace the existing check_serp_api_access function with this corrected version
 @router.get("/serp-api/access", response_model=ProxyApiAccessResponse)
 async def check_serp_api_access(current_user: Annotated[User, Depends(get_current_user)]):
     """
