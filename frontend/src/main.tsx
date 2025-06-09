@@ -4,7 +4,6 @@ import { RouterProvider, createRouter } from "@tanstack/react-router";
 import ReactDOM from "react-dom/client";
 import { routeTree } from "./routeTree.gen";
 import { StrictMode } from "react"; // This is fine
-import React from "react"; // Add this import
 import { OpenAPI } from "./client";
 import theme from "./theme";
 import "./styles/global.css";
