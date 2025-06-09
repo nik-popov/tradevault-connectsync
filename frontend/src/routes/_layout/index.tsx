@@ -50,8 +50,6 @@ const HomePage = () => {
   const token = localStorage.getItem("access_token");
   const { data: apiKeys, isLoading: isApiKeysLoading, error: apiKeysError } = useQuery({ queryKey: ["apiKeys"], queryFn: () => fetchApiKeys(token || ""), staleTime: 5 * 60 * 1000, enabled: !!token });
 
-  // FIX: Use useMemo and Array.isArray for safe data processing.
-  // This prevents crashes if the API returns a non-array response.
   const activeSubscription = useMemo(() =>
     Array.isArray(subscriptions)
       ? subscriptions.find((sub) => ["active", "trialing", "past_due"].includes(sub.status))
