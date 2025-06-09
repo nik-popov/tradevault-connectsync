@@ -46,8 +46,9 @@ const syncCharts = (charts: any[], syncToolTip: boolean, syncCrosshair: boolean,
   const onCrosshairHidden = function(e: any) { for (const chart of charts) { if (chart !== e.chart) chart.axisX[0].crosshair.hide(); } };
   const onRangeChanged = function(e: any) { for (const chart of charts) { if (e.trigger === "reset") { chart.options.axisX.viewportMinimum = chart.options.axisX.viewportMaximum = null; chart.render(); } else if (chart !== e.chart) { chart.options.axisX.viewportMinimum = e.axisX[0].viewportMinimum; chart.options.axisX.viewportMaximum = e.axisX[0].viewportMaximum; chart.render(); } } };
   for (const chart of charts) {
+    if (!chart) continue; // Add a safeguard
     if (syncToolTip) { if (!chart.options.toolTip) chart.options.toolTip = {}; chart.options.toolTip.updated = onToolTipUpdated; chart.options.toolTip.hidden = onToolTipHidden; }
-    if (syncCrosshair) { if (!chart.options.axisX) chart.options.axisX = { crosshair: { enabled: true } }; chart.options.axisX.crosshair.updated = onCrosshairUpdated; chart.options.axisX.crosshair.hidden = onCrosshairHidden; }
+    if (syncCrosshair) { if (!chart.options.axisX) chart.options.axisX = { crosshair: { enabled: true } }; else if(!chart.options.axisX.crosshair) chart.options.axisX.crosshair = { enabled: true }; chart.options.axisX.crosshair.updated = onCrosshairUpdated; chart.options.axisX.crosshair.hidden = onCrosshairHidden; }
     if (syncAxisXRange) { chart.options.zoomEnabled = true; chart.options.rangeChanged = onRangeChanged; }
   }
 };
@@ -61,16 +62,28 @@ interface UsageChartsProps {
 const UsageCharts: React.FC<UsageChartsProps> = ({ periodStart, totalRequests, totalDataGB }) => {
   const chartInstances = useRef<any[]>([]);
   const { requestsDps, inboundDps, outboundDps } = useMemo(() => generateCanvasJSData(periodStart || null, totalRequests, totalDataGB), [periodStart, totalRequests, totalDataGB]);
-  useEffect(() => { if (chartInstances.current.length === 2 && chartInstances.current.every(c => c)) { syncCharts(chartInstances.current, true, true, false); } }, [requestsDps]);
+
+  useEffect(() => {
+    // Ensure both chart refs are populated before syncing
+    if (chartInstances.current.length === 2 && chartInstances.current.every(c => c)) {
+      syncCharts(chartInstances.current, true, true, false);
+    }
+  }, [requestsDps]); // Rerun sync when data changes, as charts might be re-instantiated
+
+  const commonAxisXOptions = {
+    valueFormatString: "DD MMM",
+    crosshair: {
+      enabled: true,
+      snapToDataPoint: true,
+      thickness: 1,
+    },
+  };
 
   const requestsChartOptions = {
     animationEnabled: true,
     theme: "light2",
-    title: { text: "Requests", fontSize: 16, margin: 20 },
-    axisX: {
-      valueFormatString: "DD MMM",
-      crosshair: { enabled: true, snapToDataPoint: true, thickness: 1 },
-    },
+    title: { text: "Requests", fontSize: 16, margin: 20, horizontalAlign: "left" },
+    axisX: commonAxisXOptions,
     axisY: {
       title: "Daily Requests",
       gridThickness: 0.5,
@@ -83,7 +96,7 @@ const UsageCharts: React.FC<UsageChartsProps> = ({ periodStart, totalRequests, t
         name: "Requests",
         xValueFormatString: "DD MMMM YYYY",
         yValueFormatString: "#,##0",
-        color: "rgba(237, 137, 54, 0.7)", // FIX: Changed to Orange
+        color: "rgba(237, 137, 54, 0.7)", // Chakra Orange 400 with opacity
         dataPoints: requestsDps
     }],
   };
@@ -91,11 +104,8 @@ const UsageCharts: React.FC<UsageChartsProps> = ({ periodStart, totalRequests, t
   const dataTransferChartOptions = {
     animationEnabled: true,
     theme: "light2",
-    title: { text: "Data Transfer", fontSize: 16, margin: 20 },
-    axisX: {
-      valueFormatString: "DD MMM",
-      crosshair: { enabled: true, snapToDataPoint: true, thickness: 1 },
-    },
+    title: { text: "Data Transfer", fontSize: 16, margin: 20, horizontalAlign: "left" },
+    axisX: commonAxisXOptions,
     axisY: {
       title: "Daily Transfer (GB)",
       gridThickness: 0.5,
@@ -111,7 +121,7 @@ const UsageCharts: React.FC<UsageChartsProps> = ({ periodStart, totalRequests, t
         name: "Inbound",
         showInLegend: true,
         yValueFormatString: "#,##0.## GB",
-        color: "#68D391", // FIX: Light Green
+        color: "#68D391", // Chakra Green 300
         dataPoints: inboundDps
       },
       {
@@ -119,7 +129,7 @@ const UsageCharts: React.FC<UsageChartsProps> = ({ periodStart, totalRequests, t
         name: "Outbound",
         showInLegend: true,
         yValueFormatString: "#,##0.## GB",
-        color: "#2F855A", // FIX: Dark Green
+        color: "#2F855A", // Chakra Green 700
         dataPoints: outboundDps
       },
     ],
@@ -127,13 +137,13 @@ const UsageCharts: React.FC<UsageChartsProps> = ({ periodStart, totalRequests, t
 
   return (
     <Grid templateColumns={{ base: "1fr", lg: "1fr 1fr" }} gap={6}>
-      <GridItem shadow="md" borderWidth="1px" borderRadius="md" p={3}>
+      <GridItem shadow="md" borderWidth="1px" borderRadius="md" p={4}>
         <CanvasJSChart
           options={requestsChartOptions}
           onRef={ref => (chartInstances.current[0] = ref)}
         />
       </GridItem>
-      <GridItem shadow="md" borderWidth="1px" borderRadius="md" p={3}>
+      <GridItem shadow="md" borderWidth="1px" borderRadius="md" p={4}>
         <CanvasJSChart
           options={dataTransferChartOptions}
           onRef={ref => (chartInstances.current[1] = ref)}
