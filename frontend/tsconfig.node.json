@@ -4,7 +4,9 @@
     "skipLibCheck": true,
     "module": "ESNext",
     "moduleResolution": "bundler",
-    "allowSyntheticDefaultImports": true
+    "allowSyntheticDefaultImports": true,
+    "strict": true,
+    "types": ["node"] // Explicitly include Node.js types here
   },
-  "include": ["vite.config.ts"]
+  "include": ["vite.config.ts"] // This config ONLY applies to this file
 }
