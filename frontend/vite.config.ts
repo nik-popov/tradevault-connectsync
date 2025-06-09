@@ -24,8 +24,6 @@ export default defineConfig({
       "@": path.resolve(__dirname, "src"),
     },
   },
-  // You can comment out or remove this section for this test
-  /*
   optimizeDeps: {
     include: ["@canvasjs/react-charts"],
     esbuildOptions: {
@@ -34,5 +32,5 @@ export default defineConfig({
       },
     },
   },
-  */
+
 });
