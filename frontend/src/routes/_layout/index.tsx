@@ -47,7 +47,7 @@ const HomePage = () => {
 
   const activeSubscription = subscriptions?.find((sub) => ["active", "trialing", "past_due"].includes(sub.status));
   const totalRequests = apiKeys?.reduce((sum, key) => sum + (key.request_count || 0), 0) || 0;
-  const dataTransferredGB = useMemo(() => (totalRequests * 0.0005).toFixed(2), [totalRequests]);
+  const totalDataGB = (totalRequests * 0.0005).toFixed(2);
   
   const isLoading = isSubscriptionsLoading || isApiKeysLoading;
   const error = subscriptionsError || apiKeysError;
@@ -73,7 +73,7 @@ const HomePage = () => {
             {/* Row 1: Summary & Subscription Details */}
             <Grid templateColumns={{ base: "1fr", md: "1fr 1fr 1.5fr" }} gap={6}>
               <GridItem><Box shadow="md" borderWidth="1px" borderRadius="md" p={4} height="100%"><VStack align="start" spacing={3}><Heading size="sm">Total Requests</Heading><Text fontSize="4xl" fontWeight="bold">{totalRequests.toLocaleString()}</Text></VStack></Box></GridItem>
-              <GridItem><Box shadow="md" borderWidth="1px" borderRadius="md" p={4} height="100%"><VStack align="start" spacing={3}><Heading size="sm">Data Transferred</Heading><Text fontSize="4xl" fontWeight="bold">{dataTransferredGB} GB</Text></VStack></Box></GridItem>
+              <GridItem><Box shadow="md" borderWidth="1px" borderRadius="md" p={4} height="100%"><VStack align="start" spacing={3}><Heading size="sm">Data Transferred</Heading><Text fontSize="4xl" fontWeight="bold">{totalDataGB} GB</Text></VStack></Box></GridItem>
               
               {/* NEW: Combined Details Card in Top Right */}
               <GridItem>
@@ -103,12 +103,11 @@ const HomePage = () => {
             </Grid>
 
             {/* Row 2: Usage Charts */}
-            <UsageCharts 
-                periodStart={activeSubscription.current_period_start}
-                totalRequests={totalRequests}
-                totalDataGB={parseFloat(dataTransferredGB)}
-            />
-            
+            <UsageCharts
+            periodStart={activeSubscription.current_period_start}
+            totalRequests={totalRequests}
+            totalDataGB={parseFloat(totalDataGB)}
+          />
             {/* Row 3: Services & Quick Links */}
              {activeSubscription.enabled_features?.length > 0 && (
               <VStack align="stretch" spacing={4} pt={4}>
