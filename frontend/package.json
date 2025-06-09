@@ -60,7 +60,7 @@
     "@tanstack/router-devtools": "1.19.1",
     "@tanstack/router-vite-plugin": "^1.120.20",
     "@types/leaflet": "^1.9.8",
-    "@types/node": "^20.17.24",
+    "@types/node": "^20.19.0",
     "@types/react": "^18.2.37",
     "@types/react-dom": "^18.2.15",
     "@types/react-syntax-highlighter": "^15.5.13",
@@ -68,7 +68,7 @@
     "dotenv": "^16.4.7",
     "patch-package": "^8.0.0",
     "typescript": "^5.2.2",
-    "vite": "^5.0.13",
+    "vite": "^6.3.5",
     "vite-plugin-node-polyfills": "^0.23.0"
   }
 }
