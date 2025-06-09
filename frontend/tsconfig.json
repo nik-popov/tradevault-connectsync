@@ -1,23 +1,25 @@
+// tsconfig.json
 {
   "compilerOptions": {
-    "target": "ES2020",
+    "target": "ESNext",
     "useDefineForClassFields": true,
-    "lib": ["ES2020", "DOM", "DOM.Iterable"],
-    "module": "ESNext",
+    "lib": ["DOM", "DOM.Iterable", "ESNext"],
+    "allowJs": false,
     "skipLibCheck": true,
+    "esModuleInterop": false,
+    "allowSyntheticDefaultImports": true,
+    "strict": true,
+    "forceConsistentCasingInFileNames": true,
+    "module": "ESNext",
     "moduleResolution": "bundler",
-    "allowImportingTsExtensions": true,
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "types": ["node"],
     "noEmit": true,
     "jsx": "react-jsx",
-    "strict": false,
-    "strictNullChecks": true,
-    "noUnusedLocals": false,
-    "noUnusedParameters": true,
-    "noFallthroughCasesInSwitch": true
+
+    // This is optional but good practice to prevent `any` types.
+    "noImplicitAny": true
   },
-  "include": ["src/**/*.ts", "tests/**/*.ts", "playwright.config.ts"],
-  "references": [{ "path": "./tsconfig.node.json" }]
+  "include": ["src"], // Only include your application source code.
+  "references": [{ "path": "./tsconfig.node.json" }] // Reference the node config.
 }
