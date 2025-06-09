@@ -137,7 +137,7 @@ function Login() {
           gap={{ base: 4, md: 6 }}
           width={{ base: "100%", md: "auto" }}
         >
-          <Logo href="/" />
+          <Logo />
 
           <FormControl id="username" isInvalid={!!errors.username || !!error} width="100%">
             <Input

@@ -185,7 +185,7 @@ function ActivateAccount() {
           gap={{ base: 4, md: 6 }}
           width={{ base: "100%", md: "auto" }}
         >
-        <Logo href="/" />
+        <Logo />
 
 
           <FormControl id="new_password" isInvalid={!!errors.new_password} width="100%">

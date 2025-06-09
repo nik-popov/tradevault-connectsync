@@ -300,7 +300,7 @@ const TopNav = () => {
       borderBottomColor="gray.300"
     >
       <Flex align="center" justify="space-between" maxW="1200px" mx="auto">
-        <Logo href="/" />
+        <Logo />
 
         <IconButton
           onClick={isOpen ? onClose : onOpen}

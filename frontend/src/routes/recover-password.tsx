@@ -140,7 +140,7 @@ function RecoverPassword() {
           gap={{ base: 4, md: 6 }}
           width={{ base: "100%", md: "auto" }}
         >
-        <Logo href="/" />
+        <Logo />
 
 
 
