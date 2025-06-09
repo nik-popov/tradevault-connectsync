@@ -60,15 +60,16 @@ interface UsageChartsProps {
 }
 
 const UsageCharts: React.FC<UsageChartsProps> = ({ periodStart, totalRequests, totalDataGB }) => {
-  const chartInstances = useRef<any[]>([]);
+  // The useRef type is fine as `any[]` since the library has no official types.
+  const chartInstances = useRef<any[]>([]); 
   const { requestsDps, inboundDps, outboundDps } = useMemo(() => generateCanvasJSData(periodStart || null, totalRequests, totalDataGB), [periodStart, totalRequests, totalDataGB]);
 
   useEffect(() => {
-    // Ensure both chart refs are populated before syncing
     if (chartInstances.current.length === 2 && chartInstances.current.every(c => c)) {
       syncCharts(chartInstances.current, true, true, false);
     }
-  }, [requestsDps]); // Rerun sync when data changes, as charts might be re-instantiated
+  }, [requestsDps]);
+
 
   const commonAxisXOptions = {
     valueFormatString: "DD MMM",
@@ -134,19 +135,20 @@ const UsageCharts: React.FC<UsageChartsProps> = ({ periodStart, totalRequests, t
       },
     ],
   };
-
-  return (
+return (
     <Grid templateColumns={{ base: "1fr", lg: "1fr 1fr" }} gap={6}>
       <GridItem shadow="md" borderWidth="1px" borderRadius="md" p={4}>
         <CanvasJSChart
           options={requestsChartOptions}
-          onRef={ref => (chartInstances.current[0] = ref)}
+          // FIX: Explicitly type the `ref` parameter as `any`
+          onRef={(ref: any) => (chartInstances.current[0] = ref)}
         />
       </GridItem>
       <GridItem shadow="md" borderWidth="1px" borderRadius="md" p={4}>
         <CanvasJSChart
           options={dataTransferChartOptions}
-          onRef={ref => (chartInstances.current[1] = ref)}
+          // FIX: Explicitly type the `ref` parameter as `any`
+          onRef={(ref: any) => (chartInstances.current[1] = ref)}
         />
       </GridItem>
     </Grid>

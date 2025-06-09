@@ -6,8 +6,6 @@ import {
   Button,
   Input,
   Select,
-  Textarea, // Not used in the final code but kept from original
-  Spinner,  // Not used in the final code but kept from original
   Tooltip,
   FormControl,
   FormLabel,
