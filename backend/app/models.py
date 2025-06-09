@@ -13,7 +13,7 @@ class UserBase(SQLModel):
     has_subscription: bool = Field(default=False)
     is_trial: bool = Field(default=False)
     is_deactivated: bool = Field(default=False)
-    stripe_customer_id: Optional[str] = Field(default=None, nullable=True)  #
+    stripe_customer_id: Optional[str] = Field(default=None, nullable=True)  
 
 # Properties to receive via API on creation
 class UserCreate(UserBase):
