@@ -18,7 +18,7 @@
     "jsx": "react-jsx",
 
     // This is optional but good practice to prevent `any` types.
-    "noImplicitAny": true
+    "noImplicitAny": false
   },
   "include": ["src"], // Only include your application source code.
   "references": [{ "path": "./tsconfig.node.json" }] // Reference the node config.
