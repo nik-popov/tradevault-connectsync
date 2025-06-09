@@ -24,7 +24,6 @@ import {
   Tab,
   TabPanel,
   Code,
-  useTheme, // Not used in the final code but kept from original
   useDisclosure,
   Modal,
   ModalOverlay,
@@ -32,23 +31,24 @@ import {
   ModalHeader,
   ModalCloseButton,
   ModalBody,
-  ModalFooter, // Not used in the final code but kept from original
   SimpleGrid,
   VStack,
   useToast,
 } from "@chakra-ui/react";
-import { ExternalLinkIcon, CopyIcon, DownloadIcon, ViewIcon, AddIcon, MinusIcon } from "@chakra-ui/icons";
+import { CopyIcon, DownloadIcon, ViewIcon } from "@chakra-ui/icons";
 import { FiSend } from "react-icons/fi";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { vscDarkPlus } from "react-syntax-highlighter/dist/esm/styles/prism";
 import { FaTrash } from "react-icons/fa";
+
+// --- (START) TYPE DEFINITIONS ---
+
 interface CodeBlockProps {
   code: string;
   language: string;
-  maxHeight?: string; // Optional prop
+  maxHeight?: string;
 }
 
-// Define the shape of the data passed to the modal
 interface ResultsData {
   requestInfo: {
     url: string;
@@ -59,7 +59,15 @@ interface ResultsData {
   headers: string;
 }
 
-// --- Custom CodeBlock with Syntax Highlighting ---
+// FIX: Renamed to follow convention and applied to the component below
+interface ResultsModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  data: ResultsData | null;
+}
+
+// --- (END) TYPE DEFINITIONS ---
+
 const CodeBlock: React.FC<CodeBlockProps> = ({ code, language, maxHeight = '60vh' }) => {
   const customStyle = {
     margin: 0,
@@ -75,7 +83,7 @@ const CodeBlock: React.FC<CodeBlockProps> = ({ code, language, maxHeight = '60vh
     </SyntaxHighlighter>
   );
 };
-// --- Helper Functions ---
+
 const handleDownload = (content: string, filename: string, type: string) => {
   const blob = new Blob([content], { type });
   const url = URL.createObjectURL(blob);
@@ -88,13 +96,14 @@ const handleDownload = (content: string, filename: string, type: string) => {
   URL.revokeObjectURL(url);
 };
 
-// --- Restyled Results Modal Component ---
-const ResultsModal = ({ isOpen, onClose, data }) => {
+// FIX: Applied the ResultsModalProps interface
+const ResultsModal: React.FC<ResultsModalProps> = ({ isOpen, onClose, data }) => {
   if (!data) return null;
   const toast = useToast();
   const { requestInfo, jsonResponse, htmlPreview, headers } = data;
 
-  const handleCopy = (text, type) => {
+  // FIX: Added types to the parameters
+  const handleCopy = (text: string, type: string) => {
     navigator.clipboard.writeText(text).then(() => {
       toast({
         title: `${type} copied!`,
@@ -116,8 +125,7 @@ const ResultsModal = ({ isOpen, onClose, data }) => {
   return (
     <Modal isOpen={isOpen} onClose={onClose} size="6xl" isCentered motionPreset="slideInBottom">
       <ModalOverlay bg="blackAlpha.600" />
-      <ModalContent mx={4} maxH="90vh" borderRadius="lg"> {/* Added borderRadius */}
-        {/* MODAL HEADER: Added bg */}
+      <ModalContent mx={4} maxH="90vh" borderRadius="lg">
         <ModalHeader bg="gray.50" borderBottomWidth="1px" fontWeight="semibold" borderTopRadius="lg"> 
           API Call Results
         </ModalHeader>
@@ -129,14 +137,13 @@ const ResultsModal = ({ isOpen, onClose, data }) => {
               <Tab>Request & Headers</Tab>
             </TabList>
             <TabPanels mt={4}>
-              {/* --- RESPONSE TAB (JSON + HTML) --- */}
+              {/* RESPONSE TAB */}
               <TabPanel p={0}>
                 <VStack spacing={6} align="stretch">
                   <Box>
                     <Flex justify="space-between" align="center" mb={2}>
                       <Heading size="sm">JSON Response</Heading>
                       <Flex gap={2}>
-                        {/* COPY BUTTON: Changed colorScheme */}
                         <Tooltip label="Copy JSON"><IconButton aria-label="Copy JSON" icon={<CopyIcon />} size="sm" colorScheme="orange" onClick={() => handleCopy(jsonResponse, 'JSON Response')} /></Tooltip>
                         <Tooltip label="Download JSON"><IconButton aria-label="Download JSON" icon={<DownloadIcon />} size="sm" onClick={() => handleDownload(jsonResponse, "response.json", "application/json")} /></Tooltip>
                       </Flex>
@@ -148,7 +155,6 @@ const ResultsModal = ({ isOpen, onClose, data }) => {
                     <Flex justify="space-between" align="center" mb={2}>
                       <Heading size="sm">HTML Preview</Heading>
                       <Flex gap={2}>
-                         {/* COPY BUTTON: Changed colorScheme */}
                         <Tooltip label="Copy HTML"><IconButton aria-label="Copy HTML" icon={<CopyIcon />} size="sm" colorScheme="orange" onClick={() => handleCopy(htmlPreview, 'HTML')} /></Tooltip>
                         <Tooltip label="Download HTML"><IconButton aria-label="Download HTML" icon={<DownloadIcon />} size="sm" onClick={() => handleDownload(htmlPreview, "preview.html", "text/html")} /></Tooltip>
                       </Flex>
@@ -158,7 +164,7 @@ const ResultsModal = ({ isOpen, onClose, data }) => {
                 </VStack>
               </TabPanel>
               
-              {/* --- REQUEST & HEADERS TAB --- */}
+              {/* REQUEST & HEADERS TAB */}
               <TabPanel p={0}>
                  <VStack spacing={6} align="stretch">
                     <Box>
@@ -176,7 +182,6 @@ const ResultsModal = ({ isOpen, onClose, data }) => {
                     <Box>
                       <Flex justify="space-between" align="center" mb={2}>
                         <Heading size="sm">Response Headers</Heading>
-                         {/* COPY BUTTON: Changed colorScheme */}
                         <Tooltip label="Copy Headers"><IconButton aria-label="Copy Headers" icon={<CopyIcon />} size="sm" colorScheme="orange" onClick={() => handleCopy(headers, 'Headers')} /></Tooltip>
                       </Flex>
                       <CodeBlock code={headers} language="json" />
@@ -210,7 +215,8 @@ const PlaygroundGSerp: React.FC = () => {
   const toast = useToast();
 
   const { isOpen: isModalOpen, onOpen: onModalOpen, onClose: onModalClose } = useDisclosure();
-  const [resultsData, setResultsData] = useState<any | null>(null);
+  // FIX: Used the specific ResultsData type instead of 'any'
+  const [resultsData, setResultsData] = useState<ResultsData | null>(null);
 
   const displayApiKey = apiKey.trim() || "YOUR_API_KEY";
   
@@ -229,8 +235,8 @@ const PlaygroundGSerp: React.FC = () => {
     },
   ];
   
-  // --- Generic Copy Handler ---
-  const handleCopy = (text, type) => {
+  // FIX: Added types to the parameters
+  const handleCopy = (text: string, type: string) => {
     navigator.clipboard.writeText(text).then(() => {
       toast({
         title: `${type} copied!`,
@@ -242,14 +248,11 @@ const PlaygroundGSerp: React.FC = () => {
     });
   };
 
-  // --- API Request Handler ---
   const handleTestRequest = async () => {
     setIsLoading(true);
     setError("");
     setResponseTime(null);
-    // Do not clear resultsData here if we want "View Last Result" to show previous data
-    // setResultsData(null); 
-
+    
     try {
       const startTime = performance.now();
       const res = await fetch(`${API_URL}/fetch?region=${region}`, {
@@ -262,7 +265,7 @@ const PlaygroundGSerp: React.FC = () => {
 
       const responseHeaders: { [key: string]: string } = {};
       res.headers.forEach((value, key) => {
-        responseHeaders[key] = value; // This is now valid
+        responseHeaders[key] = value;
       });
 
       const responseBody = await res.json();
@@ -280,7 +283,7 @@ const PlaygroundGSerp: React.FC = () => {
 
     } catch (err) {
       setError(err instanceof Error ? err.message : "An unknown error occurred");
-      setResultsData(null); // Clear results data on error
+      setResultsData(null);
     } finally {
       setIsLoading(false);
     }
@@ -288,55 +291,15 @@ const PlaygroundGSerp: React.FC = () => {
 
   return (
     <Box width="100%">
-      {/* --- Intro --- */}
+      {/* Intro */}
       <Box mb={6}>
         <Text fontSize="lg" mb={2} color="gray.700">This tool allows you to programmatically fetch search engine results pages.</Text>
         <Text fontSize="lg" mb={4} color="gray.700">Build your request below. Results will open in a new window for review.</Text>
         <Divider mb={4} />
       </Box>
 
-      {/* --- Live Test (Request Builder) --- */}
-      {/* --- Live Test (Request Builder) --- */}
-   {error && (<Alert status="error" mt={4} variant="subtle" borderRadius="md"><AlertIcon /><Text fontSize="sm">{error}</Text></Alert>)} {/* Added variant and borderRadius to error alert for consistency */}
-          
-          {/* REQUEST SUCCESSFUL ALERT: Added a Dismiss button next to the View button */}
-          {resultsData && !isModalOpen && !isLoading && !error && (
-              <Alert status="success" variant="subtle" m={0} borderRadius="md" p={3}>
-                  <AlertIcon />
-                  <Flex justify="space-between" align="center" w="100%">
-                    <Box>
-                      <Text fontWeight="bold">Request Success</Text>
-                      <Text fontSize="sm">Response Time: {responseTime} ms</Text>
-                    </Box>
-                    
-                    {/* --- BUTTONS --- */}
-                    <HStack spacing={2}>
-                                   <Button
-                        size="sm"
-                        variant="solid"
-                        colorScheme="teal"
-                        color="white"
-                        leftIcon={<FaTrash />}
-                        onClick={() => setResultsData(null)} // This will hide the alert
-                      >
-                        Dismiss
-                      </Button>
-                      <Button
-                        size="sm"
-                        variant="solid"
-                        colorScheme="orange"
-                        color="white"
-                        leftIcon={<ViewIcon />}
-                        onClick={onModalOpen}
-                      >
-                      Response
-                      </Button>
-                    </HStack>
-
-                  </Flex>
-              </Alert>
-          )}
- <Box mb={8}>
+      {/* Live Test */}
+      <Box mb={8}>
         <Heading as="h2" size="md" fontWeight="semibold" mb={6} color="gray.700">Live Test</Heading>
         <Flex direction="column" gap={4}>
           <FormControl>
@@ -349,26 +312,47 @@ const PlaygroundGSerp: React.FC = () => {
             <GridItem><Button size="sm" colorScheme="blue" onClick={handleTestRequest} isLoading={isLoading} isDisabled={!url.trim() || !apiKey.trim() || !region} leftIcon={<FiSend />}>Test Request</Button></GridItem>
           </Grid>
           
+          {error && (<Alert status="error" mt={4} variant="subtle" borderRadius="md"><AlertIcon /><Text fontSize="sm">{error}</Text></Alert>)}
+          
+          {resultsData && !isModalOpen && !isLoading && !error && (
+              <Alert status="success" variant="subtle" mt={4} borderRadius="md" p={3}>
+                  <AlertIcon />
+                  <Flex justify="space-between" align="center" w="100%">
+                    <Box>
+                      <Text fontWeight="bold">Request Success</Text>
+                      <Text fontSize="sm">Response Time: {responseTime} ms</Text>
+                    </Box>
+                    <HStack spacing={2}>
+                      <Button size="sm" variant="solid" colorScheme="teal" leftIcon={<FaTrash />} onClick={() => setResultsData(null)}>
+                        Dismiss
+                      </Button>
+                      <Button size="sm" variant="solid" colorScheme="orange" leftIcon={<ViewIcon />} onClick={onModalOpen}>
+                        Response
+                      </Button>
+                    </HStack>
+                  </Flex>
+              </Alert>
+          )}
         </Flex>
       </Box>
-      {/* --- Dynamic Code Snippets --- */}
+
+      {/* Dynamic Code Snippets */}
       <Box mb={8}>
         <Heading as="h2" size="md" fontWeight="semibold" mb={4} color="gray.700">Your Request Code</Heading>
         <Text fontSize="md" color="gray.600" mb={6}>The code below updates automatically as you change parameters in the Live Test section.</Text>
         <Box position="relative">
-          {/* COPY BUTTON: Changed color and _hover */}
           <Tooltip label="Copy Code" placement="left">
             <IconButton
               aria-label="Copy code"
               icon={<CopyIcon />}
               size="sm"
               variant="ghost"
-              color="orange.400" // Changed
+              color="orange.400"
               position="absolute"
               top="0.6rem" 
               right="0.5rem"
               zIndex={1}
-              _hover={{ bg: "whiteAlpha.200", color: "orange.300" }} // Changed
+              _hover={{ bg: "whiteAlpha.200", color: "orange.300" }}
               onClick={() => handleCopy(codeTabs[activeTabIndex].code, `${codeTabs[activeTabIndex].label} Code`)}
             />
           </Tooltip>
@@ -383,7 +367,7 @@ const PlaygroundGSerp: React.FC = () => {
         </Box>
       </Box>
         
-      {/* --- Need Help Section --- */}
+      {/* Need Help Section */}
       <Box pt={8} mt={8} borderTopWidth="1px" borderColor="gray.200">
         <Box p={4} borderWidth="1px" borderRadius="md" bg="orange.50" borderColor="orange.200">
           <Heading size="md" mb={2} color="gray.800">Need Help?</Heading>
@@ -391,7 +375,7 @@ const PlaygroundGSerp: React.FC = () => {
         </Box>
       </Box>
       
-      {/* --- Render the Modal --- */}
+      {/* Render the Modal */}
       <ResultsModal isOpen={isModalOpen} onClose={onModalClose} data={resultsData} />
     </Box>
   );
