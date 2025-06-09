@@ -93,7 +93,7 @@ const HomePage = () => {
               <GridItem><Box shadow="md" borderWidth="1px" borderRadius="md" p={4} height="100%"><VStack align="start" spacing={3}><Heading size="sm">Data Transferred</Heading><Text fontSize="4xl" fontWeight="bold">{totalDataGB} GB</Text></VStack></Box></GridItem>
               
               <GridItem>
-                  <Box shadow="md" borderWidth="1px" borderRadius="md" p={4} height={{base: "auto", md: "135px"}} display="flex" flexDirection="column">
+                  <Box shadow="md" borderWidth="1px" borderRadius="md" p={4} height={{base: "auto", md: "180px"}} display="flex" flexDirection="column">
                     <Box flex="1" overflowY="auto" pr={2}>
                         <Table variant="simple" size="sm">
                             <Tbody>
