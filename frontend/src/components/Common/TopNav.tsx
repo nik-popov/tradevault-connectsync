@@ -37,6 +37,12 @@ interface NavItem {
   description?: string;
   subItems?: NavItem[];
 }
+interface NavGroupDropdownProps {
+  item: NavItem;
+  activeTextColor: string;
+  hoverColor: string;
+  textColor: string;
+}
 
 interface NavItemsProps {
   onClose?: () => void;

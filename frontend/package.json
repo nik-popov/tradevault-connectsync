@@ -16,7 +16,7 @@
     "@aws-sdk/client-s3": "^3.758.0",
     "@canvasjs/react-charts": "^1.0.2",
     "@chakra-ui/icons": "2.1.1",
-    "@chakra-ui/react": "^2.10.6",
+    "@chakra-ui/react": "^3.20.0",
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.0",
     "@originjs/vite-plugin-commonjs": "^1.0.3",
