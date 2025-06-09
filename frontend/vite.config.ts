@@ -26,7 +26,6 @@ export default defineConfig({
     },
   },
   optimizeDeps: {
-    // KEEP THIS: This part fixed our original 'useToast' error.
     include: [
       '@chakra-ui/react',
       '@chakra-ui/icons',
