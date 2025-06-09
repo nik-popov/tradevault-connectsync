@@ -64,6 +64,7 @@
     "@types/react": "^18.2.37",
     "@types/react-dom": "^18.2.15",
     "@types/react-leaflet": "^3.0.0",
+    "@types/react-syntax-highlighter": "^15.5.13",
     "@vitejs/plugin-react-swc": "^3.5.0",
     "dotenv": "^16.4.7",
     "patch-package": "^8.0.0",
