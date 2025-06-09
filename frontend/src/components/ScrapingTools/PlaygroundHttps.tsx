@@ -42,9 +42,25 @@ import { FiSend } from "react-icons/fi";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { vscDarkPlus } from "react-syntax-highlighter/dist/esm/styles/prism";
 import { FaTrash } from "react-icons/fa";
+interface CodeBlockProps {
+  code: string;
+  language: string;
+  maxHeight?: string; // Optional prop
+}
+
+// Define the shape of the data passed to the modal
+interface ResultsData {
+  requestInfo: {
+    url: string;
+    region: string;
+  };
+  jsonResponse: string;
+  htmlPreview: string;
+  headers: string;
+}
 
 // --- Custom CodeBlock with Syntax Highlighting ---
-const CodeBlock = ({ code, language, maxHeight = '60vh' }) => {
+const CodeBlock: React.FC<CodeBlockProps> = ({ code, language, maxHeight = '60vh' }) => {
   const customStyle = {
     margin: 0,
     borderRadius: "0.375rem",
@@ -59,9 +75,8 @@ const CodeBlock = ({ code, language, maxHeight = '60vh' }) => {
     </SyntaxHighlighter>
   );
 };
-
 // --- Helper Functions ---
-const handleDownload = (content, filename, type) => {
+const handleDownload = (content: string, filename: string, type: string) => {
   const blob = new Blob([content], { type });
   const url = URL.createObjectURL(blob);
   const a = document.createElement("a");
@@ -245,8 +260,10 @@ const PlaygroundGSerp: React.FC = () => {
       const endTime = performance.now();
       setResponseTime(Math.round(endTime - startTime));
 
-      const responseHeaders = {};
-      res.headers.forEach((value, key) => { responseHeaders[key] = value; });
+      const responseHeaders: { [key: string]: string } = {};
+      res.headers.forEach((value, key) => {
+        responseHeaders[key] = value; // This is now valid
+      });
 
       const responseBody = await res.json();
       if (!res.ok) {
