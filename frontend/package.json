@@ -69,7 +69,7 @@
     "dotenv": "^16.4.7",
     "patch-package": "^8.0.0",
     "typescript": "^5.2.2",
-    "vite": "^5.0.13",
+    "vite": "^6.3.5",
     "vite-plugin-node-polyfills": "^0.23.0"
   }
 }
