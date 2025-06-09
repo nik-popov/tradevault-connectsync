@@ -12,7 +12,7 @@ export default defineConfig({
       routesDirectory: "./src/routes",
       generatedRouteTree: "./src/routeTree.gen.ts",
     }),
-    viteCommonjs(), // <--- ADD THE PLUGIN HERE
+    viteCommonjs(),
     nodePolyfills({
       globals: {
         Buffer: true,
