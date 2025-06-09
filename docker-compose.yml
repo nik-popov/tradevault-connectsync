@@ -22,10 +22,61 @@ services:
       retries: 5
       start_period: 30s
 
-  backend:
+  adminer:
+    image: adminer
+    restart: always
+    networks:
+      - traefik-public
+      - default
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+    environment:
+      - ADMINER_DESIGN=pepa-linha-dark
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network=traefik-public
+      - traefik.constraint-label=traefik-public
+      - traefik.http.routers.${STACK_NAME?Variable not set}-adminer.rule=Host(`adminer.${DOMAIN?Variable not set}`)
+      - traefik.http.routers.${STACK_NAME?Variable not set}-adminer.entrypoints=http
+      - traefik.http.services.${STACK_NAME?Variable not set}-adminer.loadbalancer.server.port=8080
+
+  prestart:
     image: "${DOCKER_IMAGE_BACKEND?Variable not set}:${TAG-latest}"
     build:
       context: ./backend
+    networks:
+      - traefik-public
+      - default
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: "no"  # Run only once
+    command: bash scripts/prestart.sh
+    env_file:
+      - .env
+    environment:
+      - DOMAIN=${DOMAIN}
+      - FRONTEND_HOST=${FRONTEND_HOST?Variable not set}
+      - ENVIRONMENT=${ENVIRONMENT}
+      - BACKEND_CORS_ORIGINS=${BACKEND_CORS_ORIGINS}
+      - SECRET_KEY=${SECRET_KEY?Variable not set}
+      - FIRST_SUPERUSER=${FIRST_SUPERUSER?Variable not set}
+      - FIRST_SUPERUSER_PASSWORD=${FIRST_SUPERUSER_PASSWORD?Variable not set}
+      - SMTP_HOST=${SMTP_HOST}
+      - SMTP_USER=${SMTP_USER}
+      - SMTP_PASSWORD=${SMTP_PASSWORD}
+      - EMAILS_FROM_EMAIL=${EMAILS_FROM_EMAIL}
+      - POSTGRES_SERVER=db
+      - POSTGRES_PORT=${POSTGRES_PORT}
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_USER=${POSTGRES_USER?Variable not set}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD?Variable not set}
+      - SENTRY_DSN=${SENTRY_DSN}
+
+  backend:
+    image: "${DOCKER_IMAGE_BACKEND?Variable not set}:${TAG-latest}"
     restart: always
     networks:
       - traefik-public
@@ -36,7 +87,7 @@ services:
       prestart:
         condition: service_completed_successfully
     env_file:
-      - .env
+      - .env      
     ports:
       - "8000:8000"
     environment:
@@ -61,89 +112,37 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+    build:
+      context: ./backend
     labels:
       - "traefik.enable=true"
       - "traefik.docker.network=traefik-public"
-      - "traefik.constraint-label=traefik-public"
+      - "traefik.constraint-label=traefik-public"     
+      # ✅ API HTTP Router (Fix for api.thedataproxy.com)
       - "traefik.http.routers.api-http.rule=Host(`api.thedataproxy.com`)"
       - "traefik.http.routers.api-http.entrypoints=http"
       - "traefik.http.services.api-service.loadbalancer.server.port=8000"
-
-  prestart:
-    image: "${DOCKER_IMAGE_BACKEND?Variable not set}:${TAG-latest}"
-    ### KEY CHANGE: The "build:" block has been REMOVED from this service. ###
-    ### It will now use the image built by the "backend" service, ensuring ###
-    ### all dependencies (like alembic) are present.                      ###
-    networks:
-      - traefik-public
-      - default
-    depends_on:
-      db:
-        condition: service_healthy
-    restart: "no"
-    command: bash scripts/prestart.sh
-    env_file:
-      - .env
-    environment:
-      - DOMAIN=${DOMAIN}
-      - FRONTEND_HOST=${FRONTEND_HOST?Variable not set}
-      - ENVIRONMENT=${ENVIRONMENT}
-      - BACKEND_CORS_ORIGINS=${BACKEND_CORS_ORIGINS}
-      - SECRET_KEY=${SECRET_KEY?Variable not set}
-      - FIRST_SUPERUSER=${FIRST_SUPERUSER?Variable not set}
-      - FIRST_SUPERUSER_PASSWORD=${FIRST_SUPERUSER_PASSWORD?Variable not set}
-      - SMTP_HOST=${SMTP_HOST}
-      - SMTP_USER=${SMTP_USER}
-      - SMTP_PASSWORD=${SMTP_PASSWORD}
-      - EMAILS_FROM_EMAIL=${EMAILS_FROM_EMAIL}
-      - POSTGRES_SERVER=db
-      - POSTGRES_PORT=${POSTGRES_PORT}
-      - POSTGRES_DB=${POSTGRES_DB}
-      - POSTGRES_USER=${POSTGRES_USER?Variable not set}
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD?Variable not set}
-      - SENTRY_DSN=${SENTRY_DSN}
-
   frontend:
     image: "${DOCKER_IMAGE_FRONTEND?Variable not set}:${TAG-latest}"
-    build:
-      context: ./frontend
     restart: always
     networks:
       - traefik-public
       - default
     env_file:
       - .env
+    build:
+      context: ./frontend
     environment:
       - NGINX_PROXY_BUFFER_SIZE=128k
       - NGINX_PROXY_BUFFERS=4 256k
       - NGINX_LARGE_CLIENT_HEADER_BUFFERS=4 16k
     labels:
-      - "traefik.enable=true"
-      - "traefik.docker.network=traefik-public"
-      - "traefik.constraint-label=traefik-public"
-      - "traefik.http.routers.dashboard.rule=Host(`cloud.thedataproxy.com`)"
-      - "traefik.http.routers.dashboard.entrypoints=http"
-      - "traefik.http.services.dashboard.loadbalancer.server.port=80"
-
-  adminer:
-    image: adminer
-    restart: always
-    networks:
-      - traefik-public
-      - default
-    ports:
-      - "8080:8080"
-    depends_on:
-      - db
-    environment:
-      - ADMINER_DESIGN=pepa-linha-dark
-    labels:
-      - "traefik.enable=true"
-      - "traefik.docker.network=traefik-public"
-      - "traefik.constraint-label=traefik-public"
-      - "traefik.http.routers.${STACK_NAME?Variable not set}-adminer.rule=Host(`adminer.${DOMAIN?Variable not set}`)"
-      - "traefik.http.routers.${STACK_NAME?Variable not set}-adminer.entrypoints=http"
-      - "traefik.http.services.${STACK_NAME?Variable not set}-adminer.loadbalancer.server.port=8080"
+      - traefik.enable=true
+      - traefik.docker.network=traefik-public
+      - traefik.constraint-label=traefik-public
+      - traefik.http.routers.dashboard.rule=Host(`cloud.thedataproxy.com`)       
+      - traefik.http.routers.dashboard.entrypoints=http
+      - traefik.http.services.dashboard.loadbalancer.server.port=80
 
 
 volumes:
