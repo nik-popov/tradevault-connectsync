@@ -22,7 +22,7 @@ import { type UserPublic, UsersService } from "../../client"
 import AddUser from "../../components/Admin/AddUser"
 import ActionsMenu from "../../components/Common/ActionsMenu"
 import Navbar from "../../components/Common/Navbar"
-import { PaginationFooter } from "../../components/Common/PaginationFooter.tsx"
+import { PaginationFooter } from "../../components/Common/PaginationFooter"
 
 const usersSearchSchema = z.object({
   page: z.number().catch(1),

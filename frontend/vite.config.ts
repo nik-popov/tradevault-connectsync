@@ -33,9 +33,6 @@ export default defineConfig({
       '@emotion/styled',
       'framer-motion',
     ],
-
-    // ADD THIS: This tells the optimizer to NOT touch the polyfill
-    // plugin, resolving the new "chunk file not found" error.
     exclude: [
       'vite-plugin-node-polyfills'
     ]

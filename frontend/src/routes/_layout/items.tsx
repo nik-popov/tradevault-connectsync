@@ -19,7 +19,7 @@ import { ItemsService } from "../../client"
 import ActionsMenu from "../../components/Common/ActionsMenu"
 import Navbar from "../../components/Common/Navbar"
 import AddItem from "../../components/Items/AddItem"
-import { PaginationFooter } from "../../components/Common/PaginationFooter.tsx"
+import { PaginationFooter } from "../../components/Common/PaginationFooter"
 const itemsSearchSchema = z.object({
   page: z.number().catch(1),
 })
