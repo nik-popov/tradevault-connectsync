@@ -43,6 +43,7 @@ def upgrade():
         ),
         sa.PrimaryKeyConstraint("id"),
     )
+    op.add_column('user', sa.Column('stripe_customer_id', sa.String(), nullable=True))
     # ### end Alembic commands ###
 
 

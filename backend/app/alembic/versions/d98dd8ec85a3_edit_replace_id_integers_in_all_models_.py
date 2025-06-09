@@ -53,7 +53,7 @@ def upgrade():
 
     # Recreate foreign key constraint
     op.create_foreign_key('item_owner_id_fkey', 'item', 'user', ['owner_id'], ['id'])
-    op.add_column('user', sa.Column('stripe_customer_id', sa.String(), nullable=True))
+
 def downgrade():
     # Reverse the upgrade process
     op.add_column('user', sa.Column('old_id', sa.Integer, autoincrement=True))
