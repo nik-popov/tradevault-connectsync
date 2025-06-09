@@ -59,12 +59,12 @@ const navStructure: NavItem[] = [
         icon: FaGlobe,
         description: "Access any webpage with our powerful rotating proxy network.",
       },
-      {
-        title: "SERP API",
-        path: "/web-scraping-tools/serp-api",
-        icon: FiSearch,
-        description: "Scrape search engine results pages from Google in real-time.",
-      },
+      // {
+      //   title: "SERP API",
+      //   path: "/web-scraping-tools/serp-api",
+      //   icon: FiSearch,
+      //   description: "Scrape search engine results pages from Google in real-time.",
+      // },
     ],
   },
 
