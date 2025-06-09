@@ -7,18 +7,20 @@ import { useQuery } from "@tanstack/react-query";
 import { FaBook, FaKey, FaCreditCard, FaGlobe, FaSearch, FaTools } from 'react-icons/fa';
 
 import UsageCharts from "../../components/Dashboard/UsageCharts";
-
-// --- Interfaces, featureDetails, and Fetch Functions (No changes) ---
-interface Subscription {
-  id: string; status: string; plan_id: string | null; plan_name: string | null; product_id: string | null; product_name: string | null; current_period_start: number | null; current_period_end: number | null; trial_start: number | null; trial_end: number | null; cancel_at_period_end: boolean; enabled_features: string[];
-}
-interface ApiKey {
-  key_preview: string; created_at: string; expires_at: string; is_active: boolean; request_count?: number;
-}
 const featureDetails = {
   'proxy-api': { name: 'Web Scraping API', description: 'Extract structured data from any website with our powerful and scalable scraping infrastructure.', icon: FaGlobe, path: '/web-scraping-tools/https-api' },
   'serp-api': { name: 'SERP API', description: 'Get structured JSON data from major search engines.', icon: FaSearch, path: '/web-scraping-tools/serp-api' },
 };
+type FeatureKey = keyof typeof featureDetails; 
+// --- Interfaces, featureDetails, and Fetch Functions (No changes) ---
+interface Subscription {
+  id: string; status: string; plan_id: string | null; plan_name: string | null; product_id: string | null; product_name: string | null; current_period_start: number | null; current_period_end: number | null; trial_start: number | null; trial_end: number | null; cancel_at_period_end: boolean; enabled_features: FeatureKey[];
+}
+interface ApiKey {
+  key_preview: string; created_at: string; expires_at: string; is_active: boolean; request_count?: number;
+}
+
+
 async function fetchSubscriptions(): Promise<Subscription[]> {
   const token = localStorage.getItem("access_token");
   if (!token) throw new Error("No access token found. Please log in again.");

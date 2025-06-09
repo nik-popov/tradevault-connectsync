@@ -70,8 +70,6 @@ const navStructure: NavItem[] = [
 
 ];
 
-
-// MODIFIED: NavGroupDropdown no longer needs bgActive prop
 const NavGroupDropdown = ({ item, activeTextColor, hoverColor, textColor }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { location } = useRouterState();
