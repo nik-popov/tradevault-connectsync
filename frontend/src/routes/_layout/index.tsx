@@ -6,7 +6,7 @@ import ProtectedComponent from "../../components/Common/ProtectedComponent";
 import { useQuery } from "@tanstack/react-query";
 import { FaBook, FaKey, FaCreditCard, FaGlobe, FaSearch, FaTools } from 'react-icons/fa';
 
-import UsageCharts from "../../components/Dashboard/UsageCharts";
+// import UsageCharts from "../../components/Dashboard/UsageCharts";
 const featureDetails = {
   'proxy-api': { name: 'Web Scraping API', description: 'Extract structured data from any website with our powerful and scalable scraping infrastructure.', icon: FaGlobe, path: '/web-scraping-tools/https-api' },
   'serp-api': { name: 'SERP API', description: 'Get structured JSON data from major search engines.', icon: FaSearch, path: '/web-scraping-tools/serp-api' },
@@ -119,12 +119,12 @@ const HomePage = () => {
             </Grid>
 
             {/* Row 2: Usage Charts */}
-            <UsageCharts
+            {/* <UsageCharts
               periodStart={activeSubscription.current_period_start}
               totalRequests={totalRequests}
               totalDataGB={parseFloat(totalDataGB)}
             />
-            
+             */}
             {/* Row 3: Services & Quick Links */}
              {activeSubscription.enabled_features?.length > 0 && (
               <VStack align="stretch" spacing={4} pt={4}>
