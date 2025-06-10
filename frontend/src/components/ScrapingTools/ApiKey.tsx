@@ -295,7 +295,7 @@ const ApiKeyModule: React.FC<ApiKeyProps> = ({ token }) => {
             loadingText="Generating..."
             isDisabled={isGenerating || hasProxyApiAccess === false}
           >
-            Generate New Key
+            Generate Key
           </Button>
         </Flex>
         <Divider mb={4}></Divider>
