@@ -28,7 +28,7 @@ import {
           {/* Company Info */}
           <VStack spacing={1} align={{ base: "center", md: "start" }}>
           <Link
-      href="https://thedataproxy.com" 
+      href="https://tradevaultco.com" 
       isExternal
       color={textColor}
       _hover={{ color: accentColor }}
@@ -38,7 +38,7 @@ import {
         color={textColor}
         fontSize="sm"
       >
-        The Data Proxy
+        trade vault LLC
       </Text>
     </Link>
             <Text color={textColor} fontSize="xs" maxW="200px">
@@ -57,12 +57,12 @@ import {
             <Flex align="center" gap={1}>
               <Icon as={FiMail} color={textColor} boxSize="0.9em" />
               <Link
-                href="mailto:info@thedataproxy.com"
+                href="mailto:info@tradevaultco.com"
                 color={textColor}
                 fontSize="xs"
                 _hover={{ color: hoverColor }}
               >
-                info@thedataproxy.com
+                info@tradevaultco.com
               </Link>
             </Flex>
           </VStack>
@@ -99,7 +99,7 @@ import {
           {/* Support Links */}
           <VStack spacing={1} align={{ base: "center", md: "start" }}>
             <Link
-              href="https://thedataproxy.com/resources/faq"
+              href="https://tradevaultco.com/resources/faq"
               isExternal
               color={textColor}
               fontSize="xs"
@@ -108,7 +108,7 @@ import {
               FAQ
             </Link>
             <Link
-              href="https://thedataproxy.com/contact"
+              href="https://tradevaultco.com/contact"
               isExternal
               color={textColor}
               fontSize="xs"
@@ -122,7 +122,7 @@ import {
           {/* Legal Links */}
           <VStack spacing={1} align={{ base: "center", md: "start" }}>
             <Link
-              href="https://thedataproxy.com/privacy"
+              href="https://tradevaultco.com/privacy"
               isExternal
               color={textColor}
               fontSize="xs"
@@ -131,7 +131,7 @@ import {
               Privacy Policy
             </Link>
             <Link
-              href="https://thedataproxy.com/terms"
+              href="https://tradevaultco.com/terms"
               isExternal
               color={textColor}
               fontSize="xs"
@@ -144,7 +144,7 @@ import {
           {/* Additional Legal Links */}
           <VStack spacing={1} align={{ base: "center", md: "start" }}>
             <Link
-              href="https://thedataproxy.com/cookie"
+              href="https://tradevaultco.com/cookie"
               isExternal
               color={textColor}
               fontSize="xs"
@@ -153,7 +153,7 @@ import {
               Cookie Policy
             </Link>
             <Link
-              href=" https://thedataproxy.com/compliance"
+              href=" https://tradevaultco.com/compliance"
               isExternal
               color={textColor}
               fontSize="xs"
@@ -173,12 +173,12 @@ import {
       >
         © 2025{" "}
         <Link
-          href="https://thedataproxy.com"
+          href="https://tradevaultco.com"
           isExternal
           color={textColor}
           _hover={{ color: accentColor }}
         >
-          The Data Proxy
+          trade vault LLC
         </Link>
         ,{" "}
         <Link

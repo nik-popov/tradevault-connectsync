@@ -29,7 +29,7 @@ const Logo: React.FC<LogoProps> = ({ href = "/", ...rest }) => {
       <HStack spacing={1} align="center">
         <Layers size={28} strokeWidth={2.5} />
         <span>
-          DATAPROXY
+          tradevault
         </span>
       </HStack>
     </Link>

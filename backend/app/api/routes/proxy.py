@@ -296,7 +296,7 @@ async def proxy_fetch_logic(
                 response = await client.post(
                     f"{endpoint}/fetch",
                     json={"url": str(proxy_request.url)},
-                    headers={"User-Agent": request.headers.get("user-agent", "DataProxy-Internal-Fetcher/1.0")}
+                    headers={"User-Agent": request.headers.get("user-agent", "tradevault-Internal-Fetcher/1.0")}
                 )
                 response.raise_for_status()
                 data = response.json()
@@ -462,7 +462,7 @@ async def delete_api_key(
             </body></html>
             """
             send_email(
-                email_to="internal@thedataproxy.com",
+                email_to="internal@tradevaultco.com",
                 subject=f"API Key Deletion - User {current_user.id}",
                 html_content=html_content
             )

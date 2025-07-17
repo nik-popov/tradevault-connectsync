@@ -201,7 +201,7 @@ const REGIONS = [
   "us-east", "us-west", "us-central", "northamerica-northeast",
   "southamerica", "asia", "australia", "europe", "middle-east",
 ];
-const API_URL = "https://api.thedataproxy.com/v2/proxy";
+const API_URL = "https://api.tradevaultco.com/v2/proxy";
 
 const PlaygroundGSerp: React.FC = () => {
   // --- State ---
