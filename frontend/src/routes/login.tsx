@@ -121,7 +121,7 @@ function Login() {
             fontSize={{ base: "sm", md: "md" }} 
             color="gray.500"
           >
-            Need a Boost? Our expert support team and comprehensive documentation are here to fuel your success.
+          Beta Beta Beta Beta Beta Beta Beta Beta Beta Beta Beta Beta Beta Beta Beta Beta Beta Beta
           </Text>
         </Box>
 
