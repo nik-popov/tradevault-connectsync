@@ -108,14 +108,14 @@ function Login() {
             mb={{ base: 4, md: 6 }} 
             color="gray.800"
           >
-          Web Data, Effortlessly
+          Crosslisting made easy.
           </Heading>
           <Text 
             fontSize={{ base: "md", md: "lg" }} 
             color="gray.600" 
             mb={{ base: 3, md: 4 }}
           >
-            Sign in to experience seamless data management and take control with confidence.
+            Sign in to experience powerful inventory management.
           </Text>
           <Text 
             fontSize={{ base: "sm", md: "md" }} 
