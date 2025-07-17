@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link, LinkProps, HStack } from '@chakra-ui/react';
-import { Layers } from 'react-feather';
+import { Link as Link2 } from 'react-feather';
 
 // Props interface remains the same, which is great.
 interface LogoProps extends LinkProps {}
@@ -27,7 +27,7 @@ const Logo: React.FC<LogoProps> = ({ href = "/", ...rest }) => {
       {...rest}
     >
       <HStack spacing={1} align="center">
-        <Layers size={28} strokeWidth={2.5} />
+        <Link2 size={28} strokeWidth={2.5} />
         <span>
           tradevault
         </span>
