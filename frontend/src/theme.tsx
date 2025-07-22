@@ -1,7 +1,7 @@
 import { extendTheme, ThemeConfig } from "@chakra-ui/react";
 
 const config: ThemeConfig = {
-  initialColorMode: "light", // Changed to light mode as the default
+  initialColorMode: "light", // Light mode as the default
   useSystemColorMode: false,
 };
 
@@ -12,22 +12,22 @@ const theme = extendTheme({
       "html, body": {
         fontFamily: '"Figtree", sans-serif',
         lineHeight: "1.7",
-        bg: "gray.50", // Hardcoded light gray background for light mode
-        color: "gray.900", // Hardcoded dark text for readability in light mode
-
+        bg: "gray.50", // Light gray background for light mode
+        color: "gray.900", // Dark text for readability in light mode
       },
     }),
   },
   colors: {
     ui: {
-      main: "#F28C28", // orange as the primary accent color
-      secondary: "#FFA500", // Orange for secondary elements (or "#FFFF00" for yellow if preferred)
-      success: "#38A169", // Green for success states
-      danger: "#E53E3E", // Red for errors (unchanged)
+      main: "#3B82F6", // Blue as the primary accent color for cross-listing app
+      secondary: "#A855F7", // Purple for secondary elements
+      accent: "#EC4899", // Pink as an additional accent for highlights or calls-to-action
+      success: "#22C55E", // Updated green for success states to fit vibrant theme
+      danger: "#EF4444", // Updated red for errors
       light: "#FFFFFF", // White for backgrounds
-      dark: "#1A202C", // Dark background for dark mode (unchanged)
-      darkSlate: "#2D3748", // Darker gray for contrast
-      dim: "#A0AEC0", // Muted gray for secondary text (unchanged)
+      dark: "#1F2937", // Slightly adjusted dark background
+      darkSlate: "#374151", // Adjusted darker gray for contrast
+      dim: "#9CA3AF", // Muted gray for secondary text
     },
   },
   components: {
@@ -57,21 +57,35 @@ const theme = extendTheme({
       },
       variants: {
         primary: {
-          backgroundColor: "ui.main", // Teal accent
+          backgroundColor: "ui.main", // Blue accent
           color: "ui.light", // White text
           _hover: {
-            backgroundColor: "#234E52", // Darker teal on hover
+            backgroundColor: "#2563EB", // Darker blue on hover
           },
           _disabled: {
             backgroundColor: "ui.main",
             opacity: 0.6,
           },
         },
+        secondary: {
+          backgroundColor: "ui.secondary", // Purple for secondary buttons
+          color: "ui.light",
+          _hover: {
+            backgroundColor: "#9333EA", // Darker purple on hover
+          },
+        },
+        accent: {
+          backgroundColor: "ui.accent", // Pink for accent buttons
+          color: "ui.light",
+          _hover: {
+            backgroundColor: "#DB2777", // Darker pink on hover
+          },
+        },
         danger: {
-          backgroundColor: "ui.danger", // Red (unchanged)
+          backgroundColor: "ui.danger", // Red
           color: "ui.light", // White text
           _hover: {
-            backgroundColor: "#E32727", // Darker red (unchanged)
+            backgroundColor: "#DC2626", // Darker red
           },
         },
       },
@@ -85,13 +99,13 @@ const theme = extendTheme({
           tab: {
             color: "ui.dim",
             _selected: {
-              color: "ui.main", // Teal for selected tab
+              color: "ui.main", // Blue for selected tab
               fontWeight: "bold",
-              borderBottomColor: "ui.main", // Teal underline
+              borderBottomColor: "ui.main", // Blue underline
               borderBottomWidth: "2px",
             },
             _hover: {
-              color: "ui.secondary", // Light teal on hover
+              color: "ui.secondary", // Purple on hover
             },
           },
         },
@@ -100,8 +114,8 @@ const theme = extendTheme({
     Toast: {
       baseStyle: {
         container: {
-          bg: "white", // Bright white background (unchanged)
-          color: "gray.100", // Dark text (unchanged)
+          bg: "white", // Bright white background
+          color: "gray.100", // Dark text
           borderRadius: "md",
           boxShadow: "lg",
           padding: "16px",
@@ -131,18 +145,18 @@ const theme = extendTheme({
         },
         info: {
           container: {
-            bg: "orange.100", // Light blue for info
-            color: "orange.900",
+            bg: "blue.100", // Light blue for info
+            color: "blue.900",
             border: "1px solid",
-            borderColor: "orange.300",
+            borderColor: "blue.300",
           },
         },
         warning: {
           container: {
-            bg: "yellow.100", // Light yellow for warning
-            color: "yellow.900",
+            bg: "pink.100", // Light pink for warning to incorporate pink
+            color: "pink.900",
             border: "1px solid",
-            borderColor: "yellow.300",
+            borderColor: "pink.300",
           },
         },
       },
