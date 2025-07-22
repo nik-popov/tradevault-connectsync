@@ -24,7 +24,7 @@ import {
   FiUserCheck,
   FiSettings,
 } from "react-icons/fi";
-import { FaBook, FaKey, FaCreditCard, FaGlobe, FaSitemap } from 'react-icons/fa';
+import { FaBook, FaKey, FaCreditCard, FaGlobe, FaSitemap, FaYoutube, FaShoppingCart, FaSyncAlt } from 'react-icons/fa';
 
 import Logo from "../Common/Logo";
 import type { UserPublic } from "../../client";
@@ -50,7 +50,7 @@ interface NavItemsProps {
 }
 
 const navStructure: NavItem[] = [
-    {
+  {
     title: "User Agents",
     path: "/web-scraping-tools/user-agents",
     icon: FiUserCheck,
@@ -73,7 +73,36 @@ const navStructure: NavItem[] = [
       // },
     ],
   },
-
+  {
+    title: "YouTube Tools",
+    icon: FaYoutube,
+    subItems: [
+      {
+        title: "Video to MP4 Converter",
+        path: "/youtube-tools/video-to-mp4",
+        icon: FaYoutube,
+        description: "Effortlessly convert YouTube videos to MP4 format for easy download and use.",
+      },
+      {
+        title: "Shorts Creator",
+        path: "/youtube-tools/shorts-creator",
+        icon: FaYoutube,
+        description: "Create and edit engaging short-form videos optimized for YouTube Shorts.",
+      },
+    ],
+  },
+  {
+    title: "Ecommerce Tools",
+    icon: FaShoppingCart,
+    subItems: [
+      {
+        title: "Cross-Platform Listing Sync",
+        path: "/ecommerce-tools/cross-platform-listing-sync",
+        icon: FaSyncAlt,
+        description: "Seamlessly synchronize product listings across multiple ecommerce platforms.",
+      },
+    ],
+  },
 ];
 
 const NavGroupDropdown = ({ item, activeTextColor, hoverColor, textColor }) => {
@@ -157,6 +186,9 @@ const NavItems = ({ onClose, isMobile = false }: NavItemsProps) => {
       "HTTPS API",
       "SERP API",
       "User Agents",
+      "Video to MP4 Converter",
+      "Shorts Creator",
+      "Cross-Platform Listing Sync",
     ].includes(title);
   };
 
