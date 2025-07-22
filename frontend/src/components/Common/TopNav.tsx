@@ -4,6 +4,7 @@ import {
   Icon,
   Text,
   IconButton,
+  Tooltip,
   useDisclosure,
   Menu,
   MenuButton,
@@ -11,15 +12,19 @@ import {
   MenuItem,
   VStack,
 } from "@chakra-ui/react";
+import { ChevronDownIcon } from "@chakra-ui/icons";
 import { useQueryClient } from "@tanstack/react-query";
 import { Link as RouterLink, useRouterState } from "@tanstack/react-router";
 import {
   FiLogOut,
   FiMenu,
   FiUsers,
+  FiSearch,
+  FiShield,
+  FiUserCheck,
   FiSettings,
 } from "react-icons/fi";
-import { FaYoutube, FaShoppingCart, FaSyncAlt } from 'react-icons/fa';
+import { FaBook, FaKey, FaCreditCard, FaGlobe, FaSitemap, FaYoutube, FaShoppingCart, FaSyncAlt } from 'react-icons/fa';
 
 import Logo from "../Common/Logo";
 import type { UserPublic } from "../../client";
@@ -45,6 +50,29 @@ interface NavItemsProps {
 }
 
 const navStructure: NavItem[] = [
+  {
+    title: "User Agents",
+    path: "/web-scraping-tools/user-agents",
+    icon: FiUserCheck,
+  },
+  {
+    title: "Web Scraping APIs",
+    icon: FaSitemap,
+    subItems: [
+      {
+        title: "HTTPS API",
+        path: "/web-scraping-tools/https-api",
+        icon: FaGlobe,
+        description: "Access any webpage with our powerful rotating proxy network.",
+      },
+      // {
+      //   title: "SERP API",
+      //   path: "/web-scraping-tools/serp-api",
+      //   icon: FiSearch,
+      //   description: "Scrape search engine results pages from Google in real-time.",
+      // },
+    ],
+  },
   {
     title: "YouTube Tools",
     icon: FaYoutube,
@@ -142,7 +170,7 @@ const NavItems = ({ onClose, isMobile = false }: NavItemsProps) => {
   // MODIFIED: bgActive is no longer needed as we only change text color
   // const bgActive = "orange.100";
   const activeTextColor = "orange.800";
-  const currentUser = queryClient.getQueryData<UserPublic>(["currentUser"]);
+  const currentUser = queryClient.getQueryData(["currentUser"]) as UserPublic | undefined;
 
   const finalNavStructure = [...navStructure];
   if (
@@ -155,6 +183,9 @@ const NavItems = ({ onClose, isMobile = false }: NavItemsProps) => {
   const isEnabled = (title: string) => {
     return [
       "Admin",
+      "HTTPS API",
+      "SERP API",
+      "User Agents",
       "Video to MP4 Converter",
       "Shorts Creator",
       "Cross-Platform Listing Sync",
@@ -279,7 +310,7 @@ const TopNav = () => {
   const queryClient = useQueryClient();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { logout } = useAuth();
-  const currentUser = queryClient.getQueryData<UserPublic>(["currentUser"]);
+  const currentUser = queryClient.getQueryData(["currentUser"]) as UserPublic | undefined;
   const textColor = "gray.800";
   const hoverColor = "orange.600";
   // MODIFIED: bgActive is no longer needed
@@ -323,7 +354,7 @@ const TopNav = () => {
           {currentUser && (
             <>
               <Flex
-                as={routerLink}
+                as={RouterLink}
                 to="/settings"
                 px={4}
                 py={2}
@@ -336,7 +367,7 @@ const TopNav = () => {
                 align="center"
                 borderRadius="md"
               >
-                <Icon as={FiSettings} mr={2} boxSize={5" />
+                <Icon as={FiSettings} mr={2} boxSize={5} />
                 <Text fontWeight="500">Settings</Text>
               </Flex>
               <Flex
@@ -368,7 +399,7 @@ const TopNav = () => {
         boxShadow="md"
         p={4}
       >
-        <Flex flexDir="column"} gap={4}>
+        <Flex flexDir="column" gap={4}>
           <NavItems onClose={onClose} isMobile={true} />
           {currentUser && (
             <>
@@ -404,7 +435,7 @@ const TopNav = () => {
                   _hover={{ color: hoverColor }}
                   align="center"
                 >
-                  <Icon as={FiLogOut} mr={2} boxSize="5} />
+                  <Icon as={FiLogOut} mr={2} boxSize={5} />
                   <Text fontWeight="500">Log out</Text>
                 </Flex>
               </Flex>
